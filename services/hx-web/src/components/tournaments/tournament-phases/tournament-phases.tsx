@@ -6,7 +6,7 @@ export type TournamentPhasesProps = {
   className?: string;
 };
 
-const TournamentPhases = ({ className }: TournamentPhasesProps) => {
+export const TournamentPhases = ({ className }: TournamentPhasesProps) => {
   return (
     <div className="relative flex h-full flex-grow flex-col md:border-l md:border-dashed md:border-gray-700 md:pl-8">
       {/* sidebar header */}
@@ -33,5 +33,3 @@ const TournamentPhases = ({ className }: TournamentPhasesProps) => {
     </div>
   );
 };
-
-export default TournamentPhases;

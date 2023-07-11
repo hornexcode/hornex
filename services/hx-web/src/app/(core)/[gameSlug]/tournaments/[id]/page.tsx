@@ -3,7 +3,7 @@ import classnames from "classnames";
 import { useState } from "react";
 import TournamentFooter from "@/components/tournaments/tournament-footer";
 import face from "@/assets/images/face.jpg";
-import TournamentPhases from "@/components/tournaments/tournament-phases/TournamentPhases";
+import { TournamentPhases } from "@/components/tournaments/tournament-phases";
 import { TournamentTabs } from "@/components/tournaments/tournament-tabs";
 import TournamentDetails from "@/components/tournaments/tournament-details/tournament-details";
 import Button from "@/components/ui/button/button";
@@ -12,7 +12,7 @@ import {
   CurrencyDollarIcon,
   MapPinIcon,
   TrophyIcon,
-  UsersIcon,
+  UsersIcon
 } from "@heroicons/react/20/solid";
 import { TournamentStatus } from "@/components/tournaments/tournament";
 import { SwordsIcon } from "@/components/ui/icons";
@@ -29,7 +29,7 @@ export default function Tournament({ params }: TournamentProps) {
 
   const [creator] = useState({
     name: "@ShadowSlayer",
-    logo: face,
+    logo: face
   });
 
   return (
