@@ -1,0 +1,15 @@
+.cell {
+  @apply p-3;
+}
+
+.th {
+  @apply cell text-[11px] font-bold tracking-tighter text-gray-200;
+}
+
+.tr {
+  @apply border-b border-slate-700/40 last:border-none;
+}
+
+.td {
+  @apply cell;
+}
