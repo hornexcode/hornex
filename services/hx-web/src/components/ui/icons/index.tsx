@@ -11,3 +11,4 @@ export * from "./x-mark-icon";
 export * from "./team-icon";
 export * from "./swords-icon";
 export * from "./xbox-icon";
+export * from "./lol-logo-icon";

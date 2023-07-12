@@ -9,17 +9,15 @@ import {
   ChevronRightIcon,
   ComputerDesktopIcon,
   PlusCircleIcon,
-  PlusIcon
+  PlusIcon,
+  TvIcon
 } from "@heroicons/react/20/solid";
-import { PlatformPicker } from "@/components/compete";
+import { ChoseGameCard, PlatformPicker } from "@/components/compete";
+import Image from "next/image";
+import BgChar from "@/assets/images/lol-bg-char.png";
+import { LolLogoIcon } from "@/components/ui/icons";
 
-type HomePage = {
-  params: {
-    gameSlug: string;
-  };
-};
-
-export default function HomePage({ params }: HomePage) {
+export default function Compete() {
   return (
     <div className="mx-auto space-y-8 p-8">
       <div className="flex border-b border-slate-800 pb-2">
@@ -64,22 +62,15 @@ export default function HomePage({ params }: HomePage) {
             Available Games
           </h5>
 
-          <div className="grid grid-cols-4 gap-4">
-            <Link
-              href={""}
-              className="group relative h-full min-h-[18rem] w-full overflow-hidden rounded-lg "
-            >
-              <figure className="flex h-full w-full flex-col justify-end rounded-lg bg-[url('http://localhost:3000/images/lol-bg-char.png')] bg-cover bg-no-repeat transition-transform group-hover:scale-105"></figure>
-              <figcaption className="absolute bottom-0 flex h-full flex-col items-start justify-end  bg-gradient-to-t from-light-dark/70 from-20% to-transparent p-6">
-                <h4 className="mb-4 text-3xl font-extrabold leading-4 -tracking-wider text-white">
-                  LOL: New platform for tournaments
-                </h4>
-                <span className="text-sm text-gray-400">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Repellendus, suscipit.
-                </span>
-              </figcaption>
-            </Link>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <ChoseGameCard
+                key={index}
+                bgImage="http://localhost:3000/images/card-background-lol.png"
+                hoverImage={BgChar}
+                LogoComponentIcon={LolLogoIcon}
+              />
+            ))}
           </div>
         </div>
       </section>
