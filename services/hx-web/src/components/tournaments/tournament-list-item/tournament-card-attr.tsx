@@ -10,7 +10,7 @@ const TournamentCardAttr = ({ attr, icon, value }: TournamentCardAttrProps) => {
       <span className="text-[0.675rem]">{attr}</span>
       <div className="flex items-center space-x-1">
         {icon}
-        <span className="text-sm text-white">{value}</span>
+        <span className="text-xs text-white">{value}</span>
       </div>
     </div>
   );

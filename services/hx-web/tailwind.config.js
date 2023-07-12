@@ -1,7 +1,3 @@
-/** @type {import('tailwindcss').Config} */
-
-const defaultTheme = require("tailwindcss/defaultTheme");
-const { fontSize } = require("./src/app/theme/fontStyles");
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
@@ -13,18 +9,16 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      satoshi: ["Satoshi", "sans-serif"],
-      inter: ["Inter", "sans-serif"],
+      body: ["Fira Code", "monospace"],
     },
-    fontSize,
     extend: {
       colors: {
         body: "#fcfcfc",
         primary: "#0D1321",
-        // dark: "#0D1321",
-        dark: "rgba(11, 13, 19, 1)",
-        // "light-dark": "#171e2e",
-        "light-dark": "rgba(17, 20, 33, 1)",
+        dark: "#0D1321",
+        // dark: "rgba(11, 13, 19, 1)",
+        "light-dark": "#171e2e",
+        // "light-dark": "rgba(17, 20, 33, 1)",
         "sidebar-body": "#F8FAFC",
       },
       boxShadow: {
@@ -39,6 +33,9 @@ module.exports = {
       },
       dropShadow: {
         main: "0px 4px 8px rgba(0, 0, 0, 0.08)",
+      },
+      fontSize: {
+        "13px": ["13px", "18px"],
       },
       backgroundImage: {
         "bg-emblem-gold": "url('images/ranked-emblem/emblem-gold.png')",

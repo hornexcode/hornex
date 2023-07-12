@@ -1,12 +1,6 @@
 import "./globals.css";
 import classnames from "classnames";
-import {
-  Fira_Code,
-  Roboto_Condensed,
-  Oswald,
-  Fira_Sans,
-  Heebo,
-} from "next/font/google";
+import { Fira_Code } from "next/font/google";
 
 export const metadata = {
   title: "Create Next App",
@@ -15,24 +9,6 @@ export const metadata = {
 
 const fira_code = Fira_Code({
   weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const roboto_condensed = Roboto_Condensed({
-  weight: ["300", "400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const owswald = Oswald({
-  weight: ["300", "400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const fira = Heebo({
-  weight: ["300", "400", "700"],
   subsets: ["latin"],
   display: "swap",
 });

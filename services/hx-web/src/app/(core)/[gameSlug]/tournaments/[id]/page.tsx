@@ -8,12 +8,7 @@ import { TournamentTabs } from "@/components/tournaments/tournament-tabs";
 import TournamentDetails from "@/components/tournaments/tournament-details/tournament-details";
 import Button from "@/components/ui/button/button";
 import TournamentCardAttr from "@/components/tournaments/tournament-list-item/tournament-card-attr";
-import {
-  CurrencyDollarIcon,
-  MapPinIcon,
-  TrophyIcon,
-  UsersIcon
-} from "@heroicons/react/20/solid";
+import { MapPinIcon, TrophyIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { TournamentStatus } from "@/components/tournaments/tournament";
 import { SwordsIcon } from "@/components/ui/icons";
 
@@ -29,27 +24,11 @@ export default function Tournament({ params }: TournamentProps) {
 
   const [creator] = useState({
     name: "@ShadowSlayer",
-    logo: face
+    logo: face,
   });
 
   return (
     <div className="">
-      {/* <div className="flex flex-col gap-2 px-8 md:grid md:grid-cols-[1fr_1fr_380px] md:gap-0">
-        <div className="col-span-2 space-y-6 pt-4 md:space-y-12 md:pt-8">
-          <TournamentDetails />
-          <TournamentTabs />
-        </div>
-
-        <div className="right-0 top-0 flex flex-col pb-8 md:fixed md:h-screen md:w-[380px] md:pr-8 md:pt-24">
-          <TournamentPhases />
-        </div>
-      </div>
-
-      <TournamentFooter
-        className="-mx-4 bg-dark p-3 md:hidden"
-        isJoined={isJoined}
-        joinTournament={joinTournament}
-      /> */}
       <section className="h-[250px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-sky-400 to-sky-300">
           <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/sion.jpg')] bg-cover bg-no-repeat"></figure>

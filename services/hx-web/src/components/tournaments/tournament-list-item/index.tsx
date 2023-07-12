@@ -1,1 +1,1 @@
-export * from "./_default";
+export * from "./tournament-list-item";

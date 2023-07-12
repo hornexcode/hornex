@@ -39,7 +39,7 @@ const Header = () => {
   // const { openDrawer, isOpen } = useDrawer();
 
   return (
-    <header className="sticky left-0 top-0 z-40 h-16 w-full bg-gradient-to-r from-sky-400 to-sky-500 px-4 shadow-xl">
+    <header className="sticky left-0 top-0 z-40 h-14 w-full bg-sky-500 px-4 shadow-card">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <div className="block w-24 font-extrabold text-white">Hornex.gg</div>

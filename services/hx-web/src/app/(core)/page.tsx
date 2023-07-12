@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import TV4 from "@/assets/images/tournaments/tournament-v4.jpg";
+import TV4 from "@/assets/images/tournaments/tournament-v1.jpg";
 import { TournamentListItem } from "@/components/tournaments/tournament-list-item";
 
 type HomePage = {
@@ -86,7 +86,7 @@ export default function HomePage({ params }: HomePage) {
         </div>
       </section>
 
-      <section id="tournaments" className="px-8">
+      <section id="tournaments" className="">
         <div className="mb-4 border-b border-slate-800 pb-2">
           <h4 className=" text-left text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">
             Tournaments

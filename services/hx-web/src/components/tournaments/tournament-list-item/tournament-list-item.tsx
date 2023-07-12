@@ -59,13 +59,14 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
                 value="1500 BRL"
                 attr="Prize Pool"
               />
+
               <TournamentCardAttr
-                icon={<MapPinIcon className="h-4 w-4" />}
-                value="Sum. Rift"
-                attr="Prize Pool"
+                icon={<TrophyIcon className="h-4 w-4" />}
+                value="Silver, Gold"
+                attr="Elo"
               />
             </div>
-            <div className="block">
+            {/* <div className="block">
               <span className="text-[0.675rem]">Allowed Elos</span>
               <div className="flex space-x-3">
                 <div className="block text-center">
@@ -83,20 +84,20 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
 
       {/* tournament card footer */}
-      <div className="grid grid-cols-2 space-y-4 rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
+      <div className="grid grid-cols-2 space-y-2 rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
         <div className="col-span-2">
           <div className="flex justify-between">
             <div className="flex items-center">
               <CurrencyDollarIcon className="mr-1 h-5 w-4 fill-slate-300" />
               <span
                 data-tooltip="tooltip-prize"
-                className="text-xs font-bold text-slate-300"
+                className="text-xs font-bold text-white"
               >
                 120/1500 BRL
               </span>
@@ -116,7 +117,7 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
           <div className="flex items-center">
             <div className="flex">
               <UsersIcon className="mr-1 h-5 w-4 fill-slate-300" />
-              <span className="pr-4 text-xs font-bold text-slate-300">
+              <span className="pr-4 text-xs font-bold text-white">
                 4/16
               </span>
             </div>
@@ -131,8 +132,8 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center text-center">
-          <h4 className="font-extrabold uppercase leading-4 text-white">
+        <div className="flex flex-col justify-center pr-2 text-left">
+          <h4 className="font-extrabold uppercase leading-4 tracking-tighter text-white">
             Free Entry
           </h4>
           <span className="text-xs">Closes in 7 days</span>
@@ -141,6 +142,7 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
           <Button
             className="w-full bg-gradient-to-r from-sky-400 to-sky-500 -tracking-wider"
             shape="rounded"
+            size="small"
           >
             Registration
           </Button>
