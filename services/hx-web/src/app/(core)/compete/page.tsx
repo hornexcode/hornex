@@ -1,15 +1,112 @@
 'use client';
-import Link from 'next/link';
 
+import { ComputerDesktopIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
+import { GameItem, GameItemProps, PlatformPicker } from '@/components/compete';
+import LolChar from '@/assets/images/lol-bg-char.png';
+import DotaChar from '@/assets/images/dota-char.png';
+import CSChar from '@/assets/images/cs-char.png';
+import RocketLeagueChar from '@/assets/images/rl-char.png';
 import {
-  ArrowRightCircleIcon,
-  PlusCircleIcon,
-} from '@heroicons/react/20/solid';
-import { ChoseGameCard, PlatformPicker } from '@/components/compete';
-import BgChar from '@/assets/images/lol-bg-char.png';
-import { LolLogoIcon } from '@/components/ui/icons';
+  LolLogoIcon,
+  RocketLeagueLogoIcon,
+  CounterStrikeLogoIcon,
+  DotaLogoIcon,
+  CellPhoneIcon,
+  PlayStationIcon,
+  XboxIcon,
+} from '@/components/ui/icons';
 
 export default function Compete() {
+  const games: GameItemProps[] = [
+    {
+      bgImage: 'http://localhost:3000/images/card-background-lol.png',
+      LogoComponentIcon: LolLogoIcon,
+      hoverImage: LolChar,
+      bgColor: 'sky',
+      platforms: [
+        {
+          Icon: ComputerDesktopIcon as (
+            props: React.SVGAttributes<{}>
+          ) => JSX.Element,
+          bgColor: 'bg-sky-500',
+        },
+      ],
+      matchFormat: '5v5',
+      name: 'League of Legends',
+      registeredPlayers: 12.29,
+      tournaments: 23,
+    },
+    {
+      bgImage: 'http://localhost:3000/images/bg-cs-go.png',
+      LogoComponentIcon: CounterStrikeLogoIcon,
+      hoverImage: CSChar,
+      bgColor: 'yellow',
+      platforms: [
+        {
+          Icon: XboxIcon,
+          bgColor: 'bg-green-500',
+        },
+        {
+          Icon: ComputerDesktopIcon as (
+            props: React.SVGAttributes<{}>
+          ) => JSX.Element,
+          bgColor: 'bg-sky-500',
+        },
+        {
+          Icon: PlayStationIcon,
+          bgColor: 'bg-blue-900',
+        },
+      ],
+      matchFormat: '5v5',
+      name: 'CS:GO',
+      registeredPlayers: 30,
+      tournaments: 57,
+    },
+    {
+      bgImage: 'http://localhost:3000/images/bg-dota.webp',
+      LogoComponentIcon: DotaLogoIcon,
+      hoverImage: DotaChar,
+      bgColor: 'red',
+      platforms: [
+        {
+          Icon: ComputerDesktopIcon as (
+            props: React.SVGAttributes<{}>
+          ) => JSX.Element,
+          bgColor: 'bg-sky-500',
+        },
+      ],
+      matchFormat: '5v5',
+      name: 'Dota 2',
+      registeredPlayers: 21.3,
+      tournaments: 15,
+    },
+    {
+      bgImage: 'http://localhost:3000/images/bg-rocket-league.webp',
+      LogoComponentIcon: RocketLeagueLogoIcon,
+      hoverImage: RocketLeagueChar,
+      bgColor: 'purple',
+      platforms: [
+        {
+          Icon: XboxIcon,
+          bgColor: 'bg-green-500',
+        },
+        {
+          Icon: ComputerDesktopIcon as (
+            props: React.SVGAttributes<{}>
+          ) => JSX.Element,
+          bgColor: 'bg-sky-500',
+        },
+        {
+          Icon: PlayStationIcon,
+          bgColor: 'bg-blue-900',
+        },
+      ],
+      matchFormat: '5v5',
+      name: 'Rocket League',
+      registeredPlayers: 51,
+      tournaments: 33,
+    },
+  ];
   return (
     <div className="mx-auto space-y-8 p-8">
       <div className="flex items-end justify-between border-b border-slate-800 pb-2">
@@ -38,12 +135,18 @@ export default function Compete() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <ChoseGameCard
+            {games.map((game, index) => (
+              <GameItem
                 key={index}
-                bgImage={'http://localhost:3000/images/card-background-lol.png'}
-                hoverImage={BgChar}
-                LogoComponentIcon={LolLogoIcon}
+                bgImage={game.bgImage}
+                hoverImage={game.hoverImage}
+                LogoComponentIcon={game.LogoComponentIcon}
+                bgColor={game.bgColor}
+                matchFormat={game.matchFormat}
+                name={game.name}
+                platforms={game.platforms}
+                registeredPlayers={game.registeredPlayers}
+                tournaments={game.tournaments}
               />
             ))}
           </div>

@@ -1,2 +1,2 @@
-export * from "./platform-picker";
-export * from "./chose-game-card";
+export * from './platform-picker';
+export * from './game-item';
