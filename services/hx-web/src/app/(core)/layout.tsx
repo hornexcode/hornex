@@ -1,8 +1,8 @@
-"use client";
-import { SwordsIcon } from "@/components/ui/icons";
-import Header from "@/layouts/header";
-import { HomeIcon, TrophyIcon } from "@heroicons/react/20/solid";
-import Link from "next/link";
+'use client';
+import { SwordsIcon } from '@/components/ui/icons';
+import Header from '@/layouts/header';
+import { HomeIcon, TrophyIcon } from '@heroicons/react/20/solid';
+import Link from 'next/link';
 
 export default function AuthLayout({
   children,
@@ -12,11 +12,11 @@ export default function AuthLayout({
   return (
     <div className="">
       <Header />
-      <div className="fixed top-14 z-40 h-full w-16 border-r border-t border-slate-800 bg-light-dark shadow-2xl">
+      <div className="fixed top-14 z-20 h-full w-16 border-r border-t border-slate-800 bg-light-dark shadow-2xl">
         <ul className="block space-y-3 py-2">
           <li className="px-2">
             <Link
-              href={"/"}
+              href={'/'}
               className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-sky-500 text-center shadow-lg transition-all hover:bg-slate-700"
             >
               <HomeIcon className="h-5 w-5 text-white shadow-xl group-hover:text-white" />
