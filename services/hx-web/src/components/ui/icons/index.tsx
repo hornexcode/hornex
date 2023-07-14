@@ -17,3 +17,4 @@ export * from './play-station-icon';
 export * from './cellphone-icon';
 export * from './cs-logo-icon';
 export * from './dota-logo-icon';
+export * from './lol-icon';

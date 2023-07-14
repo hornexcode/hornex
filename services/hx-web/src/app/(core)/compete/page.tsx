@@ -120,9 +120,10 @@ export default function Compete() {
       <section id="compete" className="space-y-10">
         <div className="space-y-6">
           <div className="grid grid-cols-4 gap-4">
-            <span className="flex w-fit cursor-pointer flex-col items-center justify-center gap-4 rounded-lg bg-slate-800 p-4 transition-all hover:bg-slate-700">
+            <div className="flex min-h-[18rem] cursor-pointer flex-col items-center justify-center gap-4 rounded-lg bg-slate-800 p-4 transition-all hover:bg-slate-700">
               <PlusCircleIcon className="w-7" />
-            </span>
+              <span className="text-sm">Add game</span>
+            </div>
           </div>
         </div>
 

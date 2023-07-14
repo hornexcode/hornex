@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import TV4 from "@/assets/images/tournaments/tournament-v1.jpg";
+import TV4 from "@/assets/images/tournaments/tournament-v4.jpg";
 import { TournamentListItem } from "@/components/tournaments/tournament-list-item";
 
 type HomePage = {

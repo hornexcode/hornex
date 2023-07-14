@@ -1,9 +1,10 @@
-"use client";
-import Link from "next/link";
+'use client';
+import Link from 'next/link';
 
-import { TournamentListItem } from "@/components/tournaments/tournament-list-item";
+import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
 
-import TV4 from "@/assets/images/tournaments/tournament-v4.jpg";
+import TV4 from '@/assets/images/tournaments/tournament-v4.jpg';
+import { LolIcon, LolLogoIcon } from '@/components/ui/icons';
 
 type GamePageProps = {
   params: {
@@ -88,11 +89,12 @@ export default function GamePage({ params }: GamePageProps) {
       </section> */}
       <section className="h-[240px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-sky-400 to-sky-300">
+          {/* <div className="absolute top-0 h-full w-full bg-sky-400/30"></div> */}
+          <div className="absolute top-0 h-full w-full bg-light-dark/40"></div>
           <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat"></figure>
-          <figcaption className="absolute -bottom-4 left-8 flex items-end rounded border-l-4 border-sky-400 bg-dark shadow-lg">
-            <h1 className="leading-1 rounded-lg px-8 py-8 font-satoshi text-3xl font-extrabold -tracking-wider text-white">
-              League of Legends
-            </h1>
+          <figcaption className="absolute left-8 top-8 flex gap-6">
+            <LolIcon className="h-16" />
+            <LolLogoIcon className="h-16 fill-white" />
           </figcaption>
         </div>
       </section>

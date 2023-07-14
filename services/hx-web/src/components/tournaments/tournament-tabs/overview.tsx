@@ -1,7 +1,7 @@
-import classnames from "classnames";
+import classnames from 'classnames';
 
-import Card from "@/components/ui/card";
-import { PodiumIcon, MedalIcon, TeamIcon } from "@/components/ui/icons";
+import Card from '@/components/ui/card';
+import { PodiumIcon, MedalIcon, TeamIcon } from '@/components/ui/icons';
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -10,8 +10,8 @@ import {
   MapPinIcon,
   ServerStackIcon,
   TrophyIcon,
-} from "@heroicons/react/20/solid";
-import Tag from "@/components/ui/tag";
+} from '@heroicons/react/20/solid';
+import Tag from '@/components/ui/tag';
 
 interface OverviewProps {
   classNames?: string;
@@ -19,17 +19,17 @@ interface OverviewProps {
 
 export const Overview: React.FC<OverviewProps> = ({ classNames }) => {
   const countries = [
-    { flag: "🇦🇷", name: "Argentina" },
-    { flag: "🇧🇴", name: "Bolivia" },
-    { flag: "🇧🇷", name: "Brazil" },
-    { flag: "🇨🇱", name: "Chile" },
-    { flag: "🇨🇴", name: "Colombia" },
-    { flag: "🇪🇨", name: "Ecuador" },
-    { flag: "🇵🇪", name: "Peru" },
+    { flag: '🇦🇷', name: 'Argentina' },
+    { flag: '🇧🇴', name: 'Bolivia' },
+    { flag: '🇧🇷', name: 'Brazil' },
+    { flag: '🇨🇱', name: 'Chile' },
+    { flag: '🇨🇴', name: 'Colombia' },
+    { flag: '🇪🇨', name: 'Ecuador' },
+    { flag: '🇵🇪', name: 'Peru' },
   ];
 
   return (
-    <div className={classnames("m-auto flex", classNames)}>
+    <div className={classnames('m-auto flex', classNames)}>
       <div className="block w-full divide-y divide-slate-800">
         <div className="prize py-8">
           <h2 className="mb-8 text-lg font-bold leading-3 -tracking-wider text-white">
@@ -72,7 +72,7 @@ export const Overview: React.FC<OverviewProps> = ({ classNames }) => {
           </div>
         </div>
         {/* game & region */}
-        <div className="block pb-6">
+        <div className="block py-6">
           <p className="text-sm text-gray-400">Game & Region</p>
           <p className="text-lg font-extralight -tracking-wider text-white lg:text-2xl">
             League Of Legends

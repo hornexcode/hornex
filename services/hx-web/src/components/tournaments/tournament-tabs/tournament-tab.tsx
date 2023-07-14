@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Tab } from "@headlessui/react";
+import { useState } from 'react';
+import { Tab } from '@headlessui/react';
 
 import {
   Rules,
@@ -7,17 +7,17 @@ import {
   Overview,
   Teams,
   HowItWorks,
-} from "@/components/tournaments/tournament-tabs";
+} from '@/components/tournaments/tournament-tabs';
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export function TournamentTabs() {
   let [tabs] = useState({
     Overview: <Overview />,
     Prizes: <Prizes />,
-    "How it works": <HowItWorks />,
+    'How it works': <HowItWorks />,
     Teams: <Teams />,
     Rules: <Rules />,
   });
@@ -31,10 +31,10 @@ export function TournamentTabs() {
               key={tab}
               className={({ selected }) =>
                 classNames(
-                  "-mb-1.5 whitespace-nowrap px-4 py-2 text-sm font-medium uppercase text-slate-400 outline-none transition-colors hover:text-sky-400",
+                  '-mb-1.5 whitespace-nowrap px-4 py-2 text-sm  font-semibold uppercase text-slate-400 outline-none transition-colors hover:text-sky-400',
                   selected
-                    ? "border-b-2 border-sky-400 !text-white"
-                    : "text-slate-400"
+                    ? 'border-b-2 border-sky-400 !text-white'
+                    : 'text-slate-400'
                 )
               }
             >

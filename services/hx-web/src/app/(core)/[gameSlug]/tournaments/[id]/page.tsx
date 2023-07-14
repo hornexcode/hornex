@@ -11,6 +11,8 @@ import TournamentCardAttr from "@/components/tournaments/tournament-list-item/to
 import { MapPinIcon, TrophyIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { TournamentStatus } from "@/components/tournaments/tournament";
 import { SwordsIcon } from "@/components/ui/icons";
+import ESLOneLogo from "@/assets/images/esl-one-logo.png";
+import Image from "next/image";
 
 type TournamentProps = {
   params: {
@@ -32,7 +34,9 @@ export default function Tournament({ params }: TournamentProps) {
       <section className="h-[250px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-sky-400 to-sky-300">
           <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/sion.jpg')] bg-cover bg-no-repeat"></figure>
-          <div className="absolute -bottom-[200px] left-4 h-[240px] w-56 rounded-lg bg-light-dark"></div>
+          <div className="absolute -bottom-[200px] left-4 flex h-[240px] w-56 items-center rounded-lg bg-light-dark ">
+            <Image src={ESLOneLogo} alt="ESL One Logo" />
+          </div>
         </div>
       </section>
 
