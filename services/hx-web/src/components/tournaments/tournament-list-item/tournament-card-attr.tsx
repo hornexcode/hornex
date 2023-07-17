@@ -1,16 +1,40 @@
+import classnames from 'classnames';
+
+type SizeNames = 'medium' | 'small';
+
 export interface TournamentCardAttrProps {
   icon: React.ReactNode;
   value: string;
   attr: string;
+  size: SizeNames;
 }
 
-const TournamentCardAttr = ({ attr, icon, value }: TournamentCardAttrProps) => {
+const sizes: Record<SizeNames, string[]> = {
+  medium: ['text-sm'],
+  small: ['text-[0.675rem]'],
+};
+
+const TournamentCardAttr = ({
+  attr,
+  icon,
+  value,
+  size,
+}: TournamentCardAttrProps) => {
+  const sizeClassNames = sizes[size];
+
   return (
     <div className="block">
-      <span className="text-[0.675rem]">{attr}</span>
+      <span className={classnames(sizeClassNames)}>{attr}</span>
       <div className="flex items-center space-x-1">
         {icon}
-        <span className="text-xs text-white">{value}</span>
+        <span
+          className={classnames('font-bold text-white', {
+            'text-xs': size == 'small',
+            'text-md': size == 'medium',
+          })}
+        >
+          {value}
+        </span>
       </div>
     </div>
   );

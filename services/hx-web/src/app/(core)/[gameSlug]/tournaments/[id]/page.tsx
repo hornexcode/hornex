@@ -1,18 +1,15 @@
-"use client";
-import classnames from "classnames";
-import { useState } from "react";
-import TournamentFooter from "@/components/tournaments/tournament-footer";
-import face from "@/assets/images/face.jpg";
-import { TournamentPhases } from "@/components/tournaments/tournament-phases";
-import { TournamentTabs } from "@/components/tournaments/tournament-tabs";
-import TournamentDetails from "@/components/tournaments/tournament-details/tournament-details";
-import Button from "@/components/ui/button/button";
-import TournamentCardAttr from "@/components/tournaments/tournament-list-item/tournament-card-attr";
-import { MapPinIcon, TrophyIcon, UsersIcon } from "@heroicons/react/20/solid";
-import { TournamentStatus } from "@/components/tournaments/tournament";
-import { SwordsIcon } from "@/components/ui/icons";
-import ESLOneLogo from "@/assets/images/esl-one-logo.png";
-import Image from "next/image";
+'use client';
+import classnames from 'classnames';
+import { useState } from 'react';
+import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
+import { MapPinIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
+import { TournamentStatus } from '@/components/tournaments/tournament';
+import { SwordsIcon } from '@/components/ui/icons';
+import face from '@/assets/images/face.jpg';
+import TournamentCardAttr from '@/components/tournaments/tournament-list-item/tournament-card-attr';
+import Button from '@/components/ui/button/button';
+import ESLOneLogo from '@/assets/images/esl-one-logo.png';
+import Image from 'next/image';
 
 type TournamentProps = {
   params: {
@@ -25,7 +22,7 @@ export default function Tournament({ params }: TournamentProps) {
   const joinTournament = () => setJoin(!isJoined);
 
   const [creator] = useState({
-    name: "@ShadowSlayer",
+    name: '@ShadowSlayer',
     logo: face,
   });
 
@@ -33,14 +30,14 @@ export default function Tournament({ params }: TournamentProps) {
     <div className="">
       <section className="h-[250px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-sky-400 to-sky-300">
-          <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/sion.jpg')] bg-cover bg-no-repeat"></figure>
-          <div className="absolute -bottom-[200px] left-4 flex h-[240px] w-56 items-center rounded-lg bg-light-dark ">
+          <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat"></figure>
+          <div className="absolute -bottom-[200px] left-8 flex h-[240px] w-56 items-center rounded-lg bg-light-dark ">
             <Image src={ESLOneLogo} alt="ESL One Logo" />
           </div>
         </div>
       </section>
 
-      <section className="space-y-4 divide-y divide-slate-800 p-8 pl-64">
+      <section className="space-y-4 divide-y divide-slate-800 p-8 pl-72">
         <div className="flex justify-between">
           {/* tournament name and due date */}
           <div>
@@ -67,16 +64,19 @@ export default function Tournament({ params }: TournamentProps) {
 
           <div className="flex items-center space-x-8">
             <TournamentCardAttr
+              size="medium"
               icon={<TrophyIcon className="h-4 w-4" />}
               value="1500 BRL"
               attr="Prize Pool"
             />
             <TournamentCardAttr
+              size="medium"
               icon={<UsersIcon className="h-4 w-4" />}
               value="16"
               attr="Teams"
             />
             <TournamentCardAttr
+              size="medium"
               icon={<MapPinIcon className="h-4 w-4" />}
               value="Sum. Rift"
               attr="Prize Pool"
