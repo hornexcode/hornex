@@ -104,9 +104,9 @@ export const GameItem: FC<GameItemProps> = ({
     </div>
 
     {/* tournament card footer */}
-    <div className="grid grid-cols-2 space-y-2 rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
-      <div className="flex flex-col justify-center pr-2 text-left">
-        <h4 className="font-extrabold uppercase leading-4 tracking-tighter text-white">
+    <div className="grid grid-cols-2 rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
+      <div className="pr-2 text-left">
+        <h4 className="font-extrabold leading-4 tracking-tighter text-white">
           {tournaments} Tournaments
         </h4>
         <span className="text-xs">Play for free</span>

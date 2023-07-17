@@ -1,11 +1,11 @@
-"use client";
-import { Fragment } from "react";
-import { menuItems } from "./_menu-items";
-import { Menu } from "@/components/ui/menu";
-import { Transition } from "@/components/ui/transition";
-import { ChevronDown } from "@/components/ui/icons/chevron-down";
-import ActiveLink from "@/components/ui/links/active-link";
-import routes from "@/config/routes";
+'use client';
+import { Fragment } from 'react';
+import { menuItems } from './_menu-items';
+import { Menu } from '@/components/ui/menu';
+import { Transition } from '@/components/ui/transition';
+import { ChevronDown } from '@/components/ui/icons/chevron-down';
+import ActiveLink from '@/components/ui/links/active-link';
+import routes from '@/config/routes';
 
 export default function MenuItems() {
   return (
@@ -15,7 +15,7 @@ export default function MenuItems() {
           {item.dropdownItems ? (
             <div className="relative mx-4 first:ml-0 last:mr-0">
               <Menu>
-                <Menu.Button className="flex items-center text-sm font-medium uppercase text-gray-600 transition hover:text-gray-900 dark:text-white dark:hover:text-white">
+                <Menu.Button className="flex items-center text-sm font-bold  text-gray-600 transition hover:text-gray-900 dark:text-white dark:hover:text-white">
                   {item.name}
                   <span className="z-[1] transition-transform duration-200 ltr:ml-3 rtl:mr-3">
                     <ChevronDown />
@@ -38,7 +38,7 @@ export default function MenuItems() {
                             href={{
                               pathname: routes.home + dropDownItem.href,
                             }}
-                            className="block rounded-lg px-3 py-2 text-sm font-medium uppercase !text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 dark:!text-white dark:hover:bg-gray-700/50"
+                            className="block rounded-lg px-3 py-2 text-sm font-bold  !text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 dark:!text-white dark:hover:bg-gray-700/50"
                             activeClassName="!bg-gray-100 dark:!bg-gray-700 my-1 last:mb-0 first:mt-0 !text-gray-900 dark:!text-white"
                           >
                             {dropDownItem.name}
@@ -53,9 +53,9 @@ export default function MenuItems() {
           ) : (
             <ActiveLink
               href={{
-                pathname: routes.home + (item.href !== "/" ? item.href : ""),
+                pathname: routes.home + (item.href !== '/' ? item.href : ''),
               }}
-              className="3xl:mx-4 mx-3 text-[13px] font-medium uppercase text-gray-600 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-white dark:hover:text-white 2xl:mx-3 2xl:text-sm"
+              className="3xl:mx-4 mx-3 text-[13px] font-bold  text-gray-600 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-white dark:hover:text-white 2xl:mx-3 2xl:text-sm"
               activeClassName="!text-gray-900 dark:!text-white"
             >
               {item.name}

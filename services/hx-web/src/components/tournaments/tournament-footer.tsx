@@ -1,10 +1,10 @@
-import classnames from "classnames";
-import Button from "@/components/ui/button/button";
+import classnames from 'classnames';
+import Button from '@/components/ui/button/button';
 import {
   ArrowRightIcon,
   CurrencyDollarIcon,
-  UsersIcon
-} from "@heroicons/react/20/solid";
+  UsersIcon,
+} from '@heroicons/react/20/solid';
 
 interface TournamentFooterProps {
   className?: string;
@@ -15,12 +15,12 @@ interface TournamentFooterProps {
 export default function TournamentFooter({
   className,
   isJoined,
-  joinTournament
+  joinTournament,
 }: TournamentFooterProps) {
   return (
     <div
       className={classnames(
-        "sticky bottom-0 z-10 flex-shrink-0 border-t-2 border-slate-700 pb-4 pt-2",
+        'sticky bottom-0 z-10 flex-shrink-0 border-t-2 border-slate-700 pb-4 pt-2',
         className
       )}
     >
@@ -57,8 +57,8 @@ export default function TournamentFooter({
             <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <div
                 className={classnames(
-                  "h-2 rounded-full bg-green-400",
-                  "w-[70%]"
+                  'h-2 rounded-full bg-green-400',
+                  'w-[70%]'
                 )}
               ></div>
             </div>
@@ -72,7 +72,7 @@ export default function TournamentFooter({
         color="info"
       >
         <div className="flex items-center">
-          {isJoined ? "Leave" : "Join"}
+          {isJoined ? 'Leave' : 'Join'}
           <ArrowRightIcon className="ml-1 h-3.5 w-3.5" />
         </div>
       </Button>

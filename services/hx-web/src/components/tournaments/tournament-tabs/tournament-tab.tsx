@@ -31,7 +31,7 @@ export function TournamentTabs() {
               key={tab}
               className={({ selected }) =>
                 classNames(
-                  '-mb-1.5 whitespace-nowrap px-4 py-2 text-sm  font-semibold uppercase text-slate-400 outline-none transition-colors hover:text-sky-400',
+                  'text-md -mb-1.5 whitespace-nowrap px-4 py-4 font-semibold text-slate-400 outline-none transition-colors hover:text-sky-400',
                   selected
                     ? 'border-b-2 border-sky-400 !text-white'
                     : 'text-slate-400'
