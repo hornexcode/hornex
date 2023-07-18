@@ -6,7 +6,7 @@ export default function TermsAndConditions() {
           Terms and Conditions
         </h1>
         <h3 className="pb-4 text-sm">
-          {new Date().toLocaleDateString("en-US", { dateStyle: "full" })}
+          {new Date().toLocaleDateString('en-US', { dateStyle: 'full' })}
         </h3>
         <main className="flex flex-col gap-2 py-2">
           <h2>OVERVIEW - PLAY NICE</h2>
@@ -29,7 +29,7 @@ export default function TermsAndConditions() {
           </p>
           <h2>USER AGREEMENT</h2>
           <p>
-            Hornex.gg owns and operates the Website that links to these Terms of
+            Hornex owns and operates the Website that links to these Terms of
             Use. We are pleased to offer you access to our Website and the
             ability to participate in our online gaming contests of skill, other
             content, products, services, and promotions (collectively the
@@ -47,11 +47,11 @@ export default function TermsAndConditions() {
             uploading, submitting or downloading any information or content from
             or to the Website. IF YOU DO NOT AGREE TO BE BOUND BY ALL OF THESE
             TERMS OF USE, DO NOT USE THE WEBSITE. These Terms of Use constitute
-            a legal agreement between you and Hornex.gg and shall apply to your
-            use of the Website and the Services even after termination.
+            a legal agreement between you and Hornex and shall apply to your use
+            of the Website and the Services even after termination.
           </p>
           <p>
-            From time to time, Hornex.gg may define and post on the Site
+            From time to time, Hornex may define and post on the Site
             additional, specific terms, codes of conduct or guidelines that
             govern your use of the Site or any special events (“Special
             Events”). In the event of a discrepancy between these Terms and any
@@ -104,22 +104,22 @@ export default function TermsAndConditions() {
           </p>
           <p>
             You may establish only one account per person to participate in the
-            Services offered on the Website. In the event Hornex.gg discovers
-            that you have opened more than one account per person, in addition
-            to any other rights that Hornex.gg may have, Hornex.gg reserves the
-            right to suspend or terminate any or all of your accounts and
-            terminate, withhold or revoke the awarding of any prizes. You are
-            responsible for maintaining the confidentiality of your login names
-            and passwords and you accept responsibility for all activities,
-            charges, and damages that occur under your account. It shall be a
-            violation of these Terms of Use to allow any other person to use
-            your account to participate in any contest. If you have reason to
-            believe that someone is using your account without your permission,
-            you should contact us immediately. We will not be responsible for
-            any loss or damage resulting from your failure to notify us of
-            unauthorized use. If we request registration information from you,
-            you must provide us with accurate and complete information and must
-            update the information when it changes.
+            Services offered on the Website. In the event Hornex discovers that
+            you have opened more than one account per person, in addition to any
+            other rights that Hornex may have, Hornex reserves the right to
+            suspend or terminate any or all of your accounts and terminate,
+            withhold or revoke the awarding of any prizes. You are responsible
+            for maintaining the confidentiality of your login names and
+            passwords and you accept responsibility for all activities, charges,
+            and damages that occur under your account. It shall be a violation
+            of these Terms of Use to allow any other person to use your account
+            to participate in any contest. If you have reason to believe that
+            someone is using your account without your permission, you should
+            contact us immediately. We will not be responsible for any loss or
+            damage resulting from your failure to notify us of unauthorized use.
+            If we request registration information from you, you must provide us
+            with accurate and complete information and must update the
+            information when it changes.
           </p>
           <p>
             You agree to hold Us harmless from any liability such that We cannot
@@ -147,10 +147,10 @@ export default function TermsAndConditions() {
             Account Holder.
           </p>
           <p>
-            Hornex.gg employees may use the Website, and will from time to time
-            do so for the purpose of testing the site user experience,
-            socializing and competing with customers to build community, and
-            other reasonable and fair uses at the discretion of Hornex.gg.
+            Hornex employees may use the Website, and will from time to time do
+            so for the purpose of testing the site user experience, socializing
+            and competing with customers to build community, and other
+            reasonable and fair uses at the discretion of Hornex.
           </p>
           <h2>CONTEST ENTRY</h2>
           <p>
@@ -163,7 +163,7 @@ export default function TermsAndConditions() {
           <p>
             When you select to participate in a Contest and complete the entry
             process, the listed amount of US dollars will be debited from your
-            Hornex.gg account.
+            Hornex account.
           </p>
           <h2>REFUND POLICY</h2>
           <p>
@@ -174,7 +174,7 @@ export default function TermsAndConditions() {
           <h2>CONDITIONS OF PARTICIPATION</h2>
           <p>
             By entering a Contest, entrants agree to be bound by these Rules and
-            the decisions of Hornex.gg, which shall be final and binding in all
+            the decisions of Hornex, which shall be final and binding in all
             respects. The Company, at its sole discretion, may disqualify any
             entrant from a Contest, refuse to award benefits or prizes and
             require the return of any prizes, if the entrant engages in conduct
@@ -215,7 +215,7 @@ export default function TermsAndConditions() {
             </li>
             <li>
               Attaching GameID&quot;s to your account that are not owned by the
-              Hornex.gg account holder.
+              Hornex account holder.
             </li>
             <li>
               Tampering with the administration of a Contest or trying to in any
@@ -229,24 +229,23 @@ export default function TermsAndConditions() {
             <li>Abusing the Website in any way.</li>
           </ul>
           <p>
-            Hornex.gg reserves the right to close or suspend the Accounts of,
-            and void all account balances and entries by any person where, in
-            Hornex.gg&quot;s reasonable opinion, the Account has not been
-            operated with integrity, followed Hornex.ggs Conditions of
-            Participation and/or the matches had not been played on a good faith
-            basis. Hornex.gg can in its sole discretion, withhold any or all
-            related funds in the Account pending the outcome of an investigation
-            on that Account.
+            Hornex reserves the right to close or suspend the Accounts of, and
+            void all account balances and entries by any person where, in
+            Hornex&quot;s reasonable opinion, the Account has not been operated
+            with integrity, followed Hornex&quot;s Conditions of Participation
+            and/or the matches had not been played on a good faith basis. Hornex
+            can in its sole discretion, withhold any or all related funds in the
+            Account pending the outcome of an investigation on that Account.
           </p>
           <p>
             Users further acknowledge that the forfeiture and/or return of any
-            prize shall in no way prevent Hornex.gg from pursuing criminal or
-            civil proceedings in connection with such conduct.
+            prize shall in no way prevent Hornex from pursuing criminal or civil
+            proceedings in connection with such conduct.
           </p>
           <p>
             By entering into a Contest or accepting any prize, entrants,
             including but not limited to the winner(s), agree to indemnify,
-            release and to hold harmless Hornex.gg, its parents, subsidiaries,
+            release and to hold harmless Hornex, its parents, subsidiaries,
             affiliates and agents, as well as the officers, directors,
             employees, shareholders and representatives of any of the foregoing
             entities (collectively, the “Released Parties”), from any and all
@@ -256,18 +255,18 @@ export default function TermsAndConditions() {
             Contest, the receipt, ownership, use or misuse of any prize or while
             preparing for, participating in and/or travelling to or from any
             prize related activity, as well as any claims based on publicity
-            rights, defamation, or invasion of privacy. Hornex.gg may, in its
-            sole and absolute discretion, require an Authorized Account Holder
-            to execute a separate release of claims similar to the one listed
-            above in this Paragraph as a condition of being awarded any prize or
+            rights, defamation, or invasion of privacy. Hornex may, in its sole
+            and absolute discretion, require an Authorized Account Holder to
+            execute a separate release of claims similar to the one listed above
+            in this Paragraph as a condition of being awarded any prize or
             receiving any payout.
           </p>
           <p>
-            Hornex.gg is not responsible for: any incorrect, invalid or
-            inaccurate entry information; human errors; postal delays/postage
-            due mail; technical malfunctions; failures, including public utility
-            or telephone outages; omissions, interruptions, deletions or defects
-            of any telephone system or network, computer online systems, data,
+            Hornex is not responsible for: any incorrect, invalid or inaccurate
+            entry information; human errors; postal delays/postage due mail;
+            technical malfunctions; failures, including public utility or
+            telephone outages; omissions, interruptions, deletions or defects of
+            any telephone system or network, computer online systems, data,
             computer equipment, servers, providers, or software (including, but
             not limited to software and operating systems that do not permit an
             entrant to participate in a Contest), including without limitation
@@ -285,8 +284,8 @@ export default function TermsAndConditions() {
             errors, or any combination thereof.
           </p>
           <p>
-            Hornex.gg is not responsible for incomplete, illegible, misdirected
-            or stolen entries. If for any reason a Contest is not capable of
+            Hornex is not responsible for incomplete, illegible, misdirected or
+            stolen entries. If for any reason a Contest is not capable of
             running as originally planned, or if a Contest, computer
             application, or website associated therewith (or any portion
             thereof) becomes corrupted or does not allow the proper entry to a
@@ -294,14 +293,14 @@ export default function TermsAndConditions() {
             rules, or if infection by a computer (or similar) virus, bug,
             tampering, unauthorized intervention, actions by entrants, fraud,
             technical failures, or any other causes of any kind, in the sole
-            opinion of Hornex.gg corrupts or affects the administration,
-            security, fairness, integrity, or proper conduct of a Contest, the
-            Company reserves the right, at its sole discretion, to disqualify
-            any individual implicated in such action and/or to cancel,
-            terminate, extend, modify or suspend the Contest, and select the
-            winner(s) from all eligible entries received. If such cancellation,
-            termination, modification or suspension occurs, notification will be
-            posted on the Website.
+            opinion of Hornex corrupts or affects the administration, security,
+            fairness, integrity, or proper conduct of a Contest, the Company
+            reserves the right, at its sole discretion, to disqualify any
+            individual implicated in such action and/or to cancel, terminate,
+            extend, modify or suspend the Contest, and select the winner(s) from
+            all eligible entries received. If such cancellation, termination,
+            modification or suspension occurs, notification will be posted on
+            the Website.
           </p>
           <p>
             ANY ATTEMPT BY AN ENTRANT OR ANY OTHER INDIVIDUAL TO DELIBERATELY
@@ -312,19 +311,19 @@ export default function TermsAndConditions() {
             BY LAW.
           </p>
           <p>
-            All entries become the property of Hornex.gg and will not be
+            All entries become the property of Hornex and will not be
             acknowledged or returned.
           </p>
           <p>
             To be eligible to enter any contest or receive any prize, the
-            Authorized Account Holder may be required to provide Hornex.gg with
+            Authorized Account Holder may be required to provide Hornex with
             additional documentation and/or information to verify the identity
             of the Authorized Account Holder, and to provide proof that all
             eligibility requirements are met. In the event of a dispute as to
-            the identity or eligibility of an Authorized Account Holder,
-            Hornex.gg will, in its sole and absolute discretion, utilize certain
-            information collected by Hornex.gg to assist in verifying the
-            identity and/or eligibility of such Authorized Account Holder.
+            the identity or eligibility of an Authorized Account Holder, Hornex
+            will, in its sole and absolute discretion, utilize certain
+            information collected by Hornex to assist in verifying the identity
+            and/or eligibility of such Authorized Account Holder.
           </p>
           <p>
             Participation in each Contest must be made only as specified in the
@@ -336,15 +335,15 @@ export default function TermsAndConditions() {
             name, voice, and likeness/photograph in and in connection with the
             development, production, distribution and/or exploitation of any
             Contest or the Website. Winners agree that from the date of
-            notification by Hornex.gg of their status as a potential winner and
-            continuing until such time when Hornex.gg informs them that they no
+            notification by Hornex of their status as a potential winner and
+            continuing until such time when Hornex informs them that they no
             longer need to do so that they will make themselves available to
-            Hornex.gg for publicity, advertising, and promotion activities.
+            Hornex for publicity, advertising, and promotion activities.
           </p>
           <p>
-            Hornex.gg&nbsp;reserves the right to move entrants from the Contests
+            Hornex&nbsp;reserves the right to move entrants from the Contests
             they have entered to substantially similar Contests in certain
-            situations determined by Hornex.gg in its sole discretion.
+            situations determined by Hornex in its sole discretion.
           </p>
           <h2>CONTEST PRIZES AND PROMOTIONS</h2>
           <p>
@@ -379,18 +378,17 @@ export default function TermsAndConditions() {
             each individual Contest. Once Contest results are reviewed and
             graded, prizes are awarded. The scoring results of a Contest will
             not be changed regardless of any official statistics or scoring
-            adjustments made at later times or dates, except in Hornex.gg&quot;s
+            adjustments made at later times or dates, except in Hornex&quot;s
             sole discretion.
           </p>
           <p>
-            Hornex.gg&nbsp;reserves the right, in its sole and absolute
-            discretion, to deny any contestant the ability to participate in
-            head-to-head contests for any reason whatsoever. Further, Hornex.gg
-            may, in its sole and absolute discretion, invalidate any
-            head-to-head contest result for the purposes of preventing abusive
-            and/or any unfair or potentially unlawful activity, or in the event
-            that there is a risk of any such abusive, illegal, or unfair
-            activity.
+            Hornex&nbsp;reserves the right, in its sole and absolute discretion,
+            to deny any contestant the ability to participate in head-to-head
+            contests for any reason whatsoever. Further, Hornex may, in its sole
+            and absolute discretion, invalidate any head-to-head contest result
+            for the purposes of preventing abusive and/or any unfair or
+            potentially unlawful activity, or in the event that there is a risk
+            of any such abusive, illegal, or unfair activity.
           </p>
           <h2>PRIZES</h2>
           <p>
@@ -401,13 +399,13 @@ export default function TermsAndConditions() {
             are divided evenly amongst the participants that have tied.
           </p>
           <p>
-            Hornex.gg&nbsp;reserves the right, in its sole discretion, to cancel
-            or suspend the contests (or any portion thereof) should virus, bugs,
+            Hornex&nbsp;reserves the right, in its sole discretion, to cancel or
+            suspend the contests (or any portion thereof) should virus, bugs,
             unauthorized human intervention, or other causes corrupt
             administration, security, fairness, integrity or proper operation of
             the contest (or any portion thereof) warrant doing so. Notification
-            of such changes may be provided by Hornex.gg to its customers but
-            will not be required.
+            of such changes may be provided by Hornex to its customers but will
+            not be required.
           </p>
           <h2>WITHDRAWAL AND PAYMENT OF PRIZES</h2>
           <p>
@@ -418,8 +416,7 @@ export default function TermsAndConditions() {
             appropriate tax forms and forms of identification including but not
             limited to a Driver&quot;s License, Proof of Residence, and/or any
             information relating to payment/deposit accounts as reasonably
-            requested by Hornex.gg in order to complete the withdrawal of
-            prizes.
+            requested by Hornex in order to complete the withdrawal of prizes.
           </p>
           <p>
             For users who are under the age of 18 and created an account with
@@ -429,8 +426,8 @@ export default function TermsAndConditions() {
             law) and/or appropriate tax forms and forms of identification
             including but not limited to a Driver&quot;s License, Proof of
             Residence, and/or any information relating to payment/deposit
-            accounts as reasonably requested by Hornex.gg in order to complete
-            the withdrawal of prizes.
+            accounts as reasonably requested by Hornex in order to complete the
+            withdrawal of prizes.
           </p>
           <p>
             Failure to comply with this requirement may result in
@@ -451,8 +448,8 @@ export default function TermsAndConditions() {
           <p>
             Wire transfers to international accounts will be initiated in USD
             and at the spot rate offered by the banks at the time.
-            Hornex.gg&nbsp;derives no benefit from currency exchanges and will
-            not enter into any debate about various exchange rates offered.
+            Hornex&nbsp;derives no benefit from currency exchanges and will not
+            enter into any debate about various exchange rates offered.
           </p>
           <ul>
             <li>Paypal - Minimum amount: US $20. Countries available: All</li>
@@ -493,8 +490,8 @@ export default function TermsAndConditions() {
           </p>
           <p>
             Checks are sent to the full name and mailing address listed in your
-            Hornex.gg account at the time you make your withdraw request. If
-            your check is sent to an incorrect name or mailing address, you will
+            Hornex account at the time you make your withdraw request. If your
+            check is sent to an incorrect name or mailing address, you will
             incur a fee to place a stop-payment order on this check.
           </p>
           <p>
@@ -512,50 +509,49 @@ export default function TermsAndConditions() {
           </p>
           <p>
             Promotional deposits, credits, and other bonuses may not be
-            withdrawn from a Hornex.gg account unless appropriate terms of the
+            withdrawn from a Hornex account unless appropriate terms of the
             promotion are achieved first by the user.
           </p>
           <p>
             All taxes associated with the receipt of any prize are the sole
             responsibility of the winner. In the event that the awarding of any
             prizes to winners of Contests is challenged by any legal authority,
-            Hornex.gg reserves the right in its sole discretion to determine
+            Hornex reserves the right in its sole discretion to determine
             whether or not to award such prizes.&nbsp;&nbsp;If Your total prizes
-            from Hornex.gg in any given year reach $600, and Your participation
-            occurred from within the U.S., Hornex.gg will request that You
-            submit Your social security number, and such other information as
-            Hornex.gg, in its sole discretion, may require in order to send You
-            a Form 1099 in compliance with the U.S. federal income tax reporting
+            from Hornex in any given year reach $600, and Your participation
+            occurred from within the U.S., Hornex will request that You submit
+            Your social security number, and such other information as Hornex,
+            in its sole discretion, may require in order to send You a Form 1099
+            in compliance with the U.S. federal income tax reporting
             requirements. Failure to provide Your social security number and
             other requested information at that time may result in termination
-            of Your Account and Site privileges by Hornex.gg and
-            Hornex.gg&quot;s inability to credit Your Account, distribute the
-            balance of Your Account to You, or distribute any winnings to You in
-            excess of $600.
+            of Your Account and Site privileges by Hornex and Hornex&quot;s
+            inability to credit Your Account, distribute the balance of Your
+            Account to You, or distribute any winnings to You in excess of $600.
           </p>
           <p>
             No substitution or transfer of prize is permitted, except that
-            Hornex.gg reserves the right to substitute a prize of equal value or
+            Hornex reserves the right to substitute a prize of equal value or
             greater if the advertised prize is unavailable. All prizes are
             awarded “as is” and without warranty of any kind, express or implied
             (including, without limitation, any implied warranty of
             merchantability for a particular purpose).
           </p>
           <p>
-            Any withdrawal requests, after approved by Hornex.gg, will be
-            credited back to the same credit card or method of payment used to
-            deposit funds on the Website. Hornex.gg will only release
-            withdrawals to a different credit card or other payment method other
-            than that which was used to make deposit(s) after the aggregate
-            amount of such deposit(s) has already been released back to the
-            credit card(s) or payment method(s) used for the deposit(s).
+            Any withdrawal requests, after approved by Hornex, will be credited
+            back to the same credit card or method of payment used to deposit
+            funds on the Website. Hornex will only release withdrawals to a
+            different credit card or other payment method other than that which
+            was used to make deposit(s) after the aggregate amount of such
+            deposit(s) has already been released back to the credit card(s) or
+            payment method(s) used for the deposit(s).
           </p>
           <h2>TERMINATION AND EFFECT OF TERMINATION</h2>
           <p>
-            In addition to any other legal or equitable remedy, Hornex.gg may,
+            In addition to any other legal or equitable remedy, Hornex may,
             without prior notice, immediately revoke any or all of your rights
             granted hereunder. In such event, you will immediately cease all
-            access to and use of the Hornex.gg Website. Hornex.gg may revoke any
+            access to and use of the Hornex Website. Hornex may revoke any
             password(s) and/or account identification issued to you and deny you
             access to and use of the Website. Any such action shall not affect
             any rights and obligations arising prior thereto. All provisions of
@@ -667,49 +663,49 @@ export default function TermsAndConditions() {
             software, scripts, graphics, photos, sounds, music, videos,
             interactive features and the like and the trademarks, service marks
             and logos contained therein (the “Intellectual Property”), are owned
-            by or licensed to Hornex.gg, subject to copyright and other
+            by or licensed to Hornex, subject to copyright and other
             intellectual property rights under United States and foreign laws
             and international conventions. Content on the Website is provided to
             you AS IS for your information and personal use only and may not be
             used, copied, reproduced, distributed, transmitted, broadcast,
             displayed, sold, licensed, or otherwise exploited for any other
             purposes whatsoever without the prior written consent of the
-            respective owners. Hornex.gg reserves all rights not expressly
-            granted in and to the Website and the Intellectual Property. You
-            agree to not engage in the use, copying, or distribution of any of
-            the Intellectual Property other than expressly permitted herein. If
-            you download or print a copy of the Intellectual Property for
-            personal use, you must retain all copyright and other proprietary
-            notices contained therein. You agree not to circumvent, disable or
-            otherwise interfere with security related features of the Website or
-            features that prevent or restrict use or copying of any Intellectual
-            Property or enforce limitations on use of the Website or the
-            Intellectual Property therein.
+            respective owners. Hornex reserves all rights not expressly granted
+            in and to the Website and the Intellectual Property. You agree to
+            not engage in the use, copying, or distribution of any of the
+            Intellectual Property other than expressly permitted herein. If you
+            download or print a copy of the Intellectual Property for personal
+            use, you must retain all copyright and other proprietary notices
+            contained therein. You agree not to circumvent, disable or otherwise
+            interfere with security related features of the Website or features
+            that prevent or restrict use or copying of any Intellectual Property
+            or enforce limitations on use of the Website or the Intellectual
+            Property therein.
           </p>
           <p>
             Some of the Services may allow you to submit or transmit audio,
             video, text, or other materials (collectively, “User Submissions”)
             to or through the Services. When you provide User Submissions, you
-            grant to Hornex.gg, its parents, subsidiaries, affiliates, and
-            partners a non-exclusive, worldwide, royalty-free, fully
-            sublicenseable license to use, distribute, edit, display, archive,
-            publish, sublicense, perform, reproduce, make available, transmit,
-            broadcast, sell, translate, and create derivative works of those
-            User Submissions, and your name, voice, likeness and other
-            identifying information where part of a User Submission, in any
-            form, media, software, or technology of any kind now known or
-            developed in the future, including, without limitation, for
-            developing, manufacturing, and marketing products. You hereby waive
-            any moral rights you may have in your User Submissions.
+            grant to Hornex, its parents, subsidiaries, affiliates, and partners
+            a non-exclusive, worldwide, royalty-free, fully sublicenseable
+            license to use, distribute, edit, display, archive, publish,
+            sublicense, perform, reproduce, make available, transmit, broadcast,
+            sell, translate, and create derivative works of those User
+            Submissions, and your name, voice, likeness and other identifying
+            information where part of a User Submission, in any form, media,
+            software, or technology of any kind now known or developed in the
+            future, including, without limitation, for developing,
+            manufacturing, and marketing products. You hereby waive any moral
+            rights you may have in your User Submissions.
           </p>
           <p>
             In addition, you agree that any User Submissions you submit shall
             not contain any material that is, in the sole and absolute
-            discretion of Hornex.gg, inappropriate, obscene, vulgar, unlawful,
-            or otherwise objectionable (hereinafter, “Prohibited Content”).
-            Posting of any Prohibited Content, in addition to any and all other
-            rights and remedies available to Hornex.gg, may result in account
-            suspension or termination.
+            discretion of Hornex, inappropriate, obscene, vulgar, unlawful, or
+            otherwise objectionable (hereinafter, “Prohibited Content”). Posting
+            of any Prohibited Content, in addition to any and all other rights
+            and remedies available to Hornex, may result in account suspension
+            or termination.
           </p>
           <p>
             We respect your ownership of User Submissions. If you owned a User
@@ -743,7 +739,7 @@ export default function TermsAndConditions() {
           </p>
           <p>
             You represent and warrant that you have all rights necessary to
-            grant to Hornex.gg the license above and that none of your User
+            grant to Hornex the license above and that none of your User
             Submissions are defamatory, violate any rights of third parties
             (including intellectual property rights or rights of publicity or
             privacy), or violate applicable law.
@@ -762,7 +758,7 @@ export default function TermsAndConditions() {
             appointed by the American Arbitration Association (“AAA”) in
             accordance with its then governing rules and procedures, including
             the Supplementary Procedures for Consumer-Related Disputes, where
-            applicable. In agreeing to arbitrate all Claims, you and Hornex.gg
+            applicable. In agreeing to arbitrate all Claims, you and Hornex
             waive all rights to a trial by jury in any action or proceeding
             involving any Claim. The arbitration shall be held in California,
             and judgment on the award rendered by the arbitrator may be entered
@@ -784,7 +780,7 @@ export default function TermsAndConditions() {
             Any and all claims shall be arbitrated on an individual basis only
             and shall not be consolidated or joined with or in any arbitration
             or other proceeding involving a Claim of any other party. You and
-            Hornex.gg agree that the arbitrator shall have no authority to
+            Hornex agree that the arbitrator shall have no authority to
             arbitrate any Claim as a class action or in any other form other
             than on an individual basis.
           </p>
@@ -794,8 +790,8 @@ export default function TermsAndConditions() {
             shall be the courts of competent jurisdiction sitting within
             California (the “Forum”), and the parties hereby waive any argument
             that any such court does not have personal jurisdiction or that the
-            Forum is not appropriate or convenient; (b) you and Hornex.gg waive
-            any and all rights to trial by jury with respect to any Claims.
+            Forum is not appropriate or convenient; (b) you and Hornex waive any
+            and all rights to trial by jury with respect to any Claims.
           </p>
           <p>
             In the event that either party initiates a proceeding involving any
@@ -809,8 +805,8 @@ export default function TermsAndConditions() {
           <p>
             These Terms of Use shall be governed by the internal substantive
             laws of California, without respect to its conflict of laws
-            principles. Any claim or dispute between you and Hornex.gg that
-            arises in whole or in part from the Terms of Use, the Website or any
+            principles. Any claim or dispute between you and Hornex that arises
+            in whole or in part from the Terms of Use, the Website or any
             Contest shall be decided exclusively by a court of competent
             jurisdiction located in California.
           </p>
@@ -818,7 +814,7 @@ export default function TermsAndConditions() {
             Nothing in the Terms of Use shall create or confer any rights or
             other benefits in favor of any third parties except as specifically
             provided herein. By participating in any Contest on the Website, you
-            agree to indemnify, protect, defend and hold harmless Hornex.gg, its
+            agree to indemnify, protect, defend and hold harmless Hornex, its
             parents, subsidiaries, affiliates and divisions, and their
             respective directors, officers, employees, agents and
             representatives (the “Repeat Entities”), from and against any and
@@ -832,26 +828,26 @@ export default function TermsAndConditions() {
             connected with your use of the Website, any payment methods used,
             any funding of your account, and/or your participation in any
             Contest. The Website may contain links to third party websites that
-            are not owned or controlled by Hornex.gg. Hornex.gg has no control
-            over, and assumes no responsibility for, the content, privacy
-            policies, or practices of any third-party websites. In addition,
-            Hornex.gg will not and cannot censor or edit the content of any
-            third-party site. By using the Website, you expressly relieve
-            Hornex.gg from any and all liability arising from your use of any
-            third-party website. Accordingly, we encourage you to be aware when
-            you leave the Website and to read the terms and conditions and
-            privacy policy of each other website that you visit.
+            are not owned or controlled by Hornex. Hornex has no control over,
+            and assumes no responsibility for, the content, privacy policies, or
+            practices of any third-party websites. In addition, Hornex will not
+            and cannot censor or edit the content of any third-party site. By
+            using the Website, you expressly relieve Hornex from any and all
+            liability arising from your use of any third-party website.
+            Accordingly, we encourage you to be aware when you leave the Website
+            and to read the terms and conditions and privacy policy of each
+            other website that you visit.
           </p>
           <p>
             Nothing in the Terms of Use shall create or be deemed to create a
             partnership, agency, trust arrangement, fiduciary relationship or
-            joint venture between you and Hornex.gg.
+            joint venture between you and Hornex.
           </p>
           <p>
-            Third-party online publishers that refer users to the Hornex.gg
-            website shall not be responsible or liable for the Hornex.gg website
-            or any of the content, software, or functions made available on, or
-            accessed through, or sent from, the Hornex.gg website.
+            Third-party online publishers that refer users to the Hornex website
+            shall not be responsible or liable for the Hornex website or any of
+            the content, software, or functions made available on, or accessed
+            through, or sent from, the Hornex website.
           </p>
           <p>
             If any provision of these Terms of Use is deemed invalid by a court
@@ -862,17 +858,17 @@ export default function TermsAndConditions() {
           <p>
             No waiver of any term of these Terms of Use shall be deemed a
             further or continuing waiver of such term or any other term, and
-            Hornex.gg&quot; failure to assert any right or provision under these
+            Hornex&quot; failure to assert any right or provision under these
             Terms of Use shall not constitute a waiver of such right or
             provision.
           </p>
           <p>
-            Hornex.gg&nbsp;reserves the right to amend these Terms of Use at any
+            Hornex&nbsp;reserves the right to amend these Terms of Use at any
             time and without notice, and it is your responsibility to review
             these Terms of Use for any changes. If you continue to use the
             Services after we change the Terms of Use, you accept all changes.
-            The failure of Hornex.gg to comply with any provision of these Terms
-            of Use due to an act of God, hurricane, war, fire, riot, earthquake,
+            The failure of Hornex to comply with any provision of these Terms of
+            Use due to an act of God, hurricane, war, fire, riot, earthquake,
             terrorism, act of public enemies, actions of governmental
             authorities outside of the control of the Company (excepting
             compliance with applicable codes and regulations) or other force
@@ -955,7 +951,7 @@ export default function TermsAndConditions() {
             challenged, including their subjective rating of their
             ability.&nbsp;
           </p>
-          <p>Hornex.gg will remove feedback ratings and comments:</p>
+          <p>Hornex will remove feedback ratings and comments:</p>
 
           <ul>
             <li>
@@ -964,7 +960,7 @@ export default function TermsAndConditions() {
             </li>
             <li>upon mutual agreement of each User; or&nbsp;</li>
             <li>
-              if Hornex.gg is legally obligated by court order or Judgment, or
+              if Hornex is legally obligated by court order or Judgment, or
               pursuant to a settlement agreement resolving a lawsuit.&nbsp;
             </li>
           </ul>
@@ -999,7 +995,7 @@ export default function TermsAndConditions() {
           </p>
           <ul>
             <li>
-              Hornex.gg is provided with a valid court order finding that the
+              Hornex is provided with a valid court order finding that the
               disputed feedback or ratings are slanderous, libellous, defamatory
               or otherwise illegal.
             </li>
@@ -1021,7 +1017,7 @@ export default function TermsAndConditions() {
             <li>The feedback or rating contains links or scripts.</li>
             <li>
               Feedback or ratings posted or submitted by a User who provided
-              Hornex.gg with false contact information and could not be
+              Hornex with false contact information and could not be
               contacted.&nbsp;
             </li>
             <li>
@@ -1043,20 +1039,20 @@ export default function TermsAndConditions() {
             privileges, Account suspension and/or feedback or rating removal.
             Negative feedback or ratings intended for another User will be
             considered for removal only in situations where the User responsible
-            for the mistaken posting informs Hornex.gg of the error and has
-            already placed the same feedback for the correct User.
+            for the mistaken posting informs Hornex of the error and has already
+            placed the same feedback for the correct User.
           </p>
           <p>
-            Hornex.gg isn&lsquot;t endorsed by Riot Games and doesn&lsquot;t
+            Hornex isn&lsquot;t endorsed by Riot Games and doesn&lsquot;t
             reflect the views or opinions of Riot Games or anyone officially
             involved in producing or managing League of Legends. League of
             Legends and Riot Games are trademarks or registered trademarks of
             Riot Games, Inc. League of Legends © Riot Games, Inc.
           </p>
           <p>
-            Valve Corporation is not affiliated with Hornex.gg in any way.
-            Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda
-            logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo,
+            Valve Corporation is not affiliated with Hornex in any way. Valve,
+            the Valve logo, Half-Life, the Half-Life logo, the Lambda logo,
+            Steam, the Steam logo, Team Fortress, the Team Fortress logo,
             Opposing Force, Day of Defeat, the Day of Defeat logo,
             Counter-Strike, the Counter-Strike logo, Source, the Source logo,
             Counter-Strike: Condition Zero, Portal, the Portal logo, Dota, the
