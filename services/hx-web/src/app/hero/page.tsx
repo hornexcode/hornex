@@ -28,7 +28,7 @@ const team: Team = {
 
 export default function HeroPage() {
   return (
-    <main className="md:space-y-14">
+    <main className="">
       <nav className="w-full border-b border-gray-800">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
           <a href="/hero" className="flex items-center">
@@ -189,8 +189,8 @@ export default function HeroPage() {
       </section>
 
       <section id="supported-games" className="bg-dark">
-        <div className="mx-auto py-8 pt-12 text-center md:max-w-screen-md md:py-16 md:pt-32 lg:max-w-screen-lg">
-          <h2 className="text-4xl font-extrabold leading-none tracking-tight dark:text-white md:mb-20 md:text-5xl">
+        <div className="mx-auto py-6 text-center md:max-w-screen-md md:py-14 lg:max-w-screen-lg">
+          <h2 className="text-4xl font-extrabold leading-none tracking-tight dark:text-white md:mb-14 md:text-5xl">
             Supported Games
           </h2>
 
@@ -254,7 +254,7 @@ export default function HeroPage() {
           </h2>
 
           <div className="container">
-            <div className="grid grid-cols-1 items-start justify-items-center gap-y-12 text-left md:grid-cols-2 md:gap-x-28 md:gap-y-28">
+            <div className="grid grid-cols-1 items-start justify-items-center gap-y-12 text-left md:grid-cols-2 md:gap-x-20 md:gap-y-24">
               <div className="block rounded border border-gray-800 shadow-2xl md:w-[500px]">
                 <Image
                   src={PickGameScreen}
@@ -328,7 +328,7 @@ export default function HeroPage() {
       </section>
 
       <section className="" id="contact">
-        <div className="container mx-auto max-w-screen-md p-6 px-4 py-14 lg:py-16">
+        <div className="container mx-auto max-w-screen-md p-6 md:py-14 lg:py-16">
           <h2 className="mb-4 text-center text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
             Contact Us
           </h2>
@@ -620,13 +620,12 @@ export default function HeroPage() {
             </div>
           </div>
           <p className="p-6 md:px-16 md:text-center">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id
-            risus ut ante ultrices varius vel nec ante. Proin accumsan aliquam
-            lorem, quis pulvinar enim tempus vitae. Nam efficitur purus eros, a
-            rhoncus nisl sollicitudin auctor. Donec in fermentum velit, nec
-            feugiat nibh. Maecenas nec ligula at ligula blandit consequat.
-            Phasellus sodales dolor id enim fringilla sollicitudin. Morbi tempus
-            convallis augue, id auctor nulla efficitur ac.
+            Hornex is not endorsed by, directly affiliated with, maintained or
+            sponsored by Apple Inc, Electronic Arts, Activision Blizzard,
+            Take-Two Interactive, Riot Games, Microsoft, Xbox or Epic Games. All
+            content, games titles, trade names and/or trade dress, trademarks,
+            artwork and associated imagery are trademarks and/or copyright
+            material of their respective owners.
           </p>
         </div>
       </footer>
