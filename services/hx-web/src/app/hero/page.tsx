@@ -13,12 +13,17 @@ import GameScreen from '@/assets/images/hero/game.png';
 import TournamentScreen from '@/assets/images/hero/tournament.png';
 import styles from './styles.module.scss';
 import Button from '@/components/ui/button/button';
+import {
+  ArrowRightOnRectangleIcon,
+  ArrowUturnRightIcon,
+  LinkIcon,
+} from '@heroicons/react/20/solid';
 
 const team: Team = {
   id: '1',
   name: 'Team 1',
   ownerId: '1',
-  gameId: 1
+  gameId: 1,
 };
 
 export default function HeroPage() {
@@ -32,12 +37,10 @@ export default function HeroPage() {
             </span>
           </a>
           <div className="flex md:order-2">
-            <button
-              type="button"
-              className="dark:bg-sky-00 mr-3 rounded-lg bg-sky-400 px-4 py-2 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-400 dark:hover:bg-sky-400/90 dark:focus:ring-sky-800 md:mr-0"
-            >
-              Start playing
-            </button>
+            <a href="#" className="flex items-center text-white">
+              Login
+              <ArrowRightOnRectangleIcon className="ml-2 w-4" />
+            </a>
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
@@ -177,10 +180,14 @@ export default function HeroPage() {
             </a>
           </div>
         </div>
-        <div className="mx-auto p-6 text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">
-          <span className="font-semibold uppercase text-gray-400">
-            SUPPORTED GAMES
-          </span>
+      </section>
+
+      <section id="supportedGames" className="bg-dark">
+        <div className="mx-auto p-6 py-16 text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">
+          <h2 className="mb-20 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
+            Supported Games
+          </h2>
+
           <div className="mt-8 grid grid-cols-2 items-center justify-between text-gray-500 md:grid-cols-4">
             <a
               href="#"
@@ -234,10 +241,6 @@ export default function HeroPage() {
         </div>
       </section>
 
-      <section id="supported-games"></section>
-
-      <section className="border-t border-gray-800 "></section>
-
       <section className="text-slate-300" id="how-to-play">
         <div className="container mx-auto p-6 py-14 text-center">
           <h2 className="mb-20 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
@@ -245,8 +248,8 @@ export default function HeroPage() {
           </h2>
 
           <div className="container">
-            <div className="grid grid-cols-1 items-center gap-y-16 md:grid-cols-2 md:gap-y-32">
-              <div className="block skew-y-6 rounded border border-gray-800 shadow-2xl md:ml-10 md:w-[500px] md:skew-y-12">
+            <div className="grid grid-cols-1 items-start gap-y-16 text-left md:grid-cols-2 md:gap-y-32">
+              <div className="block rounded border border-gray-800 shadow-2xl md:ml-10 md:w-[500px]">
                 <Image
                   src={PickGameScreen}
                   alt="League of Legends icon"
@@ -257,19 +260,15 @@ export default function HeroPage() {
                 <h3 className="mb-2 text-3xl font-bold tracking-tighter text-white">
                   Pick a game
                 </h3>
-                <p>
+                <p className="text-lg tracking-wide">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
                   id risus ut ante ultrices varius vel nec ante. Proin accumsan
                   aliquam lorem, quis pulvinar enim tempus vitae. Nam efficitur
-                  purus eros, a rhoncus nisl sollicitudin auctor. Donec in
-                  fermentum velit, nec feugiat nibh. Maecenas nec ligula at
-                  ligula blandit consequat. Phasellus sodales dolor id enim
-                  fringilla sollicitudin. Morbi tempus convallis augue, id
-                  auctor nulla efficitur ac.
+                  purus eros,
                 </p>
               </div>
 
-              <div className="block skew-y-6 rounded border border-gray-800 shadow-2xl md:hidden">
+              <div className="block rounded border border-gray-800 shadow-2xl md:hidden">
                 <Image
                   src={GameScreen}
                   alt="League of Legends icon"
@@ -293,7 +292,7 @@ export default function HeroPage() {
                 </p>
               </div>
 
-              <div className="hidden w-[500px] skew-y-12 rounded border border-gray-800 shadow-2xl md:ml-56 md:block">
+              <div className="hidden rounded border border-gray-800 shadow-2xl md:ml-56 md:block">
                 <Image
                   src={GameScreen}
                   alt="League of Legends icon"
@@ -323,52 +322,6 @@ export default function HeroPage() {
                   auctor nulla efficitur ac.
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="container mx-auto p-6 py-14 text-center">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded p-6 text-left">
-              <h2 className="mb-10 text-3xl font-bold tracking-tighter text-white">
-                Tournaments
-              </h2>
-
-              <h4 className="text-xl font-bold text-white">About</h4>
-              <p className="text-md mb-8 leading-7 tracking-wide">
-                A tournament is a competition involving a relatively large
-                amount of teams competing against each other. The competition
-                can be open by any team and the winner will be the team that
-                wins the most matches.
-              </p>
-              <h4 className="text-xl font-bold text-white">Price Pool</h4>
-              <div className="pl-6 leading-7 tracking-wide">
-                <ul className="list-disc">
-                  <li>
-                    The competition has the final price pool according to the
-                    number of teams participating
-                  </li>
-                  <li>
-                    The price pool will be divided between the 3 best teams
-                  </li>
-                  <li>
-                    Each team will receive a percentage of the total price pool
-                    according to their final position
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="rounded p-6 text-left">
-              <h2 className="mb-4 text-3xl font-bold tracking-tighter text-white">
-                Arena Battle
-              </h2>
-              <p className="text-md leading-7 tracking-wide">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum,
-                quasi! Voluptas rerum, harum porro modi soluta atque beatae
-                iusto illo aliquam similique totam nostrum earum neque incidunt
-                quidem reprehenderit,
-              </p>
             </div>
           </div>
         </div>
