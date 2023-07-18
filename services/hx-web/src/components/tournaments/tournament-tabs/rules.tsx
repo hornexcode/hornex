@@ -1,4 +1,4 @@
-import classnames from "classnames";
+import classnames from 'classnames';
 
 interface RulesProps {
   classNames?: string;
@@ -9,7 +9,7 @@ interface RulesTextProps {
   className?: string;
 }
 const RulesText = ({ children, className }: RulesTextProps) => (
-  <p className={classnames("text-justify indent-8 text-sm", className)}>
+  <p className={classnames('text-justify indent-8 text-sm', className)}>
     {children}
   </p>
 );
@@ -21,7 +21,7 @@ interface RulesSubHeadingProps {
 const RulesSubHeading = ({ children, className }: RulesSubHeadingProps) => (
   <h3
     className={classnames(
-      "pt-2 text-sm font-bold md:pt-4 md:text-base",
+      'pt-2 text-sm font-bold md:pt-4 md:text-base',
       className
     )}
   >
@@ -31,7 +31,7 @@ const RulesSubHeading = ({ children, className }: RulesSubHeadingProps) => (
 
 export const Rules: React.FC<RulesProps> = ({ classNames }) => {
   return (
-    <div className={classnames("px-2 text-slate-300", classNames)}>
+    <div className={classnames('px-2 text-slate-300', classNames)}>
       <h2 className="m-auto max-w-4xl text-left text-base font-bold tracking-tighter md:text-xl">
         Tournament Rules
       </h2>
@@ -46,10 +46,10 @@ export const Rules: React.FC<RulesProps> = ({ classNames }) => {
           Refer to the tournament details to see what game modes are tracked.
         </RulesText>
         <RulesText>
-          Smurfing will result in an immediate and permanent ban from Repeat.gg
-          and all winnings will be forfeited. This can include, but is not
-          limited to, creating a new account to play with or intentionally
-          losing games to lower your rank or affect your matchmaking lobbies.
+          Smurfing will result in an immediate and permanent ban from Hornex and
+          all winnings will be forfeited. This can include, but is not limited
+          to, creating a new account to play with or intentionally losing games
+          to lower your rank or affect your matchmaking lobbies.
         </RulesText>
         <RulesText>
           You must play the minimum number of games in order to get paid out in
@@ -79,9 +79,9 @@ export const Rules: React.FC<RulesProps> = ({ classNames }) => {
           subject to all applicable federal, state and local laws and
           regulations. Void where prohibited. By entering the Tournament
           Giveaway, the contestant (&ldquot;You&rdquot;) agree to comply with
-          and abide by these Rules and the decisions of Repeat.gg, and you
+          and abide by these Rules and the decisions of Hornex, and you
           represent and warrant that you meet the eligibility requirements. In
-          addition, you agree to accept Repeat.gg&quot;s decisions as final and
+          addition, you agree to accept Hornex&quot;s decisions as final and
           binding as it relates to the content of this campaign.
         </RulesText>
         <RulesText>
@@ -94,80 +94,79 @@ export const Rules: React.FC<RulesProps> = ({ classNames }) => {
           multiple email addresses, identities, or devices in an attempt to
           circumvent the rules. If you use fraudulent methods or otherwise
           attempt to circumvent the rules of the giveaway, your submission may
-          be disqualified at the sole discretion of Repeat.gg.
+          be disqualified at the sole discretion of Hornex.
         </RulesText>
         <RulesText>
           Actual/appraised value of prizes may differ at time of prize award.
-          The specifics of the prize shall be solely determined by Repeat.gg. No
+          The specifics of the prize shall be solely determined by Hornex. No
           cash or other prize substitution shall be permitted except for at
-          Repeat.gg&quot;s discretion. The prize is non transferable.
-          Substitution of the prize or transfer/assignment of the prize to
-          others or request for the cash equivalent of the prize by the Winner
-          is not permitted. Any and all prize related expenses, including
-          without limitation any and all federal, state, and/or local taxes
-          shall be the sole responsibility of the Winner. Acceptance of the
-          prize constitutes permission for Repeat.gg to use the Winner&quot;s
-          name, likeness, and entry for purposes of advertising and trade
-          without further compensation, unless prohibited by law.
+          Hornex&quot;s discretion. The prize is non transferable. Substitution
+          of the prize or transfer/assignment of the prize to others or request
+          for the cash equivalent of the prize by the Winner is not permitted.
+          Any and all prize related expenses, including without limitation any
+          and all federal, state, and/or local taxes shall be the sole
+          responsibility of the Winner. Acceptance of the prize constitutes
+          permission for Hornex to use the Winner&quot;s name, likeness, and
+          entry for purposes of advertising and trade without further
+          compensation, unless prohibited by law.
         </RulesText>
         <RulesText>
-          Winners will be notified within 7 days of the winner selection.
-          Repeat.gg shall have no liability for a Winner&quot;s failure to
-          receive notices due to spam, junk e-mail or other security settings or
-          for a Winner&quot;s provision of incorrect or otherwise
-          non-functioning contact information. If the Winner cannot be
-          contacted, is ineligible, fails to claim the prize within 7 days from
-          the time award notification was sent, or fails to timely return a
-          completed and executed declaration and release as required, the prize
-          may be forfeited and an alternate Winner selected. Receipt of the
-          prize offered in this Campaign by the Winner is conditioned upon
-          compliance with any and all federal, state, and local laws and
-          regulations. Any violation of these official rules by the Winner at
-          Repeat.gg&quot;s sole discretion will result in the Winner&quot;s
-          disqualification as winner, and all privileges as winner will be
-          immediately terminated.
+          Winners will be notified within 7 days of the winner selection. Hornex
+          shall have no liability for a Winner&quot;s failure to receive notices
+          due to spam, junk e-mail or other security settings or for a
+          Winner&quot;s provision of incorrect or otherwise non-functioning
+          contact information. If the Winner cannot be contacted, is ineligible,
+          fails to claim the prize within 7 days from the time award
+          notification was sent, or fails to timely return a completed and
+          executed declaration and release as required, the prize may be
+          forfeited and an alternate Winner selected. Receipt of the prize
+          offered in this Campaign by the Winner is conditioned upon compliance
+          with any and all federal, state, and local laws and regulations. Any
+          violation of these official rules by the Winner at Hornex&quot;s sole
+          discretion will result in the Winner&quot;s disqualification as
+          winner, and all privileges as winner will be immediately terminated.
         </RulesText>
         <RulesText>
-          Repeat.gg reserves the right, in its sole discretion, to cancel,
+          Hornex reserves the right, in its sole discretion, to cancel,
           terminate, modify or suspend the Tournament Giveaway should virus,
           bug, non-authorised human intervention, fraud, or other cause beyond
-          Repeat.gg&quot;s control corrupt or affect the administration,
-          security, fairness, or proper conduct of the Tournament Giveaway. In
-          such cases, Repeat.gg may select a winner(s) from eligible entries
-          received before and/or after the action taken by Repeat.gg if
-          appropriate. Repeat.gg reserves the right at its sole discretion to
-          disqualify any individual who tampers or attempts to tamper with the
-          entry process or the operation of the Tournament Giveaway or website
-          or violates these Terms &amp; Conditions. Repeat.gg has the right, in
-          its sole discretion, to maintain the integrity of the Tournament
-          Giveaway, to void entries for any reason, including, but not limited
-          to: multiple entries from the same user from different IP addresses;
-          multiple entries from the same computer in excess of that allowed by
-          Tournament Giveaway rules; or the use of bots, macros, scripts, or
-          other technical means for entering. Any attempt by an entrant to
-          deliberately damage any website or undermine the legitimate operation
-          of the Tournament Giveaway may be a violation of criminal and civil
-          laws. Should such an attempt be made, Repeat.gg reserves the right to
-          seek damages to the fullest extent permitted by law.
+          Hornex&quot;s control corrupt or affect the administration, security,
+          fairness, or proper conduct of the Tournament Giveaway. In such cases,
+          Hornex may select a winner(s) from eligible entries received before
+          and/or after the action taken by Hornex if appropriate. Hornex
+          reserves the right at its sole discretion to disqualify any individual
+          who tampers or attempts to tamper with the entry process or the
+          operation of the Tournament Giveaway or website or violates these
+          Terms &amp; Conditions. Hornex has the right, in its sole discretion,
+          to maintain the integrity of the Tournament Giveaway, to void entries
+          for any reason, including, but not limited to: multiple entries from
+          the same user from different IP addresses; multiple entries from the
+          same computer in excess of that allowed by Tournament Giveaway rules;
+          or the use of bots, macros, scripts, or other technical means for
+          entering. Any attempt by an entrant to deliberately damage any website
+          or undermine the legitimate operation of the Tournament Giveaway may
+          be a violation of criminal and civil laws. Should such an attempt be
+          made, Hornex reserves the right to seek damages to the fullest extent
+          permitted by law.
         </RulesText>
         <RulesText>
           Limitation of Liability: By entering the Tournament Giveaway you agree
-          to release and hold harmless Repeat.gg and its subsidiaries,
-          affiliates, advertising and promotion agencies, partners,
-          representatives, agents, successors, assigns, employees, officers and
-          directors from any liability, illness, injury, death, loss,
-          litigation, claim or damage that may occur, directly or indirectly,
-          whether caused by negligence or not, from (i) such entrant&quot;s
-          participation in the Tournament Giveaway and/or his/her acceptance,
-          possession, use, or misuse of any prize or any portion thereof; (ii)
-          unauthorized human intervention in any part of the Tournament
-          Giveaway; (iii) electronic or human error in the administration of the
-          Tournament Giveaway or the processing of entries; (iv) technical
-          errors of any kind, including but not limited to the malfunction of
-          any computer, cable, network, hardware, or software, or other
-          mechanical equipment; (v) the unavailability or inaccessibility of any
-          transmissions, telephone, or Internet service; (vi) printing errors;
-          (vii) lost, late, postage due, misdirected, or undeliverable mail.
+          to release and hold harmless Hornex and its subsidiaries, affiliates,
+          advertising and promotion agencies, partners, representatives, agents,
+          successors, assigns, employees, officers and directors from any
+          liability, illness, injury, death, loss, litigation, claim or damage
+          that may occur, directly or indirectly, whether caused by negligence
+          or not, from (i) such entrant&quot;s participation in the Tournament
+          Giveaway and/or his/her acceptance, possession, use, or misuse of any
+          prize or any portion thereof; (ii) unauthorized human intervention in
+          any part of the Tournament Giveaway; (iii) electronic or human error
+          in the administration of the Tournament Giveaway or the processing of
+          entries; (iv) technical errors of any kind, including but not limited
+          to the malfunction of any computer, cable, network, hardware, or
+          software, or other mechanical equipment; (v) the unavailability or
+          inaccessibility of any transmissions, telephone, or Internet service;
+          (vi) printing errors; (vii) lost, late, postage due, misdirected, or
+          undeliverable mail.
         </RulesText>
         <RulesText>
           Disputes: This Tournament Giveaway is governed by the laws of United
@@ -199,12 +198,12 @@ export const Rules: React.FC<RulesProps> = ({ classNames }) => {
           Official Rules, Terms and Conditions.
         </RulesText>
         <RulesSubHeading>
-          When Tournament Includes a Random Giveaway or “Door” Prize{" "}
+          When Tournament Includes a Random Giveaway or “Door” Prize{' '}
         </RulesSubHeading>
         <RulesText>
-          Though this Tournament Giveaway awards winners at random, Repeat.gg
-          are not bound by US lottery rules as there is no consideration of
-          entry to participate in the giveaway.
+          Though this Tournament Giveaway awards winners at random, Hornex are
+          not bound by US lottery rules as there is no consideration of entry to
+          participate in the giveaway.
         </RulesText>
         <RulesText>
           Consideration - of which there are two types of consideration consists
