@@ -28,19 +28,25 @@ const team: Team = {
 
 export default function HeroPage() {
   return (
-    <main>
+    <main className="md:space-y-14">
       <nav className="w-full border-b border-gray-800">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
           <a href="/hero" className="flex items-center">
-            <span className="self-center text-3xl font-bold tracking-tighter dark:text-white">
+            <span className="self-center text-2xl font-bold tracking-tighter dark:text-white md:text-3xl">
               Hornex
             </span>
           </a>
-          <div className="flex md:order-2">
+          <div className="flex items-center gap-4 md:order-2 md:gap-8">
             <a href="#" className="flex items-center text-white">
               Login
               <ArrowRightOnRectangleIcon className="ml-2 w-4" />
             </a>
+            <Button
+              size="mini"
+              className="rounded-lg bg-sky-400/90 hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300 sm:w-fit"
+            >
+              Register
+            </Button>
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
@@ -145,7 +151,7 @@ export default function HeroPage() {
             The newest online sports betting company. A trustable company that
             allow you to bet on your favorite e-sports.
           </p>
-          <div className="mb-8 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0 lg:mb-16">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
             <a
               href="#"
               className="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 dark:focus:ring-primary-900 inline-flex items-center justify-center rounded-lg px-5 py-3 text-center text-base font-medium text-white focus:ring-4"
@@ -182,16 +188,16 @@ export default function HeroPage() {
         </div>
       </section>
 
-      <section id="supportedGames" className="bg-dark">
-        <div className="mx-auto p-6 py-16 text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">
-          <h2 className="mb-20 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
+      <section id="supported-games" className="bg-dark">
+        <div className="mx-auto py-8 pt-12 text-center md:max-w-screen-md md:py-16 md:pt-32 lg:max-w-screen-lg">
+          <h2 className="text-4xl font-extrabold leading-none tracking-tight dark:text-white md:mb-20 md:text-5xl">
             Supported Games
           </h2>
 
-          <div className="mt-8 grid grid-cols-2 items-center justify-between text-gray-500 md:grid-cols-4">
+          <div className="grid grid-cols-2 items-center justify-items-center gap-y-4 text-gray-500 md:grid-cols-4">
             <a
               href="#"
-              className="mb-5 mr-5 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={LeagueOfLegends}
@@ -203,7 +209,7 @@ export default function HeroPage() {
             </a>
             <a
               href="#"
-              className="mb-5 mr-5 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={CsGo}
@@ -215,7 +221,7 @@ export default function HeroPage() {
             </a>
             <a
               href="#"
-              className="mb-5 mr-5 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={Dota2}
@@ -227,7 +233,7 @@ export default function HeroPage() {
             </a>
             <a
               href="#"
-              className="mb-5 mr-5 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={RocketLeague}
@@ -242,29 +248,28 @@ export default function HeroPage() {
       </section>
 
       <section className="text-slate-300" id="how-to-play">
-        <div className="container mx-auto p-6 py-14 text-center">
-          <h2 className="mb-20 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
+        <div className="container mx-auto p-6 text-center md:p-28 md:py-14">
+          <h2 className="mb-10 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:mb-20 md:text-5xl">
             How to play?
           </h2>
 
           <div className="container">
-            <div className="grid grid-cols-1 items-start gap-y-16 text-left md:grid-cols-2 md:gap-y-32">
-              <div className="block rounded border border-gray-800 shadow-2xl md:ml-10 md:w-[500px]">
+            <div className="grid grid-cols-1 items-start justify-items-center gap-y-12 text-left md:grid-cols-2 md:gap-x-28 md:gap-y-28">
+              <div className="block rounded border border-gray-800 shadow-2xl md:w-[500px]">
                 <Image
                   src={PickGameScreen}
                   alt="League of Legends icon"
                   width={500}
                 />
               </div>
-              <div>
-                <h3 className="mb-2 text-3xl font-bold tracking-tighter text-white">
+              <div className="border-b border-slate-800 pb-10 md:border-0 md:pb-0">
+                <h3 className="mb-2 text-2xl font-bold tracking-tighter text-white md:text-3xl">
                   Pick a game
                 </h3>
                 <p className="text-lg tracking-wide">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
                   id risus ut ante ultrices varius vel nec ante. Proin accumsan
-                  aliquam lorem, quis pulvinar enim tempus vitae. Nam efficitur
-                  purus eros,
+                  aliquam lorem, quis pulvinar enim tempus vitae.
                 </p>
               </div>
 
@@ -276,23 +281,20 @@ export default function HeroPage() {
                 />
               </div>
 
-              <div>
-                <h3 className="mb-2 text-3xl font-bold tracking-tighter text-white">
+              <div className="border-b border-slate-800 pb-10 md:border-0 md:pb-0 md:text-right">
+                <h3 className="mb-2 text-2xl font-bold tracking-tighter text-white md:text-3xl">
                   Chose a tournament
                 </h3>
-                <p>
+                <p className="text-lg tracking-wide">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
                   id risus ut ante ultrices varius vel nec ante. Proin accumsan
                   aliquam lorem, quis pulvinar enim tempus vitae. Nam efficitur
                   purus eros, a rhoncus nisl sollicitudin auctor. Donec in
-                  fermentum velit, nec feugiat nibh. Maecenas nec ligula at
-                  ligula blandit consequat. Phasellus sodales dolor id enim
-                  fringilla sollicitudin. Morbi tempus convallis augue, id
-                  auctor nulla efficitur ac.
+                  fermentum velit, nec feugiat nibh.
                 </p>
               </div>
 
-              <div className="hidden rounded border border-gray-800 shadow-2xl md:ml-56 md:block">
+              <div className="hidden rounded border border-gray-800 shadow-2xl md:block">
                 <Image
                   src={GameScreen}
                   alt="League of Legends icon"
@@ -300,7 +302,7 @@ export default function HeroPage() {
                 />
               </div>
 
-              <div className="block skew-y-6 rounded border border-gray-800 shadow-2xl md:ml-10 md:w-[500px] md:skew-y-12">
+              <div className="block rounded border border-gray-800 shadow-2xl md:w-[500px]">
                 <Image
                   src={TournamentScreen}
                   alt="League of Legends icon"
@@ -308,18 +310,16 @@ export default function HeroPage() {
                 />
               </div>
               <div>
-                <h3 className="mb-2 text-3xl font-bold tracking-tighter text-white">
+                <h3 className="mb-2 text-2xl font-bold tracking-tighter text-white md:text-3xl">
                   Start to play
                 </h3>
-                <p>
+                <p className="text-lg tracking-wide">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
                   id risus ut ante ultrices varius vel nec ante. Proin accumsan
                   aliquam lorem, quis pulvinar enim tempus vitae. Nam efficitur
                   purus eros, a rhoncus nisl sollicitudin auctor. Donec in
                   fermentum velit, nec feugiat nibh. Maecenas nec ligula at
-                  ligula blandit consequat. Phasellus sodales dolor id enim
-                  fringilla sollicitudin. Morbi tempus convallis augue, id
-                  auctor nulla efficitur ac.
+                  ligula blandit consequat.
                 </p>
               </div>
             </div>
