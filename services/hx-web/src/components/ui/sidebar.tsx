@@ -10,10 +10,16 @@ import {
   LolIcon,
   SwordsIcon,
 } from '@/components/ui/icons';
+import classNames from 'classnames';
 
-export const Sidebar = () => {
+export const Sidebar = ({ className }: { className?: string }) => {
   return (
-    <div className="fixed top-14 z-20 flex h-full w-16 flex-col border-r border-t border-slate-800 bg-light-dark px-2 shadow-2xl">
+    <div
+      className={classNames(
+        'fixed top-14 z-20 flex h-full w-16 flex-col border-r border-t border-slate-800 bg-light-dark px-2 shadow-2xl',
+        className
+      )}
+    >
       <ul className="block space-y-3 py-2">
         <li>
           <Link

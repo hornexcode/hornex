@@ -20,8 +20,8 @@ export default function GamePage({ params }: GamePageProps) {
       <div className="absolute inset-0 -z-10 h-full w-full bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat">
         <div className="h-full w-full bg-dark/90"></div>
       </div>
-      <div className="-z-20 mx-auto space-y-8  ">
-        <section className="relative flex justify-between p-8">
+      <div className="-z-20 mx-auto space-y-8">
+        <section className="relative flex flex-wrap justify-between gap-6 p-8">
           <div className=" left-8 top-8 flex items-center gap-6">
             <LolIcon className="h-12 fill-white" />
             {/* <LolLogoIcon className="h-16 fill-white" /> */}
@@ -29,7 +29,7 @@ export default function GamePage({ params }: GamePageProps) {
               League of Legends
             </h1>
           </div>
-          <div className="space-x-2">
+          <div className="flex flex-col gap-2 md:flex-row">
             <Button
               className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
               color="primary"
@@ -46,7 +46,7 @@ export default function GamePage({ params }: GamePageProps) {
               shape="rounded"
             >
               <div className="flex items-center gap-3 text-base font-bold leading-3 tracking-tight text-white">
-                <LolIcon className="h-4" />
+                <LolIcon className="h-4 fill-white" />
                 Connect Game ID
               </div>
             </Button>

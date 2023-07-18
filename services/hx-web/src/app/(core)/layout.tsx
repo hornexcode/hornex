@@ -10,8 +10,8 @@ export default function AuthLayout({
   return (
     <div className="">
       <Header />
-      <Sidebar />
-      <main className="3xl:px-10 relative min-h-[100vh] pb-16 pl-16 sm:pb-20 xl:pb-24">
+      <Sidebar className="hidden md:flex" />
+      <main className="3xl:px-10 relative min-h-[100vh] pb-16 sm:pb-20 md:pl-16 xl:pb-24">
         {children}
       </main>
     </div>

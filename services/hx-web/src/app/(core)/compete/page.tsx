@@ -119,7 +119,7 @@ export default function Compete() {
 
       <section id="connected-games" className="space-y-10">
         <div className="space-y-6">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div className="flex min-h-[18rem] cursor-pointer flex-col items-center justify-center gap-4 rounded-lg bg-slate-800 p-4 transition-all hover:bg-slate-700">
               <PlusCircleIcon className="w-7" />
               <span className="text-sm">Add game</span>

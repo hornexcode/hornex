@@ -31,11 +31,11 @@ export const Overview: React.FC<OverviewProps> = ({ classNames }) => {
   return (
     <div className={classnames('m-auto flex', classNames)}>
       <div className="block w-full divide-y divide-slate-800">
-        <div className="prize py-8">
+        <div className="prize pb-6">
           <h2 className="mb-8 text-lg font-bold leading-3 -tracking-wider text-white">
             Prize Pool
           </h2>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="relative flex items-center justify-between rounded-lg bg-light-dark p-8">
               <div className="absolute left-0 h-full w-[20%] rounded-l-lg bg-gradient-to-r from-orange-400/10 from-10% to-transparent"></div>
               <div className="absolute left-0 h-[50px] w-1 bg-orange-300"></div>

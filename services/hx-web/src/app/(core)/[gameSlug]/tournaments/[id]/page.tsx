@@ -28,17 +28,18 @@ export default function Tournament({ params }: TournamentProps) {
 
   return (
     <div className="">
-      <section className="h-[250px]">
+      <section className="h-[160px] md:h-[250px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-sky-400 to-sky-300">
+          <div className="absolute inset-0 h-full w-full bg-dark/90 md:hidden"></div>
           <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat"></figure>
-          <div className="absolute -bottom-[200px] left-8 flex h-[240px] w-56 items-center rounded-lg bg-light-dark ">
+          <div className="absolute -bottom-[60px] left-[50%] flex h-[240px] w-56 translate-x-[-50%] items-center rounded-lg md:-bottom-[200px] md:left-8 md:translate-x-0 md:bg-light-dark ">
             <Image src={ESLOneLogo} alt="ESL One Logo" />
           </div>
         </div>
       </section>
 
-      <section className="space-y-4 divide-y divide-slate-800 p-8 pl-72">
-        <div className="flex justify-between">
+      <section className="space-y-4 divide-y divide-slate-800 p-8 md:pl-72">
+        <div className="flex flex-wrap justify-between gap-4">
           {/* tournament name and due date */}
           <div>
             <span className="text-sm">SEP 02 - Starting at 06:00 PM (-3)</span>
@@ -59,7 +60,7 @@ export default function Tournament({ params }: TournamentProps) {
         </div>
 
         {/* tournament attrs list */}
-        <div className="flex justify-between py-4">
+        <div className="flex flex-wrap justify-between gap-4 py-4">
           {/* tournament actions sidebar */}
 
           <div className="flex items-center space-x-8">
@@ -84,7 +85,7 @@ export default function Tournament({ params }: TournamentProps) {
           </div>
 
           <div className="flex w-64 items-start">
-            <div className="w-full space-y-2 border-l border-slate-800 pl-6">
+            <div className="w-full space-y-2 border-slate-800 pl-6 md:border-l">
               <Button
                 className="w-full"
                 size="small"
@@ -100,7 +101,7 @@ export default function Tournament({ params }: TournamentProps) {
           </div>
         </div>
       </section>
-      <section className=" p-8">
+      <section className="px-8 md:p-8">
         <TournamentTabs />
       </section>
     </div>

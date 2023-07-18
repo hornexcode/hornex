@@ -12,7 +12,9 @@ const AddFundsButton: FC = () => {
   return (
     <div className="flex items-center px-4 hover:cursor-pointer">
       <PlusCircleIcon className="mr-2 h-4 w-4 text-white" />
-      <span className="text-xs text-white ">Add Funds</span>
+      <span className="hidden text-xs text-white md:inline-block">
+        Add Funds
+      </span>
     </div>
   );
 };

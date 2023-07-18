@@ -1,8 +1,8 @@
-"use client";
-import Link from "next/link";
+'use client';
+import Link from 'next/link';
 
-import TV4 from "@/assets/images/tournaments/tournament-v4.jpg";
-import { TournamentListItem } from "@/components/tournaments/tournament-list-item";
+import TV4 from '@/assets/images/tournaments/tournament-v4.jpg';
+import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
 
 type HomePage = {
   params: {
@@ -21,14 +21,14 @@ export default function HomePage({ params }: HomePage) {
 
       {/* News */}
       <section id="news" className="pb-8">
-        <div className="grid h-[340px] grid-cols-2 gap-4 rounded-lg">
+        <div className="grid h-[640px] grid-cols-1 gap-4 rounded-lg md:h-[340px] md:grid-cols-2">
           <Link
-            href={""}
+            href={''}
             className="group relative h-full w-full overflow-hidden rounded-lg "
           >
             <figure className="flex h-full w-full flex-col justify-end rounded-lg bg-[url('http://localhost:3000/images/tournament-news.png')] bg-cover bg-no-repeat transition-transform group-hover:scale-105"></figure>
             <figcaption className="absolute bottom-0 flex h-full flex-col items-start justify-end  bg-gradient-to-t from-light-dark/70 from-20% to-transparent p-6">
-              <h4 className="mb-4 text-3xl font-extrabold leading-4 -tracking-wider text-white">
+              <h4 className="mb-4 text-3xl font-extrabold leading-7 -tracking-wider text-white">
                 LOL: New platform for tournaments
               </h4>
               <span className="text-sm text-gray-400">
@@ -39,7 +39,7 @@ export default function HomePage({ params }: HomePage) {
           </Link>
           <div className="grid grid-cols-2 gap-4">
             <Link
-              href={""}
+              href={''}
               className="group relative h-full w-full overflow-hidden rounded-lg"
             >
               <figure className="flex h-full w-full flex-col justify-end rounded-lg bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat transition-transform group-hover:scale-105"></figure>
@@ -50,7 +50,7 @@ export default function HomePage({ params }: HomePage) {
               </figcaption>
             </Link>
             <Link
-              href={""}
+              href={''}
               className="group relative h-full w-full overflow-hidden rounded-lg"
             >
               <figure className="flex h-full w-full flex-col justify-end rounded-lg bg-[url('http://localhost:3000/images/sion.jpg')] bg-cover bg-no-repeat transition-transform group-hover:scale-105"></figure>
@@ -61,7 +61,7 @@ export default function HomePage({ params }: HomePage) {
               </figcaption>
             </Link>
             <Link
-              href={""}
+              href={''}
               className="group relative h-full w-full overflow-hidden rounded-lg"
             >
               <figure className="flex h-full w-full flex-col justify-end rounded-lg bg-[url('http://localhost:3000/images/gangplank.jpg')] bg-cover bg-no-repeat transition-transform group-hover:scale-105"></figure>
@@ -72,7 +72,7 @@ export default function HomePage({ params }: HomePage) {
               </figcaption>
             </Link>
             <Link
-              href={""}
+              href={''}
               className="group relative h-full w-full overflow-hidden rounded-lg"
             >
               <figure className="flex h-full w-full flex-col justify-end rounded-lg bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat transition-transform group-hover:scale-105"></figure>
@@ -94,7 +94,7 @@ export default function HomePage({ params }: HomePage) {
         </div>
         <div className="grid grid-cols-12">
           <div className="col-span-12">
-            <ul className="grid grid-cols-1 gap-6 lg:grid-cols-4 lg:gap-4">
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4">
               <li className="">
                 <Link
                   className="divide-y divide-slate-700"
