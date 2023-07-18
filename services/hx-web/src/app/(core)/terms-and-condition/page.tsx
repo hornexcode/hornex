@@ -1,6 +1,6 @@
 export default function TermsAndConditions() {
   return (
-    <div className="-mx-8 -mb-20 bg-slate-800 p-8">
+    <div className="p-8">
       <section className="lg:m-auto lg:max-w-5xl">
         <h1 className="text-left text-xl font-bold tracking-tighter text-white md:text-2xl">
           Terms and Conditions
@@ -8,9 +8,9 @@ export default function TermsAndConditions() {
         <h3 className="pb-4 text-sm">
           {new Date().toLocaleDateString('en-US', { dateStyle: 'full' })}
         </h3>
-        <main className="flex flex-col gap-2 py-2">
-          <h2>OVERVIEW - PLAY NICE</h2>
-          <p>
+        <main className="flex flex-col gap-2 py-2 text-slate-300">
+          <h2 className="mt-4 text-xl">OVERVIEW - PLAY NICE</h2>
+          <p className="text-md">
             Hornex Technologies, Inc. Hornex” (formerly known as Hornex Gaming)
             strives to provide a fair and equitable system for all our users. We
             endeavor to treat our clients as we would like to be treated and
@@ -20,15 +20,15 @@ export default function TermsAndConditions() {
             extend allowable at law, which may include civil actions & criminal
             charges.
           </p>
-          <p>
-            <b>IMPORTANT LEGAL NOTICE REGARDING TERMS OF USE OF HORNEX.GG</b>
+          <p className="text-md">
+            <b>IMPORTANT LEGAL NOTICE REGARDING TERMS OF USE OF HORNEX</b>
           </p>
-          <p>
+          <p className="text-md">
             IMPORTANT! PLEASE CAREFULLY READ THESE TERMS OF USE BEFORE USING
-            HORNEX.GG, AS THEY AFFECT YOUR LEGAL RIGHTS AND OBLIGATIONS.
+            HORNEX, AS THEY AFFECT YOUR LEGAL RIGHTS AND OBLIGATIONS.
           </p>
-          <h2>USER AGREEMENT</h2>
-          <p>
+          <h2 className="mt-4 text-xl">USER AGREEMENT</h2>
+          <p className="text-md">
             Hornex owns and operates the Website that links to these Terms of
             Use. We are pleased to offer you access to our Website and the
             ability to participate in our online gaming contests of skill, other
@@ -40,8 +40,8 @@ export default function TermsAndConditions() {
             together with the Terms of Use and the Privacy Policy, the
             “Agreements”).
           </p>
-          <h2>CONSIDERATION</h2>
-          <p>
+          <h2 className="mt-4 text-xl">CONSIDERATION</h2>
+          <p className="text-md">
             You agree to these Terms of Use by accessing or using the Website,
             registering for Services offered on the Website, or by accepting,
             uploading, submitting or downloading any information or content from
@@ -50,7 +50,7 @@ export default function TermsAndConditions() {
             a legal agreement between you and Hornex and shall apply to your use
             of the Website and the Services even after termination.
           </p>
-          <p>
+          <p className="text-md">
             From time to time, Hornex may define and post on the Site
             additional, specific terms, codes of conduct or guidelines that
             govern your use of the Site or any special events (“Special
@@ -64,25 +64,25 @@ export default function TermsAndConditions() {
             your use of any and all third-party equipment, games or content is
             in compliance with any and all third-party requirements.
           </p>
-          <h2>ELIGIBILITY</h2>
-          <p>
+          <h2 className="mt-4 text-xl">ELIGIBILITY</h2>
+          <p className="text-md">
             As a general rule, if you are 18 years or older, you may open your
             own account and participate in all contests, or win prizes offered
             by the Website. If you are over 13 but under 18, you may create an
             account with your legal guardian&sbquo;s permission.&nbsp;
           </p>
-          <p>
+          <p className="text-md">
             <b>Any user who is under the age of 18 </b>
             is not eligible to participate in cash-entry tournaments, only in
             free entry with cash prizes, or in coin-entry with coin prize
             tournaments.
           </p>
-          <p>
+          <p className="text-md">
             <b>Any user who is under the age of 13 </b>
             is not eligible to participate in any tournaments we run on the
             website.
           </p>
-          <p>
+          <p className="text-md">
             In jurisdictions, territories, and locations where the minimum age
             for permissible use of the Website is greater than 18 years old, you
             must meet the age requirement in your local jurisdiction or
@@ -102,7 +102,7 @@ export default function TermsAndConditions() {
             prizes. Legal residents of Canada are eligible to open an account
             and participate in contests offered by the Website.
           </p>
-          <p>
+          <p className="text-md">
             You may establish only one account per person to participate in the
             Services offered on the Website. In the event Hornex discovers that
             you have opened more than one account per person, in addition to any
@@ -121,7 +121,7 @@ export default function TermsAndConditions() {
             with accurate and complete information and must update the
             information when it changes.
           </p>
-          <p>
+          <p className="text-md">
             You agree to hold Us harmless from any liability such that We cannot
             be held liable if laws applicable to You restrict or prohibit Your
             participation in any Special Events or contests arranged and
@@ -131,7 +131,7 @@ export default function TermsAndConditions() {
             shall any person affiliated, or claiming affiliation with Us, have
             authority to make such representations or warranties.&nbsp;
           </p>
-          <p>
+          <p className="text-md">
             “Authorized Account Holder” is defined as the natural person 18
             years of age or older who is assigned to an e-mail address by an
             Internet access provider, on-line service provider, or other
@@ -146,33 +146,33 @@ export default function TermsAndConditions() {
             payment using any payment method that is not owned by the Authorized
             Account Holder.
           </p>
-          <p>
+          <p className="text-md">
             Hornex employees may use the Website, and will from time to time do
             so for the purpose of testing the site user experience, socializing
             and competing with customers to build community, and other
             reasonable and fair uses at the discretion of Hornex.
           </p>
-          <h2>CONTEST ENTRY</h2>
-          <p>
+          <h2 className="mt-4 text-xl">CONTEST ENTRY</h2>
+          <p className="text-md">
             Users will be able to visit the Website and view the games available
             for entry (the “Contests”). Each head to head game will have an
             entry fee set as agreed between the players. Each multi-player
             tournament that is not free to enter has an entry fee listed in US
             dollars.
           </p>
-          <p>
+          <p className="text-md">
             When you select to participate in a Contest and complete the entry
             process, the listed amount of US dollars will be debited from your
             Hornex account.
           </p>
-          <h2>REFUND POLICY</h2>
-          <p>
+          <h2 className="mt-4 text-xl">REFUND POLICY</h2>
+          <p className="text-md">
             All payments are final. No refunds will be issued particularly for
             any funds lost in skilled gaming contests or multi-player
             tournaments. Hornex discretion is absolute.
           </p>
-          <h2>CONDITIONS OF PARTICIPATION</h2>
-          <p>
+          <h2 className="mt-4 text-xl">CONDITIONS OF PARTICIPATION</h2>
+          <p className="text-md">
             By entering a Contest, entrants agree to be bound by these Rules and
             the decisions of Hornex, which shall be final and binding in all
             respects. The Company, at its sole discretion, may disqualify any
@@ -182,7 +182,7 @@ export default function TermsAndConditions() {
             operation of the Contest or is in any way detrimental to other
             entrants. Improper conduct includes, but is not limited to:
           </p>
-          <ul>
+          <ul className="list-disc pl-6">
             <li>
               Falsifying personal information required to enter a Contest or
               claim a prize;
@@ -228,7 +228,7 @@ export default function TermsAndConditions() {
             </li>
             <li>Abusing the Website in any way.</li>
           </ul>
-          <p>
+          <p className="text-md">
             Hornex reserves the right to close or suspend the Accounts of, and
             void all account balances and entries by any person where, in
             Hornex&quot;s reasonable opinion, the Account has not been operated
@@ -237,12 +237,12 @@ export default function TermsAndConditions() {
             can in its sole discretion, withhold any or all related funds in the
             Account pending the outcome of an investigation on that Account.
           </p>
-          <p>
+          <p className="text-md">
             Users further acknowledge that the forfeiture and/or return of any
             prize shall in no way prevent Hornex from pursuing criminal or civil
             proceedings in connection with such conduct.
           </p>
-          <p>
+          <p className="text-md">
             By entering into a Contest or accepting any prize, entrants,
             including but not limited to the winner(s), agree to indemnify,
             release and to hold harmless Hornex, its parents, subsidiaries,
@@ -261,7 +261,7 @@ export default function TermsAndConditions() {
             in this Paragraph as a condition of being awarded any prize or
             receiving any payout.
           </p>
-          <p>
+          <p className="text-md">
             Hornex is not responsible for: any incorrect, invalid or inaccurate
             entry information; human errors; postal delays/postage due mail;
             technical malfunctions; failures, including public utility or
@@ -283,7 +283,7 @@ export default function TermsAndConditions() {
             for any other reason whatsoever; typographical, printing or other
             errors, or any combination thereof.
           </p>
-          <p>
+          <p className="text-md">
             Hornex is not responsible for incomplete, illegible, misdirected or
             stolen entries. If for any reason a Contest is not capable of
             running as originally planned, or if a Contest, computer
@@ -302,19 +302,19 @@ export default function TermsAndConditions() {
             modification or suspension occurs, notification will be posted on
             the Website.
           </p>
-          <p>
+          <p className="text-md">
             ANY ATTEMPT BY AN ENTRANT OR ANY OTHER INDIVIDUAL TO DELIBERATELY
             DAMAGE THE WEBSITE OR UNDERMINE THE LEGITIMATE OPERATION OF ANY
             CONTEST IS A VIOLATION OF CRIMINAL AND/OR CIVIL LAWS AND SHOULD SUCH
-            AN ATTEMPT BE MADE, HORNEX.GG RESERVES THE RIGHT TO SEEK DAMAGES AND
+            AN ATTEMPT BE MADE, HORNEX RESERVES THE RIGHT TO SEEK DAMAGES AND
             OTHER REMEDIES FROM ANY SUCH PERSON TO THE FULLEST EXTENT PERMITTED
             BY LAW.
           </p>
-          <p>
+          <p className="text-md">
             All entries become the property of Hornex and will not be
             acknowledged or returned.
           </p>
-          <p>
+          <p className="text-md">
             To be eligible to enter any contest or receive any prize, the
             Authorized Account Holder may be required to provide Hornex with
             additional documentation and/or information to verify the identity
@@ -325,12 +325,12 @@ export default function TermsAndConditions() {
             information collected by Hornex to assist in verifying the identity
             and/or eligibility of such Authorized Account Holder.
           </p>
-          <p>
+          <p className="text-md">
             Participation in each Contest must be made only as specified in the
             Terms of Use. Failure to comply with these Terms of Use will result
             in disqualification and, if applicable, prize forfeiture.
           </p>
-          <p>
+          <p className="text-md">
             Where legal, both entrants and winner consent to the use of their
             name, voice, and likeness/photograph in and in connection with the
             development, production, distribution and/or exploitation of any
@@ -340,27 +340,27 @@ export default function TermsAndConditions() {
             longer need to do so that they will make themselves available to
             Hornex for publicity, advertising, and promotion activities.
           </p>
-          <p>
+          <p className="text-md">
             Hornex&nbsp;reserves the right to move entrants from the Contests
             they have entered to substantially similar Contests in certain
             situations determined by Hornex in its sole discretion.
           </p>
-          <h2>CONTEST PRIZES AND PROMOTIONS</h2>
-          <p>
+          <h2 className="mt-4 text-xl">CONTEST PRIZES AND PROMOTIONS</h2>
+          <p className="text-md">
             Prizes will only be awarded if a Contest is run. We reserve the
             right to cancel Contests at any time. In the event of a
             cancellation, all entry fees will be refunded to the customer except
             as specifically provided in these Terms of Use.
           </p>
-          <p>
+          <p className="text-md">
             Guaranteed prizes are offered in connection with some of the
             Contests offered by the Website. Each Contest or promotion is
             governed by its own set of official rules. We encourage you to read
             such Contest and promotions Rules before participating.
           </p>
-          <h2>OTHER LEGAL RESTRICTIONS</h2>
-          <h2>CONTEST OF SKILL</h2>
-          <p>
+          <h2 className="mt-4 text-xl">OTHER LEGAL RESTRICTIONS</h2>
+          <h2 className="mt-4 text-xl">CONTEST OF SKILL</h2>
+          <p className="text-md">
             <b>Contests offered on the Website are contests of skill.&nbsp;</b>
             Winners are determined by the objective criteria described in the
             Contest deadline, roster, Rules, scoring, and any other applicable
@@ -371,8 +371,8 @@ export default function TermsAndConditions() {
             corresponding scoring rules. The Website and Contests may not be
             used for any form of illicit gambling.
           </p>
-          <h2>CONTEST RESULTS</h2>
-          <p>
+          <h2 className="mt-4 text-xl">CONTEST RESULTS</h2>
+          <p className="text-md">
             Contest results and prize calculations are based on the final
             statistics and scoring results at the completion of the last game of
             each individual Contest. Once Contest results are reviewed and
@@ -381,7 +381,7 @@ export default function TermsAndConditions() {
             adjustments made at later times or dates, except in Hornex&quot;s
             sole discretion.
           </p>
-          <p>
+          <p className="text-md">
             Hornex&nbsp;reserves the right, in its sole and absolute discretion,
             to deny any contestant the ability to participate in head-to-head
             contests for any reason whatsoever. Further, Hornex may, in its sole
@@ -390,15 +390,15 @@ export default function TermsAndConditions() {
             potentially unlawful activity, or in the event that there is a risk
             of any such abusive, illegal, or unfair activity.
           </p>
-          <h2>PRIZES</h2>
-          <p>
+          <h2 className="mt-4 text-xl">PRIZES</h2>
+          <p className="text-md">
             At the conclusion of each Contest, prizes will be immediately
             awarded except in circumstances where technical failure or other
             reasons prevent such timely payout. Prizes won are added to the
             winning participants account balance. In the event of a tie, prizes
             are divided evenly amongst the participants that have tied.
           </p>
-          <p>
+          <p className="text-md">
             Hornex&nbsp;reserves the right, in its sole discretion, to cancel or
             suspend the contests (or any portion thereof) should virus, bugs,
             unauthorized human intervention, or other causes corrupt
@@ -407,8 +407,8 @@ export default function TermsAndConditions() {
             of such changes may be provided by Hornex to its customers but will
             not be required.
           </p>
-          <h2>WITHDRAWAL AND PAYMENT OF PRIZES</h2>
-          <p>
+          <h2 className="mt-4 text-xl">WITHDRAWAL AND PAYMENT OF PRIZES</h2>
+          <p className="text-md">
             Entrants may withdraw their cash prize awards as well as cash
             deposits by using the “Withdrawal” option on the Website. Entrants
             may be requested to complete an affidavit of eligibility and a
@@ -418,7 +418,7 @@ export default function TermsAndConditions() {
             information relating to payment/deposit accounts as reasonably
             requested by Hornex in order to complete the withdrawal of prizes.
           </p>
-          <p>
+          <p className="text-md">
             For users who are under the age of 18 and created an account with
             their parent or legal guardian&quot;s permission, your parent or
             legal guardian may be requested to complete an affidavit of
@@ -429,14 +429,16 @@ export default function TermsAndConditions() {
             accounts as reasonably requested by Hornex in order to complete the
             withdrawal of prizes.
           </p>
-          <p>
+          <p className="text-md">
             Failure to comply with this requirement may result in
             disqualification and forfeiture of any prizes. Disqualification or
             forfeiture of any prizes may also occur if it is determined any such
             entrant did not comply with these Terms of Use in any manner.
           </p>
-          <p>Withdrawals maybe requested by any of the following methods:</p>
-          <ul>
+          <p className="text-md">
+            Withdrawals maybe requested by any of the following methods:
+          </p>
+          <ul className="list-disc pl-6">
             <li>
               Direct Bank Transfers - Minimum amount: US $50. Countries
               available: US
@@ -445,13 +447,13 @@ export default function TermsAndConditions() {
               Wire Transfers - Minimum amount: US $200. Countries available: All
             </li>
           </ul>
-          <p>
+          <p className="text-md">
             Wire transfers to international accounts will be initiated in USD
             and at the spot rate offered by the banks at the time.
             Hornex&nbsp;derives no benefit from currency exchanges and will not
             enter into any debate about various exchange rates offered.
           </p>
-          <ul>
+          <ul className="list-disc pl-6">
             <li>Paypal - Minimum amount: US $20. Countries available: All</li>
             <li>
               You may withdraw into the same PayPal account that you used to
@@ -461,7 +463,7 @@ export default function TermsAndConditions() {
             </li>
             <li>Check - Minimum amount: US $200. Countries available: All</li>
           </ul>
-          <p>
+          <p className="text-md">
             Checks will be in USD and we do not charge any fees for issuing
             them. Although, we can&quot;t be responsible for any charges made by
             banks or other financial institutions for banking or cashing checks.
@@ -471,14 +473,14 @@ export default function TermsAndConditions() {
             check with your bank or financial institution for any charges that
             you may incur when banking or cashing your check.
           </p>
-          <p>
+          <p className="text-md">
             <b>
               We highly recommend that you deposit your check at a reputable
               bank or financial institution and avoid using a check cashing
               store.
             </b>
           </p>
-          <p>
+          <p className="text-md">
             Checks within the US will be delivered by regular mail and are
             expected to arrive within 15 business days. International checks
             under $1,000 USD will be sent by regular mail and are expected to
@@ -488,31 +490,31 @@ export default function TermsAndConditions() {
             your contact phone number and your address must not be a PO Box or a
             rural route address.
           </p>
-          <p>
+          <p className="text-md">
             Checks are sent to the full name and mailing address listed in your
             Hornex account at the time you make your withdraw request. If your
             check is sent to an incorrect name or mailing address, you will
             incur a fee to place a stop-payment order on this check.
           </p>
-          <p>
+          <p className="text-md">
             We conduct anti-fraud checks on wagering patterns and deposits of
             users prior to processing all withdrawals. We may request additional
             information before your withdrawal is approved. We reserve the right
             to refuse any withdrawal request that doesn&quot;t meet the
             guidelines of our Terms of Use.
           </p>
-          <p>
+          <p className="text-md">
             We may request that you provide your mailing address and SSN before
             the withdrawal is processed. This will help us in the event that
             your annual net winnings exceed $600 and we are required to file a
             1099-MISC tax form.
           </p>
-          <p>
+          <p className="text-md">
             Promotional deposits, credits, and other bonuses may not be
             withdrawn from a Hornex account unless appropriate terms of the
             promotion are achieved first by the user.
           </p>
-          <p>
+          <p className="text-md">
             All taxes associated with the receipt of any prize are the sole
             responsibility of the winner. In the event that the awarding of any
             prizes to winners of Contests is challenged by any legal authority,
@@ -529,7 +531,7 @@ export default function TermsAndConditions() {
             inability to credit Your Account, distribute the balance of Your
             Account to You, or distribute any winnings to You in excess of $600.
           </p>
-          <p>
+          <p className="text-md">
             No substitution or transfer of prize is permitted, except that
             Hornex reserves the right to substitute a prize of equal value or
             greater if the advertised prize is unavailable. All prizes are
@@ -537,7 +539,7 @@ export default function TermsAndConditions() {
             (including, without limitation, any implied warranty of
             merchantability for a particular purpose).
           </p>
-          <p>
+          <p className="text-md">
             Any withdrawal requests, after approved by Hornex, will be credited
             back to the same credit card or method of payment used to deposit
             funds on the Website. Hornex will only release withdrawals to a
@@ -546,8 +548,10 @@ export default function TermsAndConditions() {
             deposit(s) has already been released back to the credit card(s) or
             payment method(s) used for the deposit(s).
           </p>
-          <h2>TERMINATION AND EFFECT OF TERMINATION</h2>
-          <p>
+          <h2 className="mt-4 text-xl">
+            TERMINATION AND EFFECT OF TERMINATION
+          </h2>
+          <p className="text-md">
             In addition to any other legal or equitable remedy, Hornex may,
             without prior notice, immediately revoke any or all of your rights
             granted hereunder. In such event, you will immediately cease all
@@ -560,8 +564,8 @@ export default function TermsAndConditions() {
             provisions, warranty disclaimers, indemnity and limitations of
             liability.
           </p>
-          <h2>DISCLAIMER OF WARRANTIES</h2>
-          <p>
+          <h2 className="mt-4 text-xl">DISCLAIMER OF WARRANTIES</h2>
+          <p className="text-md">
             THE WEBSITE, INCLUDING, WITHOUT LIMITATION, ALL CONTENT, SOFTWARE,
             AND FUNCTIONS MADE AVAILABLE ON OR ACCESSED THROUGH OR SENT FROM THE
             WEBSITE, ARE PROVIDED “AS IS,” “AS AVAILABLE,” AND “WITH ALL
@@ -580,7 +584,7 @@ export default function TermsAndConditions() {
             WILL BE CORRECTED; OR THAT THE WEBSITES OR THE SERVERS THAT MAKES
             THEM AVAILABLE ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.
           </p>
-          <p>
+          <p className="text-md">
             THE COMPANY DOES NOT WARRANT THAT YOUR ACTIVITIES OR USE OF THE
             WEBSITE IS LAWFUL IN ANY PARTICULAR JURISDICTION AND, IN ANY EVENT,
             THE COMPANY SPECIFICALLY DISCLAIMS SUCH WARRANTIES. YOU UNDERSTAND
@@ -592,7 +596,7 @@ export default function TermsAndConditions() {
             WITHOUT LIMITATION, NONINFRINGEMENT, MERCHANTABILITY, FITNESS FOR A
             PARTICULAR PURPOSE, AND TITLE.
           </p>
-          <p>
+          <p className="text-md">
             THE COMPANY, ITS PARENTS, SUBSIDIARIES AND AFFILIATES, AND THE
             DIRECTORS, OFFICERS, EMPLOYEES, AND OTHER REPRESENTATIVES OF EACH OF
             THEM, SHALL NOT BE LIABLE FOR THE USE OF THE WEBSITE INCLUDING,
@@ -601,8 +605,8 @@ export default function TermsAndConditions() {
             OR OTHER WARRANTIES SO THE ABOVE DISCLAIMER MAY NOT APPLY TO THE
             EXTENT SUCH JURISDICTION&quot;S LAW IS APPLICABLE TO THIS AGREEMENT.
           </p>
-          <h2>LIMITATION OF LIABILITY</h2>
-          <p>
+          <h2 className="mt-4 text-xl">LIMITATION OF LIABILITY</h2>
+          <p className="text-md">
             YOU UNDERSTAND AND AGREE THAT THE COMPANY LIMITS ITS LIABILITY IN
             CONNECTION WITH YOUR USE OF THE WEBSITE AS SET FORTH BELOW: UNDER NO
             CIRCUMSTANCES SHALL THE COMPANY, ITS PARENTS, SUBSIDIARIES, OR
@@ -657,8 +661,8 @@ export default function TermsAndConditions() {
             APPLICABLE, CALIFORNIA CIVIL CODE SECTION 1542, THAT OTHERWISE MIGHT
             LIMIT YOUR WAIVER OF SUCH CLAIMS.
           </p>
-          <h2>INTELLECTUAL PROPERTY RIGHTS</h2>
-          <p>
+          <h2 className="mt-4 text-xl">INTELLECTUAL PROPERTY RIGHTS</h2>
+          <p className="text-md">
             The content on the Website, including without limitation, the text,
             software, scripts, graphics, photos, sounds, music, videos,
             interactive features and the like and the trademarks, service marks
@@ -682,7 +686,7 @@ export default function TermsAndConditions() {
             or enforce limitations on use of the Website or the Intellectual
             Property therein.
           </p>
-          <p>
+          <p className="text-md">
             Some of the Services may allow you to submit or transmit audio,
             video, text, or other materials (collectively, “User Submissions”)
             to or through the Services. When you provide User Submissions, you
@@ -698,7 +702,7 @@ export default function TermsAndConditions() {
             manufacturing, and marketing products. You hereby waive any moral
             rights you may have in your User Submissions.
           </p>
-          <p>
+          <p className="text-md">
             In addition, you agree that any User Submissions you submit shall
             not contain any material that is, in the sole and absolute
             discretion of Hornex, inappropriate, obscene, vulgar, unlawful, or
@@ -707,7 +711,7 @@ export default function TermsAndConditions() {
             and remedies available to Hornex, may result in account suspension
             or termination.
           </p>
-          <p>
+          <p className="text-md">
             We respect your ownership of User Submissions. If you owned a User
             Submission before providing it to us, you will continue owning it
             after providing it to us, subject to any rights granted in the Terms
@@ -724,31 +728,31 @@ export default function TermsAndConditions() {
             delete the User Submission. Terminating your account on a Service
             will not automatically delete your User Submissions.
           </p>
-          <p>
+          <p className="text-md">
             We may refuse or remove a User Submission without notice to you.
             However, we have no obligation to monitor User Submissions, and you
             agree that neither we nor our parents, subsidiaries, affiliates,
             employees, or agents will be liable for User Submissions or any loss
             or damage resulting from User Submissions.
           </p>
-          <p>
+          <p className="text-md">
             Except as provided in the Privacy Policy, we do not guarantee that
             User Submissions will be private, even if the User Submission is in
             a password-protected area. Accordingly, you should not provide User
             Submissions that you want protected from others.
           </p>
-          <p>
+          <p className="text-md">
             You represent and warrant that you have all rights necessary to
             grant to Hornex the license above and that none of your User
             Submissions are defamatory, violate any rights of third parties
             (including intellectual property rights or rights of publicity or
             privacy), or violate applicable law.
           </p>
-          <h2>
+          <h2 className="mt-4 text-xl">
             ARBITRATION, CONSENT TO JURISDICTION IN CALIFORNIA, ATTORNEY&quot;S
             FEES
           </h2>
-          <p>
+          <p className="text-md">
             Any and all disputes, claims or controversies arising out of or
             relating to this Agreement, the breach thereof, or any use of the
             Website (including all commercial transactions conducted through the
@@ -772,11 +776,11 @@ export default function TermsAndConditions() {
             and equitable relief available in the courts of California, provided
             that:
           </p>
-          <p>
+          <p className="text-md">
             The arbitrator shall not have authority to award punitive damages;
             and
           </p>
-          <p>
+          <p className="text-md">
             Any and all claims shall be arbitrated on an individual basis only
             and shall not be consolidated or joined with or in any arbitration
             or other proceeding involving a Claim of any other party. You and
@@ -784,7 +788,7 @@ export default function TermsAndConditions() {
             arbitrate any Claim as a class action or in any other form other
             than on an individual basis.
           </p>
-          <p>
+          <p className="text-md">
             For any Claims that are not subject to arbitration: (a) the
             exclusive jurisdiction and venue for proceedings involving Claims
             shall be the courts of competent jurisdiction sitting within
@@ -793,7 +797,7 @@ export default function TermsAndConditions() {
             Forum is not appropriate or convenient; (b) you and Hornex waive any
             and all rights to trial by jury with respect to any Claims.
           </p>
-          <p>
+          <p className="text-md">
             In the event that either party initiates a proceeding involving any
             Claim other than an arbitration in accordance with this Section, or
             initiates a proceeding involving a Claim under this Section other
@@ -801,8 +805,8 @@ export default function TermsAndConditions() {
             fees and expenses reasonably incurred in enforcing this Agreement to
             arbitrate and the Forum to which the parties have herein agreed.
           </p>
-          <h2>MISCELLANEOUS</h2>
-          <p>
+          <h2 className="mt-4 text-xl">MISCELLANEOUS</h2>
+          <p className="text-md">
             These Terms of Use shall be governed by the internal substantive
             laws of California, without respect to its conflict of laws
             principles. Any claim or dispute between you and Hornex that arises
@@ -810,7 +814,7 @@ export default function TermsAndConditions() {
             Contest shall be decided exclusively by a court of competent
             jurisdiction located in California.
           </p>
-          <p>
+          <p className="text-md">
             Nothing in the Terms of Use shall create or confer any rights or
             other benefits in favor of any third parties except as specifically
             provided herein. By participating in any Contest on the Website, you
@@ -838,31 +842,31 @@ export default function TermsAndConditions() {
             and to read the terms and conditions and privacy policy of each
             other website that you visit.
           </p>
-          <p>
+          <p className="text-md">
             Nothing in the Terms of Use shall create or be deemed to create a
             partnership, agency, trust arrangement, fiduciary relationship or
             joint venture between you and Hornex.
           </p>
-          <p>
+          <p className="text-md">
             Third-party online publishers that refer users to the Hornex website
             shall not be responsible or liable for the Hornex website or any of
             the content, software, or functions made available on, or accessed
             through, or sent from, the Hornex website.
           </p>
-          <p>
+          <p className="text-md">
             If any provision of these Terms of Use is deemed invalid by a court
             of competent jurisdiction, the invalidity of such provision shall
             not affect the validity of the remaining provisions of these Terms
             of Use, which shall remain in full force and effect.
           </p>
-          <p>
+          <p className="text-md">
             No waiver of any term of these Terms of Use shall be deemed a
             further or continuing waiver of such term or any other term, and
             Hornex&quot; failure to assert any right or provision under these
             Terms of Use shall not constitute a waiver of such right or
             provision.
           </p>
-          <p>
+          <p className="text-md">
             Hornex&nbsp;reserves the right to amend these Terms of Use at any
             time and without notice, and it is your responsibility to review
             these Terms of Use for any changes. If you continue to use the
@@ -874,20 +878,22 @@ export default function TermsAndConditions() {
             compliance with applicable codes and regulations) or other force
             majeure event will not be considered a breach of these Terms of Use.
           </p>
-          <p>
-            HORNEX.GG&nbsp;AND OTHER TRADEMARKS CONTAINED ON THE WEBSITE ARE
-            TRADEMARKS OR REGISTERED TRADEMARKS OF HORNEX.GG IN THE UNITED
-            STATES AND/OR OTHER COUNTRIES. THIRD PARTY TRADEMARKS, TRADE NAMES,
-            PRODUCT NAMES AND LOGOS MAY BE THE TRADEMARKS OR REGISTERED
-            TRADEMARKS OF THEIR RESPECTIVE OWNERS. YOU MAY NOT REMOVE OR ALTER
-            ANY TRADEMARK, TRADE NAMES, PRODUCT NAMES, LOGO, COPYRIGHT OR OTHER
-            PROPRIETARY NOTICES, LEGENDS, SYMBOLS OR LABELS ON THE WEBSITE.
+          <p className="text-md">
+            HORNEX&nbsp;AND OTHER TRADEMARKS CONTAINED ON THE WEBSITE ARE
+            TRADEMARKS OR REGISTERED TRADEMARKS OF HORNEX IN THE UNITED STATES
+            AND/OR OTHER COUNTRIES. THIRD PARTY TRADEMARKS, TRADE NAMES, PRODUCT
+            NAMES AND LOGOS MAY BE THE TRADEMARKS OR REGISTERED TRADEMARKS OF
+            THEIR RESPECTIVE OWNERS. YOU MAY NOT REMOVE OR ALTER ANY TRADEMARK,
+            TRADE NAMES, PRODUCT NAMES, LOGO, COPYRIGHT OR OTHER PROPRIETARY
+            NOTICES, LEGENDS, SYMBOLS OR LABELS ON THE WEBSITE.
           </p>
-          <h2>PROHIBITED USES OF THE SITE AND SERVICES</h2>
-          <ul>
+          <h2 className="mt-4 text-xl">
+            PROHIBITED USES OF THE SITE AND SERVICES
+          </h2>
+          <ul className="list-disc pl-6">
             <li>Illegal Funds</li>
           </ul>
-          <p>
+          <p className="text-md">
             By entering into this Agreement and using the Site Services, You
             declare that the source of funds used by You on the Site is not
             illegal and that You will not use the Site or Services in any way as
@@ -903,10 +909,10 @@ export default function TermsAndConditions() {
             fraudulent or improper activity.&nbsp;
           </p>
 
-          <ul>
+          <ul className="list-disc pl-6">
             <li>Collusion</li>
           </ul>
-          <p>
+          <p className="text-md">
             Collusion occurs when two or more Users attempt to gain an unfair
             advantage by sharing knowledge or other information to other
             Users&quot; disadvantage. Any User who attempts to collude or
@@ -924,10 +930,10 @@ export default function TermsAndConditions() {
             take any other steps against Users suspected of collusion, cheating
             or any other form of fraud.&nbsp;
           </p>
-          <ul>
+          <ul className="list-disc pl-6">
             <li>Abuse</li>
           </ul>
-          <p>
+          <p className="text-md">
             By entering into this Agreement, You agree that You will not use any
             technique other than pure skill. Such techniques may include, but
             are not limited to, establishing multiple Accounts, the use of
@@ -936,8 +942,8 @@ export default function TermsAndConditions() {
             deliberately losing games for the purpose of getting a competitive
             advantage.&nbsp;
           </p>
-          <h2>FEEDBACK/REVIEW SYSTEM</h2>
-          <p>
+          <h2 className="mt-4 text-xl">FEEDBACK/REVIEW SYSTEM</h2>
+          <p className="text-md">
             Under this Agreement, You accept and understand that You and Your
             Account will be subject to feedback and reviews submitted by other
             users. For purposes of this Agreement, the terms “Material” and
@@ -945,15 +951,17 @@ export default function TermsAndConditions() {
             User shall include any type of Material or Content, including
             without limitation, verbal, audio and visual.
           </p>
-          <p>
+          <p className="text-md">
             The Site provides a forum to post Material, such as comments,
             feedback or ratings to rate any previous adversaries that they have
             challenged, including their subjective rating of their
             ability.&nbsp;
           </p>
-          <p>Hornex will remove feedback ratings and comments:</p>
+          <p className="text-md">
+            Hornex will remove feedback ratings and comments:
+          </p>
 
-          <ul>
+          <ul className="list-disc pl-6">
             <li>
               if such Material violates the terms of this Agreement, and we
               receive satisfactory notification of the same;
@@ -965,12 +973,12 @@ export default function TermsAndConditions() {
             </li>
           </ul>
 
-          <p>
+          <p className="text-md">
             Users should use caution and good judgment when submitting feedback
             or ratings for another User, because:
           </p>
 
-          <ul>
+          <ul className="list-disc pl-6">
             <li>
               Feedback or ratings cannot be edited or removed once they have
               been submitted. Feedback and ratings generally become a permanent
@@ -988,12 +996,12 @@ export default function TermsAndConditions() {
               leaves feedback or ratings from liability.
             </li>
           </ul>
-          <p>
+          <p className="text-md">
             Feedback or ratings that violate the terms of this Agreement, or
             that meet any of the circumstances described below may be subject to
             removal.
           </p>
-          <ul>
+          <ul className="list-disc pl-6">
             <li>
               Hornex is provided with a valid court order finding that the
               disputed feedback or ratings are slanderous, libellous, defamatory
@@ -1033,7 +1041,7 @@ export default function TermsAndConditions() {
               qualify for automatic feedback removal.&nbsp;
             </li>
           </ul>
-          <p>
+          <p className="text-md">
             Violations of these provisions may result in a range of actions,
             including without limitation, Account termination, limits on Account
             privileges, Account suspension and/or feedback or rating removal.
@@ -1042,14 +1050,14 @@ export default function TermsAndConditions() {
             for the mistaken posting informs Hornex of the error and has already
             placed the same feedback for the correct User.
           </p>
-          <p>
+          <p className="text-md">
             Hornex isn&lsquot;t endorsed by Riot Games and doesn&lsquot;t
             reflect the views or opinions of Riot Games or anyone officially
             involved in producing or managing League of Legends. League of
             Legends and Riot Games are trademarks or registered trademarks of
             Riot Games, Inc. League of Legends © Riot Games, Inc.
           </p>
-          <p>
+          <p className="text-md">
             Valve Corporation is not affiliated with Hornex in any way. Valve,
             the Valve logo, Half-Life, the Half-Life logo, the Lambda logo,
             Steam, the Steam logo, Team Fortress, the Team Fortress logo,

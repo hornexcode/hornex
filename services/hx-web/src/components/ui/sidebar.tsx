@@ -8,7 +8,6 @@ import Link from 'next/link';
 import {
   CounterStrikeLogoIcon,
   LolIcon,
-  LolLogoIcon,
   SwordsIcon,
 } from '@/components/ui/icons';
 
@@ -26,7 +25,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <Link
-            href="#"
+            href="/#tournaments"
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <TrophyIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
@@ -34,7 +33,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <Link
-            href="#"
+            href="/compete#available-games"
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <SwordsIcon className="h-4 w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
@@ -45,7 +44,7 @@ export const Sidebar = () => {
       <ul className="block space-y-3 py-2">
         <li>
           <Link
-            href="#"
+            href="/league-of-legends/tournaments"
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <LolIcon className="w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
@@ -61,7 +60,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <Link
-            href="#"
+            href="/compete#connected-games"
             className="group flex h-[42px] cursor-pointer items-center justify-center rounded-lg bg-dark text-center shadow-lg ring-2 ring-slate-800 hover:ring-slate-700"
           >
             <PlusIcon className="w-4 rounded-sm bg-slate-800 fill-dark group-hover:bg-slate-700" />

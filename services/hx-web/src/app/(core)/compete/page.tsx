@@ -117,7 +117,7 @@ export default function Compete() {
         <PlatformPicker />
       </div>
 
-      <section id="compete" className="space-y-10">
+      <section id="connected-games" className="space-y-10">
         <div className="space-y-6">
           <div className="grid grid-cols-4 gap-4">
             <div className="flex min-h-[18rem] cursor-pointer flex-col items-center justify-center gap-4 rounded-lg bg-slate-800 p-4 transition-all hover:bg-slate-700">
@@ -126,7 +126,9 @@ export default function Compete() {
             </div>
           </div>
         </div>
+      </section>
 
+      <section id="available-games">
         <div className="space-y-10">
           <div className="mb-4 border-b border-slate-800 pb-2">
             <h2 className="text-left text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">

@@ -1,7 +1,8 @@
 const routes = {
-  home: "/",
-  teams: "/teams",
-  contact: "/contact",
+  home: '/',
+  termsAndConditions: 'terms-and-condition',
+  about: 'hero',
+  contact: 'hero',
 };
 
 export default routes;

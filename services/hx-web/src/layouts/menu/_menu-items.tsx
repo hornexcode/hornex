@@ -1,4 +1,4 @@
-import routes from "@/config/routes";
+import routes from '@/config/routes';
 
 type MenuItem = {
   name: string;
@@ -8,15 +8,15 @@ type MenuItem = {
 
 export const menuItems: MenuItem[] = [
   {
-    name: "Terms and Services",
-    href: routes.home,
+    name: 'Terms and Services',
+    href: routes.termsAndConditions,
   },
   {
-    name: "About",
-    href: routes.teams,
+    name: 'About',
+    href: routes.about,
   },
   {
-    name: "Contact",
+    name: 'Contact',
     href: routes.contact,
   },
   // {

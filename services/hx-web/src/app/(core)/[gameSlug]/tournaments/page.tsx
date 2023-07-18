@@ -23,7 +23,7 @@ export default function GamePage({ params }: GamePageProps) {
       <div className="-z-20 mx-auto space-y-8  ">
         <section className="relative flex justify-between p-8">
           <div className=" left-8 top-8 flex items-center gap-6">
-            <LolIcon className="h-12" />
+            <LolIcon className="h-12 fill-white" />
             {/* <LolLogoIcon className="h-16 fill-white" /> */}
             <h1 className="leading-1 font-satoshi p4 rounded-lg text-2xl font-extrabold -tracking-wider text-white md:text-4xl">
               League of Legends

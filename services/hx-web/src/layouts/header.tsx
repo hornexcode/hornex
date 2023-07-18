@@ -6,6 +6,7 @@ import { useIsMounted } from '@/lib/hooks/use-is-mounted';
 import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
 import { useWindowScroll } from 'react-use';
 import MenuItems from './menu/_default';
+import Link from 'next/link';
 
 const AddFundsButton: FC = () => {
   return (
@@ -42,7 +43,9 @@ const Header = () => {
     <header className="sticky left-0 top-0 z-40 h-14 w-full bg-sky-500 px-4 shadow-card">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
-          <div className="block w-24 font-extrabold text-white">Hornex</div>
+          <Link className="block w-24 font-extrabold text-white" href="/">
+            Hornex
+          </Link>
           {isMounted && ['xs', 'sm', 'md', 'lg'].indexOf(breakpoint) == -1 && (
             <MenuItems />
           )}
