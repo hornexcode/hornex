@@ -7,6 +7,7 @@ import TV4 from '@/assets/images/tournaments/tournament-v4.jpg';
 import { LolIcon, LolLogoIcon } from '@/components/ui/icons';
 import Button from '@/components/ui/button/button';
 import { ArrowDownTrayIcon } from '@heroicons/react/20/solid';
+import routes from '@/config/routes';
 
 type GamePageProps = {
   params: {
@@ -66,7 +67,7 @@ export default function GamePage({ params }: GamePageProps) {
                 <li className="">
                   <Link
                     className="divide-y divide-slate-700"
-                    href={`/league-of-legends/tournaments/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
+                    href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                   >
                     <TournamentListItem tournament={{ thumbnail: TV4 }} />
                   </Link>
@@ -74,7 +75,7 @@ export default function GamePage({ params }: GamePageProps) {
                 <li className="">
                   <Link
                     className="divide-y divide-slate-700"
-                    href={`/league-of-legends/tournaments/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
+                    href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                   >
                     <TournamentListItem tournament={{ thumbnail: TV4 }} />
                   </Link>
@@ -82,7 +83,7 @@ export default function GamePage({ params }: GamePageProps) {
                 <li className="">
                   <Link
                     className="divide-y divide-slate-700"
-                    href={`/league-of-legends/tournaments/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
+                    href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                   >
                     <TournamentListItem tournament={{ thumbnail: TV4 }} />
                   </Link>
@@ -90,7 +91,7 @@ export default function GamePage({ params }: GamePageProps) {
                 <li className="">
                   <Link
                     className="divide-y divide-slate-700"
-                    href={`/league-of-legends/tournaments/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
+                    href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                   >
                     <TournamentListItem tournament={{ thumbnail: TV4 }} />
                   </Link>

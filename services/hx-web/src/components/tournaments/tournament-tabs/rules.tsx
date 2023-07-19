@@ -89,7 +89,7 @@ export const Rules: React.FC<RulesProps> = ({ classNames }) => {
           giveaway.
         </RulesText>
         <RulesText>
-          You must provide the information requested by Repeat in order to claim
+          You must provide the information requested by Hornex in order to claim
           the prize. You may not enter more times than indicated by using
           multiple email addresses, identities, or devices in an attempt to
           circumvent the rules. If you use fraudulent methods or otherwise

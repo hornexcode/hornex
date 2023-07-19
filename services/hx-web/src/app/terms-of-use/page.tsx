@@ -830,7 +830,7 @@ export default function TermsAndConditions() {
             agree to indemnify, protect, defend and hold harmless Hornex, its
             parents, subsidiaries, affiliates and divisions, and their
             respective directors, officers, employees, agents and
-            representatives (the “Repeat Entities”), from and against any and
+            representatives (the “Hornex Entities”), from and against any and
             all third party claims, liabilities, losses, damages, injuries,
             demands, actions, causes of action, suits, proceedings, judgments
             and expenses, including reasonable attorneys&quot; fees, court costs
