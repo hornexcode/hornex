@@ -8,8 +8,8 @@ type MenuItem = {
 
 export const menuItems: MenuItem[] = [
   {
-    name: 'Terms and Services',
-    href: routes.termsAndConditions,
+    name: 'Terms of use',
+    href: routes.termsOfUse,
   },
   {
     name: 'About',
@@ -17,7 +17,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     name: 'Contact',
-    href: routes.contact,
+    href: routes.contactUs,
   },
   // {
   //   name: "Farm",

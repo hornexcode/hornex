@@ -40,9 +40,12 @@ export default function ContactUsPage() {
             </div>
             <div className="">
               <h4 className="text-lg font-extrabold text-white">Phone</h4>
-              <p className="text-lg font-light text-slate-400">
+              <Link
+                href="tel:+55(24)981655545"
+                className="text-lg font-light text-slate-400 hover:underline"
+              >
                 +55 24 98165-5545
-              </p>
+              </Link>
             </div>
           </div>
         </div>
@@ -53,9 +56,12 @@ export default function ContactUsPage() {
             </div>
             <div className="">
               <h4 className="text-lg font-extrabold text-white">Email</h4>
-              <p className="text-lg font-light text-slate-400">
+              <Link
+                href="mailto:pedro357bm@gmail.com"
+                className="text-lg font-light text-slate-400 hover:underline"
+              >
                 pedro357bm@gmail.com
-              </p>
+              </Link>
             </div>
           </div>
         </div>

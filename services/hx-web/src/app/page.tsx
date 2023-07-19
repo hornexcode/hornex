@@ -41,12 +41,12 @@ export default function HomePage() {
             </span>
           </a>
           <div className="flex items-center gap-4 md:order-2 md:gap-8">
-            <a href="#" className="flex items-center text-white">
+            <Link href={routes.login} className="flex items-center text-white">
               Login
               <ArrowRightOnRectangleIcon className="ml-2 w-4" />
-            </a>
+            </Link>
             <Link
-              href={'/register'}
+              href={routes.register}
               className="rounded bg-sky-400/90 px-4 py-2 font-medium tracking-tight text-white hover:bg-sky-400 focus:ring-2"
             >
               Register now
@@ -105,12 +105,12 @@ export default function HomePage() {
                 </a>
               </li>
               <li>
-                <a
-                  href="#contact"
+                <Link
+                  href={routes.contactUs}
                   className="block rounded py-2 pl-3 pr-4 text-white hover:text-sky-400 md:p-0"
                 >
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -177,8 +177,8 @@ export default function HomePage() {
             that allow you to compete on your favorite e-sports.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
-            <a
-              href="#"
+            <Link
+              href={routes.compete}
               className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-center text-base font-medium text-gray-900 hover:border-sky-400 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-sky-400 dark:focus:ring-sky-600"
             >
               Play now
@@ -194,7 +194,7 @@ export default function HomePage() {
                   clipRule="evenodd"
                 ></path>
               </svg>
-            </a>
+            </Link>
             {/* <a
               href="#"
               className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-center text-base font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-800"
@@ -467,14 +467,14 @@ export default function HomePage() {
               </h2>
               <ul className="font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <Link href={routes.login} className="hover:underline">
                     Login
-                  </a>
+                  </Link>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <Link href={routes.register} className="hover:underline">
                     Register
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
