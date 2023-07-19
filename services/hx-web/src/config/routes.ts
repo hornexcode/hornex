@@ -1,8 +1,9 @@
 const routes = {
   home: '/',
-  termsAndConditions: 'terms-and-condition',
+  termsOfUse: 'terms-of-use',
+  privacyPolicy: 'privacy-policy',
   about: 'hero',
-  contact: 'hero',
+  contactUs: 'contact-us',
 };
 
 export default routes;

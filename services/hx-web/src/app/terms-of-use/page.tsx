@@ -1,8 +1,17 @@
+import { ArrowLongLeftIcon } from '@/components/ui/icons';
+import Link from 'next/link';
+
 export default function TermsAndConditions() {
   return (
     <div className="p-8">
       <section className="lg:m-auto lg:max-w-5xl">
-        <h1 className="text-left text-xl font-bold tracking-tighter text-white md:text-2xl">
+        <Link href={'/'} className="mb-8 text-white">
+          <div className="flex items-center">
+            <ArrowLongLeftIcon className="mr-2 h-6 w-6" />
+            Back
+          </div>
+        </Link>
+        <h1 className="mt-6 text-left text-xl font-bold tracking-tighter text-white md:text-2xl lg:text-6xl">
           Terms and Conditions
         </h1>
         <h3 className="pb-4 text-sm">

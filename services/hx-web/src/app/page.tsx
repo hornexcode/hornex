@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import { GameList } from '@/components/games/game-list';
 import { Team } from '@/types/team';
 import LeagueOfLegends from '@/assets/images/hero/league-of-legends-icon.png';
 import CsGo from '@/assets/images/hero/csgo-logo.png';
@@ -11,14 +10,13 @@ import BullHorn from '@/assets/images/bull-horn.png';
 import PickGameScreen from '@/assets/images/hero/pick-game.png';
 import GameScreen from '@/assets/images/hero/game.png';
 import TournamentScreen from '@/assets/images/hero/tournament.png';
-import styles from './styles.module.scss';
-import Button from '@/components/ui/button/button';
 import {
   ArrowRightOnRectangleIcon,
   ArrowUturnRightIcon,
   LinkIcon,
 } from '@heroicons/react/20/solid';
 import Link from 'next/link';
+import routes from '@/config/routes';
 
 const team: Team = {
   id: '1',
@@ -27,9 +25,14 @@ const team: Team = {
   gameId: 1,
 };
 
-export default function HeroPage() {
+export default function HomePage() {
   return (
     <main className="">
+      <div className="bg-red-600 py-1 text-center">
+        <span className="text-xs text-white">
+          We are still developing this platform, Hornex is lunching soon...
+        </span>
+      </div>
       <nav className="w-full border-b border-slate-700 bg-dark/75">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
           <a href="/hero" className="flex items-center">
@@ -115,7 +118,7 @@ export default function HeroPage() {
       </nav>
 
       <section id="home" className="h-[calc(100vh-68px)] bg-dark/75">
-        {/* <div className="absolute inset-0 top-0 -z-10 h-full w-full bg-[url('http://localhost:3000/images/major.avif')] bg-cover bg-no-repeat">
+        {/* <div className="absolute inset-0 top-0 -z-10 h-full w-full bg-[url('http://localhost:3000/images/major.avif')] bg-cover bg-no-Hornex">
           <div className="h-full w-full bg-dark/95" />
         </div> */}
 
@@ -170,13 +173,13 @@ export default function HeroPage() {
             Compete in Tournaments within a few clicks
           </h1>
           <p className="mb-8 text-xl font-normal text-gray-500 dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
-            The newest online sports betting company. A trustable company that
-            allow you to bet on your favorite e-sports.
+            The newest online sports tournaments company. A trustable company
+            that allow you to compete on your favorite e-sports.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
             <a
               href="#"
-              className="bg-primary-700 hover:bg-primary-800 inline-flex items-center justify-center rounded-lg px-5 py-3 text-center text-base font-medium text-white focus:ring-4 focus:ring-sky-300 dark:focus:ring-sky-900"
+              className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-center text-base font-medium text-gray-900 hover:border-sky-400 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-sky-400 dark:focus:ring-sky-600"
             >
               Play now
               <svg
@@ -212,7 +215,7 @@ export default function HeroPage() {
 
       <section id="supported-games" className="bg-dark py-14 md:py-28">
         <div className="container mx-auto text-center">
-          <h2 className="mb-8 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:mb-0 md:mb-14 md:text-5xl">
+          <h2 className="mb-8 text-4xl font-extrabold leading-none tracking-tight dark:text-white  md:text-5xl">
             Supported Games
           </h2>
 
@@ -223,7 +226,7 @@ export default function HeroPage() {
             >
               <Image
                 src={LeagueOfLegends}
-                className={styles.image}
+                className="contrast-0"
                 alt="League of Legends icon"
                 width={150}
                 height={150}
@@ -235,7 +238,7 @@ export default function HeroPage() {
             >
               <Image
                 src={CsGo}
-                className={styles.image}
+                className="contrast-0"
                 alt="Counter Strike Global Offensive icon"
                 width={150}
                 height={150}
@@ -247,7 +250,7 @@ export default function HeroPage() {
             >
               <Image
                 src={Dota2}
-                className={styles.image}
+                className="contrast-0"
                 alt="Counter Strike Global Offensive icon"
                 width={150}
                 height={150}
@@ -259,7 +262,7 @@ export default function HeroPage() {
             >
               <Image
                 src={RocketLeague}
-                className={styles.image}
+                className="contrast-0"
                 alt="Counter Strike Global Offensive icon"
                 width={150}
                 height={150}
@@ -319,7 +322,7 @@ export default function HeroPage() {
             Automated Result Tracking
           </h2>
           <p className="mx-auto mb-8 text-center font-light sm:text-xl md:w-[500px]">
-            Once you have connected your game account to Repeat Profile you are
+            Once you have connected your game account to Hornex Profile you are
             good to go. Everything afterwards is on us, no downloads and no
             match & result submission.
           </p>
@@ -452,9 +455,9 @@ export default function HeroPage() {
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <Link href={routes.contactUs} className="hover:underline">
                     Contact Us
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -481,12 +484,12 @@ export default function HeroPage() {
               </h2>
               <ul className="font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
-                  <Link href="/terms-and-condition" className="hover:underline">
+                  <Link href={routes.privacyPolicy} className="hover:underline">
                     Privacy Policy
                   </Link>
                 </li>
                 <li className="mb-4">
-                  <Link href="/terms-and-condition" className="hover:underline">
+                  <Link href={routes.termsOfUse} className="hover:underline">
                     Terms &amp; Conditions
                   </Link>
                 </li>
