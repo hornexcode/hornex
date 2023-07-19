@@ -210,16 +210,16 @@ export default function HeroPage() {
         </div>
       </section>
 
-      <section id="supported-games" className="bg-dark py-28">
+      <section id="supported-games" className="bg-dark py-14 md:py-28">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-extrabold leading-none tracking-tight dark:text-white md:mb-14 md:text-5xl">
+          <h2 className="mb-8 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:mb-0 md:mb-14 md:text-5xl">
             Supported Games
           </h2>
 
-          <div className="flex items-center justify-evenly text-gray-500">
+          <div className="flex items-center justify-evenly px-2 text-gray-500">
             <a
               href="#"
-              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
+              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={LeagueOfLegends}
@@ -231,7 +231,7 @@ export default function HeroPage() {
             </a>
             <a
               href="#"
-              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
+              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={CsGo}
@@ -243,7 +243,7 @@ export default function HeroPage() {
             </a>
             <a
               href="#"
-              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
+              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={Dota2}
@@ -255,7 +255,7 @@ export default function HeroPage() {
             </a>
             <a
               href="#"
-              className="p-8 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
+              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
             >
               <Image
                 src={RocketLeague}
@@ -269,14 +269,17 @@ export default function HeroPage() {
         </div>
       </section>
 
-      <section className="bg-light-dark py-28 text-slate-300" id="how-to-play">
-        <div className="container mx-auto grid grid-cols-2 ">
-          <div className=" space-y-12">
-            <h2 className=" text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
+      <section
+        className="bg-light-dark py-14 text-slate-300 md:py-28"
+        id="how-to-play"
+      >
+        <div className="container mx-auto grid md:grid-cols-2">
+          <div className="space-y-12 px-4 text-center md:text-left">
+            <h2 className="text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
               {' '}
               Play Unlimited Tournaments{' '}
             </h2>
-            <p className="w-[500px] font-light sm:text-xl">
+            <p className="font-light sm:text-xl md:w-[500px]">
               On Hornex you can play in an unlimited number of tournaments with
               your team. All the results are automatically updated on the
               platform and we are going to ensure a fair competition.
@@ -291,7 +294,7 @@ export default function HeroPage() {
               </Link>
             </div>
           </div>
-          <div className="xs:hidden relative px-4">
+          <div className="relative hidden px-4 md:block">
             <div className="absolute left-0 top-0 rounded border border-slate-700">
               <Image
                 src={GameScreen}
@@ -310,17 +313,17 @@ export default function HeroPage() {
         </div>
       </section>
 
-      <section id="automatedResultTracking" className="bg-dark py-28">
-        <div className="container mx-auto space-y-12 text-center">
+      <section id="automatedResultTracking" className="bg-dark py-14 md:py-28">
+        <div className="container mx-auto space-y-12 px-4 text-center">
           <h2 className="mb-4 text-center text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
             Automated Result Tracking
           </h2>
-          <p className="mx-auto mb-8 w-[500px] text-center font-light sm:text-xl">
+          <p className="mx-auto mb-8 text-center font-light sm:text-xl md:w-[500px]">
             Once you have connected your game account to Repeat Profile you are
             good to go. Everything afterwards is on us, no downloads and no
             match & result submission.
           </p>
-          <div className="mx-auto w-[50%] rounded border border-slate-700">
+          <div className="mx-auto hidden w-[50%] rounded border border-slate-700 md:block">
             <Image
               src={TournamentScreen}
               className="rounded"
@@ -404,52 +407,35 @@ export default function HeroPage() {
               </h2>
               <ul className="font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="https://www.google.com/maps/place/R.+Dailton+Fernandes+de+Carvalho,+32+-+S%C3%A3o+Pedro,+Barra+Mansa+-+RJ,+27340-010/@-22.5741039,-44.172524,17z/data=!3m1!4b1!4m6!3m5!1s0x9e9c2765cde3fb:0xe14e22a0f778d62b!8m2!3d-22.5741039!4d-44.172524!16s%2Fg%2F11c2gymxc8?entry=ttu"
+                    className="hover:underline"
+                  >
                     R. Dailton Fernandes de Carvalho, 32
                     <br />
                     Rio de Janeiro, Brasil - CEP 27340-010
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    target="_blank"
+                    href="tel:+55(24)981655545"
+                    className="hover:underline"
+                  >
                     +55 (24) 98165-5545
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="mailto:pedro357bm@gmail.com"
+                    className="hover:underline"
+                  >
                     pedro357bm@gmail.com
                   </a>
                 </li>
               </ul>
             </div>
 
-            <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
-                Company
-              </h2>
-              <ul className="font-medium text-gray-500 dark:text-gray-400">
-                <li className="mb-4">
-                  <a href="#" className=" hover:underline">
-                    About
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Careers
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Brand Center
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Blog
-                  </a>
-                </li>
-              </ul>
-            </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
                 Help center
@@ -467,11 +453,6 @@ export default function HeroPage() {
                 </li>
                 <li className="mb-4">
                   <a href="#" className="hover:underline">
-                    Facebook
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
                     Contact Us
                   </a>
                 </li>
@@ -484,17 +465,12 @@ export default function HeroPage() {
               <ul className="font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <a href="#" className="hover:underline">
-                    Create account
+                    Login
                   </a>
                 </li>
                 <li className="mb-4">
                   <a href="#" className="hover:underline">
-                    Sign in
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Manage Account
+                    Register
                   </a>
                 </li>
               </ul>
@@ -505,18 +481,25 @@ export default function HeroPage() {
               </h2>
               <ul className="font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <Link href="/terms-and-condition" className="hover:underline">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Licensing
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <Link href="/terms-and-condition" className="hover:underline">
                     Terms &amp; Conditions
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
+                Company
+              </h2>
+              <ul className="font-medium text-gray-500 dark:text-gray-400">
+                <li className="mb-4">
+                  <a href="#" className=" hover:underline">
+                    About
                   </a>
                 </li>
               </ul>
