@@ -30,16 +30,15 @@ export default function Tournament({ params }: TournamentProps) {
     <div className="">
       <section className="h-[160px] md:h-[250px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-sky-400 to-sky-300">
-          <div className="absolute inset-0 h-full w-full bg-dark/90 md:hidden"></div>
           <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat"></figure>
-          <div className="absolute -bottom-[60px] left-[50%] flex h-[240px] w-56 translate-x-[-50%] items-center rounded-lg md:-bottom-[200px] md:left-8 md:translate-x-0 md:bg-light-dark ">
+          <div className="absolute -bottom-[200px] left-8 flex h-[240px] w-56 items-center rounded-lg bg-light-dark ">
             <Image src={ESLOneLogo} alt="ESL One Logo" />
           </div>
         </div>
       </section>
 
-      <section className="space-y-4 divide-y divide-slate-800 p-8 md:pl-72">
-        <div className="flex flex-wrap justify-between gap-4">
+      <section className="space-y-4 divide-y divide-slate-800 p-8 pl-72">
+        <div className="flex justify-between">
           {/* tournament name and due date */}
           <div>
             <span className="text-sm">SEP 02 - Starting at 06:00 PM (-3)</span>
