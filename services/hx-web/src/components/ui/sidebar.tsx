@@ -22,7 +22,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
       )}
     >
       <ul className="block space-y-3 py-2">
-        <li>
+        <li title='Home'>
           <Link
             href={`/${routes.compete}`}
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-sky-500 text-center shadow-lg transition-all hover:bg-slate-700"
@@ -30,7 +30,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             <HomeIcon className="h-5 w-5 text-white shadow-xl group-hover:text-white" />
           </Link>
         </li>
-        <li>
+        <li title="Tournaments">
           <Link
             href={`${routes.platform}/league-of-legends/${routes.tournaments}`}
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
@@ -38,7 +38,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             <TrophyIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
         </li>
-        <li>
+        <li title="Compete">
           <Link
             href={`/${routes.compete}#available-games`}
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
@@ -49,7 +49,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
       </ul>
       <div className="h-[1.5px] w-[36px] self-center rounded-md bg-slate-800"></div>
       <ul className="block space-y-3 py-2">
-        <li>
+        <li title="League of Legends">
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
@@ -57,7 +57,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             <LolIcon className="w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
           </Link>
         </li>
-        <li>
+        <li title="Counter Strike">
           <Link
             href="#"
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
@@ -65,7 +65,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             <CounterStrikeLogoIcon className="fill-slate-400 p-2 shadow-xl group-hover:fill-white" />
           </Link>
         </li>
-        <li>
+        <li title="Connect games">
           <Link
             href={`/${routes.compete}`}
             className="group flex h-[42px] cursor-pointer items-center justify-center rounded-lg bg-dark text-center shadow-lg ring-2 ring-slate-800 hover:ring-slate-700"
