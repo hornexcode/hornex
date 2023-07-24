@@ -1,20 +1,20 @@
-"use client";
-import { Menu, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+'use client';
+import { Menu, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 import {
   ArrowLeftOnRectangleIcon,
   ChevronDownIcon,
   CogIcon,
   UserIcon,
-} from "@heroicons/react/20/solid";
+} from '@heroicons/react/20/solid';
 
 export default function ProfileMenuItem() {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          <UserIcon className="w-5 h-5 mr-2" aria-hidden="true" />
-          <span className="text-xs text-white group-hover/item:text-gray-200">
+          <UserIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+          <span className="hidden text-xs text-white group-hover/item:text-gray-200 md:inline-block">
             Pedro Santos
           </span>
           <ChevronDownIcon
@@ -38,7 +38,7 @@ export default function ProfileMenuItem() {
               {({ active }) => (
                 <button
                   className={`${
-                    active ? "bg-slate-900 text-slate-200" : "text-slate-200"
+                    active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
                   <UserIcon className="mr-2 h-5 w-5" aria-hidden="true" />
@@ -50,7 +50,7 @@ export default function ProfileMenuItem() {
               {({ active }) => (
                 <button
                   className={`${
-                    active ? "bg-slate-900 text-slate-200" : "text-slate-200"
+                    active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
                   <CogIcon className="mr-2 h-5 w-5" aria-hidden="true" />
@@ -65,7 +65,7 @@ export default function ProfileMenuItem() {
               {({ active }) => (
                 <button
                   className={`${
-                    active ? "bg-slate-900 text-slate-200" : "text-slate-200"
+                    active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
                   <ArrowLeftOnRectangleIcon

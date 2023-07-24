@@ -3,15 +3,15 @@ import {
   MapPinIcon,
   TrophyIcon,
   UsersIcon,
-} from "@heroicons/react/20/solid";
-import Image, { StaticImageData } from "next/image";
-import classnames from "classnames";
+} from '@heroicons/react/20/solid';
+import Image, { StaticImageData } from 'next/image';
+import classnames from 'classnames';
 
-import TournamentCardBadge from "./tournament-card-badge";
-import TournamentCardAttr from "./tournament-card-attr";
-import Button from "@/components/ui/button/button";
-import { EmblemGoldIcon } from "@/components/ui/icons/emblem-gold-icon";
-import { EmblemSilverIcon } from "@/components/ui/icons/emblem-silver-icon";
+import TournamentCardBadge from './tournament-card-badge';
+import TournamentCardAttr from './tournament-card-attr';
+import Button from '@/components/ui/button/button';
+import { EmblemGoldIcon } from '@/components/ui/icons/emblem-gold-icon';
+import { EmblemSilverIcon } from '@/components/ui/icons/emblem-silver-icon';
 
 type TournamentCardInfoProps = {
   tournament: {
@@ -50,17 +50,20 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
           <div className="block pb-2 pt-4">
             <div className="flex flex-wrap space-x-4">
               <TournamentCardAttr
+                size="small"
                 icon={<UsersIcon className="h-4 w-4" />}
                 value="16"
                 attr="Teams"
               />
               <TournamentCardAttr
+                size="small"
                 icon={<TrophyIcon className="h-4 w-4" />}
                 value="1500 BRL"
                 attr="Prize Pool"
               />
 
               <TournamentCardAttr
+                size="small"
                 icon={<TrophyIcon className="h-4 w-4" />}
                 value="Silver, Gold"
                 attr="Elo"
@@ -117,15 +120,13 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
           <div className="flex items-center">
             <div className="flex">
               <UsersIcon className="mr-1 h-5 w-4 fill-slate-300" />
-              <span className="pr-4 text-xs font-bold text-white">
-                4/16
-              </span>
+              <span className="pr-4 text-xs font-bold text-white">4/16</span>
             </div>
             <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <div
                 className={classnames(
-                  "h-2 rounded-full bg-green-400",
-                  "w-[70%]"
+                  'h-2 rounded-full bg-green-400',
+                  'w-[70%]'
                 )}
               ></div>
             </div>

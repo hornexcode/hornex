@@ -1,10 +1,10 @@
-import Card from "@/components/ui/card/card";
-import classnames from "classnames";
-import Image from "next/image";
-import connect from "@/assets/images/connect.webp";
-import graphs from "@/assets/images/graphs.webp";
-import infinity from "@/assets/images/infinity.png";
-import award from "@/assets/images/award.webp";
+import Card from '@/components/ui/card/card';
+import classnames from 'classnames';
+import Image from 'next/image';
+import connect from '@/assets/images/connect.webp';
+import graphs from '@/assets/images/graphs.webp';
+import infinity from '@/assets/images/infinity.png';
+import award from '@/assets/images/award.webp';
 
 interface HowItWorksProps {
   classNames?: string;
@@ -14,32 +14,32 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ classNames }) => {
   const howItWorksCards = [
     {
       image: connect,
-      title: "Connect & Join",
+      title: 'Connect & Join',
       description:
-        "Once you've joined a Tournament, all you have to do is play games as you usually do"
+        "Once you've joined a Tournament, all you have to do is play games as you usually do",
     },
     {
       image: graphs,
-      title: "Automated Results",
+      title: 'Automated Results',
       description:
-        "Repeat is a unique platform because we track your results automatically - you just have to connect your account"
+        'Hornex is a unique platform because we track your results automatically - you just have to connect your account',
     },
     {
       image: infinity,
-      title: "Unlimited Play",
+      title: 'Unlimited Play',
       description:
-        "Did you know you can play multiple Tournaments at the same time? Actually you can play as much as you want"
+        'Did you know you can play multiple Tournaments at the same time? Actually you can play as much as you want',
     },
     {
       image: award,
-      title: "Get Rewarded",
+      title: 'Get Rewarded',
       description:
-        "Once a Tournament has ended you are rewarded based on your score which is based on the games you've played"
-    }
+        "Once a Tournament has ended you are rewarded based on your score which is based on the games you've played",
+    },
   ];
 
   return (
-    <div className={classnames("m-auto flex max-w-5xl", classNames)}>
+    <div className={classnames('m-auto flex max-w-5xl', classNames)}>
       <Card
         title="How it works"
         subtitle="Fully Automated Tournament Experience"
