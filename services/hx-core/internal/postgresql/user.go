@@ -3,6 +3,7 @@ package postgresql
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/pedrosantosbr/x5/internal"
 	"github.com/pedrosantosbr/x5/internal/postgresql/db"
 	"github.com/pedrosantosbr/x5/internal/services"
@@ -25,8 +26,14 @@ func (u *User) Create(ctx context.Context, params services.UserCreateParams) (in
 	// XXX: `UpdatedAt` is being created on the database side
 
 	res, err := u.q.InsertUser(ctx, db.InsertUserParams{
-		Email:    params.Email,
-		Password: params.Password,
+		Email:     params.Email,
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
+		Password:  params.Password,
+		DateOfBirth: pgtype.Date{
+			Time:  params.DateOfBirth,
+			Valid: true,
+		},
 	})
 	if err != nil {
 		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "insert user")
@@ -38,5 +45,23 @@ func (u *User) Create(ctx context.Context, params services.UserCreateParams) (in
 		Password:  params.Password,
 		CreatedAt: res.CreatedAt.Time,
 		UpdatedAt: res.UpdatedAt.Time,
+	}, nil
+}
+
+func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, error) {
+	res, err := u.q.SelectUserByEmail(ctx, email)
+	if err != nil {
+		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "select user by email")
+	}
+
+	return internal.User{
+		ID:          res.ID.String(),
+		Email:       res.Email,
+		Password:    res.Password,
+		FirstName:   res.FirstName,
+		LastName:    res.LastName,
+		DateOfBirth: res.DateOfBirth.Time,
+		CreatedAt:   res.CreatedAt.Time,
+		UpdatedAt:   res.UpdatedAt.Time,
 	}, nil
 }

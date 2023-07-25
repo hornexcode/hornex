@@ -165,6 +165,10 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 
 	rest.NewUserHandler(usvc).Register(router)
 
+	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	// fsys, _ := fs.Sub(content, "static")
 	// router.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(fsys))))
 

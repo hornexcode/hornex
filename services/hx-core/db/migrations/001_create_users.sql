@@ -2,11 +2,11 @@ CREATE TABLE users (
   id               UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email            VARCHAR NOT NULL UNIQUE,
   password         VARCHAR NOT NULL,
-  first_name       VARCHAR,
-  last_name        VARCHAR,
-  date_of_birth    DATE,
-  created_at       TIMESTAMP WITHOUT TIME ZONE,
-  updated_at       TIMESTAMP WITHOUT TIME ZONE
+  first_name       VARCHAR NOT NULL,
+  last_name        VARCHAR NOT NULL,
+  date_of_birth    DATE NOT NULL,
+  created_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+  updated_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
 
 ---- create above / drop below ----

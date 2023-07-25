@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -32,8 +33,7 @@ func (h *UserHandler) Register(r *chi.Mux) {
 type User struct {
 	ID        string    `json:"id"`
 	Email     string    `json:"email"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
+	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -41,6 +41,9 @@ type User struct {
 // CreateUserRequest defines the request used for creating users.
 type CreateUserRequest struct {
 	Email         string `json:"email"`
+	FirstName     string `json:"firstName"`
+	LastName      string `json:"lastName"`
+	DateOfBirth   string `json:"dateOfBirth"`
 	Password      string `json:"password"`
 	TermsAccepted bool   `json:"termsAccepted"`
 }
@@ -61,9 +64,22 @@ func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 
+	dob, err := time.Parse("2006-01-02", req.DateOfBirth)
+	if err != nil {
+		renderErrorResponse(w, r, "invalid request",
+			internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "Invalid date format"))
+
+		return
+	}
+
+	fmt.Println("dob", dob)
+
 	user, err := h.svc.Create(r.Context(), services.UserCreateParams{
 		Email:         req.Email,
 		Password:      req.Password,
+		FirstName:     req.FirstName,
+		LastName:      req.LastName,
+		DateOfBirth:   dob,
 		TermsAccepted: req.TermsAccepted,
 	})
 	if err != nil {
@@ -76,8 +92,7 @@ func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
 			User: User{
 				ID:        user.ID,
 				Email:     user.Email,
-				FirstName: user.FirstName,
-				LastName:  user.LastName,
+				Name:      fmt.Sprintf("%s %s", req.FirstName, req.LastName),
 				CreatedAt: user.CreatedAt,
 				UpdatedAt: user.UpdatedAt,
 			},
