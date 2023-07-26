@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -33,19 +32,20 @@ func (h *UserHandler) Register(r *chi.Mux) {
 type User struct {
 	ID        string    `json:"id"`
 	Email     string    `json:"email"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // CreateUserRequest defines the request used for creating users.
 type CreateUserRequest struct {
 	Email         string `json:"email"`
-	FirstName     string `json:"firstName"`
-	LastName      string `json:"lastName"`
-	DateOfBirth   string `json:"dateOfBirth"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	DateOfBirth   string `json:"date_of_birth"`
 	Password      string `json:"password"`
-	TermsAccepted bool   `json:"termsAccepted"`
+	TermsAccepted bool   `json:"terms_accepted"`
 }
 
 // CreateUserResponse defines the response returned by the create user endpoint.
@@ -61,18 +61,15 @@ func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
 	defer r.Body.Close()
 
 	dob, err := time.Parse("2006-01-02", req.DateOfBirth)
 	if err != nil {
 		renderErrorResponse(w, r, "invalid request",
-			internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "Invalid date format"))
+			internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "time.Parse"))
 
 		return
 	}
-
-	fmt.Println("dob", dob)
 
 	user, err := h.svc.Create(r.Context(), services.UserCreateParams{
 		Email:         req.Email,
@@ -82,6 +79,7 @@ func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
 		DateOfBirth:   dob,
 		TermsAccepted: req.TermsAccepted,
 	})
+
 	if err != nil {
 		renderErrorResponse(w, r, "create failed", err)
 		return
@@ -92,7 +90,8 @@ func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
 			User: User{
 				ID:        user.ID,
 				Email:     user.Email,
-				Name:      fmt.Sprintf("%s %s", req.FirstName, req.LastName),
+				FirstName: user.FirstName,
+				LastName:  user.LastName,
 				CreatedAt: user.CreatedAt,
 				UpdatedAt: user.UpdatedAt,
 			},

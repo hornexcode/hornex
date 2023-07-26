@@ -24,7 +24,7 @@ Run:
 ```
 tern migrate \
     --migrations 'db/migrations/' \
-    --conn-string 'postgres://user:password@localhost:5432/dbname?sslmode=disable'
+    --conn-string 'postgres://hxcore:password@localhost:5432/hxcore?sslmode=disable'
 ```
 
 Create:

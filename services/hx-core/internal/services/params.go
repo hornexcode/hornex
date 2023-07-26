@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -19,7 +18,6 @@ type UserCreateParams struct {
 
 // Validate indicates whether the fields are valid or not.
 func (p UserCreateParams) Validate() error {
-	fmt.Println("params", p.DateOfBirth)
 	user := internal.User{
 		Email:       p.Email,
 		FirstName:   p.FirstName,
@@ -34,7 +32,7 @@ func (p UserCreateParams) Validate() error {
 
 	if !p.TermsAccepted {
 		return validation.Errors{
-			"termsAccepted": internal.NewErrorf(internal.ErrorCodeInvalidArgument, "Terms and conditions not accepted"),
+			"termsAccepted": internal.NewErrorf(internal.ErrorCodeInvalidArgument, "terms and conditions not accepted"),
 		}
 	}
 

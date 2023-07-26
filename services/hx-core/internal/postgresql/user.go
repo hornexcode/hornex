@@ -42,7 +42,8 @@ func (u *User) Create(ctx context.Context, params services.UserCreateParams) (in
 	return internal.User{
 		ID:        res.ID.String(),
 		Email:     params.Email,
-		Password:  params.Password,
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
 		CreatedAt: res.CreatedAt.Time,
 		UpdatedAt: res.UpdatedAt.Time,
 	}, nil
@@ -51,6 +52,10 @@ func (u *User) Create(ctx context.Context, params services.UserCreateParams) (in
 func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, error) {
 	res, err := u.q.SelectUserByEmail(ctx, email)
 	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return internal.User{}, nil
+		}
+
 		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "select user by email")
 	}
 

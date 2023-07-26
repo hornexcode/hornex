@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/pedrosantosbr/x5/internal"
@@ -27,14 +28,15 @@ func (u *User) Create(ctx context.Context, params UserCreateParams) (internal.Us
 		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "params.Validate")
 	}
 
-	// TODO: check if user already exists
 	found, err := u.repo.FindByEmail(ctx, params.Email)
 	if err != nil {
 		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "repo.FindByEmail")
 	}
 
 	if found.ID != "" {
-		return internal.User{}, internal.WrapErrorf(validation.NewError("email", "already exists"), internal.ErrorCodeInvalidArgument, "email already exists")
+		return internal.User{}, internal.WrapErrorf(validation.Errors{
+			"email": errors.New("email already exists"),
+		}, internal.ErrorCodeInvalidArgument, "email already exists")
 	}
 
 	hashedPassword, err := u.hasher.Hash(params.Password)
