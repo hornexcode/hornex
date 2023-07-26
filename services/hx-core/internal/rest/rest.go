@@ -22,7 +22,7 @@ func renderErrorResponse(w http.ResponseWriter, r *http.Request, msg string, err
 	status := http.StatusInternalServerError
 
 	var ierr *internal.Error
-	fmt.Printf("Error: %T\n", err)
+
 	if !errors.As(err, &ierr) {
 		resp.Error = "internal error"
 	} else {
