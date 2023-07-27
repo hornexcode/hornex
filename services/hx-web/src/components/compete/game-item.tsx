@@ -15,8 +15,17 @@ const bgColors: bgColorsType = {
   sky: 'bg-sky-400/90',
   purple: 'bg-purple-400/80',
   red: 'bg-red-400/80',
-  yellow: 'bg-yellow-400/80',
+  yellow: 'bg-yellow-400/80'
 };
+
+type PlatformIcon =
+  | ((props: React.SVGAttributes<{}>) => JSX.Element)
+  | React.ForwardRefExoticComponent<
+      React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
+        title?: string;
+        titleId?: string;
+      } & React.RefAttributes<SVGSVGElement>
+    >;
 
 export type GameItemProps = {
   bgImage: string;
@@ -24,7 +33,7 @@ export type GameItemProps = {
   LogoComponentIcon: (props: React.SVGAttributes<{}>) => JSX.Element;
   bgColor: keyof bgColorsType;
   platforms: {
-    Icon: (props: React.SVGAttributes<{}>) => JSX.Element;
+    Icon: PlatformIcon;
     bgColor: string;
   }[];
   name: string;
@@ -42,7 +51,7 @@ export const GameItem: FC<GameItemProps> = ({
   name,
   platforms,
   registeredPlayers,
-  tournaments,
+  tournaments
 }) => (
   <div className="rounded-lg bg-light-dark shadow-card">
     {/* tournament card header */}
@@ -51,7 +60,7 @@ export const GameItem: FC<GameItemProps> = ({
         style={{
           background: `url('${bgImage}')`,
           backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
+          backgroundRepeat: 'no-repeat'
         }}
         className={classNames(
           'group relative h-full w-full overflow-hidden rounded-lg'

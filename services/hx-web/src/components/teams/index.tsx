@@ -1,1 +1,2 @@
-export { default } from "./team-details";
+export * from './team-details';
+export * from './team-search-list';
