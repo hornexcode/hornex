@@ -44,9 +44,9 @@ export default function TeamPage() {
         <div className="flex items-center gap-2">
           <TeamSearchList onSelect={() => console.log()} />
 
-          <Link href={'teams/create'} className="">
+          <Link href={'teams/create'} className="block">
             <Button
-              className="group flex cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+              className="group flex min-w-[12rem] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
               color="primary"
               shape="rounded"
             >
@@ -61,13 +61,13 @@ export default function TeamPage() {
 
       <div>
         <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
-          <span className="px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
+          <span className="px-6 py-4 text-sm tracking-wider text-gray-500 dark:text-gray-300">
             Team
           </span>
-          <span className="px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
+          <span className="px-6 py-4 text-sm tracking-wider text-gray-500 dark:text-gray-300">
             Matches
           </span>
-          <span className="px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300"></span>
+          <span className="px-6 py-4 text-sm tracking-wider text-gray-500 dark:text-gray-300"></span>
         </div>
 
         {teams.map((team) => (

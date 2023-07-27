@@ -55,7 +55,7 @@ export default function TeamSearchList({ onSelect }: CollectionSelectTypes) {
       <div className="relative">
         <SearchIcon className="absolute left-6 h-full text-gray-700 dark:text-white" />
         <Input
-          inputClassName="pl-14 mt-0"
+          inputClassName="pl-14 !mt-0"
           type="search"
           value={searchKeyword}
           onChange={(e) => setSearchKeyword(e.target.value)}

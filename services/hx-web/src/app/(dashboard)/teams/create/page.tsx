@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import { set, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +10,7 @@ import InputLabel from '@/components/ui/form/input-label';
 import Input from '@/components/ui/form/input';
 
 import classnames from 'classnames';
-import { TrashIcon } from '@heroicons/react/20/solid';
+import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
 
 // const { patch: updateImageMeta } = dataLoaders<PACAdminImage>('adminImageUpdateMeta')
 
@@ -20,11 +20,19 @@ type Member = {
 };
 
 const form = z.object({
-  username: z.string().min(1, { message: 'Username is required' }),
+  username: z.string().min(1, { message: 'Username is required' })
 });
 type MemberForm = z.infer<typeof form>;
 
-const MemberListItem = ({ member }: { member: Member }) => (
+type MemberListItemProps = {
+  member: Member;
+  onRemoveMember: (id: number) => void;
+};
+
+const MemberListItem: FC<MemberListItemProps> = ({
+  member,
+  onRemoveMember
+}) => (
   <li className="flex items-center rounded-lg bg-light-dark p-4">
     <span className="text-white">{member.username}</span>
     <div className="ml-auto">
@@ -33,7 +41,7 @@ const MemberListItem = ({ member }: { member: Member }) => (
         size="mini"
         shape="rounded"
         className="ml-auto"
-        onClick={() => console.log('')}
+        onClick={() => onRemoveMember(member.id)}
       >
         <div className="flex items-center">
           <TrashIcon className="mr-1 h-4 w-4" /> Remove
@@ -43,44 +51,67 @@ const MemberListItem = ({ member }: { member: Member }) => (
   </li>
 );
 
-const MemberList = ({ members }: { members: Member[] }) => {
+type MemberListProps = {
+  members: Member[];
+  onRemoveMember: (id: number) => void;
+};
+
+const MemberList: FC<MemberListProps> = ({ members, onRemoveMember }) => {
   return (
     <ul className="space-y-4">
       {members.map((member) => (
-        <MemberListItem key={member.id} member={member} />
+        <MemberListItem
+          key={member.id}
+          member={member}
+          onRemoveMember={onRemoveMember}
+        />
       ))}
     </ul>
   );
 };
 
 export default function CreateTeamPage() {
-  // TODO: Max teams member 5
-  // TODO: Remove member from member list
-
   const [members, setMembers] = useState<Member[]>([]);
   const [fetching, setFetching] = useState(false);
+  const [isLimitReached, setIsLimitReached] = useState(false);
+
+  const removeHandler = (id: number) => {
+    setMembers((prev) => prev.filter((member) => member.id !== id));
+    setIsLimitReached(false);
+  };
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors }
   } = useForm<MemberForm>({
-    resolver: zodResolver(form),
+    resolver: zodResolver(form)
   });
 
   const addMember = async (data: MemberForm) => {
     setFetching(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     if (members.find((member) => member.username === data.username)) {
+      setFetching(false);
+      reset();
       return;
     }
 
-    setMembers((prev) => [
-      ...prev,
-      { id: members.length + 1, username: data.username.toLowerCase() },
-    ]);
+    if (members.length === 4) {
+      setIsLimitReached(true);
+    }
+
+    setMembers((prev) => {
+      return [
+        ...prev,
+        {
+          id: Math.random() + members.length,
+          username: data.username.toLowerCase()
+        }
+      ];
+    });
 
     reset();
     setFetching(false);
@@ -92,6 +123,19 @@ export default function CreateTeamPage() {
         <h2 className="text-left text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">
           Create Team
         </h2>
+
+        <div className="flex items-center gap-2">
+          <Button
+            className="group flex min-w-[12rem] cursor-pointer items-center justify-center rounded-lg bg-sky-400 text-center shadow-lg transition-all hover:bg-sky-500"
+            color="primary"
+            shape="rounded"
+          >
+            <div className="flex items-center gap-2 text-base font-bold uppercase leading-3 tracking-tight text-white">
+              <PlusIcon className="h-5 fill-white" />
+              Create
+            </div>
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -113,13 +157,18 @@ export default function CreateTeamPage() {
             <div>
               <InputLabel title="Add team member" important />
               <Input
-                disabled={fetching}
+                disabled={fetching || isLimitReached}
                 inputClassName={classnames({
                   'dark:border-red-500': errors.username,
+                  'placeholder-red-500': isLimitReached
                 })}
                 error={errors.username?.message}
                 {...register('username', { required: true })}
-                placeholder="Enter member username"
+                placeholder={
+                  isLimitReached
+                    ? 'Limit of members reached'
+                    : 'Enter member username'
+                }
               />
             </div>
             <Button
@@ -137,7 +186,7 @@ export default function CreateTeamPage() {
           </form>
 
           <div className="py-10">
-            <MemberList members={members} />
+            <MemberList members={members} onRemoveMember={removeHandler} />
           </div>
         </div>
       </div>

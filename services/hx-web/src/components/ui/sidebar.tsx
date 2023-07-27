@@ -41,7 +41,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         </li>
         <li title="Teams">
           <Link
-            href={`/${routes.platform}/${routes.teams}`}
+            href={`/${routes.teams}`}
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <UserGroupIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
