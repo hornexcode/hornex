@@ -1,10 +1,7 @@
 'use client';
 
 import TeamSearchList from '@/components/teams/team-search-list';
-import {
-  ChevronRightIcon,
-  PlusIcon
-} from '@heroicons/react/20/solid';
+import { ChevronRightIcon, PlusIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import Button from '@/components/ui/button/button';
 
@@ -47,20 +44,22 @@ export default function TeamPage() {
         <div className="flex items-center gap-2">
           <TeamSearchList onSelect={() => console.log()} />
 
-          <Button
-            className="group flex cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
-            color="primary"
-            shape="rounded"
-          >
-            <div className="flex items-center gap-3 text-base font-bold leading-3 tracking-tight text-white">
-              <PlusIcon className="h-4 fill-white" />
-              Add team
-            </div>
-          </Button>
+          <Link href={'teams/create'} className="">
+            <Button
+              className="group flex cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+              color="primary"
+              shape="rounded"
+            >
+              <div className="flex items-center gap-3 text-base font-bold leading-3 tracking-tight text-white">
+                <PlusIcon className="h-4 fill-white" />
+                Create team
+              </div>
+            </Button>
+          </Link>
         </div>
       </div>
 
-      <section id="my-teams" className="">
+      <div>
         <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
           <span className="px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
             Team
@@ -97,7 +96,7 @@ export default function TeamPage() {
             </div>
           </div>
         ))}
-      </section>
+      </div>
     </div>
   );
 }
