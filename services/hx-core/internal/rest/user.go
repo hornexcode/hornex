@@ -7,12 +7,13 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/pedrosantosbr/x5/internal"
-	"github.com/pedrosantosbr/x5/internal/services"
+	"hornex.gg/hornex/errors"
+	"hornex.gg/hx-core/internal"
 )
 
 type UserService interface {
-	Create(ctx context.Context, params services.UserCreateParams) (internal.User, error)
+	RegisterNewUser(ctx context.Context, params internal.UserCreateParams) (internal.User, error)
+	SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error)
 }
 
 type UserHandler struct {
@@ -26,21 +27,23 @@ func NewUserHandler(svc UserService) *UserHandler {
 
 // Register connects the handlers to the router
 func (h *UserHandler) Register(r *chi.Mux) {
-	r.Post("/api/users", h.create)
+	r.Post("/api/users/register", h.register)
 }
 
 type User struct {
 	ID        string    `json:"id"`
 	Email     string    `json:"email"`
+	Username  string    `json:"username"`
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// CreateUserRequest defines the request used for creating users.
-type CreateUserRequest struct {
+// RegisterUser defines the request used for creating users.
+type RegisterUserRequest struct {
 	Email         string `json:"email"`
+	Username      string `json:"username"`
 	FirstName     string `json:"first_name"`
 	LastName      string `json:"last_name"`
 	DateOfBirth   string `json:"date_of_birth"`
@@ -53,11 +56,11 @@ type CreateUserResponse struct {
 	User User `json:"user"`
 }
 
-func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
-	var req CreateUserRequest
+func (h *UserHandler) register(w http.ResponseWriter, r *http.Request) {
+	var req RegisterUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		renderErrorResponse(w, r, "invalid request",
-			internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "json decoder"))
+			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
 
 		return
 	}
@@ -66,13 +69,14 @@ func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
 	dob, err := time.Parse("2006-01-02", req.DateOfBirth)
 	if err != nil {
 		renderErrorResponse(w, r, "invalid request",
-			internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "time.Parse"))
+			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "time.Parse"))
 
 		return
 	}
 
-	user, err := h.svc.Create(r.Context(), services.UserCreateParams{
+	user, err := h.svc.RegisterNewUser(r.Context(), internal.UserCreateParams{
 		Email:         req.Email,
+		Username:      req.Username,
 		Password:      req.Password,
 		FirstName:     req.FirstName,
 		LastName:      req.LastName,
@@ -97,4 +101,10 @@ func (h *UserHandler) create(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 		http.StatusCreated)
+}
+
+// SignInRequest defines the request used for signing in users.
+type SignInRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }

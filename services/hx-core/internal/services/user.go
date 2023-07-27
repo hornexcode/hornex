@@ -2,62 +2,73 @@ package services
 
 import (
 	"context"
-	"errors"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/pedrosantosbr/x5/internal"
+	"hornex.gg/hornex/errors"
+	"hornex.gg/hx-core/internal"
+	"hornex.gg/hx-core/internal/repositories"
 )
-
-type UserRepository interface {
-	Create(ctx context.Context, user UserCreateParams) (internal.User, error)
-	FindByEmail(ctx context.Context, email string) (internal.User, error)
-}
 
 type PasswordHasher interface {
 	Hash(password string) (string, error)
 	Check(password, hash string) error
 }
 
-type User struct {
-	repo   UserRepository
-	hasher PasswordHasher
+type Identifier interface {
+	Register(user *internal.User) error
 }
 
-func (u *User) Create(ctx context.Context, params UserCreateParams) (internal.User, error) {
+type User struct {
+	repo       repositories.UserRepository
+	hasher     PasswordHasher
+	identifier Identifier
+}
+
+func (u *User) RegisterNewUser(ctx context.Context, params internal.UserCreateParams) (internal.User, error) {
 	if err := params.Validate(); err != nil {
-		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "params.Validate")
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "params.Validate")
 	}
 
 	found, err := u.repo.FindByEmail(ctx, params.Email)
 	if err != nil {
-		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "repo.FindByEmail")
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.FindByEmail")
 	}
 
 	if found.ID != "" {
-		return internal.User{}, internal.WrapErrorf(validation.Errors{
-			"email": errors.New("email already exists"),
-		}, internal.ErrorCodeInvalidArgument, "email already exists")
+		return internal.User{}, errors.WrapErrorf(validation.Errors{
+			"email": errors.NewErrorf(errors.ErrorCodeInvalidArgument, "email already exists"),
+		}, errors.ErrorCodeInvalidArgument, "email already exists")
 	}
 
 	hashedPassword, err := u.hasher.Hash(params.Password)
 	if err != nil {
-		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "hasher.Hash")
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "hasher.Hash")
 	}
 
 	params.Password = hashedPassword
 
 	user, err := u.repo.Create(ctx, params)
 	if err != nil {
-		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "repo.Create")
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.Create")
+	}
+
+	err = u.identifier.Register(&user)
+	if err != nil {
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "token.GenerateToken")
 	}
 
 	return user, nil
 }
 
-// NewUser Service...
-func NewUser(repo UserRepository, hasher PasswordHasher) *User {
+func (u *User) SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error) {
+	return internal.UserToken{}, nil
+}
+
+// NewUserService...
+func NewUserService(repo repositories.UserRepository, hasher PasswordHasher, identifier Identifier) *User {
 	return &User{
-		repo:   repo,
-		hasher: hasher,
+		repo:       repo,
+		hasher:     hasher,
+		identifier: identifier,
 	}
 }

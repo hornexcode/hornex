@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/pedrosantosbr/x5/internal"
-	"github.com/pedrosantosbr/x5/internal/postgresql/db"
-	"github.com/pedrosantosbr/x5/internal/services"
+	"hornex.gg/hornex/errors"
+	"hornex.gg/hx-core/internal"
+	"hornex.gg/hx-core/internal/repositories/postgresql/db"
 )
 
 // User is the User Repository
@@ -15,12 +15,12 @@ type User struct {
 }
 
 // NewUser instatiates the User Repository
-func NewUser(d db.DBTX) *User {
+func NewPostgresqlUserRepositoryImpl(d db.DBTX) *User {
 	return &User{q: db.New(d)}
 }
 
 // Create inserts a new user record
-func (u *User) Create(ctx context.Context, params services.UserCreateParams) (internal.User, error) {
+func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (internal.User, error) {
 	// XXX: `ID` is being created on the database side
 	// XXX: `CreatedAt` is being created on the database side
 	// XXX: `UpdatedAt` is being created on the database side
@@ -36,7 +36,7 @@ func (u *User) Create(ctx context.Context, params services.UserCreateParams) (in
 		},
 	})
 	if err != nil {
-		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "insert user")
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "insert user")
 	}
 
 	return internal.User{
@@ -56,7 +56,7 @@ func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, er
 			return internal.User{}, nil
 		}
 
-		return internal.User{}, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "select user by email")
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select user by email")
 	}
 
 	return internal.User{

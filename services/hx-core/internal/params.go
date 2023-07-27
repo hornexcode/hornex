@@ -1,14 +1,15 @@
-package services
+package internal
 
 import (
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/pedrosantosbr/x5/internal"
+	"hornex.gg/hornex/errors"
 )
 
 type UserCreateParams struct {
 	Email         string
+	Username      string
 	FirstName     string
 	LastName      string
 	Password      string
@@ -18,8 +19,9 @@ type UserCreateParams struct {
 
 // Validate indicates whether the fields are valid or not.
 func (p UserCreateParams) Validate() error {
-	user := internal.User{
+	user := User{
 		Email:       p.Email,
+		Username:    p.Username,
 		FirstName:   p.FirstName,
 		LastName:    p.LastName,
 		DateOfBirth: p.DateOfBirth,
@@ -27,14 +29,23 @@ func (p UserCreateParams) Validate() error {
 	}
 
 	if err := validation.Validate(&user); err != nil {
-		return internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "validation.Validate")
+		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "validation.Validate")
 	}
 
 	if !p.TermsAccepted {
 		return validation.Errors{
-			"termsAccepted": internal.NewErrorf(internal.ErrorCodeInvalidArgument, "terms and conditions not accepted"),
+			"termsAccepted": errors.NewErrorf(errors.ErrorCodeInvalidArgument, "terms and conditions not accepted"),
 		}
 	}
 
+	return nil
+}
+
+type UserSignInParams struct {
+	Email    string
+	Password string
+}
+
+func (p UserSignInParams) Validate() error {
 	return nil
 }

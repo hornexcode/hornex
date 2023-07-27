@@ -1,35 +1,26 @@
-package internal
+package postgresql
 
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/url"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/pedrosantosbr/x5/internal"
-	"github.com/pedrosantosbr/x5/internal/envvar"
+	"hornex.gg/hornex/envvar"
+	"hornex.gg/hornex/errors"
 )
 
 // NewPostgreSQL instantiates the PostgreSQL database using configuration defined in environment variables.
 func NewPostgreSQL(conf *envvar.Configuration) (*pgxpool.Pool, error) {
-	get := func(v string) string {
-		res, err := conf.Get(v)
-		if err != nil {
-			log.Fatalf("Couldn't get configuration value for %s: %s", v, err)
-		}
-
-		return res
-	}
 
 	// XXX: We will revisit this code in future episodes replacing it with another solution
-	databaseHost := get("DATABASE_HOST")
-	databasePort := get("DATABASE_PORT")
-	databaseUsername := get("DATABASE_USERNAME")
-	databasePassword := get("DATABASE_PASSWORD")
-	databaseName := get("DATABASE_NAME")
-	databaseSSLMode := get("DATABASE_SSLMODE")
+	databaseHost := conf.Get("DATABASE_HOST")
+	databasePort := conf.Get("DATABASE_PORT")
+	databaseUsername := conf.Get("DATABASE_USERNAME")
+	databasePassword := conf.Get("DATABASE_PASSWORD")
+	databaseName := conf.Get("DATABASE_NAME")
+	databaseSSLMode := conf.Get("DATABASE_SSLMODE")
 	// XXX: -
 
 	dsn := url.URL{
@@ -46,11 +37,11 @@ func NewPostgreSQL(conf *envvar.Configuration) (*pgxpool.Pool, error) {
 
 	pool, err := pgxpool.New(context.Background(), dsn.String())
 	if err != nil {
-		return nil, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "pgxpool.Connect")
+		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "pgxpool.Connect")
 	}
 
 	if err := pool.Ping(context.Background()); err != nil {
-		return nil, internal.WrapErrorf(err, internal.ErrorCodeUnknown, "db.Ping")
+		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "db.Ping")
 	}
 
 	return pool, nil

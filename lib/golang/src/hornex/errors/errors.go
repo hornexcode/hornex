@@ -1,4 +1,4 @@
-package internal
+package errors
 
 import (
 	"fmt"
@@ -52,4 +52,16 @@ func (e *Error) Unwrap() error {
 // Code returns the code representing this error.
 func (e *Error) Code() ErrorCode {
 	return e.code
+}
+
+func IsError(err error, code ErrorCode) bool {
+	if err == nil {
+		return false
+	}
+
+	if e, ok := err.(*Error); ok {
+		return e.Code() == code
+	}
+
+	return false
 }
