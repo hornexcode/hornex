@@ -172,8 +172,8 @@ export default function CreateTeamPage() {
               />
             </div>
             <Button
+              disabled={isLimitReached}
               isLoading={fetching}
-              loaderVariant="moveUp"
               loaderSize="small"
               type="submit"
               color="info"

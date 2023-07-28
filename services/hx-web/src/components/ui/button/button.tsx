@@ -129,7 +129,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold tracking-wide outline-none transition-all sm:text-sm',
           !disabled
             ? buttonColorClassNames
-            : 'cursor-not-allowed bg-gray-100 text-gray-400',
+            : 'cursor-not-allowed bg-slate-700 !text-red-500',
           disabled || isLoading || variant === 'transparent'
             ? ''
             : 'hover:-translate-y-0.5 hover:shadow-large focus:-translate-y-0.5 focus:shadow-large focus:outline-none',
