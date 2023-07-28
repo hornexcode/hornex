@@ -84,20 +84,21 @@ export default function CreateTeamPage() {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors }
   } = useForm<MemberForm>({
     resolver: zodResolver(form)
   });
 
   const addMember = async (data: MemberForm) => {
-    setFetching(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
     if (members.find((member) => member.username === data.username)) {
+      setError('username', { message: 'User already belongs to the team' });
       setFetching(false);
-      reset();
       return;
     }
+
+    setFetching(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     if (members.length === 4) {
       setIsLimitReached(true);
@@ -126,7 +127,7 @@ export default function CreateTeamPage() {
 
         <div className="flex items-center gap-2">
           <Button
-            className="group flex min-w-[12rem] cursor-pointer items-center justify-center rounded-lg bg-sky-400 text-center shadow-lg transition-all hover:bg-sky-500"
+            className="group flex min-w-[12rem] cursor-pointer items-center justify-center rounded-lg bg-sky-500 text-center shadow-lg transition-all hover:bg-sky-400"
             color="primary"
             shape="rounded"
           >
