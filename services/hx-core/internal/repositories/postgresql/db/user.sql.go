@@ -17,7 +17,7 @@ INSERT INTO users (
   email,
   first_name,
   last_name,
-  date_of_birth,
+  birth_date,
   password
 )
 VALUES (
@@ -31,11 +31,11 @@ RETURNING id, created_at, updated_at
 `
 
 type InsertUserParams struct {
-	Email       string
-	FirstName   string
-	LastName    string
-	DateOfBirth pgtype.Date
-	Password    string
+	Email     string
+	FirstName string
+	LastName  string
+	BirthDate pgtype.Date
+	Password  string
 }
 
 type InsertUserRow struct {
@@ -49,7 +49,7 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (InsertU
 		arg.Email,
 		arg.FirstName,
 		arg.LastName,
-		arg.DateOfBirth,
+		arg.BirthDate,
 		arg.Password,
 	)
 	var i InsertUserRow
@@ -58,7 +58,7 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (InsertU
 }
 
 const SelectUserByEmail = `-- name: SelectUserByEmail :one
-SELECT id, email, password, first_name, last_name, date_of_birth, created_at, updated_at FROM users WHERE email = $1
+SELECT id, email, password, first_name, last_name, birth_date, created_at, updated_at FROM users WHERE email = $1
 `
 
 func (q *Queries) SelectUserByEmail(ctx context.Context, email string) (Users, error) {
@@ -70,7 +70,7 @@ func (q *Queries) SelectUserByEmail(ctx context.Context, email string) (Users, e
 		&i.Password,
 		&i.FirstName,
 		&i.LastName,
-		&i.DateOfBirth,
+		&i.BirthDate,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

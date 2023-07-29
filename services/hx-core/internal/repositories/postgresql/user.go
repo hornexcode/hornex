@@ -30,8 +30,8 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 		FirstName: params.FirstName,
 		LastName:  params.LastName,
 		Password:  params.Password,
-		DateOfBirth: pgtype.Date{
-			Time:  params.DateOfBirth,
+		BirthDate: pgtype.Date{
+			Time:  params.BirthDate,
 			Valid: true,
 		},
 	})
@@ -60,13 +60,13 @@ func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, er
 	}
 
 	return internal.User{
-		ID:          res.ID.String(),
-		Email:       res.Email,
-		Password:    res.Password,
-		FirstName:   res.FirstName,
-		LastName:    res.LastName,
-		DateOfBirth: res.DateOfBirth.Time,
-		CreatedAt:   res.CreatedAt.Time,
-		UpdatedAt:   res.UpdatedAt.Time,
+		ID:        res.ID.String(),
+		Email:     res.Email,
+		Password:  res.Password,
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+		BirthDate: res.BirthDate.Time,
+		CreatedAt: res.CreatedAt.Time,
+		UpdatedAt: res.UpdatedAt.Time,
 	}, nil
 }

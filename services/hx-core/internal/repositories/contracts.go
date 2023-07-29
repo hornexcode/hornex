@@ -15,6 +15,8 @@ type UserMessageBrokerRepository interface {
 	Created(ctx context.Context, user internal.User) error
 }
 
-type UserTokenRepository interface {
-	Create(ctx context.Context, user internal.User) error
+type AuthorizerRepository interface {
+	SignUp(ctx context.Context, user *internal.User) error
+	ConfirmSignUp(ctx context.Context, email, confirmationCode string) error
+	SignIn(ctx context.Context, email, password string) (string, error)
 }

@@ -3,14 +3,14 @@ INSERT INTO users (
   email,
   first_name,
   last_name,
-  date_of_birth,
+  birth_date,
   password
 )
 VALUES (
   @email,
   @first_name,
   @last_name,
-  @date_of_birth,
+  @birth_date,
   @password
 )
 RETURNING id, created_at, updated_at;

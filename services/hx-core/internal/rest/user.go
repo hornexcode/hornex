@@ -27,7 +27,7 @@ func NewUserHandler(svc UserService) *UserHandler {
 
 // Register connects the handlers to the router
 func (h *UserHandler) Register(r *chi.Mux) {
-	r.Post("/api/users/register", h.register)
+	r.Post("/api/v1/users/register", h.register)
 }
 
 type User struct {
@@ -46,7 +46,7 @@ type RegisterUserRequest struct {
 	Username      string `json:"username"`
 	FirstName     string `json:"first_name"`
 	LastName      string `json:"last_name"`
-	DateOfBirth   string `json:"date_of_birth"`
+	BirthDate     string `json:"birth_date"`
 	Password      string `json:"password"`
 	TermsAccepted bool   `json:"terms_accepted"`
 }
@@ -66,7 +66,7 @@ func (h *UserHandler) register(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	dob, err := time.Parse("2006-01-02", req.DateOfBirth)
+	dob, err := time.Parse("2006-01-02", req.BirthDate)
 	if err != nil {
 		renderErrorResponse(w, r, "invalid request",
 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "time.Parse"))
@@ -80,12 +80,12 @@ func (h *UserHandler) register(w http.ResponseWriter, r *http.Request) {
 		Password:      req.Password,
 		FirstName:     req.FirstName,
 		LastName:      req.LastName,
-		DateOfBirth:   dob,
+		BirthDate:     dob,
 		TermsAccepted: req.TermsAccepted,
 	})
 
 	if err != nil {
-		renderErrorResponse(w, r, "create failed", err)
+		renderErrorResponse(w, r, err.Error(), err)
 		return
 	}
 

@@ -28,7 +28,7 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 
-	internalcognito "hornex.gg/hx-core/internal/repositories/cognito"
+	cognitorepositories "hornex.gg/hx-core/internal/repositories/cognito"
 	postgresqlrepositories "hornex.gg/hx-core/internal/repositories/postgresql"
 )
 
@@ -77,16 +77,34 @@ func run(env, address string) (<-chan error, error) {
 	}
 
 	// - Database initialization
+
 	pool, err := postgresql.NewPostgreSQL(conf)
 	if err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "internal.NewPostgreSQL")
 	}
 
-	// - Cognito Initialization
-	cognito := cognito.NewClient()
-	if err := cognito.Init(conf); err != nil {
-		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "cognito.Init")
-	}
+	// - Cognito initialization
+
+	cognitoClient := cognito.NewCognitoClient("sa-east-1", "3nllt32pm2occfqukt07lhf4qf")
+	// msg, err := cognitoAuthClient.SignUp("pehome7132@kkoup.com", "Passw0rd!123", "Test", "User", "1990-01-01")
+	// msg, err := cognitoAuthClient.ConfirmSignUp("pehome7132@kkoup.com", "036849")
+	// msg, output, err := cognitoAuthClient.SignIn("pehome7132@kkoup.com", "Passw0rd!123")
+
+	// if err != nil {
+	// 	fmt.Printf("Error: %s \n", err)
+	// 	panic(err)
+	// }
+
+	// fmt.Printf("Message: \n" + fmt.Sprintf("%s \n %s \n", msg, *output.AuthenticationResult.IdToken))
+
+	// // faking a token not valid
+	// providedUser, err := cognito.ProviderUser(*output.AuthenticationResult.IdToken)
+	// if err != nil {
+	// 	fmt.Printf("Error: %s \n", err)
+	// 	panic(err)
+	// }
+
+	// fmt.Println(providedUser)
 
 	// - Server initialization
 	srv, err := newServer(ServerConfig{
@@ -94,6 +112,7 @@ func run(env, address string) (<-chan error, error) {
 		DB:          pool,
 		Middlewares: []func(next http.Handler) http.Handler{otelchi.Middleware("todo-api-server"), logging},
 		Logger:      logger,
+		Cognito:     cognitoClient,
 	})
 	if err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "newServer")
@@ -150,6 +169,7 @@ type ServerConfig struct {
 	Metrics     http.Handler
 	Middlewares []func(next http.Handler) http.Handler
 	Logger      *zap.Logger
+	Cognito     cognito.Client
 }
 
 func newServer(conf ServerConfig) (*http.Server, error) {
@@ -157,8 +177,6 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 
 	// - Context initialization
-
-	cognitoAuthClient := cognito.NewClient()
 
 	// router.Use(func(next http.Handler) http.Handler {
 	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -179,9 +197,9 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	// -
 
 	hasher := auth.NewHasher()
-	identifier := internalcognito.NewCognitoUserIdentifierImpl(cognitoAuthClient)
 	urepo := postgresqlrepositories.NewPostgresqlUserRepositoryImpl(conf.DB)
-	usvc := services.NewUserService(urepo, hasher, identifier)
+	auth := cognitorepositories.NewCognitoImpl(conf.Cognito)
+	usvc := services.NewUserService(urepo, hasher, auth)
 	rest.NewUserHandler(usvc).Register(router)
 
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {

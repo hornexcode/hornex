@@ -4,9 +4,12 @@ import "golang.org/x/crypto/bcrypt"
 
 type Hasher struct{}
 
-func (h *Hasher) Hash(password string) (string, error) {
+func (h *Hasher) Hash(password string) string {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
+	if err != nil {
+		panic(err)
+	}
+	return string(bytes)
 }
 
 func (h *Hasher) Check(password, hash string) error {

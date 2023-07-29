@@ -13,19 +13,19 @@ type UserCreateParams struct {
 	FirstName     string
 	LastName      string
 	Password      string
-	DateOfBirth   time.Time
+	BirthDate     time.Time
 	TermsAccepted bool
 }
 
 // Validate indicates whether the fields are valid or not.
 func (p UserCreateParams) Validate() error {
 	user := User{
-		Email:       p.Email,
-		Username:    p.Username,
-		FirstName:   p.FirstName,
-		LastName:    p.LastName,
-		DateOfBirth: p.DateOfBirth,
-		Password:    p.Password,
+		Email:     p.Email,
+		Username:  p.Username,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+		BirthDate: p.BirthDate,
+		Password:  p.Password,
 	}
 
 	if err := validation.Validate(&user); err != nil {

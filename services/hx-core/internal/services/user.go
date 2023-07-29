@@ -3,25 +3,20 @@ package services
 import (
 	"context"
 
-	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 	"hornex.gg/hx-core/internal/repositories"
 )
 
 type PasswordHasher interface {
-	Hash(password string) (string, error)
+	Hash(password string) string
 	Check(password, hash string) error
 }
 
-type Identifier interface {
-	Register(user *internal.User) error
-}
-
 type User struct {
-	repo       repositories.UserRepository
-	hasher     PasswordHasher
-	identifier Identifier
+	repo   repositories.UserRepository
+	auth   repositories.AuthorizerRepository
+	hasher PasswordHasher
 }
 
 func (u *User) RegisterNewUser(ctx context.Context, params internal.UserCreateParams) (internal.User, error) {
@@ -35,26 +30,26 @@ func (u *User) RegisterNewUser(ctx context.Context, params internal.UserCreatePa
 	}
 
 	if found.ID != "" {
-		return internal.User{}, errors.WrapErrorf(validation.Errors{
-			"email": errors.NewErrorf(errors.ErrorCodeInvalidArgument, "email already exists"),
-		}, errors.ErrorCodeInvalidArgument, "email already exists")
+		return internal.User{}, errors.NewErrorf(errors.ErrorCodeInvalidArgument, "user already exists")
 	}
 
-	hashedPassword, err := u.hasher.Hash(params.Password)
+	err = u.auth.SignUp(ctx, &internal.User{
+		Email:     params.Email,
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
+		BirthDate: params.BirthDate,
+		Password:  params.Password,
+	})
 	if err != nil {
-		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "hasher.Hash")
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "auth.SignUp")
 	}
 
+	hashedPassword := u.hasher.Hash(params.Password)
 	params.Password = hashedPassword
 
 	user, err := u.repo.Create(ctx, params)
 	if err != nil {
 		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.Create")
-	}
-
-	err = u.identifier.Register(&user)
-	if err != nil {
-		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "token.GenerateToken")
 	}
 
 	return user, nil
@@ -65,10 +60,10 @@ func (u *User) SignIn(ctx context.Context, params internal.UserSignInParams) (in
 }
 
 // NewUserService...
-func NewUserService(repo repositories.UserRepository, hasher PasswordHasher, identifier Identifier) *User {
+func NewUserService(repo repositories.UserRepository, hasher PasswordHasher, auth repositories.AuthorizerRepository) *User {
 	return &User{
-		repo:       repo,
-		hasher:     hasher,
-		identifier: identifier,
+		repo:   repo,
+		hasher: hasher,
+		auth:   auth,
 	}
 }

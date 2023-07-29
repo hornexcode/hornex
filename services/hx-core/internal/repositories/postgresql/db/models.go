@@ -10,12 +10,12 @@ import (
 )
 
 type Users struct {
-	ID          uuid.UUID
-	Email       string
-	Password    string
-	FirstName   string
-	LastName    string
-	DateOfBirth pgtype.Date
-	CreatedAt   pgtype.Timestamp
-	UpdatedAt   pgtype.Timestamp
+	ID        uuid.UUID
+	Email     string
+	Password  string
+	FirstName string
+	LastName  string
+	BirthDate pgtype.Date
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
