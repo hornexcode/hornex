@@ -28,7 +28,7 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 
-	cognitorepositories "hornex.gg/hx-core/internal/repositories/cognito"
+	internalcognito "hornex.gg/hx-core/internal/cognito"
 	postgresqlrepositories "hornex.gg/hx-core/internal/repositories/postgresql"
 )
 
@@ -53,12 +53,14 @@ func main() {
 
 func run(env, address string) (<-chan error, error) {
 	// - Logger initialization
+
 	logger, err := zap.NewProduction()
 	if err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "failed to create logger")
 	}
 
 	// - Environment variables initialization
+
 	if err := envvar.Load(env); err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "envvar.Load")
 	}
@@ -86,27 +88,9 @@ func run(env, address string) (<-chan error, error) {
 	// - Cognito initialization
 
 	cognitoClient := cognito.NewCognitoClient("sa-east-1", "3nllt32pm2occfqukt07lhf4qf")
-	// msg, err := cognitoAuthClient.SignUp("pehome7132@kkoup.com", "Passw0rd!123", "Test", "User", "1990-01-01")
-	// msg, err := cognitoAuthClient.ConfirmSignUp("pehome7132@kkoup.com", "036849")
-	// msg, output, err := cognitoAuthClient.SignIn("pehome7132@kkoup.com", "Passw0rd!123")
-
-	// if err != nil {
-	// 	fmt.Printf("Error: %s \n", err)
-	// 	panic(err)
-	// }
-
-	// fmt.Printf("Message: \n" + fmt.Sprintf("%s \n %s \n", msg, *output.AuthenticationResult.IdToken))
-
-	// // faking a token not valid
-	// providedUser, err := cognito.ProviderUser(*output.AuthenticationResult.IdToken)
-	// if err != nil {
-	// 	fmt.Printf("Error: %s \n", err)
-	// 	panic(err)
-	// }
-
-	// fmt.Println(providedUser)
 
 	// - Server initialization
+
 	srv, err := newServer(ServerConfig{
 		Address:     address,
 		DB:          pool,
@@ -176,31 +160,20 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	router := chi.NewRouter()
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 
-	// - Context initialization
-
-	// router.Use(func(next http.Handler) http.Handler {
-	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 		ctx := r.Context()
-
-	// 		ctx = cognito.WithClient(ctx, cognitoAuthClient)
-
-	// 		next.ServeHTTP(w, r.WithContext(ctx))
-	// 	})
-	// })
-
-	// - Middlewares
-
 	for _, mw := range conf.Middlewares {
 		router.Use(mw)
 	}
 
 	// -
 
+	provider := internalcognito.NewCognitoImpl(conf.Cognito)
+
 	hasher := auth.NewHasher()
 	urepo := postgresqlrepositories.NewPostgresqlUserRepositoryImpl(conf.DB)
-	auth := cognitorepositories.NewCognitoImpl(conf.Cognito)
-	usvc := services.NewUserService(urepo, hasher, auth)
-	rest.NewUserHandler(usvc).Register(router)
+	asvc := services.NewAuthService(provider, urepo)
+	usvc := services.NewUserService(urepo, hasher)
+
+	rest.NewUserHandler(usvc, asvc).Register(router)
 
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

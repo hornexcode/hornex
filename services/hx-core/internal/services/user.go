@@ -15,15 +15,10 @@ type PasswordHasher interface {
 
 type User struct {
 	repo   repositories.UserRepository
-	auth   repositories.AuthorizerRepository
 	hasher PasswordHasher
 }
 
-func (u *User) RegisterNewUser(ctx context.Context, params internal.UserCreateParams) (internal.User, error) {
-	if err := params.Validate(); err != nil {
-		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "params.Validate")
-	}
-
+func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (internal.User, error) {
 	found, err := u.repo.FindByEmail(ctx, params.Email)
 	if err != nil {
 		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.FindByEmail")
@@ -31,17 +26,6 @@ func (u *User) RegisterNewUser(ctx context.Context, params internal.UserCreatePa
 
 	if found.ID != "" {
 		return internal.User{}, errors.NewErrorf(errors.ErrorCodeInvalidArgument, "user already exists")
-	}
-
-	err = u.auth.SignUp(ctx, &internal.User{
-		Email:     params.Email,
-		FirstName: params.FirstName,
-		LastName:  params.LastName,
-		BirthDate: params.BirthDate,
-		Password:  params.Password,
-	})
-	if err != nil {
-		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "auth.SignUp")
 	}
 
 	hashedPassword := u.hasher.Hash(params.Password)
@@ -55,15 +39,10 @@ func (u *User) RegisterNewUser(ctx context.Context, params internal.UserCreatePa
 	return user, nil
 }
 
-func (u *User) SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error) {
-	return internal.UserToken{}, nil
-}
-
 // NewUserService...
-func NewUserService(repo repositories.UserRepository, hasher PasswordHasher, auth repositories.AuthorizerRepository) *User {
+func NewUserService(repo repositories.UserRepository, hasher PasswordHasher) *User {
 	return &User{
 		repo:   repo,
 		hasher: hasher,
-		auth:   auth,
 	}
 }

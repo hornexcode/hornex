@@ -17,7 +17,7 @@ func NewCognitoImpl(client cognito.Client) *Provider {
 }
 
 func (u *Provider) SignUp(_ context.Context, user *internal.User) error {
-	err := u.client.SignUp(user.Email, user.FirstName, user.LastName, user.Password, user.BirthDate.Format("2006-01-02"))
+	err := u.client.SignUp(user.Email, user.Password, user.FirstName, user.LastName, user.BirthDate.Format("2006-01-02"))
 	if err != nil {
 		return err
 	}

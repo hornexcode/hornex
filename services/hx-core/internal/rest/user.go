@@ -12,23 +12,31 @@ import (
 )
 
 type UserService interface {
-	RegisterNewUser(ctx context.Context, params internal.UserCreateParams) (internal.User, error)
-	SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error)
+	Create(ctx context.Context, params internal.UserCreateParams) (internal.User, error)
+}
+
+type AuthService interface {
+	SignUp(ctx context.Context, params internal.UserCreateParams) error
+	ConfirmSignUp(ctx context.Context, email, confirmationCode string) error
 }
 
 type UserHandler struct {
-	svc UserService
+	userService UserService
+	authService AuthService
 }
 
 // NewUserHandler returns a new instance of a handler for managing user requests.
-func NewUserHandler(svc UserService) *UserHandler {
-	return &UserHandler{svc: svc}
+func NewUserHandler(userService UserService, authService AuthService) *UserHandler {
+	return &UserHandler{userService: userService, authService: authService}
 }
 
 // Register connects the handlers to the router
 func (h *UserHandler) Register(r *chi.Mux) {
-	r.Post("/api/v1/users/register", h.register)
+	r.Post("/api/v1/users/signup", h.signUp)
+	r.Post("/api/v1/users/signup-confirm", h.signUpConfirm)
 }
+
+// - SignUp
 
 type User struct {
 	ID        string    `json:"id"`
@@ -40,8 +48,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// RegisterUser defines the request used for creating users.
-type RegisterUserRequest struct {
+type SignUpRequest struct {
 	Email         string `json:"email"`
 	Username      string `json:"username"`
 	FirstName     string `json:"first_name"`
@@ -51,13 +58,12 @@ type RegisterUserRequest struct {
 	TermsAccepted bool   `json:"terms_accepted"`
 }
 
-// CreateUserResponse defines the response returned by the create user endpoint.
-type CreateUserResponse struct {
+type SignUpResponse struct {
 	User User `json:"user"`
 }
 
-func (h *UserHandler) register(w http.ResponseWriter, r *http.Request) {
-	var req RegisterUserRequest
+func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
+	var req SignUpRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		renderErrorResponse(w, r, "invalid request",
 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
@@ -74,7 +80,7 @@ func (h *UserHandler) register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.svc.RegisterNewUser(r.Context(), internal.UserCreateParams{
+	params := internal.UserCreateParams{
 		Email:         req.Email,
 		Username:      req.Username,
 		Password:      req.Password,
@@ -82,15 +88,26 @@ func (h *UserHandler) register(w http.ResponseWriter, r *http.Request) {
 		LastName:      req.LastName,
 		BirthDate:     dob,
 		TermsAccepted: req.TermsAccepted,
-	})
+	}
+	if err := params.Validate(); err != nil {
+		renderErrorResponse(w, r, "invalid request", err)
+		return
+	}
 
+	err = h.authService.SignUp(r.Context(), params)
+	if err != nil {
+		renderErrorResponse(w, r, err.Error(), err)
+		return
+	}
+
+	user, err := h.userService.Create(r.Context(), params)
 	if err != nil {
 		renderErrorResponse(w, r, err.Error(), err)
 		return
 	}
 
 	renderResponse(w, r,
-		&CreateUserResponse{
+		&SignUpResponse{
 			User: User{
 				ID:        user.ID,
 				Email:     user.Email,
@@ -102,6 +119,62 @@ func (h *UserHandler) register(w http.ResponseWriter, r *http.Request) {
 		},
 		http.StatusCreated)
 }
+
+// - SignUpConfirm
+
+type SignUpConfirmRequest struct {
+	Email            string `json:"email"`
+	ConfirmationCode string `json:"confirmation_code"`
+}
+
+func (h *UserHandler) signUpConfirm(w http.ResponseWriter, r *http.Request) {
+	var req SignUpConfirmRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		renderErrorResponse(w, r, "invalid request",
+			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+
+		return
+	}
+	defer r.Body.Close()
+
+	err := h.authService.ConfirmSignUp(r.Context(), req.Email, req.ConfirmationCode)
+	if err != nil {
+		renderErrorResponse(w, r, err.Error(), err)
+		return
+	}
+
+	renderResponse(w, r, nil, http.StatusOK)
+}
+
+// func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
+// 	var req SignInRequest
+// 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+// 		renderErrorResponse(w, r, "invalid request",
+// 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+
+// 		return
+// 	}
+// 	defer r.Body.Close()
+
+// 	token, err := h.svc.SignIn(r.Context(), internal.UserSignInParams{
+// 		Email:    req.Email,
+// 		Password: req.Password,
+// 	})
+
+// 	if err != nil {
+// 		renderErrorResponse(w, r, err.Error(), err)
+// 		return
+// 	}
+
+// 	http.SetCookie(w, &http.Cookie{
+// 		Name:    "hx-access-token",
+// 		Value:   token.AccessToken,
+// 		Path:    "/",
+// 		Expires: time.Now().Add(24 * time.Hour),
+// 	})
+
+// 	renderResponse(w, r, nil, http.StatusOK)
+// }
 
 // SignInRequest defines the request used for signing in users.
 type SignInRequest struct {

@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"regexp"
 	"time"
 
@@ -23,13 +22,12 @@ type User struct {
 }
 
 type UserToken struct {
-	User User   `json:"user"`
-	JWT  string `json:"jwt"`
+	User        User   `json:"user"`
+	AccessToken string `json:"access_token"`
 }
 
 // Validate ...
 func (user User) Validate() error {
-	fmt.Println("user.Validate", user.BirthDate)
 	if err := validation.ValidateStruct(&user,
 		validation.Field(&user.Email, validation.Required, validation.Match(regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`))),
 		validation.Field(&user.Username, validation.Required),
