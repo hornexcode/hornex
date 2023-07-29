@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"errors"
+	goerrors "errors"
 	"flag"
 	"log"
 	"net/http"
@@ -12,13 +12,13 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/pedrosantosbr/x5/cmd/internal"
-	"github.com/pedrosantosbr/x5/internal/envvar"
-	"github.com/pedrosantosbr/x5/internal/postgresql"
-	"github.com/pedrosantosbr/x5/internal/rest"
-	"github.com/pedrosantosbr/x5/internal/services"
-
-	internaldomain "github.com/pedrosantosbr/x5/internal"
+	"hornex.gg/hornex/auth"
+	"hornex.gg/hornex/auth/cognito"
+	"hornex.gg/hornex/envvar"
+	"hornex.gg/hornex/errors"
+	"hornex.gg/hornex/postgresql"
+	"hornex.gg/hx-core/internal/rest"
+	"hornex.gg/hx-core/internal/services"
 
 	"github.com/didip/tollbooth/v6"
 	"github.com/didip/tollbooth/v6/limiter"
@@ -27,7 +27,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
+
+	internalcognito "hornex.gg/hx-core/internal/cognito"
+	postgresqlrepositories "hornex.gg/hx-core/internal/repositories/postgresql"
 )
+
+type loggerKey struct{}
 
 func main() {
 	var env, address string
@@ -47,14 +52,20 @@ func main() {
 }
 
 func run(env, address string) (<-chan error, error) {
+	// - Logger initialization
+
 	logger, err := zap.NewProduction()
 	if err != nil {
-		return nil, internaldomain.WrapErrorf(err, internaldomain.ErrorCodeUnknown, "failed to create logger")
+		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "failed to create logger")
 	}
 
+	// - Environment variables initialization
+
 	if err := envvar.Load(env); err != nil {
-		return nil, internaldomain.WrapErrorf(err, internaldomain.ErrorCodeUnknown, "failed to load env")
+		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "envvar.Load")
 	}
+
+	conf := envvar.New()
 
 	logging := func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -67,21 +78,16 @@ func run(env, address string) (<-chan error, error) {
 		})
 	}
 
-	if err := envvar.Load(env); err != nil {
-		return nil, internaldomain.WrapErrorf(err, internaldomain.ErrorCodeUnknown, "envvar.Load")
-	}
+	// - Database initialization
 
-	vault, err := internal.NewVaultProvider()
+	pool, err := postgresql.NewPostgreSQL(conf)
 	if err != nil {
-		return nil, internaldomain.WrapErrorf(err, internaldomain.ErrorCodeUnknown, "internal.NewVaultProvider")
+		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "internal.NewPostgreSQL")
 	}
 
-	conf := envvar.New(vault)
+	// - Cognito initialization
 
-	pool, err := internal.NewPostgreSQL(conf)
-	if err != nil {
-		return nil, internaldomain.WrapErrorf(err, internaldomain.ErrorCodeUnknown, "internal.NewPostgreSQL")
-	}
+	cognitoClient := cognito.NewCognitoClient("sa-east-1", "3nllt32pm2occfqukt07lhf4qf")
 
 	// - Server initialization
 
@@ -90,9 +96,10 @@ func run(env, address string) (<-chan error, error) {
 		DB:          pool,
 		Middlewares: []func(next http.Handler) http.Handler{otelchi.Middleware("todo-api-server"), logging},
 		Logger:      logger,
+		Cognito:     cognitoClient,
 	})
 	if err != nil {
-		return nil, internaldomain.WrapErrorf(err, internaldomain.ErrorCodeUnknown, "newServer")
+		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "newServer")
 	}
 
 	errC := make(chan error, 1)
@@ -132,13 +139,12 @@ func run(env, address string) (<-chan error, error) {
 
 		// "ListenAndServe always returns a non-nil error. After Shutdown or Close, the returned error is
 		// ErrServerClosed."
-		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := srv.ListenAndServe(); err != nil && !goerrors.Is(err, http.ErrServerClosed) {
 			errC <- err
 		}
 	}()
 
 	return errC, nil
-
 }
 
 type ServerConfig struct {
@@ -147,6 +153,7 @@ type ServerConfig struct {
 	Metrics     http.Handler
 	Middlewares []func(next http.Handler) http.Handler
 	Logger      *zap.Logger
+	Cognito     cognito.Client
 }
 
 func newServer(conf ServerConfig) (*http.Server, error) {
@@ -159,11 +166,24 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 
 	// -
 
-	urepo := postgresql.NewUser(conf.DB)
-	hasher := internal.NewHasher()
-	usvc := services.NewUser(urepo, hasher)
+	router.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			ctx = cognito.WithClient(ctx, conf.Cognito)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	})
 
-	rest.NewUserHandler(usvc).Register(router)
+	// -
+
+	provider := internalcognito.NewCognitoImpl(conf.Cognito)
+
+	hasher := auth.NewHasher()
+	urepo := postgresqlrepositories.NewPostgresqlUserRepositoryImpl(conf.DB)
+	asvc := services.NewAuthService(provider, urepo)
+	usvc := services.NewUserService(urepo, hasher)
+
+	rest.NewUserHandler(usvc, asvc).Register(router)
 
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

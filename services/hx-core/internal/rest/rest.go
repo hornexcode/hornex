@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/pedrosantosbr/x5/internal"
-
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	hxerrors "hornex.gg/hornex/errors"
 )
 
 // ErrorResponse represents a response containing an error message.
@@ -21,22 +20,22 @@ func renderErrorResponse(w http.ResponseWriter, r *http.Request, msg string, err
 	resp := ErrorResponse{Error: msg}
 	status := http.StatusInternalServerError
 
-	var ierr *internal.Error
+	var ierr *hxerrors.Error
 
 	if !errors.As(err, &ierr) {
 		resp.Error = "internal error"
 	} else {
 		switch ierr.Code() {
-		case internal.ErrorCodeNotFound:
+		case hxerrors.ErrorCodeNotFound:
 			status = http.StatusNotFound
-		case internal.ErrorCodeInvalidArgument:
+		case hxerrors.ErrorCodeInvalidArgument:
 			status = http.StatusBadRequest
 
 			var verrors validation.Errors
 			if errors.As(ierr, &verrors) {
 				resp.Validations = verrors
 			}
-		case internal.ErrorCodeUnknown:
+		case hxerrors.ErrorCodeUnknown:
 			fallthrough
 		default:
 			status = http.StatusInternalServerError
@@ -59,4 +58,24 @@ func renderErrorResponse(w http.ResponseWriter, r *http.Request, msg string, err
 func renderResponse(w http.ResponseWriter, r *http.Request, res interface{}, status int) {
 	render.Status(r, status)
 	render.JSON(w, r, res)
+}
+
+func WithGuard(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+
+				// if err != nil {
+				// 	_, span := otel.Tracer(otelName).Start(r.Context(), "renderErrorResponse")
+				// 	defer span.End()
+
+				// 	span.RecordError(err.(error))
+				// }
+
+				renderErrorResponse(w, r, "internal error", err.(error))
+			}
+		}()
+
+		next.ServeHTTP(w, r)
+	})
 }
