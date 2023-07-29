@@ -1,6 +1,7 @@
 package cognito
 
 import (
+	"context"
 	"crypto/hmac"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -56,6 +57,7 @@ type Client interface {
 	SignUp(email, password, firstName, lastName, birthDate string) error
 	ConfirmSignUp(email, confirmationCode string) error
 	SignIn(email, password string) (*cognito.InitiateAuthOutput, error)
+	ProviderUser(token string) (*auth.ProviderUser, error)
 }
 
 type awsCognitoClient struct {
@@ -77,6 +79,20 @@ func NewCognitoClient(cognitoRegion string, cognitoAppClientID string) Client {
 		cognitoClient: client,
 		appClientID:   cognitoAppClientID,
 	}
+}
+
+// WithClient puts an Cognito auth client on the context.
+func WithClient(ctx context.Context, client Client) context.Context {
+	return context.WithValue(ctx, clientKey{}, client)
+}
+
+// FromContext retrieves a cognito auth client from the context.
+func FromContext(ctx context.Context) Client {
+	c, ok := ctx.Value(clientKey{}).(Client)
+	if ok && c != nil {
+		return c
+	}
+	return nil
 }
 
 func (ctx *awsCognitoClient) SignUp(email, password, firstName, lastName, birthDate string) error {
@@ -161,7 +177,7 @@ func (ctx *awsCognitoClient) SignIn(email, password string) (*cognito.InitiateAu
 
 // -
 
-func ProviderUser(token string) (*auth.ProviderUser, error) {
+func (ctx *awsCognitoClient) ProviderUser(token string) (*auth.ProviderUser, error) {
 	// get issuer from unverified claims
 	t, err := Parse(token, nil) // returns error AND the token when you don't pass claims into Parse func
 	if err != nil && !strings.Contains(err.Error(), "no Keyfunc was provided") {

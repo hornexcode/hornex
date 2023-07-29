@@ -35,7 +35,7 @@ func (u *Provider) ConfirmSignUp(_ context.Context, email, confirmationCode stri
 func (u *Provider) SignIn(_ context.Context, email, password string) (string, error) {
 	output, err := u.client.SignIn(email, password)
 	if err != nil {
-		return "", errors.WrapErrorf(err, errors.ErrorCodeUnknown, "client.SignIn")
+		return "", errors.WrapErrorf(err, errors.ErrorCodeUnknown, err.Error())
 	}
 	return *output.AuthenticationResult.IdToken, nil
 }

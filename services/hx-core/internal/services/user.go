@@ -39,6 +39,15 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 	return user, nil
 }
 
+func (u *User) GetUserByEmail(ctx context.Context, email string) (internal.User, error) {
+	user, err := u.repo.FindByEmail(ctx, email)
+	if err != nil {
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.Find")
+	}
+
+	return user, nil
+}
+
 // NewUserService...
 func NewUserService(repo repositories.UserRepository, hasher PasswordHasher) *User {
 	return &User{

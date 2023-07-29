@@ -4,20 +4,25 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
+	"hornex.gg/hornex/auth/cognito"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 )
 
 type UserService interface {
 	Create(ctx context.Context, params internal.UserCreateParams) (internal.User, error)
+	GetUserByEmail(ctx context.Context, email string) (internal.User, error)
 }
 
 type AuthService interface {
 	SignUp(ctx context.Context, params internal.UserCreateParams) error
 	ConfirmSignUp(ctx context.Context, email, confirmationCode string) error
+	SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error)
 }
 
 type UserHandler struct {
@@ -34,18 +39,17 @@ func NewUserHandler(userService UserService, authService AuthService) *UserHandl
 func (h *UserHandler) Register(r *chi.Mux) {
 	r.Post("/api/v1/users/signup", h.signUp)
 	r.Post("/api/v1/users/signup-confirm", h.signUpConfirm)
+	r.Post("/api/v1/users/signin", h.signIn)
+	r.Get("/api/v1/users/me", h.me)
 }
 
 // - SignUp
 
 type User struct {
-	ID        string    `json:"id"`
-	Email     string    `json:"email"`
-	Username  string    `json:"username"`
-	FirstName string    `json:"first_name"`
-	LastName  string    `json:"last_name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        string `json:"id"`
+	Email     string `json:"email"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
 type SignUpRequest struct {
@@ -113,8 +117,6 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 				Email:     user.Email,
 				FirstName: user.FirstName,
 				LastName:  user.LastName,
-				CreatedAt: user.CreatedAt,
-				UpdatedAt: user.UpdatedAt,
 			},
 		},
 		http.StatusCreated)
@@ -146,38 +148,86 @@ func (h *UserHandler) signUpConfirm(w http.ResponseWriter, r *http.Request) {
 	renderResponse(w, r, nil, http.StatusOK)
 }
 
-// func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
-// 	var req SignInRequest
-// 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-// 		renderErrorResponse(w, r, "invalid request",
-// 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+// - SignIn
 
-// 		return
-// 	}
-// 	defer r.Body.Close()
-
-// 	token, err := h.svc.SignIn(r.Context(), internal.UserSignInParams{
-// 		Email:    req.Email,
-// 		Password: req.Password,
-// 	})
-
-// 	if err != nil {
-// 		renderErrorResponse(w, r, err.Error(), err)
-// 		return
-// 	}
-
-// 	http.SetCookie(w, &http.Cookie{
-// 		Name:    "hx-access-token",
-// 		Value:   token.AccessToken,
-// 		Path:    "/",
-// 		Expires: time.Now().Add(24 * time.Hour),
-// 	})
-
-// 	renderResponse(w, r, nil, http.StatusOK)
-// }
-
-// SignInRequest defines the request used for signing in users.
 type SignInRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
+	var req SignInRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		renderErrorResponse(w, r, "invalid request",
+			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+
+		return
+	}
+	defer r.Body.Close()
+
+	token, err := h.authService.SignIn(r.Context(), internal.UserSignInParams{
+		Email:    req.Email,
+		Password: req.Password,
+	})
+
+	if err != nil {
+		render.Status(r, http.StatusUnauthorized)
+		render.JSON(w, r, map[string]string{"error": err.Error()})
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "hx-access-token",
+		Value:   token.AccessToken,
+		Path:    "/",
+		Expires: time.Now().Add(24 * time.Hour),
+	})
+
+	renderResponse(w, r, nil, http.StatusOK)
+}
+
+// - Me
+
+type MeResponse struct {
+	User User `json:"user"`
+}
+
+func (h *UserHandler) me(w http.ResponseWriter, r *http.Request) {
+	// user := r.Context().Value("user").(*internal.User)
+
+	token := r.Header.Get("Authorization")
+	token = strings.Replace(token, "Bearer ", "", 1)
+
+	if token == "" {
+		render.Status(r, http.StatusUnauthorized)
+		render.JSON(w, r, map[string]string{"error": "missing authorization header"})
+		return
+	}
+
+	cognito := cognito.FromContext(r.Context())
+
+	pUser, err := cognito.ProviderUser(token)
+	if err != nil {
+		render.Status(r, http.StatusUnauthorized)
+		render.JSON(w, r, map[string]string{"error": err.Error()})
+		return
+	}
+
+	user, err := h.userService.GetUserByEmail(r.Context(), pUser.Email)
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "user not found"})
+		return
+	}
+
+	renderResponse(w, r,
+		&MeResponse{
+			User: User{
+				ID:        user.ID,
+				Email:     user.Email,
+				FirstName: user.FirstName,
+				LastName:  user.LastName,
+			},
+		},
+		http.StatusOK)
 }

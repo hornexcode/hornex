@@ -51,7 +51,7 @@ func (a *Auth) ConfirmSignUp(ctx context.Context, email, confirmationCode string
 }
 
 // UserSignIn is a method that authenticates a user in the cognito user pool and return the user and the access token
-func (a *Auth) UserSignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error) {
+func (a *Auth) SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error) {
 	token, err := a.provider.SignIn(ctx, params.Email, params.Password)
 	if err != nil {
 		return internal.UserToken{}, err
