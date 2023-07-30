@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	cognito "github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/golang-jwt/jwt"
 	"hornex.gg/hornex/auth"
@@ -44,7 +43,7 @@ type publicKeyResponse struct {
 	} `json:"keys"`
 }
 
-type publicKey struct {
+type PublicKey struct {
 	KTY string
 	KID string
 	Use string
@@ -65,19 +64,10 @@ type awsCognitoClient struct {
 	appClientID   string
 }
 
-func NewCognitoClient(cognitoRegion string, cognitoAppClientID string) Client {
-	conf := &aws.Config{Region: aws.String(cognitoRegion)}
-
-	sess, err := session.NewSession(conf)
-	client := cognito.New(sess)
-
-	if err != nil {
-		panic(err)
-	}
-
+func NewCognitoClient(appClientID string, sess *cognito.CognitoIdentityProvider) Client {
 	return &awsCognitoClient{
-		cognitoClient: client,
-		appClientID:   cognitoAppClientID,
+		cognitoClient: sess,
+		appClientID:   appClientID,
 	}
 }
 
@@ -177,6 +167,15 @@ func (ctx *awsCognitoClient) SignIn(email, password string) (*cognito.InitiateAu
 
 // -
 
+func GetVerifyKey() ([]PublicKey, error) {
+	pks, err := PublicKeys("https://cognito-idp.sa-east-1.amazonaws.com/sa-east-1_KA56SJwIR/.well-known/jwks.json")
+	if err != nil {
+		return nil, err
+	}
+
+	return pks, nil
+}
+
 func (ctx *awsCognitoClient) ProviderUser(token string) (*auth.ProviderUser, error) {
 	// get issuer from unverified claims
 	t, err := Parse(token, nil) // returns error AND the token when you don't pass claims into Parse func
@@ -196,7 +195,7 @@ func (ctx *awsCognitoClient) ProviderUser(token string) (*auth.ProviderUser, err
 	}
 
 	// get public keys from <issuer>/.well-known/jwks.json
-	pks, err := publicKeys(issuer + pkEndpoint)
+	pks, err := PublicKeys(issuer + pkEndpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -221,19 +220,20 @@ func computeSecretHash(clientSecret string, username string, clientId string) st
 	return base64.StdEncoding.EncodeToString(mac.Sum(nil))
 }
 
-func publicKeys(url string) ([]publicKey, error) {
+func PublicKeys(url string) ([]PublicKey, error) {
+	// TODO: cache public keys !IMPORTANT
 	res, err := getRequest(url)
 	if err != nil {
-		return []publicKey{}, err
+		return []PublicKey{}, err
 	}
 
 	var result publicKeyResponse
 	err = json.Unmarshal([]byte(res), &result)
 	if err != nil {
-		return []publicKey{}, err
+		return []PublicKey{}, err
 	}
 
-	var keys []publicKey
+	var keys []PublicKey
 	for _, key := range result.Keys {
 		n, err := decodeBase64BigInt(key.N)
 		if err != nil {
@@ -245,7 +245,7 @@ func publicKeys(url string) ([]publicKey, error) {
 			continue
 		}
 
-		keys = append(keys, publicKey{
+		keys = append(keys, PublicKey{
 			KTY: key.KTY,
 			KID: key.KID,
 			Use: key.Use,
@@ -287,7 +287,7 @@ func getRequest(url string) (string, error) {
 }
 
 // idTokenClaims decodes the id_token response and returns the JWT claims to identify the user
-func idTokenClaims(idToken string, publicKeys []publicKey) (jwt.MapClaims, error) {
+func idTokenClaims(idToken string, publicKeys []PublicKey) (jwt.MapClaims, error) {
 	claims := jwt.MapClaims{}
 	var token *jwt.Token
 	var err error
@@ -318,7 +318,7 @@ func decodeBase64BigInt(s string) (*big.Int, error) {
 	return big.NewInt(0).SetBytes(buffer), nil
 }
 
-func (k publicKey) RSA() *rsa.PublicKey {
+func (k PublicKey) RSA() *rsa.PublicKey {
 	return &rsa.PublicKey{
 		N: k.N,
 		E: k.E,

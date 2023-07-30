@@ -59,23 +59,3 @@ func renderResponse(w http.ResponseWriter, r *http.Request, res interface{}, sta
 	render.Status(r, status)
 	render.JSON(w, r, res)
 }
-
-func WithGuard(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() {
-			if err := recover(); err != nil {
-
-				// if err != nil {
-				// 	_, span := otel.Tracer(otelName).Start(r.Context(), "renderErrorResponse")
-				// 	defer span.End()
-
-				// 	span.RecordError(err.(error))
-				// }
-
-				renderErrorResponse(w, r, "internal error", err.(error))
-			}
-		}()
-
-		next.ServeHTTP(w, r)
-	})
-}

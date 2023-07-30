@@ -4,12 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"hornex.gg/hornex/auth/cognito"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 )
@@ -40,7 +38,13 @@ func (h *UserHandler) Register(r *chi.Mux) {
 	r.Post("/api/v1/users/signup", h.signUp)
 	r.Post("/api/v1/users/signup-confirm", h.signUpConfirm)
 	r.Post("/api/v1/users/signin", h.signIn)
-	r.Get("/api/v1/users/me", h.me)
+
+	r.Group(func(r chi.Router) {
+		r.Use(IsAuthorized)
+		// r.Use(jwtauth.Verifier(jwtauth.New("HS256", []byte("secret"), nil)))
+		// r.Use(jwtauth.Authenticator)
+		r.Get("/api/v1/users/me", h.me)
+	})
 }
 
 // - SignUp
@@ -193,27 +197,9 @@ type MeResponse struct {
 }
 
 func (h *UserHandler) me(w http.ResponseWriter, r *http.Request) {
-	// user := r.Context().Value("user").(*internal.User)
+	ureq := UserFromContext(r.Context())
 
-	token := r.Header.Get("Authorization")
-	token = strings.Replace(token, "Bearer ", "", 1)
-
-	if token == "" {
-		render.Status(r, http.StatusUnauthorized)
-		render.JSON(w, r, map[string]string{"error": "missing authorization header"})
-		return
-	}
-
-	cognito := cognito.FromContext(r.Context())
-
-	pUser, err := cognito.ProviderUser(token)
-	if err != nil {
-		render.Status(r, http.StatusUnauthorized)
-		render.JSON(w, r, map[string]string{"error": err.Error()})
-		return
-	}
-
-	user, err := h.userService.GetUserByEmail(r.Context(), pUser.Email)
+	user, err := h.userService.GetUserByEmail(r.Context(), ureq.Email)
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
 		render.JSON(w, r, map[string]string{"error": "user not found"})

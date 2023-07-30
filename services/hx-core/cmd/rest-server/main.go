@@ -28,6 +28,8 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 
+	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
+
 	internalcognito "hornex.gg/hx-core/internal/cognito"
 	postgresqlrepositories "hornex.gg/hx-core/internal/repositories/postgresql"
 )
@@ -87,7 +89,7 @@ func run(env, address string) (<-chan error, error) {
 
 	// - Cognito initialization
 
-	cognitoClient := cognito.NewCognitoClient("sa-east-1", "3nllt32pm2occfqukt07lhf4qf")
+	cognitoSession := cognito.NewCognitoSession("sa-east-1")
 
 	// - Server initialization
 
@@ -96,7 +98,7 @@ func run(env, address string) (<-chan error, error) {
 		DB:          pool,
 		Middlewares: []func(next http.Handler) http.Handler{otelchi.Middleware("todo-api-server"), logging},
 		Logger:      logger,
-		Cognito:     cognitoClient,
+		Cognito:     cognitoSession,
 	})
 	if err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "newServer")
@@ -153,7 +155,7 @@ type ServerConfig struct {
 	Metrics     http.Handler
 	Middlewares []func(next http.Handler) http.Handler
 	Logger      *zap.Logger
-	Cognito     cognito.Client
+	Cognito     *cognitoidentityprovider.CognitoIdentityProvider
 }
 
 func newServer(conf ServerConfig) (*http.Server, error) {
@@ -166,22 +168,26 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 
 	// -
 
-	router.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx := r.Context()
-			ctx = cognito.WithClient(ctx, conf.Cognito)
-			next.ServeHTTP(w, r.WithContext(ctx))
-		})
-	})
+	cognitoClient := cognito.NewCognitoClient("3nllt32pm2occfqukt07lhf4qf", conf.Cognito)
+	postgresqlClient := postgresql.NewClient(conf.DB)
 
-	// -
-
-	provider := internalcognito.NewCognitoImpl(conf.Cognito)
+	provider := internalcognito.NewCognitoImpl(cognitoClient)
 
 	hasher := auth.NewHasher()
 	urepo := postgresqlrepositories.NewPostgresqlUserRepositoryImpl(conf.DB)
 	asvc := services.NewAuthService(provider, urepo)
 	usvc := services.NewUserService(urepo, hasher)
+
+	router.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			ctx = cognito.WithClient(ctx, cognitoClient)
+			ctx = postgresql.WithClient(ctx, postgresqlClient)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	})
+
+	// -
 
 	rest.NewUserHandler(usvc, asvc).Register(router)
 

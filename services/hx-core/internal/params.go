@@ -49,3 +49,10 @@ type UserSignInParams struct {
 func (p UserSignInParams) Validate() error {
 	return nil
 }
+
+// -
+
+type TeamCreateParams struct {
+	Name    string
+	OwnerID string
+}
