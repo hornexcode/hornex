@@ -2,7 +2,11 @@
 
 ## Requirements
 
+
 Install the `migrate` tool using [`install_tools`](../bin/install_tools), you can [read more](../internal/tools/) about how those are versioned as well.
+
+$ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate
+$ brew install golang-migrate
 
 ## Local PostgreSQL
 
@@ -22,6 +26,11 @@ docker run \
 Run:
 
 ```
+export POSTGRESQL_URL='postgres://hxcore:password@localhost:5432/hxcore?sslmode=disable'
+migrate -database ${POSTGRESQL_URL} -path ./services/hx-core/db/migrations up
+```
+
+```
 tern migrate \
     --migrations 'db/migrations/' \
     --conn-string 'postgres://hxcore:password@localhost:5432/hxcore?sslmode=disable'
@@ -30,5 +39,5 @@ tern migrate \
 Create:
 
 ```
-migrate create -ext sql -dir db/migrations/ <migration name>
+tern migrate create -ext sql -dir db/migrations/ <migration name>
 ```
