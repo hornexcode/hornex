@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
+source ${REPO_ROOT}/devops/scripts/helpers
+
+info "Running all migrations for postgres..."
+
+# Run all migrations
+
+migrate -database "postgres://${PG_USER}:${PG_PASSWORD}@localhost:5432/${PG_DATABASE}?sslmode=disable" -path "$REPO_ROOT"/services/hx-core/db/migrations up

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
+source ${REPO_ROOT}/devops/scripts/helpers
+
+info "Shutting down Postgres..."
+
+# Stop the database
+docker-compose -f "$REPO_ROOT"/services/hx-core/docker-compose.yml stop postgres
+docker-compose -f "$REPO_ROOT"/services/hx-core/docker-compose.yml rm -v postgres
+
+sleep 3
+
+docker-compose -f "$REPO_ROOT"/services/hx-core/docker-compose.yml up -d --build postgres

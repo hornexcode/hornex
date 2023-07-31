@@ -8,7 +8,3 @@ CREATE TABLE users (
   created_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   updated_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
-
----- create above / drop below ----
-
-DROP TABLE users;

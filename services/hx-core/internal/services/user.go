@@ -19,12 +19,8 @@ type User struct {
 }
 
 func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (internal.User, error) {
-	found, err := u.repo.FindByEmail(ctx, params.Email)
-	if err != nil {
-		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.FindByEmail")
-	}
-
-	if found.ID != "" {
+	_, err := u.repo.FindByEmail(ctx, params.Email)
+	if err == nil {
 		return internal.User{}, errors.NewErrorf(errors.ErrorCodeInvalidArgument, "user already exists")
 	}
 

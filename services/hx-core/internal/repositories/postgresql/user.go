@@ -2,6 +2,7 @@ package postgresql
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"hornex.gg/hornex/errors"
@@ -25,13 +26,18 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 	// XXX: `CreatedAt` is being created on the database side
 	// XXX: `UpdatedAt` is being created on the database side
 
+	dob, err := time.Parse("2006-01-02", params.BirthDate)
+	if err != nil {
+		return internal.User{}, err
+	}
+
 	res, err := u.q.InsertUser(ctx, db.InsertUserParams{
 		Email:     params.Email,
 		FirstName: params.FirstName,
 		LastName:  params.LastName,
 		Password:  params.Password,
 		BirthDate: pgtype.Date{
-			Time:  params.BirthDate,
+			Time:  dob,
 			Valid: true,
 		},
 	})
@@ -52,10 +58,6 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, error) {
 	res, err := u.q.SelectUserByEmail(ctx, email)
 	if err != nil {
-		if err.Error() == "no rows in result set" {
-			return internal.User{}, nil
-		}
-
 		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select user by email")
 	}
 
@@ -65,7 +67,7 @@ func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, er
 		Password:  res.Password,
 		FirstName: res.FirstName,
 		LastName:  res.LastName,
-		BirthDate: res.BirthDate.Time,
+		BirthDate: res.BirthDate.Time.Format("2006-01-02"),
 		CreatedAt: res.CreatedAt.Time,
 		UpdatedAt: res.UpdatedAt.Time,
 	}, nil

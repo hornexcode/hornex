@@ -9,13 +9,13 @@ import (
 )
 
 type User struct {
-	ID        string    `json:"id"`
-	Email     string    `json:"email"`
-	Username  string    `json:"username"`
-	Password  string    `json:"password"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	BirthDate time.Time `json:"birthDate"`
+	ID        string `json:"id"`
+	Email     string `json:"email"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	BirthDate string `json:"birthDate"`
 
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
@@ -34,7 +34,7 @@ func (user User) Validate() error {
 		validation.Field(&user.Password, validation.Required),
 		validation.Field(&user.FirstName, validation.Required),
 		validation.Field(&user.LastName, validation.Required),
-		validation.Field(&user.BirthDate, validation.Required),
+		validation.Field(&user.BirthDate, validation.Date("2006-01-02")),
 	); err != nil {
 		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "invalid values")
 	}
