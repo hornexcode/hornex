@@ -9,6 +9,7 @@ const routes = {
   compete: 'compete',
   tournaments: 'tournaments',
   platform: 'platform',
+  teams: 'teams'
 };
 
 export default routes;

@@ -3,12 +3,13 @@ import {
   PlusCircleIcon,
   PlusIcon,
   TrophyIcon,
+  UserGroupIcon
 } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import {
   CounterStrikeLogoIcon,
   LolIcon,
-  SwordsIcon,
+  SwordsIcon
 } from '@/components/ui/icons';
 import classNames from 'classnames';
 import routes from '@/config/routes';
@@ -32,12 +33,21 @@ export const Sidebar = ({ className }: { className?: string }) => {
         </li>
         <li>
           <Link
-            href={`${routes.platform}/league-of-legends/${routes.tournaments}`}
+            href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
             className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <TrophyIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
         </li>
+        <li title="Teams">
+          <Link
+            href={`/${routes.teams}`}
+            className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+          >
+            <UserGroupIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
+          </Link>
+        </li>
+
         <li>
           <Link
             href={`/${routes.compete}#available-games`}

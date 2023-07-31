@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import cn from "classnames";
+import { forwardRef } from 'react';
+import cn from 'classnames';
 
 type InputProps = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -17,7 +17,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     {
       label,
       error,
-      type = "text",
+      type = 'text',
       className,
       inputClassName,
       useUppercaseLabel = true,
@@ -25,13 +25,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => (
-    <div className={cn("text-xs sm:text-sm", className)}>
+    <div className={cn('text-xs sm:text-sm', className)}>
       <label>
         {label && (
           <span
             className={cn(
-              "block font-medium tracking-widest text-gray-100",
-              useUppercaseLabel ? "mb-2 uppercase sm:mb-3" : "mb-2"
+              'block font-medium tracking-widest text-gray-100',
+              useUppercaseLabel ? 'mb-2 uppercase sm:mb-3' : 'mb-2'
             )}
           >
             {label}
@@ -48,7 +48,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
           className={cn(
-            "mt-1 block h-10 w-full rounded-md border border-slate-700  bg-gray-800 px-4 py-2  text-sm text-gray-100 placeholder-gray-400 transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600  focus:outline-none focus:ring-2 focus:ring-sky-500 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 sm:h-12 sm:rounded-lg",
+            'mt-1 block h-10 w-full rounded-md border border-slate-700  bg-gray-800 px-4 py-2  text-sm text-gray-100 placeholder-gray-400 transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600  focus:outline-none focus:ring-2 focus:ring-sky-500 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-slate-600 disabled:bg-gray-700 disabled:text-gray-200 sm:h-12 sm:rounded-lg',
             inputClassName
           )}
         />
@@ -62,5 +62,5 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   )
 );
 
-Input.displayName = "Input";
+Input.displayName = 'Input';
 export default Input;
