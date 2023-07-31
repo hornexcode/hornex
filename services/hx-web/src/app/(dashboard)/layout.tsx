@@ -1,8 +1,19 @@
-'use client';
 import Header from '@/layouts/header';
 import { Sidebar } from '@/components/ui/sidebar';
 
-export default function AuthLayout({
+const getUser = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        name: 'John Doe',
+        email: 'jonh.doe@email.com',
+        avatar: 'https://i.pravatar.cc/150?img=3',
+      });
+    }, 1000);
+  });
+};
+
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
