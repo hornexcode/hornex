@@ -175,8 +175,10 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 
 	hasher := auth.NewHasher()
 	urepo := postgresqlrepositories.NewPostgresqlUserRepositoryImpl(conf.DB)
+	trepo := postgresqlrepositories.NewPostgresqlTeamRepositoryImpl(conf.DB)
 	asvc := services.NewAuthService(provider, urepo)
 	usvc := services.NewUserService(urepo, hasher)
+	tsvc := services.NewTeamService(trepo, urepo)
 
 	router.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -190,6 +192,7 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	// -
 
 	rest.NewUserHandler(usvc, asvc).Register(router)
+	rest.NewTeamHandler(tsvc).Register(router)
 
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

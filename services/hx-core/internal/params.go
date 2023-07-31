@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"time"
-
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"hornex.gg/hornex/errors"
 )
@@ -13,7 +11,7 @@ type UserCreateParams struct {
 	FirstName     string
 	LastName      string
 	Password      string
-	BirthDate     time.Time
+	BirthDate     string
 	TermsAccepted bool
 }
 
@@ -53,6 +51,27 @@ func (p UserSignInParams) Validate() error {
 // -
 
 type TeamCreateParams struct {
-	Name    string
-	OwnerID string
+	Name       string
+	OwnerEmail string
+	OwnerID    string
+}
+
+func (p TeamCreateParams) Validate() error {
+	team := Team{
+		Name:    p.Name,
+		OwnerID: p.OwnerID,
+	}
+
+	if err := validation.Validate(&team); err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "validation.Validate")
+	}
+	return nil
+}
+
+type TeamSearchParams struct {
+	Name string
+}
+
+type TeamUpdateParams struct {
+	Name string
 }

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Helper functions for local devlopment
+# Several of these functions requre that REPO_ROOT be set the the root of this repo
+# The recommended way to set this is from the calling script:
+#   REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
+#
+# Functions that require REPO_ROOT= should call require_repo_root
+
+set -Eeuo pipefail
+
+COLOR_RED="\033[0;31m"
+COLOR_ORANGE="\033[0;33m"
+COLOR_GREEN="\033[0;32m"
+COLOR_BLUE="\033[0;34m"
+COLOR_PURPLE="\033[0;35m"
+COLOR_NONE="\033[0m"
+
+function log() {
+  echo -e "$*" >&2
+}
+
+function bell() {
+  tput bel
+}
+
+function error() {
+  log "${COLOR_RED}-->${COLOR_NONE} 😱  ${COLOR_RED}ERROR: $*${COLOR_NONE}"
+  bell
+  exit 1
+}
+
+function success() {
+  log "${COLOR_GREEN}-->${COLOR_NONE} 🙆  ${COLOR_GREEN}$*${COLOR_NONE}"
+}
+
+function warning() {
+  log "${COLOR_ORANGE}-->${COLOR_NONE} ❗  ${COLOR_ORANGE}$*${COLOR_NONE}"
+}
+
+function prompt() {
+  log "${COLOR_PURPLE}-->${COLOR_NONE} ${COLOR_PURPLE}$*${COLOR_NONE}"
+}
+
+function info() {
+  log "${COLOR_BLUE}-->${COLOR_NONE} ${COLOR_BLUE}$*${COLOR_NONE}"
+}

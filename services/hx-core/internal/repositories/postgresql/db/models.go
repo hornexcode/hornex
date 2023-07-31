@@ -9,6 +9,14 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Teams struct {
+	ID        uuid.UUID
+	Name      string
+	OwnerID   uuid.UUID
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+}
+
 type Users struct {
 	ID        uuid.UUID
 	Email     string

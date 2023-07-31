@@ -40,7 +40,7 @@ func (h *UserHandler) Register(r *chi.Mux) {
 	r.Post("/api/v1/users/signin", h.signIn)
 
 	r.Group(func(r chi.Router) {
-		r.Use(IsAuthorized)
+		r.Use(IsAuthenticated)
 		// r.Use(jwtauth.Verifier(jwtauth.New("HS256", []byte("secret"), nil)))
 		// r.Use(jwtauth.Authenticator)
 		r.Get("/api/v1/users/me", h.me)
@@ -80,21 +80,13 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	dob, err := time.Parse("2006-01-02", req.BirthDate)
-	if err != nil {
-		renderErrorResponse(w, r, "invalid request",
-			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "time.Parse"))
-
-		return
-	}
-
 	params := internal.UserCreateParams{
 		Email:         req.Email,
 		Username:      req.Username,
 		Password:      req.Password,
 		FirstName:     req.FirstName,
 		LastName:      req.LastName,
-		BirthDate:     dob,
+		BirthDate:     req.BirthDate,
 		TermsAccepted: req.TermsAccepted,
 	}
 	if err := params.Validate(); err != nil {
@@ -102,7 +94,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.authService.SignUp(r.Context(), params)
+	err := h.authService.SignUp(r.Context(), params)
 	if err != nil {
 		renderErrorResponse(w, r, err.Error(), err)
 		return

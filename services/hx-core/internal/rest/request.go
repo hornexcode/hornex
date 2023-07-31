@@ -10,8 +10,10 @@ import (
 )
 
 type UserRequest struct {
+	ID    string `json:"id"`
 	Email string `json:"email"`
 }
+
 type userKey struct{}
 
 func UserFromContext(ctx context.Context) *UserRequest {
@@ -22,7 +24,7 @@ func UserWithContext(ctx context.Context, user *UserRequest) context.Context {
 	return context.WithValue(ctx, userKey{}, user)
 }
 
-func IsAuthorized(next http.Handler) http.Handler {
+func IsAuthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Authorization")
 		token = strings.Replace(token, "Bearer ", "", 1)
