@@ -41,8 +41,6 @@ func (h *UserHandler) Register(r *chi.Mux) {
 
 	r.Group(func(r chi.Router) {
 		r.Use(IsAuthenticated)
-		// r.Use(jwtauth.Verifier(jwtauth.New("HS256", []byte("secret"), nil)))
-		// r.Use(jwtauth.Authenticator)
 		r.Get("/api/v1/users/me", h.me)
 	})
 }
@@ -173,7 +171,7 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:    "hx-access-token",
+		Name:    "hx-jwt",
 		Value:   token.AccessToken,
 		Path:    "/",
 		Expires: time.Now().Add(24 * time.Hour),
