@@ -14,8 +14,9 @@ export const dataLoaders = <T, Data = unknown>(
   const { path, method } = routes[routeKey];
 
   // Post data to the API
-  const post = async (data?: Data, headers: Record<string, string> = {}) => {
+  const post = async (payload?: Data, headers: Record<string, string> = {}) => {
     let error: FetchError | null = null;
+    let data: T | null = null;
 
     const r = await fetcher(`http://localhost:9234/api/${path}`, {
       method,
@@ -25,28 +26,43 @@ export const dataLoaders = <T, Data = unknown>(
         'Content-Type': 'application/json',
         ...headers,
       },
-      body: data ? JSON.stringify(data) : '',
+      body: payload ? JSON.stringify(payload) : '',
     });
 
-    if (!r.ok) {
-      try {
-        // attempt to parse errors before returning as text
-        const errorResponse = await r.json();
-        error = {
-          name: 'FetchError',
-          message:
-            errorResponse?.detail ?? errorResponse?.error ?? 'Unable to fetch',
-          code: r.status,
-          response: errorResponse,
-        };
-      } catch (_) {
-        const errorMessage = await r.text();
-        error = new Error(errorMessage);
-        error.code = r.status;
+    try {
+      if (!r.ok) {
+        try {
+          // attempt to parse errors before returning as text
+          const errorResponse = await r.json();
+          error = {
+            name: 'FetchError',
+            message:
+              errorResponse?.detail ??
+              errorResponse?.error ??
+              'Unable to fetch',
+            code: r.status,
+            response: errorResponse,
+          };
+        } catch (_) {
+          const errorMessage = await r.text();
+          error = new Error(errorMessage);
+          error.code = r.status;
+        }
       }
-    }
 
-    return r.json() as T;
+      if (r.status == 204) {
+        return;
+      }
+    } catch (e: any) {
+      error = e;
+    } finally {
+      return {
+        data,
+        error,
+        headers: r.headers,
+        status: r.status,
+      };
+    }
   };
 
   return {

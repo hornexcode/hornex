@@ -1,6 +1,6 @@
-'use client';
-import { Menu, Transition } from '@headlessui/react';
+import useSWR from 'swr';
 import { Fragment } from 'react';
+import { Menu, Transition } from '@headlessui/react';
 import {
   ArrowLeftOnRectangleIcon,
   ChevronDownIcon,
@@ -8,8 +8,20 @@ import {
   UserIcon,
 } from '@heroicons/react/20/solid';
 import { User } from '@/domain';
+import { useRouter } from 'next/router';
+import { dataLoaders } from '@/lib/api/api';
+
+const { post: logout } = dataLoaders<{}>('logout');
 
 export default function ProfileMenuItem({ user }: { user: User }) {
+  const handleLogout = async () => {
+    try {
+      await logout();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      window.location.href = '/login';
+    } catch (error) {}
+  };
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -70,6 +82,7 @@ export default function ProfileMenuItem({ user }: { user: User }) {
             <Menu.Item>
               {({ active }) => (
                 <button
+                  onClick={handleLogout}
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm tracking-wider`}

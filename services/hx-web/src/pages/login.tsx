@@ -12,18 +12,23 @@ const { post: login } = dataLoaders<LoginResponse>('login');
 export default function LoginPage() {
   const [email, setEmail] = useState('pehome7132@kkoup.com');
   const [password, setPassword] = useState('Password@123!');
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
 
-    const response = await login({
-      email: 'pehome7132@kkoup.com',
-      password: 'Password@123!',
-    });
-
-    router.push('/compete');
+    setLoading(true);
+    try {
+      await login({ email, password });
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      router.push('/compete');
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,6 +72,7 @@ export default function LoginPage() {
           </div>
 
           <Button
+            isLoading={loading}
             onClick={(e) => onSubmit(e)}
             className="w-full"
             color="info"

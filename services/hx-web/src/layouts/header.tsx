@@ -1,30 +1,18 @@
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
 import { FC } from 'react';
-import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { useIsMounted } from '@/lib/hooks/use-is-mounted';
 import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
 import MenuItems from './menu/_default';
 import Link from 'next/link';
-
 import useSWR from 'swr';
-import { dataLoaders } from '@/lib/api/api';
 import { useRouter } from 'next/router';
+
+import { dataLoaders } from '@/lib/api/api';
 import { User } from '@/domain';
 import { MeResponse } from '@/infra/hx-core/responses/me';
 import WalletMenuItem from '@/components/profile/wallet-menu-item';
 
 const { post: me } = dataLoaders<MeResponse>('me');
-
-const AddFundsButton: FC = () => {
-  return (
-    <div className="flex items-center px-4 hover:cursor-pointer">
-      <PlusCircleIcon className="mr-2 h-4 w-4 text-white" />
-      <span className="hidden text-xs font-bold text-white md:inline-block">
-        Add Funds
-      </span>
-    </div>
-  );
-};
 
 interface HeaderRightAreaProps {
   user: User;
@@ -43,13 +31,10 @@ const Header = () => {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
 
-  const router = useRouter();
-
   const { data, error, isLoading } = useSWR('me', me);
-  console.log(data, error);
 
-  if (error) {
-    router.push('/login');
+  if (error || !data) {
+    return <>no content</>;
   }
 
   return (
