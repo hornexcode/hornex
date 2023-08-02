@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { Fragment } from "react";
-import { Menu } from "@/components/ui/menu";
-import { Transition } from "@/components/ui/transition";
-import ActiveLink from "@/components/ui/links/active-link";
-import { ChevronDown } from "@/components/ui/icons/chevron-down";
-import { MenuItem } from "@/components/ui/collapsible-menu";
-import { menuItems } from "@/layouts/_menu-items";
-import routes from "@/config/routes";
+import { Fragment } from 'react';
+import { Menu } from '@/components/ui/menu';
+import { Transition } from '@/components/ui/transition';
+import ActiveLink from '@/components/ui/links/active-link';
+import { ChevronDown } from '@/components/ui/icons/chevron-down';
+import { MenuItem } from '@/components/ui/collapsible-menu';
+import { menuItems } from '@/layouts/_menu-items';
+import routes from '@/config/routes';
 
 export function MenuItems() {
   return (
     <div className="3xl:px-16 flex items-center xl:px-10 2xl:px-14">
       {menuItems.map((item, index) => (
-        <Fragment key={"layout" + item.name + index}>
+        <Fragment key={'layout' + item.name + index}>
           {item.dropdownItems ? (
             <div className="relative mx-4 first:ml-0 last:mr-0">
               <Menu>
@@ -56,7 +56,7 @@ export function MenuItems() {
           ) : (
             <ActiveLink
               href={{
-                pathname: routes.home + (item.href !== "/" ? item.href : ""),
+                pathname: routes.home + (item.href !== '/' ? item.href : ''),
               }}
               className="3xl:mx-4 mx-3 text-[13px] font-medium uppercase text-gray-600 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white 2xl:mx-3 2xl:text-sm"
               activeClassName="!text-gray-900 dark:!text-white"

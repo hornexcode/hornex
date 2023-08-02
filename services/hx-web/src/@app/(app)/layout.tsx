@@ -1,23 +1,19 @@
 import Header from '@/layouts/header';
 import { Sidebar } from '@/components/ui/sidebar';
-
-const getUser = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        name: 'John Doe',
-        email: 'jonh.doe@email.com',
-        avatar: 'https://i.pravatar.cc/150?img=3',
-      });
-    }, 1000);
-  });
-};
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession();
+
+  if (!session) {
+    redirect('/login');
+  }
+
   return (
     <div className="">
       <Header />
