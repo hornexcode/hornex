@@ -33,7 +33,7 @@ const Header = () => {
 
   const { data, error, isLoading } = useSWR('me', me);
 
-  if (error || !data) {
+  if (error || !data?.data?.user) {
     return <>no content</>;
   }
 
@@ -52,10 +52,10 @@ const Header = () => {
         {!isLoading && data && (
           <HeaderRightArea
             user={{
-              id: data.user.id,
-              firstName: data.user.first_name,
-              lastName: data.user.last_name,
-              email: data.user.email,
+              id: data.data.user.id,
+              firstName: data.data.user.first_name,
+              lastName: data.data.user.last_name,
+              email: data.data.user.email,
             }}
           />
         )}

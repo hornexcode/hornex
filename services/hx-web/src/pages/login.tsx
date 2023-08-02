@@ -1,29 +1,50 @@
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import routes from '@/config/routes';
 import { LoginResponse } from '@/infra/hx-core/responses/login';
 import { dataLoaders } from '@/lib/api/api';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const { post: login } = dataLoaders<LoginResponse>('login');
 
+const form = z.object({
+  email: z.string().email({ message: 'Valid email required' }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must contain at least 8 characters' }),
+});
+
+type LoginForm = z.infer<typeof form>;
+
 export default function LoginPage() {
-  const [email, setEmail] = useState('pehome7132@kkoup.com');
-  const [password, setPassword] = useState('Password@123!');
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    setValue,
+    formState: { errors, defaultValues },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(form),
+  });
 
-  const onSubmit = async (e: any) => {
-    e.preventDefault();
-
+  const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     try {
-      await login({ email, password });
+      const res = await login(data);
       await new Promise((resolve) => setTimeout(resolve, 500));
-      router.push('/compete');
+
+      if (res?.data) router.push('/compete');
     } catch (error) {
       console.log(error);
     } finally {
@@ -31,22 +52,30 @@ export default function LoginPage() {
     }
   };
 
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      setValue('email', 'pehome7132@kkoup.com');
+      setValue('password', 'Password@123!');
+    }
+  }, [setValue]);
+
   return (
     <div className="flex h-screen flex-col items-center justify-between">
       <div className="shadow-highlight-100 m-auto w-[450px] space-y-4 rounded-md border border-gray-800 bg-gray-800 p-6 sm:p-8 md:space-y-6">
         <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-white md:text-3xl">
           Login
         </h1>
-        <div className="mt-6 space-y-4 md:space-y-6">
+        <form
+          className="mt-6 space-y-4 md:space-y-6"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           {/* Email */}
-
           <div>
             <InputLabel title="Seu email" important />
             <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              name="email"
               placeholder="jonh.doe@example.com"
+              error={errors.email?.message}
+              {...register('email', { required: true })}
             />
           </div>
 
@@ -54,11 +83,10 @@ export default function LoginPage() {
           <div>
             <InputLabel title="Sua senha" important />
             <Input
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               type="password"
               placeholder="****"
+              error={errors.password?.message}
+              {...register('password', { required: true })}
             />
           </div>
 
@@ -73,7 +101,6 @@ export default function LoginPage() {
 
           <Button
             isLoading={loading}
-            onClick={(e) => onSubmit(e)}
             className="w-full"
             color="info"
             shape="rounded"
@@ -83,11 +110,14 @@ export default function LoginPage() {
 
           <p className="text-sm font-light text-gray-400">
             Não possui uma conta?{' '}
-            <a href="#" className="font-medium text-blue-300 hover:underline">
+            <Link
+              href={`${routes.register}`}
+              className="font-medium text-blue-300 hover:underline"
+            >
               Registre-se
-            </a>
+            </Link>
           </p>
-        </div>
+        </form>
       </div>
     </div>
   );

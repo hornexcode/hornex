@@ -2,10 +2,10 @@ import { routes } from './routes';
 import { getCookieFromRequest } from './cookie';
 
 const isServer = typeof window === 'undefined';
-const API_ROOT = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+const API_ROOT = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 const fetcher = async (url: string, options?: RequestInit) => {
-  return fetch(url, options);
+  return await fetch(url, options);
 };
 
 export const dataLoaders = <T, Data = unknown>(
@@ -18,7 +18,7 @@ export const dataLoaders = <T, Data = unknown>(
     let error: FetchError | null = null;
     let data: T | null = null;
 
-    const r = await fetcher(`http://localhost:9234/api/${path}`, {
+    const r = await fetcher(`${API_ROOT}/${path}`, {
       method,
       credentials: 'include',
       mode: 'cors',
@@ -57,7 +57,7 @@ export const dataLoaders = <T, Data = unknown>(
       error = e;
     } finally {
       return {
-        data,
+        data: (await r.json()) as T,
         error,
         headers: r.headers,
         status: r.status,
