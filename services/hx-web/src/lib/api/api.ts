@@ -18,6 +18,8 @@ export const dataLoaders = <T, Data = unknown>(
     try {
       const res = await fetcher(`http://localhost:9234/api/${path}`, {
         method,
+        credentials: 'include',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
           ...headers,
@@ -27,7 +29,7 @@ export const dataLoaders = <T, Data = unknown>(
 
       return res.json() as T;
     } catch (error) {
-      throw new Error('Error fetching data');
+      console.log(error);
     }
   };
 

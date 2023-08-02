@@ -3,6 +3,7 @@ import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { LoginResponse } from '@/infra/hx-core/responses/login';
 import { dataLoaders } from '@/lib/api/api';
+import { useRouter } from 'next/router';
 
 import { useState } from 'react';
 
@@ -12,6 +13,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState('pehome7132@kkoup.com');
   const [password, setPassword] = useState('Password@123!');
 
+  const router = useRouter();
+
   const onSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -20,7 +23,7 @@ export default function LoginPage() {
       password: 'Password@123!',
     });
 
-    console.log(response);
+    router.push('/compete');
   };
 
   return (

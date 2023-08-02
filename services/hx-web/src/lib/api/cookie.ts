@@ -1,7 +1,6 @@
 import { IncomingMessage } from 'http';
 
 import {
-  CookieAttributes,
   get as getCookie,
   parse as parseCookie,
   set as setCookie,
@@ -16,10 +15,8 @@ import {
  * @param { IncomingMessage } req The request to get the cookie from.
  * @returns string | undefined
  */
-export function getCookieFromRequest(
-  name: 'hx-jwt',
-  req: IncomingMessage
-): string | undefined {
+export function getCookieFromRequest(req: IncomingMessage): string | undefined {
+  const name = 'hx-jwt';
   if (req.headers.cookie) {
     const { [name]: cookie } = parseCookie(req.headers.cookie);
     if (cookie) {

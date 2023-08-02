@@ -7,18 +7,19 @@ import {
   CogIcon,
   UserIcon,
 } from '@heroicons/react/20/solid';
+import { User } from '@/domain';
 
-export default function ProfileMenuItem() {
+export default function ProfileMenuItem({ user }: { user: User }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          <UserIcon className="mr-2 h-5 w-5" aria-hidden="true" />
-          <span className="hidden text-xs text-white group-hover/item:text-gray-200 md:inline-block">
-            Pedro Santos
+          {/* <UserIcon className="mr-1 h-4 w-4" aria-hidden="true" /> */}
+          <span className="hidden text-xs font-bold text-white group-hover/item:text-gray-200 md:inline-block">
+            {user.firstName} {user.lastName}
           </span>
           <ChevronDownIcon
-            className="-mr-1 ml-2 h-5 w-5 text-white group-hover/item:text-gray-200"
+            className="-mr-1 ml-2 h-4 w-4 text-white group-hover/item:text-gray-200"
             aria-hidden="true"
           />
         </Menu.Button>
