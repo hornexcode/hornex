@@ -15,25 +15,47 @@ export const dataLoaders = <T, Data = unknown>(
 
   // Post data to the API
   const post = async (data?: Data, headers: Record<string, string> = {}) => {
-    try {
-      const res = await fetcher(`http://localhost:9234/api/${path}`, {
-        method,
-        credentials: 'include',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
-        body: data ? JSON.stringify(data) : '',
-      });
+    let error: FetchError | null = null;
 
-      return res.json() as T;
-    } catch (error) {
-      console.log(error);
+    const r = await fetcher(`http://localhost:9234/api/${path}`, {
+      method,
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: data ? JSON.stringify(data) : '',
+    });
+
+    if (!r.ok) {
+      try {
+        // attempt to parse errors before returning as text
+        const errorResponse = await r.json();
+        error = {
+          name: 'FetchError',
+          message:
+            errorResponse?.detail ?? errorResponse?.error ?? 'Unable to fetch',
+          code: r.status,
+          response: errorResponse,
+        };
+      } catch (_) {
+        const errorMessage = await r.text();
+        error = new Error(errorMessage);
+        error.code = r.status;
+      }
     }
+
+    return r.json() as T;
   };
 
   return {
     post,
   };
 };
+
+export interface FetchError extends Error {
+  code?: number;
+  id?: string;
+  response?: any;
+}

@@ -11,6 +11,7 @@ import { dataLoaders } from '@/lib/api/api';
 import { useRouter } from 'next/router';
 import { User } from '@/domain';
 import { MeResponse } from '@/infra/hx-core/responses/me';
+import WalletMenuItem from '@/components/profile/wallet-menu-item';
 
 const { post: me } = dataLoaders<MeResponse>('me');
 
@@ -32,15 +33,8 @@ interface HeaderRightAreaProps {
 const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
   return (
     <div className="relative order-last flex shrink-0 items-center ">
-      <div className="flex ">
-        <ProfileMenuItem user={user} />
-      </div>
-      <div className="flex border-l border-white/20">
-        <div className="pl-4">
-          <span className="text-xs font-bold text-white">0.00 BRL</span>
-        </div>
-        {/* <AddFundsButton /> */}
-      </div>
+      <WalletMenuItem user={user} />
+      <ProfileMenuItem user={user} />
     </div>
   );
 };
@@ -52,13 +46,14 @@ const Header = () => {
   const router = useRouter();
 
   const { data, error, isLoading } = useSWR('me', me);
+  console.log(data, error);
 
-  if (error && data === undefined) {
+  if (error) {
     router.push('/login');
   }
 
   return (
-    <header className="sticky left-0 top-0 z-40 h-14 w-full bg-sky-500 px-4 shadow-card">
+    <header className="sticky left-0 top-0 z-40 h-16 w-full bg-light-dark px-4 shadow-card">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block w-24 font-extrabold text-white" href="/">

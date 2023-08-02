@@ -15,7 +15,7 @@ const bgColors: bgColorsType = {
   sky: 'bg-sky-400/90',
   purple: 'bg-purple-400/80',
   red: 'bg-red-400/80',
-  yellow: 'bg-yellow-400/80'
+  yellow: 'bg-yellow-400/80',
 };
 
 type PlatformIcon =
@@ -51,7 +51,7 @@ export const GameItem: FC<GameItemProps> = ({
   name,
   platforms,
   registeredPlayers,
-  tournaments
+  tournaments,
 }) => (
   <div className="rounded-lg bg-light-dark shadow-card">
     {/* tournament card header */}
@@ -60,7 +60,7 @@ export const GameItem: FC<GameItemProps> = ({
         style={{
           background: `url('${bgImage}')`,
           backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
         }}
         className={classNames(
           'group relative h-full w-full overflow-hidden rounded-lg'
@@ -77,7 +77,7 @@ export const GameItem: FC<GameItemProps> = ({
           <Image
             src={hoverImage}
             alt="Lol character"
-            className="h-[14rem] w-auto transition-transform duration-500"
+            className="h-[10rem] w-auto transition-transform duration-500"
           />
         </div>
       </div>

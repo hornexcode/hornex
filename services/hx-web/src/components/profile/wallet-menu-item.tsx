@@ -2,24 +2,24 @@
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import {
-  ArrowLeftOnRectangleIcon,
+  ArrowDownCircleIcon,
   ChevronDownIcon,
-  CogIcon,
-  UserIcon,
+  CurrencyDollarIcon,
+  PlusCircleIcon,
 } from '@heroicons/react/20/solid';
 import { User } from '@/domain';
 
-export default function ProfileMenuItem({ user }: { user: User }) {
+export default function WalletMenuItem({ user }: { user: User }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm  font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <div className="block text-right">
-            <div className="text-xs font-normal text-slate-500">Account</div>
+            <div className="text-xs font-normal text-slate-500">Wallet</div>
             <div className="flex items-center">
-              <UserIcon className="mr-1 h-4 w-4" aria-hidden="true" />
+              <CurrencyDollarIcon className="mr-1 h-4 w-4" aria-hidden="true" />
               <span className="hidden text-white group-hover/item:text-gray-200 md:inline-block">
-                {user.firstName} {user.lastName}
+                0.00
               </span>
               <ChevronDownIcon
                 className="-mr-1 ml-2 h-4 w-4 text-white group-hover/item:text-gray-200"
@@ -38,17 +38,17 @@ export default function ProfileMenuItem({ user }: { user: User }) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800 text-sm tracking-wider  ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800  ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="p-2">
             <Menu.Item>
               {({ active }) => (
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm tracking-wider`}
+                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
-                  <UserIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-                  My Profile
+                  <PlusCircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Add Funds
                 </button>
               )}
             </Menu.Item>
@@ -57,28 +57,13 @@ export default function ProfileMenuItem({ user }: { user: User }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm tracking-wider`}
+                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
-                  <CogIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-                  Account Settings
-                </button>
-              )}
-            </Menu.Item>
-          </div>
-
-          <div className="p-2">
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${
-                    active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm tracking-wider`}
-                >
-                  <ArrowLeftOnRectangleIcon
+                  <ArrowDownCircleIcon
                     className="mr-2 h-4 w-4"
                     aria-hidden="true"
                   />
-                  Logout
+                  Withdraw Funds
                 </button>
               )}
             </Menu.Item>
