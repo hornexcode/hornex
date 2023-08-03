@@ -1,25 +1,10 @@
-import { ComputerDesktopIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import * as Cookies from 'es-cookie';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
 
-import CSChar from '@/assets/images/cs-char.png';
-import DotaChar from '@/assets/images/dota-char.png';
-import LolChar from '@/assets/images/lol-bg-char.png';
-import RocketLeagueChar from '@/assets/images/rl-char.png';
-import { GameItem, GameItemProps, PlatformPicker } from '@/components/compete';
-import {
-  CounterStrikeLogoIcon,
-  DotaLogoIcon,
-  LolLogoIcon,
-  PlayStationIcon,
-  RocketLeagueLogoIcon,
-  XboxIcon,
-} from '@/components/ui/icons';
+import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
-import { getCookieFromRequest } from '@/lib/api/cookie';
-import { useAuthContext } from '@/lib/auth';
-
-import { NextPageWithLayout } from '../_app';
 
 const TeamsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -36,12 +21,15 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div className="rounded bg-light-dark p-4">
-              <div className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-slate-800 p-4 transition-all hover:bg-slate-700">
+              <Link
+                href={routes.createTeam}
+                className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-slate-800 p-4 transition-all hover:bg-slate-700"
+              >
                 <PlusCircleIcon className="w-7" />
                 <span className="text-sm font-medium text-slate-400">
                   Create new team
                 </span>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
@@ -61,12 +49,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     cookies['hx-auth.token'] !== ''
   ) {
     return {
-      props: {},
+      props: {}
     };
   }
 
   return {
-    props: {},
+    props: {}
   };
 };
 
