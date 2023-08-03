@@ -22,11 +22,12 @@ const initialState: AuthContextState = {
 };
 
 type ActionType = {
-  type: string;
+  type: 'LOGIN_SUCCESS' | 'LOGIN_FAILED' | 'LOGOUT';
   payload?: User;
 };
 
 const reducer = (state: AuthContextState, action: ActionType) => {
+  console.log('@reducing', state, action);
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       return {
@@ -73,11 +74,10 @@ export const AuthContextProvider = ({
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
+  console.log(state.isAuthenticated, state.user);
+
   useEffect(() => {
     const token = get('hx-auth.token');
-    if (token) {
-      dispatch({ type: 'LOGIN_SUCCESS' });
-    }
 
     if (!state.isAuthenticated && token) {
       setFetching(true);
@@ -93,7 +93,6 @@ export const AuthContextProvider = ({
           return res.json();
         })
         .then(({ user }: CurrentUserResponse) => {
-          console.log(user);
           dispatch({
             type: 'LOGIN_SUCCESS',
             payload: {
@@ -119,6 +118,7 @@ export const AuthContextProvider = ({
     try {
       setFetching(true);
       setError(undefined);
+      // TODO: move to api client
       const res = await fetch('http://localhost:9234/api/v1/auth/login', {
         method: 'POST',
         credentials: 'include',
@@ -128,6 +128,7 @@ export const AuthContextProvider = ({
       if (res.ok) {
         const data = (await res.json()) as LoginResponse;
         set('hx-auth.token', data.access_token, { expires: data.exp });
+
         dispatch({
           type: 'LOGIN_SUCCESS',
           payload: {
@@ -137,6 +138,7 @@ export const AuthContextProvider = ({
             email: data.user.email,
           },
         });
+
         setError(undefined);
         setFetching(false);
       } else {
@@ -150,19 +152,19 @@ export const AuthContextProvider = ({
               'Error logging in'
           );
         } catch (error) {
-          console.log('Error parsing error response :', error);
+          // Error 500
           setError('Unable to log in');
+          dispatch({ type: 'LOGIN_FAILED' });
         } finally {
           setFetching(false);
-          dispatch({ type: 'LOGGING_FAILED' });
         }
       }
     } catch (error) {
-      console.log('Error making request to login api :', error);
+      console.log('Error making request to api :', error);
       setError('Internal server error');
+      dispatch({ type: 'LOGIN_FAILED' });
     } finally {
       setFetching(false);
-      dispatch({ type: 'LOGGING_FAILED' });
     }
   };
 
