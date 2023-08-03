@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"net/http"
-	"strings"
 
 	"github.com/go-chi/render"
 	"hornex.gg/hornex/auth/cognito"
@@ -26,8 +25,7 @@ func UserWithContext(ctx context.Context, user *UserRequest) context.Context {
 
 func IsAuthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token := r.Header.Get("Authorization")
-		token = strings.Replace(token, "Bearer ", "", 1)
+		token := tokenFromCookie(r)
 
 		if token == "" {
 			render.Status(r, http.StatusUnauthorized)
@@ -51,5 +49,14 @@ func IsAuthenticated(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
 
+// -
+
+func tokenFromCookie(r *http.Request) string {
+	cookie, err := r.Cookie("hx-jwt")
+	if err != nil {
+		return ""
+	}
+	return cookie.Value
 }

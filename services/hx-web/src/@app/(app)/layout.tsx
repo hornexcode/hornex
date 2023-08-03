@@ -1,12 +1,19 @@
-'use client';
 import Header from '@/layouts/header';
 import { Sidebar } from '@/components/ui/sidebar';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession();
+
+  if (!session) {
+    redirect('/login');
+  }
+
   return (
     <div className="">
       <Header />

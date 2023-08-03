@@ -35,15 +35,13 @@ func NewUserHandler(userService UserService, authService AuthService) *UserHandl
 
 // Register connects the handlers to the router
 func (h *UserHandler) Register(r *chi.Mux) {
-	r.Post("/api/v1/users/signup", h.signUp)
-	r.Post("/api/v1/users/signup-confirm", h.signUpConfirm)
-	r.Post("/api/v1/users/signin", h.signIn)
+	r.Post("/api/v1/auth/signup", h.signUp)
+	r.Post("/api/v1/auth/signup-confirm", h.signUpConfirm)
+	r.Post("/api/v1/auth/login", h.login)
 
 	r.Group(func(r chi.Router) {
 		r.Use(IsAuthenticated)
-		// r.Use(jwtauth.Verifier(jwtauth.New("HS256", []byte("secret"), nil)))
-		// r.Use(jwtauth.Authenticator)
-		r.Get("/api/v1/users/me", h.me)
+		r.Post("/api/v1/auth/me", h.me)
 	})
 }
 
@@ -146,13 +144,17 @@ func (h *UserHandler) signUpConfirm(w http.ResponseWriter, r *http.Request) {
 
 // - SignIn
 
-type SignInRequest struct {
+type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
-	var req SignInRequest
+type LoginResponse struct {
+	User User `json:"user"`
+}
+
+func (h *UserHandler) login(w http.ResponseWriter, r *http.Request) {
+	var req LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		renderErrorResponse(w, r, "invalid request",
 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
@@ -172,14 +174,29 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user, err := h.userService.GetUserByEmail(r.Context(), req.Email)
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "user not found"})
+		return
+	}
+
 	http.SetCookie(w, &http.Cookie{
-		Name:    "hx-access-token",
-		Value:   token.AccessToken,
-		Path:    "/",
-		Expires: time.Now().Add(24 * time.Hour),
+		Name:     "hx-jwt",
+		Value:    token.AccessToken,
+		Path:     "/",
+		HttpOnly: true,
+		Expires:  time.Now().Add(24 * time.Hour),
 	})
 
-	renderResponse(w, r, nil, http.StatusOK)
+	renderResponse(w, r, &LoginResponse{
+		User: User{
+			ID:        user.ID,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+		},
+	}, http.StatusOK)
 }
 
 // - Me
