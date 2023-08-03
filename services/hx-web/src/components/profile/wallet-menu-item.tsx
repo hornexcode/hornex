@@ -1,11 +1,12 @@
 'use client';
 import { Menu, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
 import {
   ArrowDownIcon,
   ChevronDownIcon,
   PlusCircleIcon,
 } from '@heroicons/react/20/solid';
+import { Fragment } from 'react';
+
 import { User } from '@/domain';
 
 export default function WalletMenuItem({ user }: { user: User }) {
@@ -15,7 +16,7 @@ export default function WalletMenuItem({ user }: { user: User }) {
         <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-xs font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <div className="flex items-center">
             {/* <CurrencyDollarIcon className="mr-1 h-4 w-4" aria-hidden="true" /> */}
-            <span className="hidden text-sm text-white group-hover/item:text-gray-200 md:inline-block">
+            <span className="hidden font-display text-sm text-white group-hover/item:text-gray-200 md:inline-block">
               0.00
             </span>
             <ChevronDownIcon

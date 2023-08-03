@@ -9,11 +9,12 @@ module.exports = {
     './src/layouts/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    fontFamily: {
-      body: ['Fira Code', 'Inter', 'sans-serif'],
-      number: ['Fira Code', 'sans-serif'],
-    },
     extend: {
+      fontFamily: {
+        sans: ['ui-sans-serif', 'system-ui'],
+        body: ['nunito', 'sans-serif'],
+        display: ['Oswald', 'sans-serif'],
+      },
       colors: {
         body: '#fcfcfc',
         primary: '#0D1321',

@@ -1,8 +1,8 @@
+import classNames from 'classnames';
 import Image, { StaticImageData } from 'next/image';
 import { FC } from 'react';
-import Button from '@/components/ui/button/button';
 
-import classNames from 'classnames';
+import Button from '@/components/ui/button/button';
 
 type bgColorsType = {
   sky: string;
@@ -88,7 +88,7 @@ export const GameItem: FC<GameItemProps> = ({
           <span className="text-[11px] text-slate-200">
             {registeredPlayers} Tournaments opened
           </span>
-          <h4 className="text-sm font-extrabold text-white">
+          <h4 className="!font-display text-sm font-extrabold text-white">
             {name} - {matchFormat}
           </h4>
         </div>
@@ -115,7 +115,7 @@ export const GameItem: FC<GameItemProps> = ({
     {/* tournament card footer */}
     <div className="rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
       <Button
-        className="w-full bg-gradient-to-r from-sky-400 to-sky-500 text-sm"
+        className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-sm"
         shape="rounded"
         size="small"
       >
