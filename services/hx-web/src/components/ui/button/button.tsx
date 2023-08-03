@@ -18,7 +18,7 @@ type ColorNames =
 type SizeNames = 'large' | 'medium' | 'small' | 'mini';
 
 const shapes: Record<ShapeNames, string[]> = {
-  rounded: ['rounded-md sm:rounded-lg'],
+  rounded: ['rounded'],
   pill: ['rounded-full'],
   circle: ['rounded-full'],
 };

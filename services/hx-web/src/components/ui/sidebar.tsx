@@ -3,13 +3,13 @@ import {
   PlusCircleIcon,
   PlusIcon,
   TrophyIcon,
-  UserGroupIcon
+  UserGroupIcon,
 } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import {
   CounterStrikeLogoIcon,
   LolIcon,
-  SwordsIcon
+  SwordsIcon,
 } from '@/components/ui/icons';
 import classNames from 'classnames';
 import routes from '@/config/routes';
@@ -18,7 +18,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'fixed top-14 z-20 flex h-full w-16 flex-col border-r border-t border-slate-800 bg-light-dark px-2 shadow-2xl',
+        'fixed top-16 z-20 flex h-full w-16 flex-col border-r border-t border-slate-800 bg-light-dark px-2 shadow-2xl',
         className
       )}
     >

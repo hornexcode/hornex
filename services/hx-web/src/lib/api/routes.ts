@@ -11,8 +11,8 @@ export const routes = {
     path: 'v1/auth/logout',
     method: Method.POST,
   },
-  me: {
-    path: 'v1/auth/me',
-    method: Method.POST,
+  currentUser: {
+    path: 'v1/users/current',
+    method: Method.GET,
   },
 };

@@ -65,8 +65,26 @@ export const dataLoaders = <T, Data = unknown>(
     }
   };
 
+  const get = async (headers: Record<string, string> = {}) => {
+    const r = await fetcher(`${API_ROOT}/${path}`, {
+      method,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+    });
+
+    if (r.ok) {
+      return (await r.json()) as T;
+    } else {
+      return null;
+    }
+  };
+
   return {
     post,
+    get,
   };
 };
 

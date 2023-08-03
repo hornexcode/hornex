@@ -53,7 +53,7 @@ export const GameItem: FC<GameItemProps> = ({
   registeredPlayers,
   tournaments,
 }) => (
-  <div className="rounded-lg bg-light-dark shadow-card">
+  <div className="rounded bg-light-dark shadow-card">
     {/* tournament card header */}
     <div className="p-4">
       <div
@@ -63,12 +63,12 @@ export const GameItem: FC<GameItemProps> = ({
           backgroundRepeat: 'no-repeat',
         }}
         className={classNames(
-          'group relative h-full w-full overflow-hidden rounded-lg'
+          'group relative h-full w-full overflow-hidden rounded'
         )}
       >
         <div
           className={classNames(
-            'absolute top-0 h-full w-full rounded-lg opacity-70 transition-opacity duration-500 ease-linear',
+            'absolute top-0 h-full w-full rounded opacity-70 transition-opacity duration-500 ease-linear',
             bgColors[bgColor]
           )}
         ></div>
@@ -85,8 +85,8 @@ export const GameItem: FC<GameItemProps> = ({
       {/* tournament card body */}
       <div className="mt-4 block space-y-3 divide-y divide-slate-800">
         <div className="block">
-          <span className="text-[11px]">
-            {registeredPlayers} players registered
+          <span className="text-[11px] text-slate-200">
+            {registeredPlayers} Tournaments opened
           </span>
           <h4 className="text-sm font-extrabold text-white">
             {name} - {matchFormat}
@@ -113,22 +113,14 @@ export const GameItem: FC<GameItemProps> = ({
     </div>
 
     {/* tournament card footer */}
-    <div className="grid grid-cols-2 rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
-      <div className="pr-2 text-left">
-        <h4 className="font-extrabold leading-4 tracking-tighter text-white">
-          {tournaments} Tournaments
-        </h4>
-        <span className="text-xs">Play for free</span>
-      </div>
-      <div>
-        <Button
-          className="w-full bg-gradient-to-r from-sky-400 to-sky-500 -tracking-wider"
-          shape="rounded"
-          size="small"
-        >
-          Play Now
-        </Button>
-      </div>
+    <div className="rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
+      <Button
+        className="w-full bg-gradient-to-r from-sky-400 to-sky-500 text-sm"
+        shape="rounded"
+        size="small"
+      >
+        Play Now
+      </Button>
     </div>
   </div>
 );

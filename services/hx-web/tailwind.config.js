@@ -10,13 +10,10 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      body: ['Inter', 'sans-serif'],
+      body: ['Fira Code', 'Inter', 'sans-serif'],
       number: ['Fira Code', 'sans-serif'],
     },
     extend: {
-      fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-      },
       colors: {
         body: '#fcfcfc',
         primary: '#0D1321',

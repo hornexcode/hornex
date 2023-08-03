@@ -2,7 +2,9 @@ package rest
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/render"
 	"hornex.gg/hornex/auth/cognito"
@@ -25,9 +27,14 @@ func UserWithContext(ctx context.Context, user *UserRequest) context.Context {
 
 func IsAuthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token := tokenFromCookie(r)
+		// TODO: check if the user is authenticated by checking the token in the request Header and Cookies
+		fmt.Println("Cookies :", r.Cookies())
+		token := tokenFromHeader(r)
+		accessToken := strings.Split(token, "Bearer ")[1]
 
-		if token == "" {
+		fmt.Println("token: ", accessToken)
+
+		if accessToken == "" {
 			render.Status(r, http.StatusUnauthorized)
 			render.JSON(w, r, map[string]string{"error": "missing authorization header"})
 			return
@@ -35,7 +42,7 @@ func IsAuthenticated(next http.Handler) http.Handler {
 
 		cognito := cognito.FromContext(r.Context())
 
-		u, err := cognito.ProviderUser(token)
+		u, err := cognito.ProviderUser(accessToken)
 		if err != nil {
 			render.Status(r, http.StatusUnauthorized)
 			render.JSON(w, r, map[string]string{"error": err.Error()})
@@ -59,4 +66,8 @@ func tokenFromCookie(r *http.Request) string {
 		return ""
 	}
 	return cookie.Value
+}
+
+func tokenFromHeader(r *http.Request) string {
+	return r.Header.Get("Authorization")
 }
