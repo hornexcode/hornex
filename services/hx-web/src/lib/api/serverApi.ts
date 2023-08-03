@@ -1,7 +1,6 @@
 import axios, { AxiosError } from 'axios';
-import { GetServerSidePropsContext } from 'next';
 import * as Cookies from 'es-cookie';
-import { signOut } from '../auth';
+import { GetServerSidePropsContext } from 'next';
 
 export const serverAPI = (ctx: GetServerSidePropsContext) => {
   const cookies = Cookies.parse(ctx.req.headers.cookie || '');

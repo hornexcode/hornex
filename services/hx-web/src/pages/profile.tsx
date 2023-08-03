@@ -1,5 +1,6 @@
-import { AppLayout } from '@/layouts';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+
+import { AppLayout } from '@/layouts';
 import { ssrAuthGuard } from '@/lib/utils/ssrAuthGuard';
 
 const ProfilePage = ({

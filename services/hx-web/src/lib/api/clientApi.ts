@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
+import { get, set } from 'es-cookie';
 import Router from 'next/router';
-import { set, get } from 'es-cookie';
 
 const createClientAPI = () => {
   // const token = get('hx-auth.token');
