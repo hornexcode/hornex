@@ -1,31 +1,36 @@
+'use client';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { useIsMounted } from '@/lib/hooks/use-is-mounted';
 import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
+import { useWindowScroll } from 'react-use';
 import MenuItems from './menu/_default';
 import Link from 'next/link';
-import useSWR from 'swr';
-import { useRouter } from 'next/router';
-import { User } from '@/domain';
-import WalletMenuItem from '@/components/profile/wallet-menu-item';
-import { useAuthContext } from '@/lib/auth/auth.context';
-import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
-import { dataLoaders } from '@/lib/api/api';
-import { CurrentUserResponse as CurrentUser } from '@/infra/hx-core/responses/current-user';
-import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 
-interface HeaderRightAreaProps {
-  user: User;
-}
+const AddFundsButton: FC = () => {
+  return (
+    <div className="flex items-center px-4 hover:cursor-pointer">
+      <PlusCircleIcon className="mr-2 h-4 w-4 text-white" />
+      <span className="hidden text-xs text-white md:inline-block">
+        Add Funds
+      </span>
+    </div>
+  );
+};
 
-const { get: currentUser } = dataLoaders<CurrentUser>('currentUser');
-
-const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
+const HeaderRightArea: FC = () => {
   return (
     <div className="relative order-last flex shrink-0 items-center ">
-      <WalletMenuItem user={user} />
-      <NotificationMenuItem />
-      <ProfileMenuItem user={user} />
+      <div className="flex ">
+        <ProfileMenuItem />
+      </div>
+      <div className="flex border-l border-white/60">
+        <div className="pl-8">
+          <span className="text-xs text-white">0.00 BRL</span>
+        </div>
+        <AddFundsButton />
+      </div>
     </div>
   );
 };
@@ -33,35 +38,11 @@ const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
 const Header = () => {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
-
-  const {
-    state: { user, isAuthenticated },
-  } = useAuthContext();
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
-  // const [user, setUser] = useState<User | null>(null);
-
-  // const { data, error, isLoading, mutate } = useSWR(
-  //   '/api/v1/users/current',
-  //   currentUser
-  // );
-
-  // useEffect(() => {
-  //   if (data?.user) {
-  //     setUser({
-  //       id: data.user.id,
-  //       firstName: data.user.first_name,
-  //       lastName: data.user.last_name,
-  //       email: data.user.email,
-  //     });
-  //   }
-  // }, [mutate, data]);
+  const windowScroll = useWindowScroll();
+  // const { openDrawer, isOpen } = useDrawer();
 
   return (
-    <header className="sticky left-0 top-0 z-40 h-16 w-full bg-light-dark px-4 shadow-card">
+    <header className="sticky left-0 top-0 z-40 h-14 w-full bg-sky-500 px-4 shadow-card">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block w-24 font-extrabold text-white" href="/">
@@ -72,28 +53,7 @@ const Header = () => {
           )}
         </div>
 
-        {/* {isLoading && <>loading user metadata</>} */}
-
-        {user && (
-          <HeaderRightArea
-            user={{
-              id: user.id,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email,
-            }}
-          />
-        )}
-
-        {!isAuthenticated && (
-          <div className="flex items-center justify-center">
-            <Link href="/login">
-              <div className="flex items-center text-white">
-                Login <ArrowUpRightIcon className="h-5 w-5 text-white" />
-              </div>
-            </Link>
-          </div>
-        )}
+        <HeaderRightArea />
       </div>
     </header>
   );

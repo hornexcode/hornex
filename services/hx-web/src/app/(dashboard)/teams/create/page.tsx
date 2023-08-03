@@ -12,13 +12,15 @@ import Input from '@/components/ui/form/input';
 import classnames from 'classnames';
 import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
 
+// const { patch: updateImageMeta } = dataLoaders<PACAdminImage>('adminImageUpdateMeta')
+
 type Member = {
   id: number;
   username: string;
 };
 
 const form = z.object({
-  username: z.string().min(1, { message: 'Username is required' }),
+  username: z.string().min(1, { message: 'Username is required' })
 });
 type MemberForm = z.infer<typeof form>;
 
@@ -29,7 +31,7 @@ type MemberListItemProps = {
 
 const MemberListItem: FC<MemberListItemProps> = ({
   member,
-  onRemoveMember,
+  onRemoveMember
 }) => (
   <li className="flex items-center rounded-lg bg-light-dark p-4">
     <span className="text-white">{member.username}</span>
@@ -83,9 +85,9 @@ export default function CreateTeamPage() {
     handleSubmit,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors }
   } = useForm<MemberForm>({
-    resolver: zodResolver(form),
+    resolver: zodResolver(form)
   });
 
   const addMember = async (data: MemberForm) => {
@@ -107,8 +109,8 @@ export default function CreateTeamPage() {
         ...prev,
         {
           id: Math.random() + members.length,
-          username: data.username.toLowerCase(),
-        },
+          username: data.username.toLowerCase()
+        }
       ];
     });
 
@@ -159,7 +161,7 @@ export default function CreateTeamPage() {
                 disabled={fetching || isLimitReached}
                 inputClassName={classnames({
                   'dark:border-red-500': errors.username,
-                  'placeholder-red-500': isLimitReached,
+                  'placeholder-red-500': isLimitReached
                 })}
                 error={errors.username?.message}
                 {...register('username', { required: true })}
