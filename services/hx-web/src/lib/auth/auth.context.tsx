@@ -2,14 +2,8 @@ import { User } from '@/domain';
 import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { LoginResponse } from '@/infra/hx-core/responses/login';
 import { get, set } from 'es-cookie';
-import React, {
-  Dispatch,
-  createContext,
-  use,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import React, { createContext, useEffect, useReducer, useState } from 'react';
+import { clientAPI } from '../api/clientApi';
 
 type AuthContextState = {
   isAuthenticated: boolean;
@@ -18,7 +12,7 @@ type AuthContextState = {
 
 const initialState: AuthContextState = {
   isAuthenticated: false,
-  user: undefined,
+  user: undefined
 };
 
 type ActionType = {
@@ -32,19 +26,19 @@ const reducer = (state: AuthContextState, action: ActionType) => {
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload,
+        user: action.payload
       };
     case 'LOGIN_FAILED':
       return {
         ...state,
         isAuthenticated: false,
-        user: undefined,
+        user: undefined
       };
     case 'LOGOUT':
       return {
         ...state,
         isAuthenticated: false,
-        user: undefined,
+        user: undefined
       };
     default:
       return state;
@@ -61,11 +55,11 @@ export const AuthContext = createContext<{
   state: initialState,
   login: async () => {},
   logout: async () => {},
-  fetching: false,
+  fetching: false
 });
 
 export const AuthContextProvider = ({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) => {
@@ -77,14 +71,15 @@ export const AuthContextProvider = ({
     const token = get('hx-auth.token');
 
     if (!state.isAuthenticated && token) {
-      setFetching(true);
+      /* setFetching(true);
       setError(undefined);
+
       fetch('http://localhost:9234/api/v1/users/current', {
         method: 'GET',
         credentials: 'include',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       })
         .then((res) => {
           return res.json();
@@ -96,18 +91,33 @@ export const AuthContextProvider = ({
               id: user.id,
               firstName: user.first_name,
               lastName: user.last_name,
-              email: user.email,
-            },
+              email: user.email
+            }
           });
           setFetching(false);
         })
-        .finally(() => setFetching(false));
+        .finally(() => setFetching(false)); */
+
+      const getUser = async () => {
+        try {
+          const res = await clientAPI.get(
+            'http://localhost:9234/api/v1/users/current'
+          );
+          console.log(res);
+        } catch (err) {
+          // setFetching(false);
+        } finally {
+          // setFetching(false);
+        }
+      };
+
+      getUser();
     }
   }, []);
 
   const login = async ({
     email,
-    password,
+    password
   }: {
     email: string;
     password: string;
@@ -119,7 +129,7 @@ export const AuthContextProvider = ({
       const res = await fetch('http://localhost:9234/api/v1/auth/login', {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
 
       if (res.ok) {
@@ -132,8 +142,8 @@ export const AuthContextProvider = ({
             id: data.user.id,
             firstName: data.user.first_name,
             lastName: data.user.last_name,
-            email: data.user.email,
-          },
+            email: data.user.email
+          }
         });
 
         setError(undefined);
