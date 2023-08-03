@@ -1,12 +1,11 @@
 'use client';
+import { ArrowDownTrayIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 
-import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
-
 import TV4 from '@/assets/images/tournaments/tournament-v4.jpg';
-import { LolIcon, LolLogoIcon } from '@/components/ui/icons';
+import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
 import Button from '@/components/ui/button/button';
-import { ArrowDownTrayIcon } from '@heroicons/react/20/solid';
+import { LolIcon, LolLogoIcon } from '@/components/ui/icons';
 import routes from '@/config/routes';
 
 type GamePageProps = {

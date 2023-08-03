@@ -1,15 +1,9 @@
-import { User } from '@/domain';
-import { CurrentUserResponse } from '@/infra/hx-core/responses/current-user';
-import { LoginResponse } from '@/infra/hx-core/responses/login';
 import { get, set } from 'es-cookie';
-import React, {
-  Dispatch,
-  createContext,
-  use,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import React, { createContext, useEffect, useReducer, useState } from 'react';
+
+import { User } from '@/domain';
+import { CurrentUser } from '@/infra/hx-core/responses/current-user';
+import { LoginResponse } from '@/infra/hx-core/responses/login';
 
 type AuthContextState = {
   isAuthenticated: boolean;
@@ -22,7 +16,7 @@ const initialState: AuthContextState = {
 };
 
 type ActionType = {
-  type: string;
+  type: 'LOGIN_SUCCESS' | 'LOGIN_FAILED' | 'LOGOUT';
   payload?: User;
 };
 
@@ -75,13 +69,11 @@ export const AuthContextProvider = ({
 
   useEffect(() => {
     const token = get('hx-auth.token');
-    if (token) {
-      dispatch({ type: 'LOGIN_SUCCESS' });
-    }
 
     if (!state.isAuthenticated && token) {
       setFetching(true);
       setError(undefined);
+
       fetch('http://localhost:9234/api/v1/users/current', {
         method: 'GET',
         credentials: 'include',
@@ -92,8 +84,7 @@ export const AuthContextProvider = ({
         .then((res) => {
           return res.json();
         })
-        .then(({ user }: CurrentUserResponse) => {
-          console.log(user);
+        .then(({ user }: CurrentUser) => {
           dispatch({
             type: 'LOGIN_SUCCESS',
             payload: {
@@ -104,6 +95,10 @@ export const AuthContextProvider = ({
             },
           });
           setFetching(false);
+        })
+        .catch((error) => {
+          console.log('Error fetching current user :', error);
+          dispatch({ type: 'LOGIN_FAILED' });
         })
         .finally(() => setFetching(false));
     }
@@ -119,6 +114,7 @@ export const AuthContextProvider = ({
     try {
       setFetching(true);
       setError(undefined);
+      // TODO: move to api client
       const res = await fetch('http://localhost:9234/api/v1/auth/login', {
         method: 'POST',
         credentials: 'include',
@@ -128,15 +124,7 @@ export const AuthContextProvider = ({
       if (res.ok) {
         const data = (await res.json()) as LoginResponse;
         set('hx-auth.token', data.access_token, { expires: data.exp });
-        dispatch({
-          type: 'LOGIN_SUCCESS',
-          payload: {
-            id: data.user.id,
-            firstName: data.user.first_name,
-            lastName: data.user.last_name,
-            email: data.user.email,
-          },
-        });
+
         setError(undefined);
         setFetching(false);
       } else {
@@ -150,19 +138,19 @@ export const AuthContextProvider = ({
               'Error logging in'
           );
         } catch (error) {
-          console.log('Error parsing error response :', error);
+          // Error 500
           setError('Unable to log in');
+          dispatch({ type: 'LOGIN_FAILED' });
         } finally {
           setFetching(false);
-          dispatch({ type: 'LOGGING_FAILED' });
         }
       }
     } catch (error) {
-      console.log('Error making request to login api :', error);
+      console.log('Error making request to api :', error);
       setError('Internal server error');
+      dispatch({ type: 'LOGIN_FAILED' });
     } finally {
       setFetching(false);
-      dispatch({ type: 'LOGGING_FAILED' });
     }
   };
 

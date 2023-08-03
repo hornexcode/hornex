@@ -1,33 +1,34 @@
 'use client';
 
-import { useState } from 'react';
 import cn from 'classnames';
-import { SearchIcon } from '@/components/ui/icons/search';
+import { useState } from 'react';
+
 import Input from '@/components/ui/form/input';
 import { ProfileIcon } from '@/components/ui/icons/profile-icon';
+import { SearchIcon } from '@/components/ui/icons/search';
 import { XMarkIcon } from '@/components/ui/icons/x-mark-icon';
 
 export const collectionList = [
   {
     name: 'Iron flower',
-    value: 'iron-flower'
+    value: 'iron-flower',
   },
   {
     name: 'Creative web',
-    value: 'creative-web'
+    value: 'creative-web',
   },
   {
     name: 'Art in binary',
-    value: 'art-in-binary'
+    value: 'art-in-binary',
   },
   {
     name: 'Sound of wave',
-    value: 'sound-of-wave'
+    value: 'sound-of-wave',
   },
   {
     name: 'Pixel art',
-    value: 'pixel-art'
-  }
+    value: 'pixel-art',
+  },
 ];
 
 interface CollectionSelectTypes {
@@ -66,7 +67,7 @@ export default function UserSearchList({ onSelect }: CollectionSelectTypes) {
         className={cn(
           'absolute top-12 z-30 mt-1 w-full rounded bg-gray-800 py-3 transition-all',
           {
-            hidden: searchKeyword.length === 0
+            hidden: searchKeyword.length === 0,
           }
         )}
       >

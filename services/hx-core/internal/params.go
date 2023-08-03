@@ -6,23 +6,19 @@ import (
 )
 
 type UserCreateParams struct {
-	Email         string
-	Username      string
 	FirstName     string
 	LastName      string
+	Email         string
 	Password      string
-	BirthDate     string
 	TermsAccepted bool
 }
 
 // Validate indicates whether the fields are valid or not.
 func (p UserCreateParams) Validate() error {
 	user := User{
-		Email:     p.Email,
-		Username:  p.Username,
 		FirstName: p.FirstName,
 		LastName:  p.LastName,
-		BirthDate: p.BirthDate,
+		Email:     p.Email,
 		Password:  p.Password,
 	}
 
@@ -39,6 +35,24 @@ func (p UserCreateParams) Validate() error {
 	return nil
 }
 
+type UserUpdateParams struct {
+	ID             string
+	Email          string
+	FirstName      string
+	LastName       string
+	BirthDate      string
+	EmailConfirmed bool
+}
+
+type UserSearchParams struct {
+	Email string
+}
+
+type UserSearchResults struct {
+	Users []User
+	Total int64
+}
+
 type UserSignInParams struct {
 	Email    string
 	Password string
@@ -51,15 +65,16 @@ func (p UserSignInParams) Validate() error {
 // -
 
 type TeamCreateParams struct {
-	Name       string
-	OwnerEmail string
-	OwnerID    string
+	Name      string
+	CreatedBy string
+	GameID    string
 }
 
 func (p TeamCreateParams) Validate() error {
 	team := Team{
-		Name:    p.Name,
-		OwnerID: p.OwnerID,
+		Name:      p.Name,
+		CreatedBy: p.CreatedBy,
+		GameID:    p.GameID,
 	}
 
 	if err := validation.Validate(&team); err != nil {
@@ -69,7 +84,7 @@ func (p TeamCreateParams) Validate() error {
 }
 
 type TeamSearchParams struct {
-	Name string
+	CreatedBy string
 }
 
 type TeamUpdateParams struct {

@@ -1,10 +1,9 @@
-import { IncomingMessage } from 'http';
-
 import {
   get as getCookie,
   parse as parseCookie,
   set as setCookie,
 } from 'es-cookie';
+import { IncomingMessage } from 'http';
 
 /**
  * getCookieFromRequest accepts a CookieNames enum to get the cookie from the request. If the value is present it is returned as a string.
@@ -15,8 +14,10 @@ import {
  * @param { IncomingMessage } req The request to get the cookie from.
  * @returns string | undefined
  */
-export function getCookieFromRequest(req: IncomingMessage): string | undefined {
-  const name = 'hx-jwt';
+export function getCookieFromRequest(
+  req: IncomingMessage,
+  name: string = ''
+): string | undefined {
   if (req.headers.cookie) {
     const { [name]: cookie } = parseCookie(req.headers.cookie);
     if (cookie) {
