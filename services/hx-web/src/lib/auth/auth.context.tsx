@@ -1,5 +1,5 @@
 import { User } from '@/domain';
-import { CurrentUserResponse } from '@/infra/hx-core/responses/current-user';
+import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { LoginResponse } from '@/infra/hx-core/responses/login';
 import { get, set } from 'es-cookie';
 import React, {
@@ -27,7 +27,6 @@ type ActionType = {
 };
 
 const reducer = (state: AuthContextState, action: ActionType) => {
-  console.log('@reducing', state, action);
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       return {
@@ -74,8 +73,6 @@ export const AuthContextProvider = ({
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  console.log(state.isAuthenticated, state.user);
-
   useEffect(() => {
     const token = get('hx-auth.token');
 
@@ -92,7 +89,7 @@ export const AuthContextProvider = ({
         .then((res) => {
           return res.json();
         })
-        .then(({ user }: CurrentUserResponse) => {
+        .then(({ user }: CurrentUser) => {
           dispatch({
             type: 'LOGIN_SUCCESS',
             payload: {
