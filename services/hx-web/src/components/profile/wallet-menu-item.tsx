@@ -2,9 +2,8 @@
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import {
-  ArrowDownCircleIcon,
+  ArrowDownIcon,
   ChevronDownIcon,
-  CurrencyDollarIcon,
   PlusCircleIcon,
 } from '@heroicons/react/20/solid';
 import { User } from '@/domain';
@@ -13,19 +12,16 @@ export default function WalletMenuItem({ user }: { user: User }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          <div className="block text-right">
-            <div className="text-xs font-normal text-slate-500">Wallet</div>
-            <div className="flex items-center">
-              <CurrencyDollarIcon className="mr-1 h-4 w-4" aria-hidden="true" />
-              <span className="hidden text-white group-hover/item:text-gray-200 md:inline-block">
-                0.00
-              </span>
-              <ChevronDownIcon
-                className="-mr-1 ml-2 h-4 w-4 text-white group-hover/item:text-gray-200"
-                aria-hidden="true"
-              />
-            </div>
+        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-xs font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+          <div className="flex items-center">
+            {/* <CurrencyDollarIcon className="mr-1 h-4 w-4" aria-hidden="true" /> */}
+            <span className="hidden text-sm text-white group-hover/item:text-gray-200 md:inline-block">
+              0.00
+            </span>
+            <ChevronDownIcon
+              className="ml-2 h-4 w-4 text-white group-hover/item:text-gray-200"
+              aria-hidden="true"
+            />
           </div>
         </Menu.Button>
       </div>
@@ -39,13 +35,20 @@ export default function WalletMenuItem({ user }: { user: User }) {
         leaveTo="transform opacity-0 scale-95"
       >
         <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800  ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="p-2">
+          <div className="py-2">
+            <Menu.Item>
+              <div className="px-4 py-2 text-xs font-semibold text-slate-200">
+                My Wallet
+              </div>
+            </Menu.Item>
+          </div>
+          <div className="py-2">
             <Menu.Item>
               {({ active }) => (
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  } group flex w-full items-center px-4 py-2 text-xs`}
                 >
                   <PlusCircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                   Add Funds
@@ -57,12 +60,9 @@ export default function WalletMenuItem({ user }: { user: User }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  } group flex w-full items-center px-4 py-2 text-xs`}
                 >
-                  <ArrowDownCircleIcon
-                    className="mr-2 h-4 w-4"
-                    aria-hidden="true"
-                  />
+                  <ArrowDownIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                   Withdraw Funds
                 </button>
               )}

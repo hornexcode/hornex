@@ -1,10 +1,12 @@
 import { User } from '@/domain';
+import { CurrentUserResponse } from '@/infra/hx-core/responses/current-user';
 import { LoginResponse } from '@/infra/hx-core/responses/login';
-import { set } from 'es-cookie';
+import { get, set } from 'es-cookie';
 import React, {
   Dispatch,
   createContext,
   use,
+  useEffect,
   useReducer,
   useState,
 } from 'react';
@@ -71,6 +73,42 @@ export const AuthContextProvider = ({
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
+  useEffect(() => {
+    const token = get('hx-auth.token');
+    if (token) {
+      dispatch({ type: 'LOGIN_SUCCESS' });
+    }
+
+    if (!state.isAuthenticated && token) {
+      setFetching(true);
+      setError(undefined);
+      fetch('http://localhost:9234/api/v1/users/current', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then(({ user }: CurrentUserResponse) => {
+          console.log(user);
+          dispatch({
+            type: 'LOGIN_SUCCESS',
+            payload: {
+              id: user.id,
+              firstName: user.first_name,
+              lastName: user.last_name,
+              email: user.email,
+            },
+          });
+          setFetching(false);
+        })
+        .finally(() => setFetching(false));
+    }
+  }, []);
+
   const login = async ({
     email,
     password,
@@ -80,6 +118,7 @@ export const AuthContextProvider = ({
   }) => {
     try {
       setFetching(true);
+      setError(undefined);
       const res = await fetch('http://localhost:9234/api/v1/auth/login', {
         method: 'POST',
         credentials: 'include',

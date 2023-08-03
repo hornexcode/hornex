@@ -1,31 +1,30 @@
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useIsMounted } from '@/lib/hooks/use-is-mounted';
 import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
 import MenuItems from './menu/_default';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
-
-import { dataLoaders } from '@/lib/api/api';
 import { User } from '@/domain';
-import { MeResponse } from '@/infra/hx-core/responses/me';
 import WalletMenuItem from '@/components/profile/wallet-menu-item';
-import { useSession } from 'next-auth/react';
 import { useAuthContext } from '@/lib/auth/auth.context';
-import { LinkButton } from '@/components/ui/link-button';
-import { ArrowUpLeftIcon, ArrowUpRightIcon } from '@heroicons/react/20/solid';
-
-const { post: me } = dataLoaders<MeResponse>('me');
+import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
+import { dataLoaders } from '@/lib/api/api';
+import { CurrentUserResponse as CurrentUser } from '@/infra/hx-core/responses/current-user';
+import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 
 interface HeaderRightAreaProps {
   user: User;
 }
 
+const { get: currentUser } = dataLoaders<CurrentUser>('currentUser');
+
 const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
   return (
     <div className="relative order-last flex shrink-0 items-center ">
       <WalletMenuItem user={user} />
+      <NotificationMenuItem />
       <ProfileMenuItem user={user} />
     </div>
   );
@@ -39,6 +38,28 @@ const Header = () => {
     state: { user, isAuthenticated },
   } = useAuthContext();
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
+  // const [user, setUser] = useState<User | null>(null);
+
+  // const { data, error, isLoading, mutate } = useSWR(
+  //   '/api/v1/users/current',
+  //   currentUser
+  // );
+
+  // useEffect(() => {
+  //   if (data?.user) {
+  //     setUser({
+  //       id: data.user.id,
+  //       firstName: data.user.first_name,
+  //       lastName: data.user.last_name,
+  //       email: data.user.email,
+  //     });
+  //   }
+  // }, [mutate, data]);
+
   return (
     <header className="sticky left-0 top-0 z-40 h-16 w-full bg-light-dark px-4 shadow-card">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
@@ -51,7 +72,9 @@ const Header = () => {
           )}
         </div>
 
-        {user && isAuthenticated && (
+        {/* {isLoading && <>loading user metadata</>} */}
+
+        {user && (
           <HeaderRightArea
             user={{
               id: user.id,

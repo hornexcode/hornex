@@ -46,7 +46,7 @@ export default function LoginPage() {
   };
 
   if (state.isAuthenticated) {
-    router.push(routes.home);
+    router.push(routes.compete);
   }
 
   // TODO: remove in production
@@ -59,11 +59,15 @@ export default function LoginPage() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-between">
-      <div className="shadow-highlight-100 m-auto w-[450px] space-y-4 rounded-md border border-gray-800 bg-gray-800 p-6 sm:p-8 md:space-y-6">
+      <div className="shadow-highlight-100 m-auto w-[450px] space-y-4 rounded border border-gray-800 bg-gray-800 p-6 sm:p-8 md:space-y-6">
         {/* <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-white md:text-3xl">
           Login
         </h1> */}
-        {error && <div className="bg-red-500 p-2 text-red-200">{error}</div>}
+        {error && (
+          <div className="rounded bg-red-500 p-2 text-center text-sm text-white">
+            {error}
+          </div>
+        )}
         <form
           className="space-y-4 md:space-y-6"
           onSubmit={handleSubmit(handleOnSubmit)}

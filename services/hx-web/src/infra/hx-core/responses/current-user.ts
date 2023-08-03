@@ -1,4 +1,4 @@
-export type MeResponse = {
+export type CurrentUserResponse = {
   user: {
     id: string;
     email: string;
