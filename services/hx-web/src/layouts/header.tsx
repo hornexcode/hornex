@@ -58,7 +58,7 @@ const Header = () => {
   // }, [mutate, data]);
 
   return (
-    <header className="sticky left-0 top-0 z-40 h-16 w-full bg-light-dark px-4 shadow-card">
+    <header className="sticky left-0 top-0 z-40 h-16 w-full border-b border-b-slate-800 bg-light-dark px-4 shadow-card">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block font-extrabold text-white" href="/">
