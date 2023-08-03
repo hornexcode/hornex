@@ -11,7 +11,7 @@ import WalletMenuItem from '@/components/profile/wallet-menu-item';
 import { useAuthContext } from '@/lib/auth/auth.context';
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
 import { dataLoaders } from '@/lib/api/api';
-import { CurrentUserResponse as CurrentUser } from '@/infra/hx-core/responses/current-user';
+import { CurrentUser as CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 
 interface HeaderRightAreaProps {
