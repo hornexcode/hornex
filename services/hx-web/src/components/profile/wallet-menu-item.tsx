@@ -1,34 +1,27 @@
-import { Fragment } from 'react';
+'use client';
 import { Menu, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
+import {
+  ArrowDownIcon,
+  ChevronDownIcon,
+  PlusCircleIcon,
+} from '@heroicons/react/20/solid';
 import { User } from '@/domain';
-import { useAuthContext } from '@/lib/auth';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 
-export default function ProfileMenuItem({ user }: { user: User }) {
-  const { logout } = useAuthContext();
-  const handleLogout = async () => {
-    await logout();
-  };
-
+export default function WalletMenuItem({ user }: { user: User }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-xs font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          <div className="flex items-center justify-center">
-            <div className="relative h-6 w-6 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
-              <svg
-                className="absolute -left-1 top-0 h-8 w-8 text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-            </div>
+          <div className="flex items-center">
+            {/* <CurrencyDollarIcon className="mr-1 h-4 w-4" aria-hidden="true" /> */}
+            <span className="hidden text-sm text-white group-hover/item:text-gray-200 md:inline-block">
+              0.00
+            </span>
+            <ChevronDownIcon
+              className="ml-2 h-4 w-4 text-white group-hover/item:text-gray-200"
+              aria-hidden="true"
+            />
           </div>
         </Menu.Button>
       </div>
@@ -41,14 +34,11 @@ export default function ProfileMenuItem({ user }: { user: User }) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800 text-xs  ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800  ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-2">
             <Menu.Item>
-              <div className="px-4 py-2 text-xs ">
-                <div className="text-semibold text-slate-200">
-                  {user.firstName} {user.lastName}
-                </div>
-                <div className="text-slate-400">{user.email}</div>
+              <div className="px-4 py-2 text-xs font-semibold text-slate-200">
+                My Wallet
               </div>
             </Menu.Item>
           </div>
@@ -60,7 +50,8 @@ export default function ProfileMenuItem({ user }: { user: User }) {
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
                   } group flex w-full items-center px-4 py-2 text-xs`}
                 >
-                  Account
+                  <PlusCircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Add Funds
                 </button>
               )}
             </Menu.Item>
@@ -71,23 +62,8 @@ export default function ProfileMenuItem({ user }: { user: User }) {
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
                   } group flex w-full items-center px-4 py-2 text-xs`}
                 >
-                  Settings
-                </button>
-              )}
-            </Menu.Item>
-          </div>
-
-          <div className="py-2">
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  onClick={handleLogout}
-                  className={`${
-                    active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-xs`}
-                >
-                  <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
-                  Logout
+                  <ArrowDownIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Withdraw Funds
                 </button>
               )}
             </Menu.Item>

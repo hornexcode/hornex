@@ -1,28 +1,28 @@
-"use client";
+'use client';
 
-import { Fragment, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Dialog } from "@/components/ui/dialog";
-import { Transition } from "@/components/ui/transition";
-import { DRAWER_VIEW, useDrawer } from "@/components/drawer-views/context";
-import { useLayout } from "@/lib/hooks/use-layout";
-import { LAYOUT_OPTIONS } from "@/lib/constants";
+import { Fragment, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Dialog } from '@/components/ui/dialog';
+import { Transition } from '@/components/ui/transition';
+import { DRAWER_VIEW, useDrawer } from '@/components/drawer-views/context';
+import { useLayout } from '@/lib/hooks/use-layout';
+import { LAYOUT_OPTIONS } from '@/lib/constants';
 // dynamic imports
-const Sidebar = dynamic(() => import("@/layouts/sidebar/sidebar"));
-const DrawerFilters = dynamic(() => import("@/components/search/filters"));
-const DrawerMenu = dynamic(() => import("@/layouts/sidebar/_layout-menu"));
+const Sidebar = dynamic(() => import('@/layouts/sidebar/sidebar'));
+const DrawerFilters = dynamic(() => import('@/components/search/filters'));
+const DrawerMenu = dynamic(() => import('@/layouts/sidebar/_layout-menu'));
 const PreviewContent = dynamic(
-  () => import("@/components/create-nft/nft-preview-content")
+  () => import('@/components/create-nft/nft-preview-content')
 );
 
 function renderDrawerContent(view: DRAWER_VIEW | string) {
   switch (view) {
-    case "DASHBOARD_SIDEBAR":
+    case 'DASHBOARD_SIDEBAR':
       return <Sidebar />;
-    case "DRAWER_SEARCH":
+    case 'DRAWER_SEARCH':
       return <DrawerFilters />;
-    case "DRAWER_PREVIEW_NFT":
+    case 'DRAWER_PREVIEW_NFT':
       return <PreviewContent />;
     default:
       return <DrawerMenu />;
@@ -32,7 +32,7 @@ function renderDrawerContent(view: DRAWER_VIEW | string) {
 export default function DrawersContainer() {
   const layoutOptions = Object.values(LAYOUT_OPTIONS);
   const pathname = usePathname();
-  const layoutSegmentFromURL = pathname!.split("/")[1];
+  const layoutSegmentFromURL = pathname!.split('/')[1];
   const searchParams = useSearchParams();
   const { view, isOpen, closeDrawer } = useDrawer();
   const { setLayout } = useLayout();
