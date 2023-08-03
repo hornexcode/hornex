@@ -1,5 +1,4 @@
 const plugin = require('tailwindcss/plugin');
-const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   content: [
@@ -10,8 +9,7 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      body: ['Fira Code', 'Inter', 'sans-serif'],
-      number: ['Fira Code', 'sans-serif'],
+      body: ['Fira Code', 'monospace'],
     },
     extend: {
       colors: {

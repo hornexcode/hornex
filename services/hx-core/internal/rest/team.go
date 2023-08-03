@@ -28,7 +28,7 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 	r.Group(func(r chi.Router) {
 		r.Use(IsAuthenticated)
 		r.Post("/api/v1/teams", h.create)
-		// r.Patch("/api/v1/teams", h.update)
+		r.Patch("/api/v1/teams", h.update)
 	})
 }
 
@@ -87,24 +87,24 @@ type UpdateTeamResponse struct {
 	Team Team `json:"team"`
 }
 
-// func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
-// 	var req UpdateTeamRequest
-// 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-// 		renderErrorResponse(w, r, "invalid request",
-// 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
+	var req UpdateTeamRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		renderErrorResponse(w, r, "invalid request",
+			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
 
-// 		return
-// 	}
+		return
+	}
 
-// 	user := UserFromContext(r.Context())
-// 	team := h.teamService.FindByName(r.Context(), req.Name)
-// 	if team.OwnerID != user.ID {
-// 		renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(errors.ErrorCodePermissionDenied, "unauthorized"))
-// 		return
-// 	}
+	user := UserFromContext(r.Context())
+	team := h.teamService.FindByName(r.Context(), req.Name)
+	if team.OwnerID != user.ID {
+		renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(errors.ErrorCodePermissionDenied, "unauthorized"))
+		return
+	}
 
-// 	_, err := h.teamService.Update(r.Context(), req.ID, internal.TeamUpdateParams{
-// 		Name: req.Name,
-// 	})
+	_, err := h.teamService.Update(r.Context(), req.ID, internal.TeamUpdateParams{
+		Name: req.Name,
+	})
 
-// }
+}
