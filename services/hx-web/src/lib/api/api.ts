@@ -1,5 +1,4 @@
 import { routes } from './routes';
-import { getCookieFromRequest } from './cookie';
 
 const isServer = typeof window === 'undefined';
 const API_ROOT = `${process.env.NEXT_PUBLIC_API_URL}`;
@@ -56,12 +55,13 @@ export const dataLoaders = <T, Data = unknown>(
     } catch (e: any) {
       error = e;
     } finally {
-      return {
-        data: (await r.json()) as T,
-        error,
-        headers: r.headers,
-        status: r.status,
-      };
+      return (await r.json()) as T;
+      // return {
+      //   data: ,
+      //   error,
+      //   headers: r.headers,
+      //   status: r.status,
+      // };
     }
   };
 

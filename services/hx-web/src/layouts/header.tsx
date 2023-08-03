@@ -11,6 +11,10 @@ import { dataLoaders } from '@/lib/api/api';
 import { User } from '@/domain';
 import { MeResponse } from '@/infra/hx-core/responses/me';
 import WalletMenuItem from '@/components/profile/wallet-menu-item';
+import { useSession } from 'next-auth/react';
+import { useAuthContext } from '@/lib/auth/auth.context';
+import { LinkButton } from '@/components/ui/link-button';
+import { ArrowUpLeftIcon, ArrowUpRightIcon } from '@heroicons/react/20/solid';
 
 const { post: me } = dataLoaders<MeResponse>('me');
 
@@ -31,11 +35,9 @@ const Header = () => {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
 
-  const { data, error, isLoading } = useSWR('me', me);
-
-  if (error || !data?.data?.user) {
-    return <>no content</>;
-  }
+  const {
+    state: { user, isAuthenticated },
+  } = useAuthContext();
 
   return (
     <header className="sticky left-0 top-0 z-40 h-16 w-full bg-light-dark px-4 shadow-card">
@@ -49,15 +51,25 @@ const Header = () => {
           )}
         </div>
 
-        {!isLoading && data && (
+        {user && isAuthenticated && (
           <HeaderRightArea
             user={{
-              id: data.data.user.id,
-              firstName: data.data.user.first_name,
-              lastName: data.data.user.last_name,
-              email: data.data.user.email,
+              id: user.id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
             }}
           />
+        )}
+
+        {!isAuthenticated && (
+          <div className="flex items-center justify-center">
+            <Link href="/login">
+              <div className="flex items-center text-white">
+                Login <ArrowUpRightIcon className="h-5 w-5 text-white" />
+              </div>
+            </Link>
+          </div>
         )}
       </div>
     </header>

@@ -4,6 +4,7 @@ import InputLabel from '@/components/ui/form/input-label';
 import routes from '@/config/routes';
 import { LoginResponse } from '@/infra/hx-core/responses/login';
 import { dataLoaders } from '@/lib/api/api';
+import { useAuthContext } from '@/lib/auth/auth.context';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -24,8 +25,6 @@ const form = z.object({
 type LoginForm = z.infer<typeof form>;
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false);
-
   const router = useRouter();
   const {
     register,
@@ -33,25 +32,24 @@ export default function LoginPage() {
     reset,
     setError,
     setValue,
-    formState: { errors, defaultValues },
+    formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(form),
   });
 
-  const onSubmit = async (data: LoginForm) => {
-    setLoading(true);
-    try {
-      const res = await login(data);
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      if (res?.data) router.push('/compete');
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+  const { login, fetching, error, state } = useAuthContext();
+  const handleOnSubmit = async (data: LoginForm) => {
+    await login({
+      email: data.email,
+      password: data.password,
+    });
   };
 
+  if (state.isAuthenticated) {
+    router.push(routes.home);
+  }
+
+  // TODO: remove in production
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       setValue('email', 'pehome7132@kkoup.com');
@@ -62,16 +60,17 @@ export default function LoginPage() {
   return (
     <div className="flex h-screen flex-col items-center justify-between">
       <div className="shadow-highlight-100 m-auto w-[450px] space-y-4 rounded-md border border-gray-800 bg-gray-800 p-6 sm:p-8 md:space-y-6">
-        <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-white md:text-3xl">
+        {/* <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-white md:text-3xl">
           Login
-        </h1>
+        </h1> */}
+        {error && <div className="bg-red-500 p-2 text-red-200">{error}</div>}
         <form
-          className="mt-6 space-y-4 md:space-y-6"
-          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 md:space-y-6"
+          onSubmit={handleSubmit(handleOnSubmit)}
         >
           {/* Email */}
           <div>
-            <InputLabel title="Seu email" important />
+            <InputLabel title="Email" important />
             <Input
               placeholder="jonh.doe@example.com"
               error={errors.email?.message}
@@ -81,7 +80,7 @@ export default function LoginPage() {
 
           {/* Password */}
           <div>
-            <InputLabel title="Sua senha" important />
+            <InputLabel title="Password" important />
             <Input
               type="password"
               placeholder="****"
@@ -100,7 +99,7 @@ export default function LoginPage() {
           </div>
 
           <Button
-            isLoading={loading}
+            isLoading={fetching}
             className="w-full"
             color="info"
             shape="rounded"

@@ -16,6 +16,8 @@ import { AppLayout } from '@/layouts';
 import { NextPageWithLayout } from './_app';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getCookieFromRequest } from '@/lib/api/cookie';
+import { useAuthContext } from '@/lib/auth';
+import * as Cookies from 'es-cookie';
 
 const CompetePage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -166,14 +168,13 @@ CompetePage.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const cookie = getCookieFromRequest(ctx.req);
-
-  if (!cookie) {
+  const cookies = Cookies.parse(ctx.req.headers.cookie || '');
+  if (
+    cookies['hx-auth.token'] !== undefined &&
+    cookies['hx-auth.token'] !== ''
+  ) {
     return {
-      redirect: {
-        destination: '/login',
-        permanent: true,
-      },
+      props: {},
     };
   }
 
