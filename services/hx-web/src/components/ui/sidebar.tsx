@@ -5,13 +5,14 @@ import {
   TrophyIcon,
   UserGroupIcon,
 } from '@heroicons/react/20/solid';
+import classNames from 'classnames';
 import Link from 'next/link';
+
 import {
   CounterStrikeLogoIcon,
   LolIcon,
   SwordsIcon,
 } from '@/components/ui/icons';
-import classNames from 'classnames';
 import routes from '@/config/routes';
 
 export const Sidebar = ({ className }: { className?: string }) => {
@@ -26,7 +27,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.compete}`}
-            className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-sky-500 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[44px] cursor-pointer items-center justify-center rounded-lg bg-yellow-500 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <HomeIcon className="h-5 w-5 text-white shadow-xl group-hover:text-white" />
           </Link>
