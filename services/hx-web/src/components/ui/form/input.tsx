@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
 import cn from 'classnames';
+import { forwardRef } from 'react';
 
 type InputProps = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
