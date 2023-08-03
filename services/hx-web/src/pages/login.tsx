@@ -2,18 +2,14 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import routes from '@/config/routes';
-import { LoginResponse } from '@/infra/hx-core/responses/login';
-import { dataLoaders } from '@/lib/api/api';
 import { useAuthContext } from '@/lib/auth/auth.context';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-const { post: login } = dataLoaders<LoginResponse>('login');
 
 const form = z.object({
   email: z.string().email({ message: 'Valid email required' }),
@@ -43,11 +39,15 @@ export default function LoginPage() {
       email: data.email,
       password: data.password,
     });
+
+    router.push(routes.compete);
   };
 
-  if (state.isAuthenticated) {
-    router.push(routes.compete);
-  }
+  useEffect(() => {
+    if (state.isAuthenticated) {
+      router.push(routes.compete);
+    }
+  }, []);
 
   // TODO: remove in production
   useEffect(() => {

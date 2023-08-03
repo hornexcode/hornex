@@ -37,11 +37,6 @@ const Header = () => {
   const {
     state: { user, isAuthenticated },
   } = useAuthContext();
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
   // const [user, setUser] = useState<User | null>(null);
 
   // const { data, error, isLoading, mutate } = useSWR(
