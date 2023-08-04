@@ -12,7 +12,7 @@ import (
 type Teams struct {
 	ID        uuid.UUID
 	Name      string
-	OwnerID   uuid.UUID
+	CreatedBy   uuid.UUID
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }

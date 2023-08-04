@@ -16,6 +16,7 @@ import (
 type TeamService interface {
 	Create(ctx context.Context, params internal.TeamCreateParams) (internal.Team, error)
 	Find(ctx context.Context, id string) (*internal.Team, error)
+	Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error)
 }
 
 type TeamHandler struct {
@@ -37,15 +38,16 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 		r.Post("/api/v1/teams", h.create)
 		// r.Patch("/api/v1/teams", h.update)
 		r.Get("/api/v1/teams/{id}", h.find)
+		r.Patch("/api/v1/teams/{id}", h.update)
 	})
 }
 
 // -
 
 type Team struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	OwnerID string `json:"owner_id"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	CreatedBy string `json:"created_by"`
 }
 
 type CreateTeamRequest struct {
@@ -70,8 +72,8 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 
 	team, err := h.teamService.Create(r.Context(), internal.TeamCreateParams{
-		Name:    req.Name,
-		OwnerID: claims["id"].(string),
+		Name:      req.Name,
+		CreatedBy: claims["id"].(string),
 	})
 
 	if err != nil {
@@ -90,7 +92,6 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 // -
 
 type UpdateTeamRequest struct {
-	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -98,27 +99,45 @@ type UpdateTeamResponse struct {
 	Team Team `json:"team"`
 }
 
-// func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
-// 	var req UpdateTeamRequest
-// 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-// 		renderErrorResponse(w, r, "invalid request",
-// 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
+	var req UpdateTeamRequest
 
-// 		return
-// 	}
+	id := chi.URLParam(r, "id")
 
-// 	user := UserFromContext(r.Context())
-// 	team := h.teamService.FindByName(r.Context(), req.Name)
-// 	if team.OwnerID != user.ID {
-// 		renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(errors.ErrorCodePermissionDenied, "unauthorized"))
-// 		return
-// 	}
+	team, err := h.teamService.Find(r.Context(), id)
 
-// 	_, err := h.teamService.Update(r.Context(), req.ID, internal.TeamUpdateParams{
-// 		Name: req.Name,
-// 	})
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "team not found"})
+		return
+	}
 
-// }
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		renderErrorResponse(w, r, "invalid request",
+			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+
+		return
+	}
+
+	user := UserFromContext(r.Context())
+
+	if team.CreatedBy != user.ID {
+		renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(http.StatusUnauthorized, "unauthorized"))
+		return
+	}
+
+	upTeam, err := h.teamService.Update(r.Context(), id, internal.TeamUpdateParams{
+		Name: req.Name,
+	})
+
+	renderResponse(w, r,
+		&UpdateTeamResponse{
+			Team: Team{
+				Name: team.Name,
+			},
+		},
+		http.StatusOK)
+}
 
 type FindTeamResponse struct {
 	Team Team `json:"team"`
@@ -141,9 +160,9 @@ func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
 
 		&FindTeamResponse{
 			Team: Team{
-				ID:      team.ID,
-				Name:    team.Name,
-				OwnerID: team.OwnerID,
+				ID:        team.ID,
+				Name:      team.Name,
+				CreatedBy: team.CreatedBy,
 			},
 		},
 		http.StatusOK)

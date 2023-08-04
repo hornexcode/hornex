@@ -52,13 +52,13 @@ func (p UserSignInParams) Validate() error {
 
 type TeamCreateParams struct {
 	Name    string
-	OwnerID string
+	CreatedBy string
 }
 
 func (p TeamCreateParams) Validate() error {
 	team := Team{
 		Name:    p.Name,
-		OwnerID: p.OwnerID,
+		CreatedBy: p.CreatedBy,
 	}
 
 	if err := validation.Validate(&team); err != nil {

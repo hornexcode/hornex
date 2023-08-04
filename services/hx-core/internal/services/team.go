@@ -45,3 +45,9 @@ func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
 
 	return team, nil
 }
+
+func (t *Team) Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error) {
+	team, err := t.teamRepository.Update(ctx, id, params)
+
+	return team, nil
+}
