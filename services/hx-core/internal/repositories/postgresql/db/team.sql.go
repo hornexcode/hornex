@@ -15,7 +15,7 @@ import (
 const InsertTeam = `-- name: InsertTeam :one
 INSERT INTO teams (
   name,
-  owner_id
+  created_by
 )
 VALUES (
   $1,
@@ -26,7 +26,7 @@ RETURNING id, created_at, updated_at
 
 type InsertTeamParams struct {
 	Name    string
-	OwnerID uuid.UUID
+	CreatedBy uuid.UUID
 }
 
 type InsertTeamRow struct {
@@ -36,14 +36,14 @@ type InsertTeamRow struct {
 }
 
 func (q *Queries) InsertTeam(ctx context.Context, arg InsertTeamParams) (InsertTeamRow, error) {
-	row := q.db.QueryRow(ctx, InsertTeam, arg.Name, arg.OwnerID)
+	row := q.db.QueryRow(ctx, InsertTeam, arg.Name, arg.CreatedBy)
 	var i InsertTeamRow
 	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
 	return i, err
 }
 
 const SelectTeamById = `-- name: SelectTeamById :one
-SELECT id, name, owner_id, created_at, updated_at FROM teams WHERE id = $1
+SELECT id, name, created_by, created_at, updated_at FROM teams WHERE id = $1
 `
 
 func (q *Queries) SelectTeamById(ctx context.Context, id uuid.UUID) (Teams, error) {
@@ -52,7 +52,7 @@ func (q *Queries) SelectTeamById(ctx context.Context, id uuid.UUID) (Teams, erro
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
-		&i.OwnerID,
+		&i.CreatedBy,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -60,7 +60,7 @@ func (q *Queries) SelectTeamById(ctx context.Context, id uuid.UUID) (Teams, erro
 }
 
 const SelectTeamByName = `-- name: SelectTeamByName :one
-SELECT id, name, owner_id, created_at, updated_at FROM teams WHERE name = $1
+SELECT id, name, created_by, created_at, updated_at FROM teams WHERE name = $1
 `
 
 func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, error) {
@@ -69,7 +69,7 @@ func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, err
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
-		&i.OwnerID,
+		&i.CreatedBy,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -77,7 +77,7 @@ func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, err
 }
 
 const SelectTeamsByOwnerId = `-- name: SelectTeamsByOwnerId :many
-SELECT id, name, owner_id, created_at, updated_at FROM teams WHERE owner_id = $1
+SELECT id, name, created_by, created_at, updated_at FROM teams WHERE created_by = $1
 `
 
 func (q *Queries) SelectTeamsByOwnerId(ctx context.Context, ownerID uuid.UUID) ([]Teams, error) {
@@ -92,7 +92,7 @@ func (q *Queries) SelectTeamsByOwnerId(ctx context.Context, ownerID uuid.UUID) (
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			&i.OwnerID,
+			&i.CreatedBy,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -107,7 +107,7 @@ func (q *Queries) SelectTeamsByOwnerId(ctx context.Context, ownerID uuid.UUID) (
 }
 
 const UpdateTeam = `-- name: UpdateTeam :one
-UPDATE teams SET name = $1, updated_at = NOW() WHERE id = $2 RETURNING id, owner_id, created_at, updated_at
+UPDATE teams SET name = $1, updated_at = NOW() WHERE id = $2 RETURNING id, created_by, created_at, updated_at
 `
 
 type UpdateTeamParams struct {
@@ -117,7 +117,7 @@ type UpdateTeamParams struct {
 
 type UpdateTeamRow struct {
 	ID        uuid.UUID
-	OwnerID   uuid.UUID
+	CreatedBy   uuid.UUID
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }
@@ -127,7 +127,7 @@ func (q *Queries) UpdateTeam(ctx context.Context, arg UpdateTeamParams) (UpdateT
 	var i UpdateTeamRow
 	err := row.Scan(
 		&i.ID,
-		&i.OwnerID,
+		&i.CreatedBy,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

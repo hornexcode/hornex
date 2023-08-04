@@ -1,4 +1,3 @@
-'use client';
 import Image from 'next/image';
 import { Team } from '@/types/team';
 import LeagueOfLegends from '@/assets/images/hero/league-of-legends-icon.png';

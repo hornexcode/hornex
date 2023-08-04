@@ -2,7 +2,14 @@ import { Method } from '../routes/routes';
 
 // const routes: APIRouteMap = {} as APIRouteMap;
 
-export const routes = {
+type ConfigRoute = {
+  [key: string]: {
+    path: string;
+    method: Method;
+  };
+};
+
+export const routes: ConfigRoute = {
   login: {
     path: 'v1/auth/login',
     method: Method.POST,
@@ -18,5 +25,9 @@ export const routes = {
   createTeam: {
     path: 'v1/teams',
     method: Method.POST,
+  },
+  findTeam: {
+    path: 'v1/teams',
+    method: Method.GET,
   },
 };

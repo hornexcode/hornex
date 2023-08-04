@@ -25,14 +25,14 @@ func (u *Team) Create(ctx context.Context, params *internal.TeamCreateParams) (i
 	// XXX: `CreatedAt` is being created on the database side
 	// XXX: `UpdatedAt` is being created on the database side
 
-	uuid, err := uuid.Parse(params.OwnerID)
+	uuid, err := uuid.Parse(params.CreatedBy)
 	if err != nil {
 		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
 	}
 
 	res, err := u.q.InsertTeam(ctx, db.InsertTeamParams{
-		Name:    params.Name,
-		OwnerID: uuid,
+		Name:      params.Name,
+		CreatedBy: uuid,
 	})
 
 	if err != nil {
@@ -40,9 +40,9 @@ func (u *Team) Create(ctx context.Context, params *internal.TeamCreateParams) (i
 	}
 
 	return internal.Team{
-		ID:      res.ID.String(),
-		Name:    params.Name,
-		OwnerID: params.OwnerID,
+		ID:        res.ID.String(),
+		Name:      params.Name,
+		CreatedBy: params.CreatedBy,
 	}, nil
 }
 
@@ -66,9 +66,9 @@ func (u *Team) Update(ctx context.Context, id string, params *internal.TeamUpdat
 	}
 
 	return internal.Team{
-		ID:      res.ID.String(),
-		Name:    params.Name,
-		OwnerID: res.OwnerID.String(),
+		ID:        res.ID.String(),
+		Name:      params.Name,
+		CreatedBy: res.CreatedBy.String(),
 	}, nil
 }
 
@@ -87,9 +87,9 @@ func (u *Team) FindByName(ctx context.Context, name string) (internal.Team, erro
 	}
 
 	return internal.Team{
-		ID:      res.ID.String(),
-		OwnerID: res.OwnerID.String(),
-		Name:    res.Name,
+		ID:        res.ID.String(),
+		CreatedBy: res.CreatedBy.String(),
+		Name:      res.Name,
 	}, nil
 }
 
@@ -107,8 +107,8 @@ func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
 	}
 
 	return &internal.Team{
-		ID:      res.ID.String(),
-		Name:    res.Name,
-		OwnerID: res.OwnerID.String(),
+		ID:        res.ID.String(),
+		Name:      res.Name,
+		CreatedBy: res.CreatedBy.String(),
 	}, nil
 }

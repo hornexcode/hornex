@@ -99,11 +99,11 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.authService.SignUp(r.Context(), params)
+	/* err := h.authService.SignUp(r.Context(), params)
 	if err != nil {
 		renderErrorResponse(w, r, err.Error(), err)
 		return
-	}
+	} */
 
 	user, err := h.userService.Create(r.Context(), params)
 	if err != nil {
