@@ -35,3 +35,7 @@ func (t *Team) Create(ctx context.Context, params internal.TeamCreateParams) (in
 
 	return team, nil
 }
+
+func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
+	return &internal.Team{}, nil
+}
