@@ -17,5 +17,4 @@ type UserMessageBrokerRepository interface {
 
 type TeamRepository interface {
 	Create(ctx context.Context, params *internal.TeamCreateParams) (internal.Team, error)
-	FindByName(ctx context.Context, name string) (internal.Team, error)
 }
