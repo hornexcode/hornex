@@ -11,7 +11,7 @@ export interface TournamentCardAttrProps {
 
 const sizes: Record<SizeNames, string[]> = {
   medium: ['text-sm'],
-  small: ['text-[0.675rem]'],
+  small: ['text-xs'],
 };
 
 const TournamentCardAttr = ({
@@ -25,7 +25,7 @@ const TournamentCardAttr = ({
   return (
     <div className="block">
       <span className={classnames(sizeClassNames)}>{attr}</span>
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-1 font-display">
         {icon}
         <span
           className={classnames('font-bold text-white', {

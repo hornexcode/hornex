@@ -51,9 +51,8 @@ func (p UserSignInParams) Validate() error {
 // -
 
 type TeamCreateParams struct {
-	Name       string
-	OwnerEmail string
-	OwnerID    string
+	Name    string
+	OwnerID string
 }
 
 func (p TeamCreateParams) Validate() error {

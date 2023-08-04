@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-chi/render"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
@@ -21,6 +22,7 @@ type AuthService interface {
 	SignUp(ctx context.Context, params internal.UserCreateParams) error
 	ConfirmSignUp(ctx context.Context, email, confirmationCode string) error
 	SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error)
+	Login(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error)
 }
 
 type UserHandler struct {
@@ -40,7 +42,10 @@ func (h *UserHandler) Register(r *chi.Mux) {
 	r.Post("/api/v1/auth/login", h.login)
 
 	r.Group(func(r chi.Router) {
-		r.Use(IsAuthenticated)
+		verifier := jwtauth.New("HS256", []byte("secret"), nil)
+		r.Use(jwtauth.Verifier(verifier))
+		r.Use(jwtauth.Authenticator)
+
 		r.Post("/api/v1/auth/logout", h.logout)
 		// - Users
 		r.Get("/api/v1/users/current", h.currentUser)
@@ -153,7 +158,6 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	AccessToken string `json:"access_token"`
-	Exp         int64  `json:"exp"`
 	User        User   `json:"user"`
 }
 
@@ -167,7 +171,7 @@ func (h *UserHandler) login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	token, err := h.authService.SignIn(r.Context(), internal.UserSignInParams{
+	res, err := h.authService.Login(r.Context(), internal.UserSignInParams{
 		Email:    req.Email,
 		Password: req.Password,
 	})
@@ -178,20 +182,13 @@ func (h *UserHandler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userService.GetUserByEmail(r.Context(), req.Email)
-	if err != nil {
-		render.Status(r, http.StatusNotFound)
-		render.JSON(w, r, map[string]string{"error": "user not found"})
-		return
-	}
 	renderResponse(w, r, &LoginResponse{
-		AccessToken: token.AccessToken,
-		Exp:         24 * time.Hour.Milliseconds(),
+		AccessToken: res.AccessToken,
 		User: User{
-			ID:        user.ID,
-			Email:     user.Email,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
+			ID:        res.User.ID,
+			Email:     res.User.Email,
+			FirstName: res.User.FirstName,
+			LastName:  res.User.LastName,
 		},
 	}, http.StatusOK)
 }
@@ -203,9 +200,10 @@ type CurrentUserResponse struct {
 }
 
 func (h *UserHandler) currentUser(w http.ResponseWriter, r *http.Request) {
-	ureq := UserFromContext(r.Context())
 
-	user, err := h.userService.GetUserByEmail(r.Context(), ureq.Email)
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	user, err := h.userService.GetUserByEmail(r.Context(), claims["email"].(string))
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
 		render.JSON(w, r, map[string]string{"error": "user not found"})

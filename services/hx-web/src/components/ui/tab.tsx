@@ -1,6 +1,6 @@
-import { Tab } from "@headlessui/react";
-import { motion, LayoutGroup } from "framer-motion";
-import cn from "classnames";
+import { Tab } from '@headlessui/react';
+import cn from 'classnames';
+import { LayoutGroup, motion } from 'framer-motion';
 
 export { Tab };
 
@@ -15,10 +15,10 @@ export function TabItem({
     <Tab
       className={({ selected }) =>
         cn(
-          "xs:py-2.5 relative py-2 hover:text-gray-900 focus:outline-none dark:hover:text-gray-100 sm:py-3",
+          'xs:py-2.5 relative py-2 font-display uppercase tracking-wider hover:text-gray-900 focus:outline-none dark:hover:text-gray-100 sm:py-3',
           {
-            "font-medium dark:text-gray-100": selected,
-            "text-gray-600 dark:text-gray-400": !selected,
+            'text-brand dark:text-gray-100': selected,
+            'text-gray-600 dark:text-gray-400': !selected,
           },
           className
         )

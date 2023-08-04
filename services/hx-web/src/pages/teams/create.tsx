@@ -2,24 +2,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import routes from '@/config/routes';
+import { TeamCreated } from '@/infra/hx-core/responses/team-created';
 import { AppLayout } from '@/layouts';
-import { ssrAuthGuard } from '@/lib/utils/ssrAuthGuard';
+import { dataLoaders } from '@/lib/api';
 
-const form = z.object({
-  team: z.string().min(2, { message: 'Minimum 2 characters for team name' })
+const createTeamFormSchema = z.object({
+  name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
 });
 
-type CreateTeamForm = z.infer<typeof form>;
+type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
+const { post: createTeam } = dataLoaders<TeamCreated, CreateTeamForm>(
+  'createTeam'
+);
 
 const TeamsCreate = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) => {
+  const [isFetching, setIsFetching] = useState(false);
   const router = useRouter();
 
   const {
@@ -28,13 +36,24 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
     reset,
     setError,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm<CreateTeamForm>({
-    resolver: zodResolver(form)
+    resolver: zodResolver(createTeamFormSchema),
   });
 
-  const submitHandler = (data: CreateTeamForm) => {
-    router.push(`uuid123example456/details`);
+  const submitHandler = async (data: CreateTeamForm) => {
+    try {
+      setIsFetching(true);
+      const res = await createTeam(data);
+
+      toast.success('Team created successfully');
+
+      router.push(`${res.team.id}/details`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   return (
@@ -50,15 +69,22 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
         <div>
           <InputLabel title="Team name" important />
           <Input
+            disabled={isFetching}
             inputClassName={classnames(
-              errors.team?.message ? 'focus:ring-red-500' : ''
+              errors.name?.message ? 'focus:ring-red-500' : ''
             )}
-            placeholder="Choose a name for your team"
-            error={errors.team?.message}
-            {...register('team', { required: true })}
+            placeholder="Choose a cool name like: #1 HX 🐐"
+            error={errors.name?.message}
+            {...register('name', { required: true })}
           />
         </div>
-        <Button color="info" size="small" shape="rounded">
+        <Button
+          isLoading={isFetching}
+          disabled={isFetching}
+          color="info"
+          size="small"
+          shape="rounded"
+        >
           Create
         </Button>
       </form>
@@ -70,14 +96,12 @@ TeamsCreate.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export const getServerSideProps: GetServerSideProps = ssrAuthGuard(
-  async (ctx) => {
-    return {
-      props: {
-        user: {}
-      }
-    };
-  }
-);
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    props: {
+      user: {},
+    },
+  };
+};
 
 export default TeamsCreate;

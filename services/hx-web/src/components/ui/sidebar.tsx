@@ -27,7 +27,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.compete}`}
-            className="group flex h-[44px] cursor-pointer items-center justify-center rounded bg-yellow-400 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[44px] cursor-pointer items-center justify-center rounded bg-amber-400 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <HomeIcon className="h-5 w-5 text-slate-700 shadow-xl group-hover:text-white" />
           </Link>

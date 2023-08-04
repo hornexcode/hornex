@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth/v5"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 )
@@ -26,7 +27,10 @@ func NewTeamHandler(teamService TeamService) *TeamHandler {
 
 func (h *TeamHandler) Register(r *chi.Mux) {
 	r.Group(func(r chi.Router) {
-		r.Use(IsAuthenticated)
+		// TODO: create a new lib for handling authentication
+		verifier := jwtauth.New("HS256", []byte("secret"), nil)
+		r.Use(jwtauth.Verifier(verifier))
+		r.Use(jwtauth.Authenticator)
 		r.Post("/api/v1/teams", h.create)
 		// r.Patch("/api/v1/teams", h.update)
 	})
@@ -57,10 +61,12 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	user := UserFromContext(r.Context())
+	// TODO: handle error if claims is nil
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
 	team, err := h.teamService.Create(r.Context(), internal.TeamCreateParams{
-		Name:       req.Name,
-		OwnerEmail: user.Email,
+		Name:    req.Name,
+		OwnerID: claims["id"].(string),
 	})
 
 	if err != nil {

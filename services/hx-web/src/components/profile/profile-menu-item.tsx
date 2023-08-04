@@ -1,8 +1,9 @@
-import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
+import { Fragment } from 'react';
+
 import { User } from '@/domain';
 import { useAuthContext } from '@/lib/auth';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 
 export default function ProfileMenuItem({ user }: { user: User }) {
   const { logout } = useAuthContext();
@@ -13,7 +14,7 @@ export default function ProfileMenuItem({ user }: { user: User }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-xs font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <div className="flex items-center justify-center">
             <div className="relative h-6 w-6 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
               <svg
@@ -41,10 +42,10 @@ export default function ProfileMenuItem({ user }: { user: User }) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800 text-xs  ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800 text-sm  ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-2">
             <Menu.Item>
-              <div className="px-4 py-2 text-xs ">
+              <div className="px-4 py-2 text-sm ">
                 <div className="text-semibold text-slate-200">
                   {user.firstName} {user.lastName}
                 </div>
@@ -58,7 +59,7 @@ export default function ProfileMenuItem({ user }: { user: User }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-xs`}
+                  } group flex w-full items-center px-4 py-2 text-sm`}
                 >
                   Account
                 </button>
@@ -69,7 +70,7 @@ export default function ProfileMenuItem({ user }: { user: User }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-xs`}
+                  } group flex w-full items-center px-4 py-2 text-sm`}
                 >
                   Settings
                 </button>
@@ -84,7 +85,7 @@ export default function ProfileMenuItem({ user }: { user: User }) {
                   onClick={handleLogout}
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-xs`}
+                  } group flex w-full items-center px-4 py-2 text-sm`}
                 >
                   <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
                   Logout
