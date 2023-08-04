@@ -13,7 +13,7 @@ export default function WalletMenuItem({ user }: { user: User }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-xs font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <div className="flex items-center">
             {/* <CurrencyDollarIcon className="mr-1 h-4 w-4" aria-hidden="true" /> */}
             <span className="hidden font-display text-sm text-white group-hover/item:text-gray-200 md:inline-block">
@@ -38,7 +38,7 @@ export default function WalletMenuItem({ user }: { user: User }) {
         <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800  ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-2">
             <Menu.Item>
-              <div className="px-4 py-2 text-xs font-semibold text-slate-200">
+              <div className="px-4 py-2 text-sm font-semibold text-slate-200">
                 My Wallet
               </div>
             </Menu.Item>
@@ -49,7 +49,7 @@ export default function WalletMenuItem({ user }: { user: User }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-xs`}
+                  } group flex w-full items-center px-4 py-2 text-sm`}
                 >
                   <PlusCircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                   Add Funds
@@ -61,7 +61,7 @@ export default function WalletMenuItem({ user }: { user: User }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-xs`}
+                  } group flex w-full items-center px-4 py-2 text-sm`}
                 >
                   <ArrowDownIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                   Withdraw Funds

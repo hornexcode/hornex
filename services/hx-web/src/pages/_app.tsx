@@ -1,11 +1,13 @@
 import '@/styles/global.css';
 import '@/styles/scrollbar.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { Fira_Code, Khula, Nunito, Oswald } from 'next/font/google';
 import { ReactElement, ReactNode } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import { AuthContextProvider } from '@/lib/auth/auth.context';
 
@@ -39,6 +41,12 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       <AuthContextProvider>
         {getLayout(<Component {...pageProps} />)}
       </AuthContextProvider>
+      <ToastContainer
+        theme="dark"
+        style={{
+          fontSize: '0.925rem',
+        }}
+      />
     </div>
   );
 }

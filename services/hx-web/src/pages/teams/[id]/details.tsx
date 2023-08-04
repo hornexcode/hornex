@@ -2,15 +2,18 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { useRouter } from 'next/router';
 import { FC, useState } from 'react';
 import { set, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { TeamTab } from '@/components/teams/team-tab';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { AppLayout } from '@/layouts';
-import { ssrAuthGuard } from '@/lib/utils/ssrAuthGuard';
+import { getCookieFromRequest } from '@/lib/api/cookie';
+import { useAuthContext } from '@/lib/auth';
 
 type Member = {
   id: number;
@@ -18,7 +21,7 @@ type Member = {
 };
 
 const form = z.object({
-  username: z.string().min(1, { message: 'Username is required' })
+  username: z.string().min(1, { message: 'Username is required' }),
 });
 type MemberForm = z.infer<typeof form>;
 
@@ -29,7 +32,7 @@ type MemberListItemProps = {
 
 const MemberListItem: FC<MemberListItemProps> = ({
   member,
-  onRemoveMember
+  onRemoveMember,
 }) => (
   <li className="flex items-center rounded bg-light-dark p-4">
     <span className="text-white">{member.username}</span>
@@ -68,9 +71,14 @@ const MemberList: FC<MemberListProps> = ({ members, onRemoveMember }) => {
   );
 };
 
-const TeamsCreate = ({}: InferGetServerSidePropsType<
-  typeof getServerSideProps
->) => {
+const TeamsCreate = () => {
+  const router = useRouter();
+
+  const { state } = useAuthContext();
+  if (!state.isAuthenticated) {
+    router.push('/login');
+  }
+
   const [members, setMembers] = useState<Member[]>([]);
   const [fetching, setFetching] = useState(false);
   const [isLimitReached, setIsLimitReached] = useState(false);
@@ -85,9 +93,9 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
     handleSubmit,
     reset,
     setError,
-    formState: { errors }
+    formState: { errors },
   } = useForm<MemberForm>({
-    resolver: zodResolver(form)
+    resolver: zodResolver(form),
   });
 
   const addMember = async (data: MemberForm) => {
@@ -109,8 +117,8 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
         ...prev,
         {
           id: Math.random() + members.length,
-          username: data.username.toLowerCase()
-        }
+          username: data.username.toLowerCase(),
+        },
       ];
     });
 
@@ -120,10 +128,14 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
 
   return (
     <div className="mx-auto space-y-8 p-8">
-      <div className="flex items-end justify-between border-b border-slate-800 pb-2">
+      <div className="flex items-end justify-between pb-2">
         <h2 className="text-left font-display text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">
-          Create Team
+          HX 🐐
         </h2>
+      </div>
+
+      <div className="grow pb-9 pt-6">
+        <TeamTab />
       </div>
 
       <div className="space-y-4">
@@ -143,7 +155,8 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
                 disabled={fetching || isLimitReached}
                 inputClassName={classnames({
                   'border-red-500': errors.username,
-                  'placeholder-red-500 hover:cursor-not-allowed': isLimitReached
+                  'placeholder-red-500 hover:cursor-not-allowed':
+                    isLimitReached,
                 })}
                 error={errors.username?.message}
                 {...register('username', { required: true })}
@@ -181,14 +194,21 @@ TeamsCreate.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export const getServerSideProps: GetServerSideProps = ssrAuthGuard(
-  async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const cookie = getCookieFromRequest(ctx.req, 'hx-auth.token');
+  if (!cookie) {
     return {
-      props: {
-        user: {}
-      }
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
     };
   }
-);
+  return {
+    props: {
+      user: {},
+    },
+  };
+};
 
 export default TeamsCreate;

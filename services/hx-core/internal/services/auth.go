@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 
+	"hornex.gg/hornex/auth"
 	"hornex.gg/hx-core/internal"
 	"hornex.gg/hx-core/internal/repositories"
 )
@@ -58,6 +59,22 @@ func (a *Auth) SignIn(ctx context.Context, params internal.UserSignInParams) (in
 	}
 
 	user, err := a.repo.FindByEmail(ctx, params.Email)
+	if err != nil {
+		return internal.UserToken{}, err
+	}
+
+	return internal.UserToken{
+		User:        user,
+		AccessToken: token,
+	}, nil
+}
+
+func (a *Auth) Login(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error) {
+	user, err := a.repo.FindByEmail(ctx, params.Email)
+	if err != nil {
+		return internal.UserToken{}, err
+	}
+	token, err := auth.GenerateJWTAccessToken(user.ID, user.Email, user.FirstName, user.LastName)
 	if err != nil {
 		return internal.UserToken{}, err
 	}

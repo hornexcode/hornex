@@ -13,7 +13,7 @@ module.exports = {
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui'],
         body: ['nunito', 'sans-serif'],
-        display: ['Oswald', 'sans-serif'],
+        display: ['Roboto Condensed', 'sans-serif'],
       },
       colors: {
         body: '#fcfcfc',

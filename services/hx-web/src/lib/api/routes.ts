@@ -15,4 +15,8 @@ export const routes = {
     path: 'v1/users/current',
     method: Method.GET,
   },
+  createTeam: {
+    path: 'v1/teams',
+    method: Method.POST,
+  },
 };

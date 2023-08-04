@@ -18,13 +18,7 @@ func NewTeamService(trepo repositories.TeamRepository, urepo repositories.UserRe
 }
 
 func (t *Team) Create(ctx context.Context, params internal.TeamCreateParams) (internal.Team, error) {
-	user, err := t.userRepository.FindByEmail(ctx, params.OwnerEmail)
-	if err != nil {
-		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "userRepository.FindByEmail %s", err)
-	}
-	params.OwnerID = user.ID
-
-	err = params.Validate()
+	err := params.Validate()
 	if err != nil {
 		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "params.Validate")
 	}
