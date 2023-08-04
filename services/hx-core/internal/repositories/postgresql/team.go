@@ -92,3 +92,23 @@ func (u *Team) FindByName(ctx context.Context, name string) (internal.Team, erro
 		Name:    res.Name,
 	}, nil
 }
+
+func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
+	uuid, err := uuid.Parse(id)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	res, err := t.q.SelectTeamById(ctx, uuid)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select team by id")
+	}
+
+	return &internal.Team{
+		ID:      res.ID.String(),
+		Name:    res.Name,
+		OwnerID: res.OwnerID.String(),
+	}, nil
+}
