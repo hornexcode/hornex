@@ -37,5 +37,11 @@ func (t *Team) Create(ctx context.Context, params internal.TeamCreateParams) (in
 }
 
 func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
-	return &internal.Team{}, nil
+	team, err := t.teamRepository.Find(ctx, id)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.Find")
+	}
+
+	return team, nil
 }
