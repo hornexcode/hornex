@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	goerrors "errors"
+	"fmt"
 
 	"hornex.gg/hornex/auth"
 	"hornex.gg/hornex/errors"
@@ -10,14 +11,15 @@ import (
 )
 
 type User struct {
-	repo UserRepository
-	// msgBroker UserMessageBrokerRepository
+	repo      UserRepository
+	msgBroker UserMessageBrokerRepository
 }
 
 // New
-func NewUser(repo UserRepository) *User {
+func NewUser(repo UserRepository, msgBroker UserMessageBrokerRepository) *User {
 	return &User{
-		repo: repo,
+		repo:      repo,
+		msgBroker: msgBroker,
 	}
 }
 
@@ -36,26 +38,9 @@ func (u *User) SignUp(ctx context.Context, params internal.UserCreateParams) (*i
 		return &internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "error creating user")
 	}
 
-	// u.msgBroker.Created(ctx, user)
-
-	// body, _ := json.Marshal(map[string]string{
-	// 	"to":      user.Email,
-	// 	"from":    "onboarding@resend.dev",
-	// 	"subject": "Confirmation code",
-	// 	"html":    "Your confirmation code is: 492823",
-	// })
-	// url := "https://api.resend.com/emails"
-	// req, _ := http.NewRequest("POST", url, bytes.NewReader(body))
-	// req.Header.Add("Content-Type", "application/json")
-	// req.Header.Add("Authorization", "Bearer "+os.Getenv("RESEND_API_KEY"))
-
-	// res, err := http.DefaultClient.Do(req)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// data, _ := io.ReadAll(res.Body)
-	// fmt.Println(data)
-	// defer res.Body.Close()
+	if err := u.msgBroker.Created(ctx, user); err != nil {
+		fmt.Println(err)
+	}
 
 	return &user, nil
 }
