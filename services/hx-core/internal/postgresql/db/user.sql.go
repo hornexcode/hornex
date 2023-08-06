@@ -58,7 +58,7 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (InsertU
 }
 
 const SelectUserByEmail = `-- name: SelectUserByEmail :one
-SELECT id, email, password, first_name, last_name, birth_date, created_at, updated_at FROM users WHERE email = $1
+SELECT id, email, password, first_name, last_name, birth_date, email_confirmed, created_at, updated_at FROM users WHERE email = $1
 `
 
 func (q *Queries) SelectUserByEmail(ctx context.Context, email string) (Users, error) {
@@ -71,6 +71,7 @@ func (q *Queries) SelectUserByEmail(ctx context.Context, email string) (Users, e
 		&i.FirstName,
 		&i.LastName,
 		&i.BirthDate,
+		&i.EmailConfirmed,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

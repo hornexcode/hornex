@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
@@ -14,25 +13,19 @@ import (
 )
 
 type UserService interface {
-	Create(ctx context.Context, params internal.UserCreateParams) (internal.User, error)
-	GetUserByEmail(ctx context.Context, email string) (internal.User, error)
-}
-
-type AuthService interface {
-	SignUp(ctx context.Context, params internal.UserCreateParams) error
+	SignUp(ctx context.Context, params internal.UserCreateParams) (*internal.User, error)
 	ConfirmSignUp(ctx context.Context, email, confirmationCode string) error
-	SignIn(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error)
-	Login(ctx context.Context, params internal.UserSignInParams) (internal.UserToken, error)
+	Login(ctx context.Context, email, password string) (string, error)
+	GetUserById(ctx context.Context, email string) (internal.User, error)
 }
 
 type UserHandler struct {
 	userService UserService
-	authService AuthService
 }
 
 // NewUserHandler returns a new instance of a handler for managing user requests.
-func NewUserHandler(userService UserService, authService AuthService) *UserHandler {
-	return &UserHandler{userService: userService, authService: authService}
+func NewUserHandler(userService UserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 
 // Register connects the handlers to the router
@@ -46,7 +39,6 @@ func (h *UserHandler) Register(r *chi.Mux) {
 		r.Use(jwtauth.Verifier(verifier))
 		r.Use(jwtauth.Authenticator)
 
-		r.Post("/api/v1/auth/logout", h.logout)
 		// - Users
 		r.Get("/api/v1/users/current", h.currentUser)
 	})
@@ -99,13 +91,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	/* err := h.authService.SignUp(r.Context(), params)
-	if err != nil {
-		renderErrorResponse(w, r, err.Error(), err)
-		return
-	} */
-
-	user, err := h.userService.Create(r.Context(), params)
+	user, err := h.userService.SignUp(r.Context(), params)
 	if err != nil {
 		renderErrorResponse(w, r, err.Error(), err)
 		return
@@ -123,8 +109,6 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		http.StatusCreated)
 }
 
-// - SignUpConfirm
-
 type SignUpConfirmRequest struct {
 	Email            string `json:"email"`
 	ConfirmationCode string `json:"confirmation_code"`
@@ -140,7 +124,7 @@ func (h *UserHandler) signUpConfirm(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	err := h.authService.ConfirmSignUp(r.Context(), req.Email, req.ConfirmationCode)
+	err := h.userService.ConfirmSignUp(r.Context(), req.Email, req.ConfirmationCode)
 	if err != nil {
 		renderErrorResponse(w, r, err.Error(), err)
 		return
@@ -158,7 +142,6 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	AccessToken string `json:"access_token"`
-	User        User   `json:"user"`
 }
 
 func (h *UserHandler) login(w http.ResponseWriter, r *http.Request) {
@@ -171,10 +154,7 @@ func (h *UserHandler) login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	res, err := h.authService.Login(r.Context(), internal.UserSignInParams{
-		Email:    req.Email,
-		Password: req.Password,
-	})
+	at, err := h.userService.Login(r.Context(), req.Email, req.Password)
 
 	if err != nil {
 		render.Status(r, http.StatusUnauthorized)
@@ -182,19 +162,10 @@ func (h *UserHandler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	renderResponse(w, r, &LoginResponse{
-		AccessToken: res.AccessToken,
-		User: User{
-			ID:        res.User.ID,
-			Email:     res.User.Email,
-			FirstName: res.User.FirstName,
-			LastName:  res.User.LastName,
-		},
-	}, http.StatusOK)
+	renderResponse(w, r, &LoginResponse{AccessToken: at}, http.StatusOK)
 }
 
-// - Me
-
+// - CurrentUser
 type CurrentUserResponse struct {
 	User User `json:"user"`
 }
@@ -203,7 +174,7 @@ func (h *UserHandler) currentUser(w http.ResponseWriter, r *http.Request) {
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
 
-	user, err := h.userService.GetUserByEmail(r.Context(), claims["email"].(string))
+	user, err := h.userService.GetUserById(r.Context(), claims["id"].(string))
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
 		render.JSON(w, r, map[string]string{"error": "user not found"})
@@ -220,18 +191,4 @@ func (h *UserHandler) currentUser(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 		http.StatusOK)
-}
-
-// -
-
-func (h *UserHandler) logout(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     "hx-jwt",
-		Value:    "",
-		Path:     "/",
-		HttpOnly: true,
-		Expires:  time.Now().Add(-24 * time.Hour),
-	})
-
-	renderResponse(w, r, nil, http.StatusNoContent)
 }

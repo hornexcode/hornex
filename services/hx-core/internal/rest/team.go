@@ -126,14 +126,14 @@ func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	upTeam, err := h.teamService.Update(r.Context(), id, internal.TeamUpdateParams{
+	t, err := h.teamService.Update(r.Context(), id, internal.TeamUpdateParams{
 		Name: req.Name,
 	})
 
 	renderResponse(w, r,
 		&UpdateTeamResponse{
 			Team: Team{
-				Name: team.Name,
+				Name: t.Name,
 			},
 		},
 		http.StatusOK)

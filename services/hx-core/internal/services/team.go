@@ -5,15 +5,14 @@ import (
 
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
-	"hornex.gg/hx-core/internal/repositories"
 )
 
 type Team struct {
-	teamRepository repositories.TeamRepository
-	userRepository repositories.UserRepository
+	teamRepository TeamRepository
+	userRepository UserRepository
 }
 
-func NewTeamService(trepo repositories.TeamRepository, urepo repositories.UserRepository) *Team {
+func NewTeamService(trepo TeamRepository, urepo UserRepository) *Team {
 	return &Team{teamRepository: trepo, userRepository: urepo}
 }
 
@@ -47,7 +46,7 @@ func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
 }
 
 func (t *Team) Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error) {
-	team, err := t.teamRepository.Update(ctx, id, params)
+	team, _ := t.teamRepository.Update(ctx, id, params)
 
 	return team, nil
 }

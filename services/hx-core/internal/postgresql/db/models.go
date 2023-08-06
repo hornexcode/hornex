@@ -12,18 +12,19 @@ import (
 type Teams struct {
 	ID        uuid.UUID
 	Name      string
-	CreatedBy   uuid.UUID
+	CreatedBy uuid.UUID
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }
 
 type Users struct {
-	ID        uuid.UUID
-	Email     string
-	Password  string
-	FirstName string
-	LastName  string
-	BirthDate pgtype.Date
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	ID             uuid.UUID
+	Email          string
+	Password       string
+	FirstName      string
+	LastName       string
+	BirthDate      pgtype.Date
+	EmailConfirmed pgtype.Bool
+	CreatedAt      pgtype.Timestamp
+	UpdatedAt      pgtype.Timestamp
 }
