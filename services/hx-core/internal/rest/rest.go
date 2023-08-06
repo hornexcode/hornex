@@ -26,6 +26,8 @@ func renderErrorResponse(w http.ResponseWriter, r *http.Request, msg string, err
 		resp.Error = "internal error"
 	} else {
 		switch ierr.Code() {
+		case hxerrors.ErrorCodeValidationError:
+			status = http.StatusConflict
 		case hxerrors.ErrorCodeNotFound:
 			status = http.StatusNotFound
 		case hxerrors.ErrorCodeInvalidArgument:

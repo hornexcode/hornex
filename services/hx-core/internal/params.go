@@ -19,7 +19,6 @@ type UserCreateParams struct {
 func (p UserCreateParams) Validate() error {
 	user := User{
 		Email:     p.Email,
-		Username:  p.Username,
 		FirstName: p.FirstName,
 		LastName:  p.LastName,
 		BirthDate: p.BirthDate,
@@ -39,6 +38,15 @@ func (p UserCreateParams) Validate() error {
 	return nil
 }
 
+type UserSearchParams struct {
+	Email string
+}
+
+type UserSearchResults struct {
+	Users []User
+	Total int64
+}
+
 type UserSignInParams struct {
 	Email    string
 	Password string
@@ -51,13 +59,13 @@ func (p UserSignInParams) Validate() error {
 // -
 
 type TeamCreateParams struct {
-	Name    string
+	Name      string
 	CreatedBy string
 }
 
 func (p TeamCreateParams) Validate() error {
 	team := Team{
-		Name:    p.Name,
+		Name:      p.Name,
 		CreatedBy: p.CreatedBy,
 	}
 

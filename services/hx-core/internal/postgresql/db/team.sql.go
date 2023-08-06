@@ -25,7 +25,7 @@ RETURNING id, created_at, updated_at
 `
 
 type InsertTeamParams struct {
-	Name    string
+	Name      string
 	CreatedBy uuid.UUID
 }
 
@@ -76,12 +76,12 @@ func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, err
 	return i, err
 }
 
-const SelectTeamsByOwnerId = `-- name: SelectTeamsByOwnerId :many
+const SelectTeamsByCreatorId = `-- name: SelectTeamsByCreatorId :many
 SELECT id, name, created_by, created_at, updated_at FROM teams WHERE created_by = $1
 `
 
-func (q *Queries) SelectTeamsByOwnerId(ctx context.Context, ownerID uuid.UUID) ([]Teams, error) {
-	rows, err := q.db.Query(ctx, SelectTeamsByOwnerId, ownerID)
+func (q *Queries) SelectTeamsByCreatorId(ctx context.Context, createdBy uuid.UUID) ([]Teams, error) {
+	rows, err := q.db.Query(ctx, SelectTeamsByCreatorId, createdBy)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ type UpdateTeamParams struct {
 
 type UpdateTeamRow struct {
 	ID        uuid.UUID
-	CreatedBy   uuid.UUID
+	CreatedBy uuid.UUID
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }

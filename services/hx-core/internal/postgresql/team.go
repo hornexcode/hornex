@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
-	"hornex.gg/hx-core/internal/repositories/postgresql/db"
+	"hornex.gg/hx-core/internal/postgresql/db"
 )
 
 // Team is the Team Repository
