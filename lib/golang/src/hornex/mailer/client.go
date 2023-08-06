@@ -1,5 +1,5 @@
 package mailer
 
-type Clientable interface {
+type Client interface {
 	Send(to, subject, body string) error
 }

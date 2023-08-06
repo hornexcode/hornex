@@ -4,6 +4,7 @@ import (
 	"context"
 	goerrors "errors"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,10 +13,10 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"hornex.gg/hornex/auth/cognito"
 	"hornex.gg/hornex/envvar"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hornex/postgresql"
+	"hornex.gg/hornex/rabbitmq"
 
 	"github.com/didip/tollbooth/v6"
 	"github.com/didip/tollbooth/v6/limiter"
@@ -29,11 +30,10 @@ import (
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 
 	postgres "hornex.gg/hx-core/internal/postgresql"
+	rmq "hornex.gg/hx-core/internal/rabbitmq"
 	"hornex.gg/hx-core/internal/rest"
 	"hornex.gg/hx-core/internal/services"
 )
-
-type loggerKey struct{}
 
 func main() {
 	var env, address string
@@ -54,14 +54,12 @@ func main() {
 
 func run(env, address string) (<-chan error, error) {
 	// - Logger initialization
-
 	logger, err := zap.NewProduction()
 	if err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "failed to create logger")
 	}
 
 	// - Environment variables initialization
-
 	if err := envvar.Load(env); err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "envvar.Load")
 	}
@@ -80,24 +78,24 @@ func run(env, address string) (<-chan error, error) {
 	}
 
 	// - Database initialization
-
 	pool, err := postgresql.NewPostgreSQL(conf)
 	if err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "internal.NewPostgreSQL")
 	}
 
-	// - Cognito initialization
-
-	cognitoSession := cognito.NewCognitoSession("sa-east-1")
+	// - Rabbitmq initialization
+	rmq, err := rabbitmq.NewRabbitMQ(conf)
+	if err != nil {
+		return nil, fmt.Errorf("internal.NewRabbitMQ %w", err)
+	}
 
 	// - Server initialization
-
 	srv, err := newServer(ServerConfig{
 		Address:     address,
 		DB:          pool,
 		Middlewares: []func(next http.Handler) http.Handler{otelchi.Middleware("todo-api-server"), logging},
 		Logger:      logger,
-		Cognito:     cognitoSession,
+		RabbitMQ:    rmq,
 	})
 	if err != nil {
 		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "newServer")
@@ -155,6 +153,7 @@ type ServerConfig struct {
 	Middlewares []func(next http.Handler) http.Handler
 	Logger      *zap.Logger
 	Cognito     *cognitoidentityprovider.CognitoIdentityProvider
+	RabbitMQ    *rabbitmq.RabbitMQ
 }
 
 func newServer(conf ServerConfig) (*http.Server, error) {
@@ -183,7 +182,9 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	urepo := postgres.NewUser(conf.DB)
 	// trepo := postgresqlrepositories.NewPostgresqlTeamRepositoryImpl(conf.DB)
 
-	usvc := services.NewUser(urepo)
+	msgBroker := rmq.NewUser(conf.RabbitMQ.Channel)
+
+	usvc := services.NewUser(urepo, msgBroker)
 	// tsvc := services.NewTeamService(trepo, urepo)
 
 	router.Use(func(next http.Handler) http.Handler {
