@@ -25,6 +25,11 @@ const kanit = Kanit({
   weight: ['300', '400', '500', '600', '700'],
 });
 
+const cabin = Cabin({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
+
 function App({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
