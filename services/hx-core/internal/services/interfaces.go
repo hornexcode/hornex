@@ -22,3 +22,7 @@ type TeamRepository interface {
 	Find(ctx context.Context, id string) (*internal.Team, error)
 	Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error)
 }
+
+type EmailConfirmationCodeRepository interface {
+	Create(ctx context.Context, email string) error
+}

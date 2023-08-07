@@ -3,6 +3,7 @@ package resend
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"hornex.gg/hornex/resend"
 	"hornex.gg/hx-core/internal"
@@ -18,12 +19,12 @@ func NewUser(client *resend.Client) *User {
 	}
 }
 
-func (u *User) SendConfirmationCode(_ context.Context, user internal.User) error {
+func (u *User) SendConfirmationCode(_ context.Context, user internal.User, code string) error {
 	body, _ := json.Marshal(map[string]string{
 		"to":      user.Email,
 		"from":    "accounts@hornex.gg",
-		"subject": "Email verification code: 492823",
-		"html":    "Your confirmation code is: 492823",
+		"subject": fmt.Sprintf("Email verification code: %s", code),
+		"html":    "Your confirmation code is: " + code,
 	})
 
 	err := u.client.Send(user.Email, "Confirmation code", body)
