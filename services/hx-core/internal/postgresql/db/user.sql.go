@@ -77,3 +77,79 @@ func (q *Queries) SelectUserByEmail(ctx context.Context, email string) (Users, e
 	)
 	return i, err
 }
+
+const SelectUserById = `-- name: SelectUserById :one
+SELECT id, email, password, first_name, last_name, birth_date, email_confirmed, created_at, updated_at FROM users WHERE id = $1
+`
+
+func (q *Queries) SelectUserById(ctx context.Context, id uuid.UUID) (Users, error) {
+	row := q.db.QueryRow(ctx, SelectUserById, id)
+	var i Users
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.FirstName,
+		&i.LastName,
+		&i.BirthDate,
+		&i.EmailConfirmed,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const UpdateUserById = `-- name: UpdateUserById :one
+UPDATE users SET
+  email = $1,
+  first_name = $2,
+  last_name = $3,
+  birth_date = $4,
+  email_confirmed = $5,
+  updated_at = NOW()
+WHERE id = $6
+RETURNING id, email, first_name, last_name, birth_date, email_confirmed, created_at, updated_at
+`
+
+type UpdateUserByIdParams struct {
+	Email          string
+	FirstName      string
+	LastName       string
+	BirthDate      pgtype.Date
+	EmailConfirmed pgtype.Bool
+	ID             uuid.UUID
+}
+
+type UpdateUserByIdRow struct {
+	ID             uuid.UUID
+	Email          string
+	FirstName      string
+	LastName       string
+	BirthDate      pgtype.Date
+	EmailConfirmed pgtype.Bool
+	CreatedAt      pgtype.Timestamp
+	UpdatedAt      pgtype.Timestamp
+}
+
+func (q *Queries) UpdateUserById(ctx context.Context, arg UpdateUserByIdParams) (UpdateUserByIdRow, error) {
+	row := q.db.QueryRow(ctx, UpdateUserById,
+		arg.Email,
+		arg.FirstName,
+		arg.LastName,
+		arg.BirthDate,
+		arg.EmailConfirmed,
+		arg.ID,
+	)
+	var i UpdateUserByIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.FirstName,
+		&i.LastName,
+		&i.BirthDate,
+		&i.EmailConfirmed,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}

@@ -5,7 +5,7 @@ CREATE TABLE users (
   first_name       VARCHAR NOT NULL,
   last_name        VARCHAR NOT NULL,
   birth_date       DATE NOT NULL,
-  email_confirmed  BOOLEAN DEFAULT FALSE,
+  email_confirmed  BOOLEAN DEFAULT FALSE NOT NULL,
   created_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   updated_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );

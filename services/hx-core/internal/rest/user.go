@@ -81,7 +81,6 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 
 	params := internal.UserCreateParams{
 		Email:         req.Email,
-		Username:      req.Username,
 		Password:      req.Password,
 		FirstName:     req.FirstName,
 		LastName:      req.LastName,
@@ -121,13 +120,17 @@ func (h *UserHandler) signUpConfirm(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	err := h.userService.ConfirmSignUp(r.Context(), req.Email, req.ConfirmationCode)
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	err := h.userService.ConfirmSignUp(r.Context(), claims["email"].(string), req.ConfirmationCode)
 	if err != nil {
 		renderErrorResponse(w, r, err.Error(), err)
 		return
 	}
 
-	renderResponse(w, r, nil, http.StatusOK)
+	renderResponse(w, r, map[string]string{
+		"message": "success",
+	}, http.StatusOK)
 }
 
 // - SignIn
