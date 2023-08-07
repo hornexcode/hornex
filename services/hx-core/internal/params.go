@@ -7,8 +7,6 @@ import (
 
 type UserCreateParams struct {
 	Email         string
-	FirstName     string
-	LastName      string
 	Password      string
 	BirthDate     string
 	TermsAccepted bool
@@ -18,8 +16,6 @@ type UserCreateParams struct {
 func (p UserCreateParams) Validate() error {
 	user := User{
 		Email:     p.Email,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
 		BirthDate: p.BirthDate,
 		Password:  p.Password,
 	}

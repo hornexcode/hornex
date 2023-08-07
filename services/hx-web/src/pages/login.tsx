@@ -105,7 +105,7 @@ export default function LoginPage() {
           <Button
             isLoading={fetching}
             className="w-full"
-            color="info"
+            color="warning"
             shape="rounded"
           >
             Login
@@ -114,7 +114,7 @@ export default function LoginPage() {
           <p className="text-sm font-light text-gray-400">
             Não possui uma conta?{' '}
             <Link
-              href={`${routes.register}`}
+              href={`${routes.signup}`}
               className="font-medium text-blue-300 hover:underline"
             >
               Registre-se

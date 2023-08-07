@@ -12,8 +12,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui'],
-        body: ['nunito', 'sans-serif'],
-        display: ['Roboto Condensed', 'sans-serif'],
+        body: ['kanit', 'sans-serif'],
+        display: ['Fira Sans', 'sans-serif'],
       },
       colors: {
         body: '#fcfcfc',

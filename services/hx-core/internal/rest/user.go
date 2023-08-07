@@ -57,12 +57,9 @@ type User struct {
 
 type SignUpRequest struct {
 	Email         string `json:"email"`
-	Username      string `json:"username"`
-	FirstName     string `json:"first_name"`
-	LastName      string `json:"last_name"`
 	BirthDate     string `json:"birth_date"`
 	Password      string `json:"password"`
-	TermsAccepted bool   `json:"terms_accepted"`
+	TermsAccepted bool   `json:"terms"`
 }
 
 type SignUpResponse struct {
@@ -82,8 +79,6 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	params := internal.UserCreateParams{
 		Email:         req.Email,
 		Password:      req.Password,
-		FirstName:     req.FirstName,
-		LastName:      req.LastName,
 		BirthDate:     req.BirthDate,
 		TermsAccepted: req.TermsAccepted,
 	}

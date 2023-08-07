@@ -1,0 +1,195 @@
+import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import Button from '@/components/ui/button/button';
+import Input from '@/components/ui/form/input';
+import InputLabel from '@/components/ui/form/input-label';
+import { Logo } from '@/components/ui/logo';
+import { dataLoaders } from '@/lib/api';
+
+const { post: signup } = dataLoaders('signup');
+
+const form = z.object({
+  email: z.string().email({ message: 'Valid email required' }),
+  birth_date: z.string().min(2, { message: 'Minimum 2 characters' }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must contain at least 8 characters' }),
+  terms: z.boolean(),
+});
+
+type SignUpForm = z.infer<typeof form>;
+
+export default function RegisterPage() {
+  const [step, setStep] = useState(1);
+  const [isFecthing, setIsFetching] = useState(false);
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpForm>({
+    resolver: zodResolver(form),
+  });
+
+  const handleOnSignup = async (data: SignUpForm) => {
+    try {
+      await signup({
+        first_name: '',
+        last_name: '',
+        ...data,
+      });
+      router.push('/signup-confirm');
+    } catch (error) {
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const confirmStep = () => {
+    return (
+      <div className="m-auto w-[450px] space-y-4 rounded-md  p-6 sm:p-8 md:space-y-6 ">
+        <div className="text-center">
+          <h1 className="text-xl font-bold text-white md:text-4xl">
+            Confirm your account
+          </h1>
+          <p className="px-8 text-sm text-slate-400">
+            We are going to send a 6-digits code to your email address to
+            confirm your account. Verify you spam folder if you do not receive
+          </p>
+        </div>
+        <form action="" className="mt-6 space-y-4 md:space-y-6">
+          {/* Email */}
+          <div>
+            <InputLabel title="Code" important />
+            <div className="relative">
+              <div className="absolute right-6 flex h-full items-center">
+                <button
+                  className="!cursor-pointer !text-sm !text-amber-400 hover:!underline"
+                  style={{ all: 'unset' }}
+                >
+                  get code
+                </button>
+              </div>
+              <Input placeholder="000000" />
+            </div>
+          </div>
+
+          <Button
+            onClick={(e) => setStep(3)}
+            className="w-full"
+            color="secondary"
+            shape="rounded"
+          >
+            Confirm Email
+          </Button>
+        </form>
+      </div>
+    );
+  };
+
+  const successStep = () => {
+    return (
+      <div className="m-auto w-[450px] space-y-4 rounded-md  p-6 sm:p-8 md:space-y-6 ">
+        <div className="text-center">
+          <div>
+            <CheckCircleIcon className="mx-auto h-20 w-20 text-green-500" />
+          </div>
+          <h1 className="text-xl font-bold text-white md:text-4xl">Success!</h1>
+          <p className="mb-10 px-8 text-sm text-slate-400">
+            Account created successfully. Now you can login and start competing,
+            click in the login button below to go the the Login page.
+          </p>
+          <Link href="/login" className="">
+            <div className="flex items-center justify-center text-lg text-white">
+              Login <ArrowUpRightIcon className="h-5 w-5 text-white" />
+            </div>
+          </Link>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex h-screen flex-col items-center justify-between">
+      <div className="mt-8 self-center">
+        <Logo size="sm" />
+      </div>
+      <div className="m-auto w-[450px] space-y-4 rounded-md  p-6 sm:p-8 md:space-y-6 ">
+        <div className="text-center">
+          <h1 className="text-xl font-bold text-white md:text-4xl">
+            Create your account
+          </h1>
+          <p className="px-8 text-sm text-slate-400">
+            Register now and start competing in tournaments in a few clicks.
+          </p>
+        </div>
+        <form
+          onSubmit={handleSubmit(handleOnSignup)}
+          action=""
+          className="mt-6 space-y-4 md:space-y-6"
+        >
+          {/* Email */}
+          <div>
+            <InputLabel title="Email" important />
+            <Input {...register('email')} placeholder="Your real email here" />
+          </div>
+
+          {/* Birth Date */}
+          <div>
+            <InputLabel title="Birth Date" important />
+            <Input {...register('birth_date')} type="date" placeholder="" />
+          </div>
+
+          {/* Password */}
+          <div>
+            <InputLabel title="Password" important />
+            <Input
+              {...register('password')}
+              type="password"
+              placeholder="Type a secure password"
+            />
+          </div>
+
+          <div className="mb-6 flex items-start">
+            <div className="flex h-5 items-center">
+              <input
+                id="terms"
+                type="checkbox"
+                value=""
+                {...register('terms')}
+                className="focus:ring-3 h-4 w-4 rounded border border-gray-300 bg-gray-50 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800"
+              />
+            </div>
+            <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+              Li e concordo com os{' '}
+              <a
+                href="#"
+                className="text-blue-600 hover:underline dark:text-amber-500"
+              >
+                termos e condições
+              </a>
+            </label>
+          </div>
+
+          <Button
+            disabled={isFecthing}
+            isLoading={isFecthing}
+            type="submit"
+            className="w-full"
+            color="secondary"
+            shape="rounded"
+          >
+            Continue
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+}

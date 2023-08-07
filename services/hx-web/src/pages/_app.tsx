@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { Fira_Code, Khula, Nunito, Oswald } from 'next/font/google';
+import { Cabin, Kanit, Khula, Nunito, Oswald } from 'next/font/google';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 
@@ -29,13 +29,23 @@ const nunito = Nunito({
   weight: ['300', '400', '500', '600', '700'],
 });
 
+const cabin = Cabin({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
+const kanit = Kanit({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+});
+
 function App({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <div
       className={classnames(
-        'bg-dark font-sans text-xs text-slate-500 antialiased'
+        'bg-dark text-xs text-slate-500 antialiased',
+        kanit.className
       )}
     >
       <AuthContextProvider>
