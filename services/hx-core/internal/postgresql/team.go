@@ -47,13 +47,13 @@ func (u *Team) Create(ctx context.Context, params *internal.TeamCreateParams) (i
 }
 
 // Update a team by id
-func (u *Team) Update(ctx context.Context, id string, params *internal.TeamUpdateParams) (internal.Team, error) {
+func (u *Team) Update(ctx context.Context, id string, params *internal.TeamUpdateParams) (*internal.Team, error) {
 	// XXX: `UpdatedAt` is being created on the database side
 	// XXX: `ID` is being created on the database side
 
 	uuid, err := uuid.Parse(id)
 	if err != nil {
-		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
 	}
 
 	res, err := u.q.UpdateTeam(ctx, db.UpdateTeamParams{
@@ -62,10 +62,10 @@ func (u *Team) Update(ctx context.Context, id string, params *internal.TeamUpdat
 	})
 
 	if err != nil {
-		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "update team")
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "update team")
 	}
 
-	return internal.Team{
+	return &internal.Team{
 		ID:        res.ID.String(),
 		Name:      params.Name,
 		CreatedBy: res.CreatedBy.String(),
