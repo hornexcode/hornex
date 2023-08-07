@@ -10,13 +10,12 @@ import { z } from 'zod';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
-import routes from '@/config/routes';
 import { TeamCreated } from '@/infra/hx-core/responses/team-created';
 import { AppLayout } from '@/layouts';
 import { dataLoaders } from '@/lib/api';
 
 const createTeamFormSchema = z.object({
-  name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
+  name: z.string().min(2, { message: 'Minimum 2 characters for team name' })
 });
 
 type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
@@ -36,9 +35,9 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
     reset,
     setError,
     setValue,
-    formState: { errors },
+    formState: { errors }
   } = useForm<CreateTeamForm>({
-    resolver: zodResolver(createTeamFormSchema),
+    resolver: zodResolver(createTeamFormSchema)
   });
 
   const submitHandler = async (data: CreateTeamForm) => {
@@ -48,7 +47,7 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
 
       toast.success('Team created successfully');
 
-      router.push(`${res.team.id}/details`);
+      router.push(`${res.team.id}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -99,8 +98,8 @@ TeamsCreate.getLayout = (page: React.ReactElement) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
-      user: {},
-    },
+      user: {}
+    }
   };
 };
 

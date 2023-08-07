@@ -1,17 +1,19 @@
-import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { TrashIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { FC, useState } from 'react';
-import { set, useForm } from 'react-hook-form';
+import { FC, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { TeamTab } from '@/components/teams/team-tab';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import { TeamFind } from '@/infra/hx-core/responses/team-find';
 import { AppLayout } from '@/layouts';
+import { dataLoaders } from '@/lib/api';
 import { getCookieFromRequest } from '@/lib/api/cookie';
 import { useAuthContext } from '@/lib/auth';
 
@@ -21,7 +23,7 @@ type Member = {
 };
 
 const form = z.object({
-  username: z.string().min(1, { message: 'Username is required' }),
+  username: z.string().min(1, { message: 'Username is required' })
 });
 type MemberForm = z.infer<typeof form>;
 
@@ -32,7 +34,7 @@ type MemberListItemProps = {
 
 const MemberListItem: FC<MemberListItemProps> = ({
   member,
-  onRemoveMember,
+  onRemoveMember
 }) => (
   <li className="flex items-center rounded bg-light-dark p-4">
     <span className="text-white">{member.username}</span>
@@ -71,13 +73,21 @@ const MemberList: FC<MemberListProps> = ({ members, onRemoveMember }) => {
   );
 };
 
-const TeamsCreate = () => {
+const { find: findTeam } = dataLoaders<TeamFind>('findTeam');
+
+const TeamsCreate = ({
+  team
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
 
   const { state } = useAuthContext();
-  if (!state.isAuthenticated) {
-    router.push('/login');
-  }
+
+  console.log('state at teams', state);
+  useEffect(() => {
+    if (!state.isAuthenticated) {
+      router.push('/login');
+    }
+  }, [router, state.isAuthenticated]);
 
   const [members, setMembers] = useState<Member[]>([]);
   const [fetching, setFetching] = useState(false);
@@ -93,9 +103,9 @@ const TeamsCreate = () => {
     handleSubmit,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors }
   } = useForm<MemberForm>({
-    resolver: zodResolver(form),
+    resolver: zodResolver(form)
   });
 
   const addMember = async (data: MemberForm) => {
@@ -117,8 +127,8 @@ const TeamsCreate = () => {
         ...prev,
         {
           id: Math.random() + members.length,
-          username: data.username.toLowerCase(),
-        },
+          username: data.username.toLowerCase()
+        }
       ];
     });
 
@@ -152,11 +162,11 @@ const TeamsCreate = () => {
             <div>
               <InputLabel title="Add team member" important />
               <Input
+                defaultValue={team.name}
                 disabled={fetching || isLimitReached}
                 inputClassName={classnames({
                   'border-red-500': errors.username,
-                  'placeholder-red-500 hover:cursor-not-allowed':
-                    isLimitReached,
+                  'placeholder-red-500 hover:cursor-not-allowed': isLimitReached
                 })}
                 error={errors.username?.message}
                 {...register('username', { required: true })}
@@ -194,20 +204,28 @@ TeamsCreate.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const cookie = getCookieFromRequest(ctx.req, 'hx-auth.token');
+
+  const params = ctx.params;
+
+  const { team } = await findTeam(params?.id as string, {
+    Authorization: cookie ? `Bearer ${cookie}` : ''
+  });
+
   if (!cookie) {
     return {
       redirect: {
         destination: '/login',
-        permanent: false,
-      },
+        permanent: false
+      }
     };
   }
+
   return {
     props: {
-      user: {},
-    },
+      team
+    }
   };
 };
 
