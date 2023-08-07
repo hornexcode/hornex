@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -104,7 +103,7 @@ func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")
 
-	team, err := h.teamService.Find(r.Context(), id)
+	_, err := h.teamService.Find(r.Context(), id)
 
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
@@ -118,22 +117,39 @@ func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+	defer r.Body.Close()
 
-	user := UserFromContext(r.Context())
+	// TODO: check if user is the team creator
+	/*accessToken := strings.Split(r.Header.Get("Authorization"), "Bearer ")[1]
 
-	if team.CreatedBy != user.ID {
-		renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(http.StatusUnauthorized, "unauthorized"))
-		return
-	}
+	cognito := cognito.FromContext(r.Context())
 
-	t, err := h.teamService.Update(r.Context(), id, internal.TeamUpdateParams{
+	u, err := cognito.ProviderUser(accessToken)
+
+	fmt.Printf("User: %v", u)
+
+
+		fmt.Printf("USER: %v", u)
+
+		if team.CreatedBy != u.Email {
+			renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(http.StatusUnauthorized, "unauthorized"))
+			return
+		} */
+
+	upTeam, err := h.teamService.Update(r.Context(), id, internal.TeamUpdateParams{
 		Name: req.Name,
 	})
+
+	if err != nil {
+		renderErrorResponse(w, r, "could not update", errors.NewErrorf(http.StatusBadRequest, "bad request"))
+	}
 
 	renderResponse(w, r,
 		&UpdateTeamResponse{
 			Team: Team{
-				Name: t.Name,
+				Name:      upTeam.Name,
+				ID:        upTeam.ID,
+				CreatedBy: upTeam.CreatedBy,
 			},
 		},
 		http.StatusOK)
@@ -147,8 +163,6 @@ func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	team, err := t.teamService.Find(r.Context(), id)
-
-	fmt.Printf("Team Rest: %v", team)
 
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
