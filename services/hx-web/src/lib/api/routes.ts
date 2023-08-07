@@ -14,6 +14,10 @@ export const routes: ConfigRoute = {
     path: 'v1/auth/login',
     method: Method.POST,
   },
+  signup: {
+    path: 'v1/auth/signup',
+    method: Method.POST,
+  },
   logout: {
     path: 'v1/auth/logout',
     method: Method.POST,

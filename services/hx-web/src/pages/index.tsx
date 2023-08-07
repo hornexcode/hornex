@@ -1,34 +1,23 @@
-import Image from 'next/image';
-import { Team } from '@/types/team';
-import LeagueOfLegends from '@/assets/images/hero/league-of-legends-icon.png';
-import CsGo from '@/assets/images/hero/csgo-logo.png';
-import Dota2 from '@/assets/images/hero/dota-logo.png';
-import RocketLeague from '@/assets/images/hero/rl-logo.png';
-import BullHorn from '@/assets/images/bull-horn.png';
-
-import PickGameScreen from '@/assets/images/hero/pick-game.png';
-import GameScreen from '@/assets/images/hero/game.png';
-import TournamentScreen from '@/assets/images/hero/tournament.png';
 import {
   ArrowRightOnRectangleIcon,
   ArrowUpRightIcon,
-  ArrowUturnRightIcon,
-  LinkIcon,
 } from '@heroicons/react/20/solid';
+import Image from 'next/image';
 import Link from 'next/link';
-import routes from '@/config/routes';
-
-import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useAuthContext } from '@/lib/auth/auth.context';
-import Button from '@/components/ui/button/button';
 
-const team: Team = {
-  id: '1',
-  name: 'Team 1',
-  ownerId: '1',
-  gameId: 1,
-};
+import BullHorn from '@/assets/images/bull-horn.png';
+import CsGo from '@/assets/images/hero/csgo-logo.png';
+import Dota2 from '@/assets/images/hero/dota-logo.png';
+import GameScreen from '@/assets/images/hero/game.png';
+import LeagueOfLegends from '@/assets/images/hero/league-of-legends-icon.png';
+import PickGameScreen from '@/assets/images/hero/pick-game.png';
+import RocketLeague from '@/assets/images/hero/rl-logo.png';
+import TournamentScreen from '@/assets/images/hero/tournament.png';
+import Button from '@/components/ui/button/button';
+import routes from '@/config/routes';
+import { useAuthContext } from '@/lib/auth/auth.context';
+import { Team } from '@/types/team';
 
 export default function HomePage() {
   const router = useRouter();
@@ -63,7 +52,7 @@ export default function HomePage() {
                   <ArrowUpRightIcon className="ml-2 w-4" />
                 </Link>
                 <Link
-                  href={routes.register}
+                  href={routes.signup}
                   className="rounded bg-sky-400/90 px-4 py-2 font-medium tracking-tight text-white hover:bg-sky-400 focus:ring-2"
                 >
                   Register now
@@ -498,7 +487,7 @@ export default function HomePage() {
                   </Link>
                 </li>
                 <li className="mb-4">
-                  <Link href={routes.register} className="hover:underline">
+                  <Link href={routes.signup} className="hover:underline">
                     Register
                   </Link>
                 </li>

@@ -5,12 +5,12 @@ const routes = {
   about: '',
   contactUs: 'contact-us',
   login: 'login',
-  register: 'register',
+  signup: 'signup',
   compete: 'compete',
   tournaments: 'tournaments',
   platform: 'platform',
   teams: 'teams',
-  createTeam: 'teams/create'
+  createTeam: 'teams/create',
 };
 
 export default routes;
