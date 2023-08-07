@@ -53,6 +53,33 @@ func (u *User) SignUp(ctx context.Context, params internal.UserCreateParams) (in
 }
 
 func (u *User) ConfirmSignUp(ctx context.Context, email, confirmationCode string) error {
+	emailcc, err := u.emailCCRepo.Find(ctx, email)
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "emailcc.Find")
+	}
+
+	if emailcc.ConfirmationCode != confirmationCode {
+		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "invalid confirmation code")
+	}
+
+	user, err := u.repo.FindByEmail(ctx, email)
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "repo.Find")
+	}
+
+	_, err = u.repo.Update(ctx, internal.UserUpdateParams{
+		ID:             user.ID,
+		EmailConfirmed: true,
+		FirstName:      user.FirstName,
+		LastName:       user.LastName,
+		BirthDate:      user.BirthDate,
+		Email:          user.Email,
+	})
+
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.Update")
+	}
+
 	return nil
 }
 

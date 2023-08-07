@@ -10,6 +10,7 @@ type UserRepository interface {
 	Create(ctx context.Context, user internal.UserCreateParams) (internal.User, error)
 	// Find(ctx context.Context, user internal.UserCreateParams) (internal.User, error)
 	FindByEmail(ctx context.Context, email string) (internal.User, error)
+	Update(ctx context.Context, user internal.UserUpdateParams) (internal.User, error)
 }
 
 type UserMessageBrokerRepository interface {
@@ -25,4 +26,5 @@ type TeamRepository interface {
 
 type EmailConfirmationCodeRepository interface {
 	Create(ctx context.Context, email string) error
+	Find(ctx context.Context, email string) (internal.EmailConfirmationCode, error)
 }

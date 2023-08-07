@@ -2,8 +2,10 @@ package postgresql
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
@@ -72,6 +74,48 @@ func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, er
 		FirstName:      res.FirstName,
 		LastName:       res.LastName,
 		BirthDate:      res.BirthDate.Time.Format("2006-01-02"),
+		EmailConfirmed: res.EmailConfirmed.Bool,
+		CreatedAt:      res.CreatedAt.Time,
+		UpdatedAt:      res.UpdatedAt.Time,
+	}, nil
+}
+
+func (u *User) Update(ctx context.Context, params internal.UserUpdateParams) (internal.User, error) {
+	fmt.Println(params)
+	// XXX: `UpdatedAt` is being created on the database side
+	uuid, err := uuid.Parse(params.ID)
+	if err != nil {
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "invalid uuid")
+	}
+
+	dob, err := time.Parse("2006-01-02", params.BirthDate)
+	if err != nil {
+		return internal.User{}, err
+	}
+
+	res, err := u.q.UpdateUserById(ctx, db.UpdateUserByIdParams{
+		ID:        uuid,
+		Email:     params.Email,
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
+		BirthDate: pgtype.Date{
+			Time:  dob,
+			Valid: true,
+		},
+		EmailConfirmed: pgtype.Bool{
+			Bool:  params.EmailConfirmed,
+			Valid: true,
+		},
+	})
+	if err != nil {
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "update user")
+	}
+
+	return internal.User{
+		ID:             res.ID.String(),
+		Email:          res.Email,
+		FirstName:      res.FirstName,
+		LastName:       res.LastName,
 		EmailConfirmed: res.EmailConfirmed.Bool,
 		CreatedAt:      res.CreatedAt.Time,
 		UpdatedAt:      res.UpdatedAt.Time,

@@ -7,7 +7,6 @@ import (
 
 type UserCreateParams struct {
 	Email         string
-	Username      string
 	FirstName     string
 	LastName      string
 	Password      string
@@ -36,6 +35,15 @@ func (p UserCreateParams) Validate() error {
 	}
 
 	return nil
+}
+
+type UserUpdateParams struct {
+	ID             string
+	Email          string
+	FirstName      string
+	LastName       string
+	BirthDate      string
+	EmailConfirmed bool
 }
 
 type UserSearchParams struct {
