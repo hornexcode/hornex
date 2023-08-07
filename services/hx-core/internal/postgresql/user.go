@@ -34,10 +34,8 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 	}
 
 	res, err := u.q.InsertUser(ctx, db.InsertUserParams{
-		Email:     params.Email,
-		FirstName: params.FirstName,
-		LastName:  params.LastName,
-		Password:  params.Password,
+		Email:    params.Email,
+		Password: params.Password,
 		BirthDate: pgtype.Date{
 			Time:  dob,
 			Valid: true,
@@ -50,8 +48,6 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 	return internal.User{
 		ID:        res.ID.String(),
 		Email:     params.Email,
-		FirstName: params.FirstName,
-		LastName:  params.LastName,
 		CreatedAt: res.CreatedAt.Time,
 		UpdatedAt: res.UpdatedAt.Time,
 	}, nil

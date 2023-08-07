@@ -1,14 +1,17 @@
 'use client';
 
-import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import cn from 'classnames';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+
 import ButtonDrip from '@/components/ui/button/button-drip';
 import ButtonLoader from '@/components/ui/button/button-loader';
 import { LoaderSizeTypes, LoaderVariantTypes } from '@/components/ui/loader';
+
 type ShapeNames = 'rounded' | 'pill' | 'circle';
 type VariantNames = 'ghost' | 'solid' | 'transparent';
 type ColorNames =
   | 'primary'
+  | 'secondary'
   | 'white'
   | 'gray'
   | 'success'
@@ -29,6 +32,7 @@ const variants: Record<VariantNames, string[]> = {
 };
 const colors: Record<ColorNames, string[]> = {
   primary: ['text-brand', 'bg-brand', 'border-brand'],
+  secondary: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
   white: ['text-gray-900', 'bg-white', 'border-white'],
   gray: ['text-gray-900', 'bg-gray-100', 'border-gray-100'],
   success: ['text-green-500', 'bg-green-500', 'border-green-500'],
