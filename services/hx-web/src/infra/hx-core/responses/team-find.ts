@@ -1,7 +1,6 @@
-export type TeamCreated = {
+export type TeamFind = {
   team: {
     id: string;
     name: string;
-    created_by: string;
   };
 };

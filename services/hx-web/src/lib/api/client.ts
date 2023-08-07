@@ -32,9 +32,9 @@ export const dataLoaders = <T, Data = unknown>(
         headers: {
           'Content-Type': 'application/json',
           Authorization: cookie ? `Bearer ${cookie}` : '',
-          ...headers,
+          ...headers
         },
-        body: payload ? JSON.stringify(payload) : '',
+        body: payload ? JSON.stringify(payload) : ''
       });
 
       if (r.ok) {
@@ -60,25 +60,80 @@ export const dataLoaders = <T, Data = unknown>(
   };
 
   const get = async (headers: Record<string, string> = {}) => {
-    const r = await fetcher(`${API_ROOT}/${path}`, {
-      method,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-    });
+    let error: FetchError;
 
-    if (r.ok) {
-      return (await r.json()) as T;
-    } else {
-      return null;
+    try {
+      const r = await fetcher(`${API_ROOT}/${path}`, {
+        method,
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers
+        }
+      });
+
+      if (r.ok) {
+        try {
+          return (await r.json()) as T;
+        } catch (e: any) {
+          throw new Error("Couldn't parse response");
+        }
+      } else {
+        try {
+          error = (await r.json()) as FetchError;
+        } catch (e: any) {
+          throw new Error("Couldn't parse response");
+        }
+
+        throw error;
+      }
+    } catch (e: any) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  const find = async (param: string, headers: Record<string, string> = {}) => {
+    const cookie = isServer ? null : Cookie.get('hx-auth.token');
+    let error: FetchError;
+
+    try {
+      const r = await fetcher(`${API_ROOT}/${path}/${param}`, {
+        method,
+        credentials: 'include',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: cookie ? `Bearer ${cookie}` : '',
+          ...headers
+        }
+      });
+
+      if (r.ok) {
+        try {
+          return (await r.json()) as T;
+        } catch (e: any) {
+          throw new Error("Couldn't parse response");
+        }
+      } else {
+        try {
+          error = (await r.json()) as FetchError;
+        } catch (e: any) {
+          throw new Error("Couldn't parse response");
+        }
+
+        throw error;
+      }
+    } catch (e: any) {
+      console.log(e);
+      throw e;
     }
   };
 
   return {
     post,
     get,
+    find
   };
 };
 
