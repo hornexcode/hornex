@@ -11,38 +11,45 @@ import (
 )
 
 type User struct {
-	repo      UserRepository
-	msgBroker UserMessageBrokerRepository
+	repo        UserRepository
+	msgBroker   UserMessageBrokerRepository
+	emailCCRepo EmailConfirmationCodeRepository
 }
 
 // New
-func NewUser(repo UserRepository, msgBroker UserMessageBrokerRepository) *User {
+func NewUser(repo UserRepository, msgBroker UserMessageBrokerRepository, emailCCRepo EmailConfirmationCodeRepository) *User {
 	return &User{
-		repo:      repo,
-		msgBroker: msgBroker,
+		repo:        repo,
+		msgBroker:   msgBroker,
+		emailCCRepo: emailCCRepo,
 	}
 }
 
-func (u *User) SignUp(ctx context.Context, params internal.UserCreateParams) (*internal.User, error) {
+func (u *User) SignUp(ctx context.Context, params internal.UserCreateParams) (internal.User, string, error) {
 	_, err := u.repo.FindByEmail(ctx, params.Email)
 
 	var ierr *errors.Error
 	goerrors.As(err, &ierr)
 	if err != nil && ierr.Code() != errors.ErrorCodeNotFound {
-		return &internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "search.Search")
+		return internal.User{}, "", errors.WrapErrorf(err, errors.ErrorCodeUnknown, "search.Search")
 	}
 
 	params.Password = internal.User{}.HashPassword(params.Password)
 	user, err := u.repo.Create(ctx, params)
 	if err != nil {
-		return &internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "error creating user")
+		return internal.User{}, "", errors.WrapErrorf(err, errors.ErrorCodeUnknown, "error creating user")
 	}
 
-	if err := u.msgBroker.Created(ctx, user); err != nil {
-		fmt.Println(err)
+	// if err := u.msgBroker.Created(ctx, user); err != nil {
+	// 	fmt.Println(err)
+	// }
+
+	token, err := auth.GenerateJWTAccessToken(user.ID, user.Email, user.FirstName, user.LastName)
+	if err != nil {
+		return internal.User{}, "", errors.WrapErrorf(err, errors.ErrorCodeUnknown, "auth.GenerateJWTAccessToken")
 	}
 
-	return &user, nil
+	return user, token, nil
 }
 
 func (u *User) ConfirmSignUp(ctx context.Context, email, confirmationCode string) error {
@@ -79,4 +86,22 @@ func (u *User) GetUserById(ctx context.Context, id string) (internal.User, error
 	}
 
 	return user, nil
+}
+
+// GetEmailConfirmationCode ... Creates a new confirmation code for given email
+func (u *User) GetEmailConfirmationCode(ctx context.Context, email string) error {
+	user, err := u.repo.FindByEmail(ctx, email)
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.Find")
+	}
+
+	if err := u.emailCCRepo.Create(ctx, user.Email); err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "email.Create")
+	}
+
+	if err := u.msgBroker.Created(ctx, user); err != nil {
+		fmt.Println(err)
+	}
+
+	return nil
 }

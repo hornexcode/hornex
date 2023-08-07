@@ -13,10 +13,11 @@ import (
 )
 
 type UserService interface {
-	SignUp(ctx context.Context, params internal.UserCreateParams) (*internal.User, error)
+	SignUp(ctx context.Context, params internal.UserCreateParams) (internal.User, string, error)
 	ConfirmSignUp(ctx context.Context, email, confirmationCode string) error
 	Login(ctx context.Context, email, password string) (string, error)
 	GetUserById(ctx context.Context, email string) (internal.User, error)
+	GetEmailConfirmationCode(ctx context.Context, email string) error
 }
 
 type UserHandler struct {
@@ -31,7 +32,6 @@ func NewUserHandler(userService UserService) *UserHandler {
 // Register connects the handlers to the router
 func (h *UserHandler) Register(r *chi.Mux) {
 	r.Post("/api/v1/auth/signup", h.signUp)
-	r.Post("/api/v1/auth/signup-confirm", h.signUpConfirm)
 	r.Post("/api/v1/auth/login", h.login)
 
 	r.Group(func(r chi.Router) {
@@ -40,6 +40,8 @@ func (h *UserHandler) Register(r *chi.Mux) {
 		r.Use(jwtauth.Authenticator)
 
 		// - Users
+		r.Get("/api/v1/auth/signup-confirm", h.getEmailConfirmationCode)
+		r.Post("/api/v1/auth/signup-confirm", h.signUpConfirm)
 		r.Get("/api/v1/users/current", h.currentUser)
 	})
 }
@@ -64,7 +66,7 @@ type SignUpRequest struct {
 }
 
 type SignUpResponse struct {
-	User User `json:"user"`
+	AccessToken string `json:"access_token"`
 }
 
 func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +93,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userService.SignUp(r.Context(), params)
+	_, token, err := h.userService.SignUp(r.Context(), params)
 	if err != nil {
 		renderErrorResponse(w, r, err.Error(), err)
 		return
@@ -99,12 +101,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 
 	renderResponse(w, r,
 		&SignUpResponse{
-			User: User{
-				ID:        user.ID,
-				Email:     user.Email,
-				FirstName: user.FirstName,
-				LastName:  user.LastName,
-			},
+			AccessToken: token,
 		},
 		http.StatusCreated)
 }
@@ -191,4 +188,14 @@ func (h *UserHandler) currentUser(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 		http.StatusOK)
+}
+
+func (h *UserHandler) getEmailConfirmationCode(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	if err := h.userService.GetEmailConfirmationCode(r.Context(), claims["email"].(string)); err != nil {
+		renderErrorResponse(w, r, err.Error(), err)
+		return
+	}
+
+	renderResponse(w, r, nil, http.StatusAccepted)
 }

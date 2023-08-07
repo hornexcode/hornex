@@ -40,4 +40,6 @@ Create:
 
 ```
 tern migrate create -ext sql -dir db/migrations/ <migration name>
+or
+migrate create -ext sql -dir services/hx-core/db/migrations/ create_teams_table
 ```

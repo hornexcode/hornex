@@ -12,12 +12,15 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 	"hornex.gg/hornex/envvar"
 	"hornex.gg/hornex/errors"
+	"hornex.gg/hornex/postgresql"
 	"hornex.gg/hornex/rabbitmq"
 	"hornex.gg/hornex/resend"
 	"hornex.gg/hx-core/internal"
+	internalpostgresql "hornex.gg/hx-core/internal/postgresql"
 	internalresend "hornex.gg/hx-core/internal/resend"
 )
 
@@ -28,6 +31,7 @@ type Server struct {
 	rmq    *rabbitmq.RabbitMQ
 	done   chan struct{}
 	user   *internalresend.User
+	DB     *pgxpool.Pool
 }
 
 // ListenAndServe ...
@@ -86,8 +90,19 @@ func (s *Server) ListenAndServe() error {
 					return
 				}
 
-				if err := s.user.SendConfirmationCode(context.Background(), user); err != nil {
+				ctx := context.Background()
+
+				urepo := internalpostgresql.NewEmailConfirmationCode(s.DB)
+
+				emailcc, err := urepo.Find(ctx, user.Email)
+				if err != nil {
 					nack = true
+					return
+				}
+
+				if err := s.user.SendConfirmationCode(context.Background(), user, emailcc.ConfirmationCode); err != nil {
+					nack = true
+					return
 				}
 
 				// if err := s.task.Index(context.Background(), task); err != nil {
@@ -189,6 +204,12 @@ func run(env string) (<-chan error, error) {
 
 	//-
 
+	// - Database initialization
+	pool, err := postgresql.NewPostgreSQL(conf)
+	if err != nil {
+		return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "internal.NewPostgreSQL")
+	}
+
 	// _, err = internal.NewOTExporter(conf)
 	// if err != nil {
 	// 	return nil, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "newOTExporter")
@@ -201,6 +222,7 @@ func run(env string) (<-chan error, error) {
 		rmq:    rmq,
 		user:   internalresend.NewUser(rClient),
 		done:   make(chan struct{}),
+		DB:     pool,
 	}
 
 	errC := make(chan error, 1)

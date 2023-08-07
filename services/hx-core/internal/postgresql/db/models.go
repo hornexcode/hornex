@@ -9,6 +9,13 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type EmailsConfirmationCode struct {
+	ID               uuid.UUID
+	Email            string
+	ConfirmationCode string
+	CreatedAt        pgtype.Timestamp
+}
+
 type Teams struct {
 	ID        uuid.UUID
 	Name      string
