@@ -11,6 +11,7 @@ import { TeamTab } from '@/components/teams/team-tab';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { TeamFind } from '@/infra/hx-core/responses/team-find';
 import { AppLayout } from '@/layouts';
 import { dataLoaders } from '@/lib/api';
@@ -140,7 +141,7 @@ const TeamsCreate = ({
     <div className="mx-auto space-y-8 p-8">
       <div className="flex items-end justify-between pb-2">
         <h2 className="text-left font-display text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">
-          HX 🐐
+          {team.name}
         </h2>
       </div>
 
@@ -162,7 +163,6 @@ const TeamsCreate = ({
             <div>
               <InputLabel title="Add team member" important />
               <Input
-                defaultValue={team.name}
                 disabled={fetching || isLimitReached}
                 inputClassName={classnames({
                   'border-red-500': errors.username,
@@ -204,15 +204,12 @@ TeamsCreate.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
+const { get: current } = dataLoaders<CurrentUser>('currentUser');
+
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const cookie = getCookieFromRequest(ctx.req, 'hx-auth.token');
 
-  const params = ctx.params;
-
-  const { team } = await findTeam(params?.id as string, {
-    Authorization: cookie ? `Bearer ${cookie}` : ''
-  });
-
+  // Check token existence
   if (!cookie) {
     return {
       redirect: {
@@ -221,6 +218,26 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       }
     };
   }
+
+  const currentUser = await current({
+    Authorization: cookie ? `Bearer ${cookie}` : ''
+  });
+
+  // Check token validity
+  if (!currentUser) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false
+      }
+    };
+  }
+
+  const params = ctx.params;
+
+  const { team } = await findTeam(params?.id as string, {
+    Authorization: cookie ? `Bearer ${cookie}` : ''
+  });
 
   return {
     props: {
