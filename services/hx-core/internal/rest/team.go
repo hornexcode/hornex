@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 )
@@ -16,6 +17,7 @@ type TeamService interface {
 	Create(ctx context.Context, params internal.TeamCreateParams) (internal.Team, error)
 	Find(ctx context.Context, id string) (*internal.Team, error)
 	Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error)
+	// List(ctx context.Context) (*[]internal.Team, error)
 }
 
 type TeamHandler struct {
@@ -37,6 +39,7 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 		r.Post("/api/v1/teams", h.create)
 		// r.Patch("/api/v1/teams", h.update)
 		r.Get("/api/v1/teams/{id}", h.find)
+		r.Get("/api/v1/teams", h.list)
 		r.Patch("/api/v1/teams/{id}", h.update)
 	})
 }
@@ -178,6 +181,51 @@ func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
 				Name:      team.Name,
 				CreatedBy: team.CreatedBy,
 			},
+		},
+		http.StatusOK)
+}
+
+type MockedTeam struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Image string `json:"image"`
+}
+
+type ListTeamsResponse struct {
+	Teams []MockedTeam `json:"teams"`
+}
+
+func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
+
+	// TODO : Implement METHOD
+
+	teams := []MockedTeam{
+		{
+			ID:    uuid.NewString(),
+			Name:  "HX Hornex",
+			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+		},
+		{
+			ID:    uuid.NewString(),
+			Name:  "HX Hornex",
+			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+		},
+		{
+			ID:    uuid.NewString(),
+			Name:  "HX Hornex",
+			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+		},
+		{
+			ID:    uuid.NewString(),
+			Name:  "HX Hornex",
+			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+		},
+	}
+
+	renderResponse(w, r,
+
+		&ListTeamsResponse{
+			Teams: teams,
 		},
 		http.StatusOK)
 }

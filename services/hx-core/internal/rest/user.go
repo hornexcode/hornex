@@ -35,6 +35,7 @@ func (h *UserHandler) Register(r *chi.Mux) {
 	r.Post("/api/v1/auth/login", h.login)
 
 	r.Group(func(r chi.Router) {
+		// TODO: refactor this middleware
 		verifier := jwtauth.New("HS256", []byte("secret"), nil)
 		r.Use(jwtauth.Verifier(verifier))
 		r.Use(jwtauth.Authenticator)
