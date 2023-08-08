@@ -8,7 +8,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-chi/render"
-	"github.com/google/uuid"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 )
@@ -201,22 +200,22 @@ func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
 
 	teams := []MockedTeam{
 		{
-			ID:    uuid.NewString(),
+			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
 			Name:  "HX Hornex",
 			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
 		},
 		{
-			ID:    uuid.NewString(),
+			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
 			Name:  "HX Hornex",
 			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
 		},
 		{
-			ID:    uuid.NewString(),
+			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
 			Name:  "HX Hornex",
 			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
 		},
 		{
-			ID:    uuid.NewString(),
+			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
 			Name:  "HX Hornex",
 			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
 		},

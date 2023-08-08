@@ -34,7 +34,7 @@ export const routes = {
   },
   updateTeam: {
     path: 'v1/teams',
-    method: Method.PUT
+    method: Method.PATCH
   },
   getEmailConfirmationCode: {
     path: 'v1/auth/signup-confirm',
