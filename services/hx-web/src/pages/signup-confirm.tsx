@@ -9,17 +9,37 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { Logo } from '@/components/ui/logo';
-import { dataLoaders } from '@/lib/api';
+import { dataLoadersV2 } from '@/lib/api';
 
-const { post: signup } = dataLoaders('signup');
+const { get: getEmailConfirmationCode } = dataLoadersV2<{}>(
+  'getEmailConfirmationCode'
+);
 
 export default function RegisterPage() {
-  const [codeSent, setCodeSent] = useState(false);
+  const [codeEvent, setCodeEvent] = useState<'send' | 'resend' | 'sent'>(
+    'send'
+  );
   const [code, setCode] = useState('');
 
-  function onSendCodeHandler(e: any) {
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    if (codeEvent === 'sent') {
+      timer = setTimeout(() => {
+        setCodeEvent('resend');
+      }, 5000);
+    }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [codeEvent]);
+
+  async function onSendHandler(e: any) {
     e.preventDefault();
-    setCodeSent(true);
+    await getEmailConfirmationCode();
+    setCodeEvent('sent');
   }
 
   return (
@@ -43,16 +63,25 @@ export default function RegisterPage() {
             <InputLabel title="Code" important />
             <div className="relative">
               <div className="absolute right-6 flex h-full items-center">
-                {!codeSent && (
+                {codeEvent === 'send' && (
                   <button
-                    onClick={(e) => onSendCodeHandler(e)}
+                    onClick={(e) => onSendHandler(e)}
                     className="!cursor-pointer !text-sm !text-amber-400 hover:!underline"
                     style={{ all: 'unset' }}
                   >
                     get code
                   </button>
                 )}
-                {codeSent && (
+                {codeEvent === 'resend' && (
+                  <button
+                    onClick={(e) => onSendHandler(e)}
+                    className="!cursor-pointer !text-sm !text-amber-400 hover:!underline"
+                    style={{ all: 'unset' }}
+                  >
+                    resend code
+                  </button>
+                )}
+                {codeEvent === 'sent' && (
                   <div className="flex items-center">
                     <CheckCircleIcon className="h-5 w-5 text-green-500" />
                     <span className="ml-2 text-sm text-slate-400">
@@ -69,7 +98,7 @@ export default function RegisterPage() {
           </div>
 
           <Button
-            disabled={!codeSent || code.length < 6}
+            disabled={codeEvent === 'sent' || code.length < 6}
             className="w-full"
             color="secondary"
             shape="rounded"
