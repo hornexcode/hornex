@@ -107,7 +107,7 @@ func (u *User) Login(ctx context.Context, email, password string) (string, error
 }
 
 func (u *User) GetUserById(ctx context.Context, id string) (internal.User, error) {
-	user, err := u.repo.FindByEmail(ctx, id)
+	user, err := u.repo.Find(ctx, id)
 	if err != nil {
 		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.Find")
 	}

@@ -76,6 +76,29 @@ func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, er
 	}, nil
 }
 
+func (u *User) Find(ctx context.Context, id string) (internal.User, error) {
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+
+	res, err := u.q.SelectUserById(ctx, uuid)
+
+	if err != nil {
+		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "find user")
+	}
+
+	return internal.User{
+		ID:             res.ID.String(),
+		Email:          res.Email,
+		FirstName:      res.FirstName,
+		LastName:       res.LastName,
+		EmailConfirmed: res.EmailConfirmed.Bool,
+		CreatedAt:      res.CreatedAt.Time,
+		UpdatedAt:      res.UpdatedAt.Time,
+	}, nil
+}
+
 func (u *User) Update(ctx context.Context, params internal.UserUpdateParams) (internal.User, error) {
 	fmt.Println(params)
 	// XXX: `UpdatedAt` is being created on the database side
