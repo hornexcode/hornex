@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 
+import routes from '@/config/routes';
 import { Team } from '@/domain/team';
 
 type TeamProps = Team;
@@ -12,7 +13,7 @@ const Team: FC<TeamProps> = (team) => {
       <div className="absolute top-0 h-full w-full rounded bg-red-400/80 opacity-70 transition-opacity duration-500 ease-linear"></div>
 
       <Link
-        href={team.id}
+        href={`${routes.teams}/${team.id}`}
         className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-slate-800 transition-all hover:bg-slate-700"
       >
         <img className="absolute" src={team.image} alt="team image" />
