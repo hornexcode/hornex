@@ -123,13 +123,11 @@ const CompetePage = ({}: InferGetServerSidePropsType<
       <section id="connected-games" className="space-y-10">
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div className="rounded bg-light-dark p-4">
-              <div className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-slate-800 p-4 transition-all hover:bg-slate-700">
-                <PlusCircleIcon className="w-7" />
-                <span className="text-sm font-medium text-slate-400">
-                  Connect to new game
-                </span>
-              </div>
+            <div className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-light-dark p-4 transition-all hover:bg-slate-700">
+              <PlusCircleIcon className="w-7" />
+              <span className="text-sm font-medium text-slate-400">
+                Connect to new game
+              </span>
             </div>
           </div>
         </div>
