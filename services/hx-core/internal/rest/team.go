@@ -76,7 +76,7 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		renderErrorResponse(w, r, "failed to create team", err)
+		renderErrorResponse(w, r, err.Error(), err)
 		return
 	}
 
