@@ -32,6 +32,10 @@ export const routes = {
     path: 'v1/teams',
     method: Method.GET
   },
+  updateTeam: {
+    path: 'v1/teams',
+    method: Method.PUT
+  },
   getEmailConfirmationCode: {
     path: 'v1/auth/signup-confirm',
     method: Method.GET

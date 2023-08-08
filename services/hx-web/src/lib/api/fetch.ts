@@ -18,11 +18,12 @@ export const dataLoadersV2 = <T, Data = unknown>(
     const res = await fetch(url, {
       method,
       credentials: 'include',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: cookie ? `Bearer ${cookie}` : '',
+        Authorization: cookie ? `Bearer ${cookie}` : ''
       },
-      ...options,
+      ...options
     });
 
     if (!res.ok) {
@@ -47,7 +48,7 @@ export const dataLoadersV2 = <T, Data = unknown>(
   // Post data to the API
   const post = async (payload?: Data): Promise<T> => {
     return safeFetch(`${API_ROOT}/${path}`, {
-      body: payload ? JSON.stringify(payload) : '',
+      body: payload ? JSON.stringify(payload) : ''
     }).catch((error) => {
       throw new Error('Error fetching data');
     });
@@ -59,9 +60,18 @@ export const dataLoadersV2 = <T, Data = unknown>(
     });
   };
 
+  const put = async (payload?: Data): Promise<T> => {
+    return safeFetch(`${API_ROOT}/${path}`, {
+      body: payload ? JSON.stringify(payload) : ''
+    }).catch((error) => {
+      throw new Error('Error fetching data');
+    });
+  };
+
   return {
     post,
     get,
+    put
   };
 };
 
