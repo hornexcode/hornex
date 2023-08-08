@@ -25,7 +25,7 @@ const { get: currentUser } = dataLoaders<CurrentUser>('currentUser');
 const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
   return (
     <div className="relative order-last flex shrink-0 items-center ">
-      <WalletMenuItem user={user} />
+      {/* <WalletMenuItem user={user} /> */}
       <NotificationMenuItem />
       <ProfileMenuItem user={user} />
     </div>

@@ -1,4 +1,3 @@
-'use client';
 import { MapPinIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
 import Image from 'next/image';
@@ -11,6 +10,7 @@ import TournamentCardAttr from '@/components/tournaments/tournament-list-item/to
 import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
 import Button from '@/components/ui/button/button';
 import { SwordsIcon } from '@/components/ui/icons';
+import { AppLayout } from '@/layouts';
 
 type TournamentProps = {
   params: {
@@ -43,7 +43,7 @@ export default function Tournament({ params }: TournamentProps) {
           {/* tournament name and due date */}
           <div>
             <span className="text-sm">SEP 02 - Starting at 06:00 PM (-3)</span>
-            <h1 className="leading-1 text-2xl font-extrabold tracking-tighter text-white">
+            <h1 className="leading-1 text-xl font-extrabold text-white">
               LOL: Platinum Tournament 2023
             </h1>
           </div>
@@ -89,7 +89,7 @@ export default function Tournament({ params }: TournamentProps) {
               <Button
                 className="w-full"
                 size="small"
-                color="danger"
+                color="secondary"
                 shape="rounded"
               >
                 <div className="flex items-center">
@@ -107,3 +107,7 @@ export default function Tournament({ params }: TournamentProps) {
     </div>
   );
 }
+
+Tournament.getLayout = (page: React.ReactElement) => {
+  return <AppLayout>{page}</AppLayout>;
+};

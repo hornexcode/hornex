@@ -12,7 +12,7 @@ type AuthContextState = {
 
 const initialState: AuthContextState = {
   isAuthenticated: false,
-  user: undefined
+  user: undefined,
 };
 
 type ActionType = {
@@ -26,19 +26,19 @@ const reducer = (state: AuthContextState, action: ActionType) => {
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload
+        user: action.payload,
       };
     case 'LOGIN_FAILED':
       return {
         ...state,
         isAuthenticated: false,
-        user: undefined
+        user: undefined,
       };
     case 'LOGOUT':
       return {
         ...state,
         isAuthenticated: false,
-        user: undefined
+        user: undefined,
       };
     default:
       return state;
@@ -55,31 +55,31 @@ export const AuthContext = createContext<{
   state: initialState,
   login: async () => {},
   logout: async () => {},
-  fetching: false
+  fetching: false,
 });
 
 export const AuthContextProvider = ({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [fetching, setFetching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const token = get('hx-auth.token');
 
     if (!state.isAuthenticated && token) {
       setFetching(true);
-      setError(null);
+      setError(undefined);
 
       fetch('http://localhost:9234/api/v1/users/current', {
         method: 'GET',
         credentials: 'include',
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then((res) => {
           return res.json();
@@ -91,10 +91,14 @@ export const AuthContextProvider = ({
               id: user.id,
               firstName: user.first_name,
               lastName: user.last_name,
-              email: user.email
-            }
+              email: user.email,
+            },
           });
           setFetching(false);
+        })
+        .catch((error) => {
+          console.log('Error fetching current user :', error);
+          dispatch({ type: 'LOGIN_FAILED' });
         })
         .finally(() => setFetching(false));
     }
@@ -102,7 +106,7 @@ export const AuthContextProvider = ({
 
   const login = async ({
     email,
-    password
+    password,
   }: {
     email: string;
     password: string;
@@ -114,7 +118,7 @@ export const AuthContextProvider = ({
       const res = await fetch('http://localhost:9234/api/v1/auth/login', {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       if (res.ok) {

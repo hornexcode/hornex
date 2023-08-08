@@ -4,6 +4,8 @@ import { FC } from 'react';
 
 import Button from '@/components/ui/button/button';
 
+import { Badge } from '../ui/badge';
+
 type bgColorsType = {
   sky: string;
   purple: string;
@@ -85,17 +87,23 @@ export const GameItem: FC<GameItemProps> = ({
       {/* tournament card body */}
       <div className="mt-4 block space-y-3 divide-y divide-slate-800">
         <div className="block">
-          <span className="text-[11px] text-slate-200">
+          <span className="text-xs text-slate-200">
             {registeredPlayers} Tournaments opened
           </span>
-          <h4 className="!font-display text-sm font-extrabold text-white">
-            {name} - {matchFormat}
-          </h4>
+          <h4 className="text-lg font-extrabold text-white">{name}</h4>
+          <div className="flex items-center">
+            <Badge className="mr-2 rounded" variant="outline">
+              5v5
+            </Badge>
+            <Badge className="rounded" variant="outline">
+              TFT
+            </Badge>
+          </div>
         </div>
 
         <div className="block pt-2">
           <div className="flex flex-col justify-between ">
-            <p className="mb-2 text-xs">Platforms</p>
+            <p className="mb-2 text-xs text-slate-200">Platforms</p>
             <div className="flex flex-wrap items-center space-x-2">
               {platforms.map((platform, i) => (
                 <platform.Icon
