@@ -65,14 +65,14 @@ export const AuthContextProvider = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [fetching, setFetching] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const token = get('hx-auth.token');
 
     if (!state.isAuthenticated && token) {
       setFetching(true);
-      setError(undefined);
+      setError(null);
 
       fetch('http://localhost:9234/api/v1/users/current', {
         method: 'GET',

@@ -2,13 +2,28 @@ import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import * as Cookies from 'es-cookie';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
+import useSWR from 'swr';
 
+import { TeamList } from '@/components/teams/team-list';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
+import { dataLoadersV2 } from '@/lib/api';
+import {
+  GetTeamsOutput,
+  getTeamsSchemaOutput as schema
+} from '@/services/hx-core/getTeams';
+
+const { get: getTeams } = dataLoadersV2<GetTeamsOutput>('getTeams', schema);
 
 const TeamsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) => {
+  const { data, error, isLoading } = useSWR('/api/teams', getTeams);
+
+  if (!data || isLoading) {
+    return <></>;
+  }
+
   return (
     <div className="mx-auto space-y-8 p-8">
       <div className="flex items-end justify-between border-b border-slate-800 pb-2">
@@ -31,6 +46,7 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
                 </span>
               </Link>
             </div>
+            <TeamList teams={data?.teams} />
           </div>
         </div>
       </section>
