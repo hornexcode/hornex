@@ -60,8 +60,8 @@ export const dataLoadersV2 = <T, Data = unknown>(
     });
   };
 
-  const put = async (payload?: Data): Promise<T> => {
-    return safeFetch(`${API_ROOT}/${path}`, {
+  const patch = async (param: string, payload?: Data): Promise<T> => {
+    return safeFetch(`${API_ROOT}/${path}/${param}`, {
       body: payload ? JSON.stringify(payload) : ''
     }).catch((error) => {
       throw new Error('Error fetching data');
@@ -71,7 +71,7 @@ export const dataLoadersV2 = <T, Data = unknown>(
   return {
     post,
     get,
-    put
+    patch
   };
 };
 

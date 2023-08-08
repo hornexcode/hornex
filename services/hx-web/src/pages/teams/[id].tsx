@@ -35,7 +35,7 @@ const updateTeamForm = z.object({
   team: z.string().min(2, { message: 'Minimum 2 characters for team name' })
 });
 
-const { put: updateTeam } = dataLoadersV2<UpdateTeamOutput, UpdateTeamInput>(
+const { patch: updateTeam } = dataLoadersV2<UpdateTeamOutput, UpdateTeamInput>(
   'updateTeam'
 );
 
@@ -111,7 +111,7 @@ const TeamDetail = ({
   const teamSubmitHandler = async (data: UpdateTeamInput) => {
     try {
       setIsUpdating(true);
-      const { name } = await updateTeam(data);
+      const { name } = await updateTeam(team.id, data);
 
       toast.success('Team updated successfully');
 
