@@ -1,32 +1,31 @@
 import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { set } from 'es-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import useSWR from 'swr';
+import z from 'zod';
 
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { Logo } from '@/components/ui/logo';
-import { dataLoaders } from '@/lib/api';
+import { dataLoadersV2 } from '@/lib/api';
+import {
+  SignupInput,
+  SignupOutput,
+  signupSchemaInput,
+  signupSchemaOutput as schema,
+} from '@/services/hx-core/signup';
 
-const { post: signup } = dataLoaders('signup');
-
-const form = z.object({
-  email: z.string().email({ message: 'Valid email required' }),
-  birth_date: z.string().min(2, { message: 'Minimum 2 characters' }),
-  password: z
-    .string()
-    .min(8, { message: 'Password must contain at least 8 characters' }),
-  terms: z.boolean(),
-});
-
-type SignUpForm = z.infer<typeof form>;
+const { post: signup } = dataLoadersV2<SignupOutput, SignupInput>(
+  'signup',
+  schema
+);
 
 export default function RegisterPage() {
-  const [step, setStep] = useState(1);
   const [isFecthing, setIsFetching] = useState(false);
   const router = useRouter();
 
@@ -34,64 +33,20 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpForm>({
-    resolver: zodResolver(form),
+  } = useForm<SignupInput>({
+    resolver: zodResolver(signupSchemaInput),
   });
 
-  const handleOnSignup = async (data: SignUpForm) => {
+  const onSignup = async (payload: SignupInput) => {
     try {
-      await signup({
-        first_name: '',
-        last_name: '',
-        ...data,
-      });
+      const data = await signup(payload);
+      set('hx-auth.token', data.access_token);
       router.push('/signup-confirm');
     } catch (error) {
+      console.log(error);
     } finally {
       setIsFetching(false);
     }
-  };
-
-  const confirmStep = () => {
-    return (
-      <div className="m-auto w-[450px] space-y-4 rounded-md  p-6 sm:p-8 md:space-y-6 ">
-        <div className="text-center">
-          <h1 className="text-xl font-bold text-white md:text-4xl">
-            Confirm your account
-          </h1>
-          <p className="px-8 text-sm text-slate-400">
-            We are going to send a 6-digits code to your email address to
-            confirm your account. Verify you spam folder if you do not receive
-          </p>
-        </div>
-        <form action="" className="mt-6 space-y-4 md:space-y-6">
-          {/* Email */}
-          <div>
-            <InputLabel title="Code" important />
-            <div className="relative">
-              <div className="absolute right-6 flex h-full items-center">
-                <button
-                  className="!cursor-pointer !text-sm !text-amber-400 hover:!underline"
-                  style={{ all: 'unset' }}
-                >
-                  get code
-                </button>
-              </div>
-              <Input placeholder="000000" />
-            </div>
-          </div>
-
-          <Button
-            onClick={(e) => setStep(3)}
-            className="w-full"
-            color="secondary"
-            shape="rounded"
-          >
-            Confirm Email
-          </Button>
-        </form>
-      </div>
-    );
   };
 
   const successStep = () => {
@@ -131,7 +86,7 @@ export default function RegisterPage() {
           </p>
         </div>
         <form
-          onSubmit={handleSubmit(handleOnSignup)}
+          onSubmit={handleSubmit(onSignup)}
           action=""
           className="mt-6 space-y-4 md:space-y-6"
         >

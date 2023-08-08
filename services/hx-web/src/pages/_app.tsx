@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { Cabin, Kanit, Khula, Nunito, Oswald } from 'next/font/google';
+import { Cabin, Kanit, Nunito, Oswald } from 'next/font/google';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 
