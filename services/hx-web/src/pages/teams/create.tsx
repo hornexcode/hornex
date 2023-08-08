@@ -43,12 +43,14 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
   const submitHandler = async (data: CreateTeamForm) => {
     try {
       setIsFetching(true);
-      const res = await createTeam(data);
+      const { team } = await createTeam(data);
 
       toast.success('Team created successfully');
 
-      router.push(`${res.team.id}`);
-    } catch (error) {
+      router.push(`${team.id}`);
+    } catch (err) {
+      const { error } = err as { error: string };
+      toast.error(error);
       console.log(error);
     } finally {
       setIsFetching(false);
