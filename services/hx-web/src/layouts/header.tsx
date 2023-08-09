@@ -62,7 +62,7 @@ const Header = () => {
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block font-extrabold text-white" href="/">
-            <Image className="w-12" src={HornexLogo} alt="Hornex logo" />
+            <Image className="w-8" src={HornexLogo} alt="Hornex logo" />
           </Link>
           {isMounted && ['xs', 'sm', 'md', 'lg'].indexOf(breakpoint) == -1 && (
             <MenuItems />

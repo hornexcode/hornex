@@ -11,7 +11,7 @@ import { dataLoadersV2 } from '@/lib/api';
 import {
   GetTeamsOutput,
   getTeamsSchemaOutput as schema,
-} from '@/services/hx-core/getTeams';
+} from '@/services/hx-core/get-teams';
 
 const { useData: getTeams } = dataLoadersV2<GetTeamsOutput>('getTeams', schema);
 
@@ -34,18 +34,16 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
 
       <section id="teams" className="space-y-10">
         <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div className="rounded bg-light-dark p-4">
-              <Link
-                href={routes.createTeam}
-                className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-slate-800 p-4 transition-all hover:bg-slate-700"
-              >
-                <PlusCircleIcon className="w-7" />
-                <span className="text-sm font-medium text-slate-400">
-                  Create new team
-                </span>
-              </Link>
-            </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <Link
+              href={routes.createTeam}
+              className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-slate-800 p-4 transition-all hover:bg-slate-700"
+            >
+              <PlusCircleIcon className="w-7" />
+              <span className="text-sm font-medium text-slate-400">
+                Create new team
+              </span>
+            </Link>
             <TeamList teams={data.teams} />
           </div>
         </div>

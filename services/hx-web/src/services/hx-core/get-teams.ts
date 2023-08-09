@@ -14,9 +14,9 @@ export const getTeamsSchemaOutput = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-      image: z.string()
+      image: z.string(),
     })
-  )
+  ),
 });
 
 export type GetTeamsOutput = z.infer<typeof getTeamsSchemaOutput>;
