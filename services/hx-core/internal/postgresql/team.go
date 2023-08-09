@@ -133,10 +133,12 @@ func (t *Team) List(ctx context.Context, params *internal.TeamSearchParams) (*[]
 
 	var teams []internal.Team
 
-	for _, game := range res {
+	for _, team := range res {
 		teams = append(teams, internal.Team{
-			ID:   game.ID.String(),
-			Name: game.Name,
+			ID:        team.ID.String(),
+			Name:      team.Name,
+			GameID:    team.GameID.String(),
+			CreatedBy: team.CreatedBy.String(),
 		})
 	}
 

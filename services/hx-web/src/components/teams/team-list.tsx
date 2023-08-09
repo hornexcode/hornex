@@ -1,6 +1,6 @@
 import {
   EllipsisHorizontalIcon,
-  EllipsisVerticalIcon,
+  EllipsisVerticalIcon
 } from '@heroicons/react/20/solid';
 import {
   Cloud,
@@ -16,7 +16,7 @@ import {
   Settings,
   User,
   UserPlus,
-  Users,
+  Users
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -35,7 +35,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import routes from '@/config/routes';
 import { Team } from '@/domain/team';
@@ -135,7 +135,7 @@ const Team: FC<TeamProps> = (team) => {
       <div className="flex items-center justify-between">
         <div>
           <h4 className="text-lg font-semibold text-slate-200">{team.name}</h4>
-          <span className="text-xs">created by: @peter</span>
+          <span className="text-xs">created by: @{team.created_by}</span>
         </div>
         <div className="actions">
           <DropdownMenuDemo />

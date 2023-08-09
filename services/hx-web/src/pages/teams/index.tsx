@@ -10,7 +10,7 @@ import { AppLayout } from '@/layouts';
 import { dataLoadersV2 } from '@/lib/api';
 import {
   GetTeamsOutput,
-  getTeamsSchemaOutput as schema,
+  getTeamsSchemaOutput as schema
 } from '@/services/hx-core/get-teams';
 
 const { useData: getTeams } = dataLoadersV2<GetTeamsOutput>('getTeams', schema);
@@ -18,9 +18,9 @@ const { useData: getTeams } = dataLoadersV2<GetTeamsOutput>('getTeams', schema);
 const TeamsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) => {
-  const { data, error, isLoading } = getTeams();
+  const { data: teams, error, isLoading } = getTeams();
 
-  if (!data || isLoading) {
+  if (!teams || isLoading) {
     return <></>;
   }
 
@@ -44,7 +44,7 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
                 Create new team
               </span>
             </Link>
-            <TeamList teams={data.teams} />
+            <TeamList teams={teams} />
           </div>
         </div>
       </section>
@@ -63,12 +63,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     cookies['hx-auth.token'] !== ''
   ) {
     return {
-      props: {},
+      props: {}
     };
   }
 
   return {
-    props: {},
+    props: {}
   };
 };
 
