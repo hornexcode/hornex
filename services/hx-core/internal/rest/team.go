@@ -52,7 +52,8 @@ type Team struct {
 }
 
 type CreateTeamRequest struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	GameID string `json:"game_id"`
 }
 
 type CreateTeamResponse struct {
@@ -75,6 +76,7 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 	team, err := h.teamService.Create(r.Context(), internal.TeamCreateParams{
 		Name:      req.Name,
 		CreatedBy: claims["id"].(string),
+		GameID:    req.GameID,
 	})
 
 	if err != nil {
@@ -84,8 +86,9 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 
 	renderResponse(w, r, &CreateTeamResponse{
 		Team: Team{
-			ID:   team.ID,
-			Name: team.Name,
+			ID:        team.ID,
+			Name:      team.Name,
+			CreatedBy: team.CreatedBy,
 		},
 	}, http.StatusCreated)
 }
