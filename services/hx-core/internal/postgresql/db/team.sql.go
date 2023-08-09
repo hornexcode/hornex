@@ -15,17 +15,20 @@ import (
 const InsertTeam = `-- name: InsertTeam :one
 INSERT INTO teams (
   name,
+  game_id,
   created_by
 )
 VALUES (
   $1,
-  $2
+  $2,
+  $3
 )
 RETURNING id, created_at, updated_at
 `
 
 type InsertTeamParams struct {
 	Name      string
+	GameID    uuid.UUID
 	CreatedBy uuid.UUID
 }
 
@@ -36,7 +39,7 @@ type InsertTeamRow struct {
 }
 
 func (q *Queries) InsertTeam(ctx context.Context, arg InsertTeamParams) (InsertTeamRow, error) {
-	row := q.db.QueryRow(ctx, InsertTeam, arg.Name, arg.CreatedBy)
+	row := q.db.QueryRow(ctx, InsertTeam, arg.Name, arg.GameID, arg.CreatedBy)
 	var i InsertTeamRow
 	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
 	return i, err
