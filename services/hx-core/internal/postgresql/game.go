@@ -27,7 +27,6 @@ func (u *Game) List(ctx context.Context) (*[]internal.Game, error) {
 		if err.Error() == "no rows in result set" {
 			return &[]internal.Game{}, errors.WrapErrorf(err, errors.ErrorCodeNotFound, "select games")
 		}
-		return &[]internal.Game{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select games")
 	}
 
 	var games []internal.Game

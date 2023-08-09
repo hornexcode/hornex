@@ -25,9 +25,9 @@ export const dataLoadersV2 = <T, Data = unknown>(
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: cookie ? `Bearer ${cookie}` : '',
+        Authorization: cookie ? `Bearer ${cookie}` : ''
       },
-      ...options,
+      ...options
     });
 
     try {
@@ -46,7 +46,7 @@ export const dataLoadersV2 = <T, Data = unknown>(
             name: 'FetchError',
             message: errRes?.error ?? 'Unable to fetch',
             code: res.status,
-            response: errRes,
+            response: errRes
           };
         } catch (_) {
           const errorMessage = await res.text();
@@ -61,19 +61,19 @@ export const dataLoadersV2 = <T, Data = unknown>(
         data,
         error,
         headers: res.headers,
-        status: res.status,
+        status: res.status
       };
     }
   };
 
   const post = (payload?: Data): Promise<FetchResponse<T>> => {
     return _fetch(`${API_ROOT}/${path}`, {
-      body: payload ? JSON.stringify(payload) : '',
+      body: payload ? JSON.stringify(payload) : ''
     });
   };
 
-  const get = (): Promise<FetchResponse<T>> => {
-    return _fetch(`${API_ROOT}/${path}`);
+  const get = (options?: RequestInit): Promise<FetchResponse<T>> => {
+    return _fetch(`${API_ROOT}/${path}`, options);
   };
 
   const patch = async (
@@ -81,7 +81,7 @@ export const dataLoadersV2 = <T, Data = unknown>(
     payload?: Data
   ): Promise<FetchResponse<T>> => {
     return _fetch(`${API_ROOT}/${path}/${param}`, {
-      body: payload ? JSON.stringify(payload) : '',
+      body: payload ? JSON.stringify(payload) : ''
     });
   };
 
@@ -98,8 +98,8 @@ export const dataLoadersV2 = <T, Data = unknown>(
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: cookie ? `Bearer ${cookie}` : '',
-        },
+          Authorization: cookie ? `Bearer ${cookie}` : ''
+        }
       }).then((res) => res.json())
     );
   };
@@ -108,7 +108,7 @@ export const dataLoadersV2 = <T, Data = unknown>(
     post,
     get,
     patch,
-    useData,
+    useData
   };
 };
 
