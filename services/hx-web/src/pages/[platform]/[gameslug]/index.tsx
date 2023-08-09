@@ -6,13 +6,6 @@ import Link from 'next/link';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import HornexVariantLogo from '@/assets/images/hornex/hornex-variant-logo.png';
 import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 
@@ -29,7 +22,7 @@ const Game = ({}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
         <div className="grid grid-cols-12">
           <div className="col-span-12">
             {/* grid-cols-1 gap-4 */}
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4 2xl:grid-cols-5 ">
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5 ">
               <li className="">
                 <Link
                   className="divide-y divide-slate-700"
