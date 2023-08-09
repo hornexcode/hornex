@@ -28,7 +28,7 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
         </div>
         <div className="block">
           <span className="text-xs">SEP 02 @ 06:00 PM (-3)</span>
-          <h4 className="text-lg font-semibold leading-5 text-white">
+          <h4 className="text-sm font-semibold leading-5 text-white">
             LOL: Platinum Tournament 2023
           </h4>
           <div className="mt-4 block space-x-1.5">
