@@ -16,7 +16,7 @@ type TeamService interface {
 	Create(ctx context.Context, params internal.TeamCreateParams) (internal.Team, error)
 	Find(ctx context.Context, id string) (*internal.Team, error)
 	Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error)
-	// List(ctx context.Context) (*[]internal.Team, error)
+	List(ctx context.Context, params internal.TeamSearchParams) (*[]internal.Team, error)
 }
 
 type TeamHandler struct {
@@ -187,47 +187,50 @@ func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK)
 }
 
-type MockedTeam struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Image string `json:"image"`
-}
-
-type ListTeamsResponse struct {
-	Teams []MockedTeam `json:"teams"`
-}
-
 func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
 
-	// TODO : Implement METHOD
+	teams, err := t.teamService.List(r.Context(), internal.TeamSearchParams{
+		CreatedBy: claims["id"].(string),
+	})
 
-	teams := []MockedTeam{
-		{
-			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-			Name:  "HX Hornex",
-			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-		},
-		{
-			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-			Name:  "HX Hornex",
-			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-		},
-		{
-			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-			Name:  "HX Hornex",
-			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-		},
-		{
-			ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-			Name:  "HX Hornex",
-			Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-		},
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "teams not found"})
+		return
 	}
 
-	renderResponse(w, r,
+	var teamsRes []Game
 
-		&ListTeamsResponse{
-			Teams: teams,
-		},
-		http.StatusOK)
+	for _, game := range *teams {
+		teamsRes = append(teamsRes, Game{
+			ID:   game.ID,
+			Name: game.Name,
+		})
+	}
+
+	renderResponse(w, r, teamsRes, http.StatusOK)
 }
+
+/* teams := []MockedTeam{
+	{
+		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
+		Name:  "HX Hornex",
+		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+	},
+	{
+		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
+		Name:  "HX Hornex",
+		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+	},
+	{
+		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
+		Name:  "HX Hornex",
+		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+	},
+	{
+		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
+		Name:  "HX Hornex",
+		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
+	},
+} */

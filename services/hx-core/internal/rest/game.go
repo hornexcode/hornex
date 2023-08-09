@@ -67,10 +67,6 @@ func (g *GameHandler) find(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK)
 }
 
-type ListGamesResponse struct {
-	Games []Game `json:"games"`
-}
-
 func (g *GameHandler) list(w http.ResponseWriter, r *http.Request) {
 	games, err := g.gameService.List(r.Context())
 
@@ -90,9 +86,5 @@ func (g *GameHandler) list(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	renderResponse(w, r,
-		&ListGamesResponse{
-			Games: gamesResponse,
-		},
-		http.StatusOK)
+	renderResponse(w, r, gamesResponse, http.StatusOK)
 }

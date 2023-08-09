@@ -117,3 +117,28 @@ func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
 		CreatedBy: res.CreatedBy.String(),
 	}, nil
 }
+
+func (t *Team) List(ctx context.Context, params *internal.TeamSearchParams) (*[]internal.Team, error) {
+	createdByUUID, err := uuid.Parse(params.CreatedBy)
+
+	if err != nil {
+		return &[]internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+
+	res, err := t.q.SelectTeamsByCreatorId(ctx, createdByUUID)
+
+	if err != nil {
+		return &[]internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select team by id")
+	}
+
+	var teams []internal.Team
+
+	for _, game := range res {
+		teams = append(teams, internal.Team{
+			ID:   game.ID.String(),
+			Name: game.Name,
+		})
+	}
+
+	return &teams, nil
+}

@@ -84,7 +84,7 @@ func (p TeamCreateParams) Validate() error {
 }
 
 type TeamSearchParams struct {
-	Name string
+	CreatedBy string
 }
 
 type TeamUpdateParams struct {

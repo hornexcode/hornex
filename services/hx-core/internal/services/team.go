@@ -54,3 +54,13 @@ func (t *Team) Update(ctx context.Context, id string, params internal.TeamUpdate
 
 	return team, nil
 }
+
+func (t *Team) List(ctx context.Context, params internal.TeamSearchParams) (*[]internal.Team, error) {
+	teams, err := t.teamRepository.List(ctx, &params)
+
+	if err != nil {
+		return &[]internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.List")
+	}
+
+	return teams, nil
+}

@@ -1,6 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType
+} from 'next';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -11,28 +15,40 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import Listbox from '@/components/ui/list-box';
-import { Select } from '@/components/ui/select';
+import { Select, SelectGroup, SelectLabel } from '@/components/ui/select';
+import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { TeamCreated } from '@/infra/hx-core/responses/team-created';
 import { AppLayout } from '@/layouts';
-import { dataLoadersV2 } from '@/lib/api';
+import { dataLoaders, dataLoadersV2 } from '@/lib/api';
+import { getCookieFromRequest } from '@/lib/api/cookie';
+import {
+  GetGamesOutput,
+  getGamesSchemaOutput as schema
+} from '@/services/hx-core/getGames';
 
 const createTeamFormSchema = z.object({
-  name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
+  name: z.string().min(2, { message: 'Minimum 2 characters for team name' })
+  // game_id: z.string().uuid({ message: 'You have to chose a game' })
 });
 
 type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
+
 const { post: createTeam } = dataLoadersV2<TeamCreated, CreateTeamForm>(
   'createTeam'
 );
 
-const gameOptions = [{ name: 'Leage of Legends', value: '1' }];
-
-const TeamsCreate = ({}: InferGetServerSidePropsType<
-  typeof getServerSideProps
->) => {
+const TeamCreate = ({
+  games
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [isFetching, setIsFetching] = useState(false);
-  let [gameOption, setGameOption] = useState(gameOptions[0]);
   const router = useRouter();
+
+  const gameOptions = games.map((game) => ({
+    value: game.id,
+    name: game.name
+  }));
+
+  const [gameOption, setGameOption] = useState(gameOptions[0]);
 
   const {
     register,
@@ -40,15 +56,18 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
     reset,
     setError,
     setValue,
-    formState: { errors },
+    formState: { errors }
   } = useForm<CreateTeamForm>({
-    resolver: zodResolver(createTeamFormSchema),
+    resolver: zodResolver(createTeamFormSchema)
   });
 
   const submitHandler = async (form: CreateTeamForm) => {
     try {
       setIsFetching(true);
-      const { data, error } = await createTeam(form);
+      const { data, error } = await createTeam({
+        name: form.name,
+        game_id: gameOption.value
+      });
       if (error) toast.error(error.message);
       if (data?.team && !error) toast.success('Team created successfully');
 
@@ -109,16 +128,60 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
   );
 };
 
-TeamsCreate.getLayout = (page: React.ReactElement) => {
+TeamCreate.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+const { get: current } = dataLoaders<CurrentUser>('currentUser');
+const { get: getGames } = dataLoadersV2<GetGamesOutput>('getGames', schema);
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const cookie = getCookieFromRequest(ctx.req, 'hx-auth.token');
+
+  // Check token existence
+  if (!cookie) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false
+      }
+    };
+  }
+
+  const currentUser = await current({
+    Authorization: cookie ? `Bearer ${cookie}` : ''
+  });
+
+  // Check token validity
+  if (!currentUser) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false
+      }
+    };
+  }
+
+  const { data: games } = await getGames({
+    headers: {
+      Authorization: cookie ? `Bearer ${cookie}` : ''
+    }
+  });
+
+  if (!games) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false
+      }
+    };
+  }
+
   return {
     props: {
-      user: {},
-    },
+      games
+    }
   };
 };
 
-export default TeamsCreate;
+export default TeamCreate;
