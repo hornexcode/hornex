@@ -10,4 +10,4 @@ VALUES (
 RETURNING id, email, confirmation_code, created_at;
 
 -- name: SelectEmailConfirmationCode :one
-SELECT id, email, confirmation_code, created_at FROM emails_confirmation_code WHERE email = @email;
+SELECT id, email, confirmation_code, created_at FROM emails_confirmation_code WHERE email = @email ORDER BY created_at DESC;

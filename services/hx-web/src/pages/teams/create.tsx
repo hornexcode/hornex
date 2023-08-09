@@ -10,23 +10,28 @@ import { z } from 'zod';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import Listbox from '@/components/ui/list-box';
+import { Select } from '@/components/ui/select';
 import { TeamCreated } from '@/infra/hx-core/responses/team-created';
 import { AppLayout } from '@/layouts';
-import { dataLoaders } from '@/lib/api';
+import { dataLoadersV2 } from '@/lib/api';
 
 const createTeamFormSchema = z.object({
-  name: z.string().min(2, { message: 'Minimum 2 characters for team name' })
+  name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
 });
 
 type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
-const { post: createTeam } = dataLoaders<TeamCreated, CreateTeamForm>(
+const { post: createTeam } = dataLoadersV2<TeamCreated, CreateTeamForm>(
   'createTeam'
 );
+
+const gameOptions = [{ name: 'Leage of Legends', value: '1' }];
 
 const TeamsCreate = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) => {
   const [isFetching, setIsFetching] = useState(false);
+  let [gameOption, setGameOption] = useState(gameOptions[0]);
   const router = useRouter();
 
   const {
@@ -35,19 +40,19 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
     reset,
     setError,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm<CreateTeamForm>({
-    resolver: zodResolver(createTeamFormSchema)
+    resolver: zodResolver(createTeamFormSchema),
   });
 
-  const submitHandler = async (data: CreateTeamForm) => {
+  const submitHandler = async (form: CreateTeamForm) => {
     try {
       setIsFetching(true);
-      const { team } = await createTeam(data);
+      const { data, error } = await createTeam(form);
+      if (error) toast.error(error.message);
+      if (data?.team && !error) toast.success('Team created successfully');
 
-      toast.success('Team created successfully');
-
-      router.push(`${team.id}`);
+      router.push(`${data?.team.id}`);
     } catch (err) {
       const { error } = err as { error: string };
       toast.error(error);
@@ -60,7 +65,7 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
   return (
     <div className="mx-auto space-y-8 p-8">
       <div className="flex items-end justify-between border-b border-slate-800 pb-2">
-        <h2 className="text-left font-display text-xl font-bold leading-4 tracking-tight text-white lg:text-xl">
+        <h2 className="text-left text-xl font-bold leading-4 tracking-tight text-white lg:text-xl">
           New Team
         </h2>
       </div>
@@ -79,10 +84,21 @@ const TeamsCreate = ({}: InferGetServerSidePropsType<
             {...register('name', { required: true })}
           />
         </div>
+
+        {/* Game */}
+        <div>
+          <InputLabel title="Game" important />
+          <Listbox
+            className="w-full sm:w-80"
+            options={gameOptions}
+            selectedOption={gameOption}
+            onChange={setGameOption}
+          />
+        </div>
         <Button
           isLoading={isFetching}
           disabled={isFetching}
-          color="info"
+          color="secondary"
           size="small"
           shape="rounded"
         >
@@ -100,8 +116,8 @@ TeamsCreate.getLayout = (page: React.ReactElement) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
-      user: {}
-    }
+      user: {},
+    },
   };
 };
 

@@ -1,4 +1,5 @@
 import * as Cookie from 'es-cookie';
+import useSWR from 'swr';
 import z from 'zod';
 
 import { routes } from './routes';
@@ -12,7 +13,10 @@ export const dataLoadersV2 = <T, Data = unknown>(
 ) => {
   const { path, method } = routes[routeKey];
 
-  const safeFetch = async (url: string, options?: RequestInit) => {
+  const _fetch = async (url: string, options?: RequestInit) => {
+    let data: T | undefined = undefined;
+    let error: FetchError | undefined = undefined;
+
     const cookie = isServer ? null : Cookie.get('hx-auth.token');
 
     const res = await fetch(url, {
@@ -21,70 +25,112 @@ export const dataLoadersV2 = <T, Data = unknown>(
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: cookie ? `Bearer ${cookie}` : ''
+        Authorization: cookie ? `Bearer ${cookie}` : '',
       },
-      ...options
+      ...options,
     });
 
-    if (!res.ok) {
-      throw newHTTPError('Unexpected response', res, options?.method);
-    }
-
-    const json = await res.json().catch(() => {
-      throw newHTTPError('Invalid JSON body', res, options?.method);
-    });
-
-    if (schema) {
-      const result = schema.safeParse(json);
-      if (!result.success) {
-        throw newHTTPError('Unexpected response schema', res, options?.method);
+    try {
+      if (res.ok) {
+        data = await res.json();
+        if (schema) {
+          const result = schema.safeParse(data);
+          if (!result.success) {
+            throw new Error(result.error.message);
+          }
+        }
+      } else {
+        try {
+          const errRes = await res.json();
+          error = {
+            name: 'FetchError',
+            message: errRes?.error ?? 'Unable to fetch',
+            code: res.status,
+            response: errRes,
+          };
+        } catch (_) {
+          const errorMessage = await res.text();
+          error = new Error(errorMessage);
+          error.code = res.status;
+        }
       }
-
-      return result.data;
+    } catch (e: any) {
+      error = e;
+    } finally {
+      return {
+        data,
+        error,
+        headers: res.headers,
+        status: res.status,
+      };
     }
-    return json as T;
   };
 
-  // Post data to the API
-  const post = async (payload?: Data): Promise<T> => {
-    return safeFetch(`${API_ROOT}/${path}`, {
-      body: payload ? JSON.stringify(payload) : ''
-    }).catch((error) => {
-      throw new Error('Error fetching data');
+  const post = (payload?: Data): Promise<FetchResponse<T>> => {
+    return _fetch(`${API_ROOT}/${path}`, {
+      body: payload ? JSON.stringify(payload) : '',
     });
   };
 
-  const get = async () => {
-    return safeFetch(`${API_ROOT}/${path}`).catch((error) => {
-      throw new Error('Error fetching data');
+  const get = (): Promise<FetchResponse<T>> => {
+    return _fetch(`${API_ROOT}/${path}`);
+  };
+
+  const patch = async (
+    param: string,
+    payload?: Data
+  ): Promise<FetchResponse<T>> => {
+    return _fetch(`${API_ROOT}/${path}/${param}`, {
+      body: payload ? JSON.stringify(payload) : '',
     });
   };
 
-  const patch = async (param: string, payload?: Data): Promise<T> => {
-    return safeFetch(`${API_ROOT}/${path}/${param}`, {
-      body: payload ? JSON.stringify(payload) : ''
-    }).catch((error) => {
-      throw new Error('Error fetching data');
-    });
+  /**
+   * This method is intended to be used with SWR
+   */
+  const useData = () => {
+    const cookie = isServer ? null : Cookie.get('hx-auth.token');
+    return useSWR<T>(path, (url: string, options?: RequestInit) =>
+      fetch(`${API_ROOT}/${url}`, {
+        ...options,
+        method,
+        credentials: 'include',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: cookie ? `Bearer ${cookie}` : '',
+        },
+      }).then((res) => res.json())
+    );
   };
 
   return {
     post,
     get,
-    patch
+    patch,
+    useData,
   };
 };
 
-function newHTTPError(reason: string, response: Response, method?: string) {
-  const text = response.text().catch(() => null);
-  const message = `Error fetching ${method} ${response.url}: ${response.status}.${reason}`;
-
-  console.error(`${message}. Response body: ${text}`);
-  return new HTTPError(message, response.status);
+async function newHTTPError(response: Response, method?: string) {
+  try {
+    const errRes = await response.json();
+  } catch (error: any) {}
 }
 
+export interface FetchError extends Error {
+  code?: number;
+  response?: any;
+}
+
+export type FetchResponse<T> = {
+  data?: T;
+  error?: FetchError;
+  status?: number;
+};
+
 export class HTTPError extends Error {
-  constructor(message: string, public status: number) {
+  constructor(public status: number, message: string) {
     super(message);
     this.status = status;
   }

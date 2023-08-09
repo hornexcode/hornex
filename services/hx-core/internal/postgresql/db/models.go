@@ -16,9 +16,16 @@ type EmailsConfirmationCode struct {
 	CreatedAt        pgtype.Timestamp
 }
 
+type Games struct {
+	ID   uuid.UUID
+	Name string
+	Slug string
+}
+
 type Teams struct {
 	ID        uuid.UUID
 	Name      string
+	GameID    uuid.UUID
 	CreatedBy uuid.UUID
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
@@ -31,7 +38,7 @@ type Users struct {
 	FirstName      string
 	LastName       string
 	BirthDate      pgtype.Date
-	EmailConfirmed pgtype.Bool
+	EmailConfirmed bool
 	CreatedAt      pgtype.Timestamp
 	UpdatedAt      pgtype.Timestamp
 }

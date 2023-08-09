@@ -57,7 +57,7 @@ func (u *User) ConfirmSignUp(ctx context.Context, email, confirmationCode string
 	if err != nil {
 		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "emailcc.Find")
 	}
-
+	fmt.Println("codes: ", emailcc.ConfirmationCode, confirmationCode)
 	if emailcc.ConfirmationCode != confirmationCode {
 		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "invalid confirmation code")
 	}

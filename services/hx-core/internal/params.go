@@ -6,17 +6,19 @@ import (
 )
 
 type UserCreateParams struct {
+	FirstName     string
+	LastName      string
 	Email         string
 	Password      string
-	BirthDate     string
 	TermsAccepted bool
 }
 
 // Validate indicates whether the fields are valid or not.
 func (p UserCreateParams) Validate() error {
 	user := User{
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
 		Email:     p.Email,
-		BirthDate: p.BirthDate,
 		Password:  p.Password,
 	}
 

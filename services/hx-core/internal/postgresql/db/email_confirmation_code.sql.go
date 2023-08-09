@@ -39,7 +39,7 @@ func (q *Queries) InsertEmailConfirmationCode(ctx context.Context, arg InsertEma
 }
 
 const SelectEmailConfirmationCode = `-- name: SelectEmailConfirmationCode :one
-SELECT id, email, confirmation_code, created_at FROM emails_confirmation_code WHERE email = $1
+SELECT id, email, confirmation_code, created_at FROM emails_confirmation_code WHERE email = $1 ORDER BY created_at DESC
 `
 
 func (q *Queries) SelectEmailConfirmationCode(ctx context.Context, email string) (EmailsConfirmationCode, error) {

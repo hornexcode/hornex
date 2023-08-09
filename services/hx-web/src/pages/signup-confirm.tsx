@@ -1,6 +1,7 @@
 import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -9,17 +10,40 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { Logo } from '@/components/ui/logo';
-import { dataLoadersV2 } from '@/lib/api';
+import { dataLoadersV2, FetchError, HTTPError } from '@/lib/api';
+import { useAuthContext } from '@/lib/auth';
+
+const schema = z.object({
+  confirmation_code: z
+    .string()
+    .min(6, { message: 'Minimum 6 characters for code' }),
+});
+
+type ConfirmSignupInput = z.infer<typeof schema>;
+
+const { post: confirmSignup } = dataLoadersV2<{}, ConfirmSignupInput>(
+  'confirmSignup',
+  schema
+);
 
 const { get: getEmailConfirmationCode } = dataLoadersV2<{}>(
   'getEmailConfirmationCode'
 );
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const {
+    state: { isAuthenticated },
+  } = useAuthContext();
+  if (isAuthenticated) {
+    router.push('/compete');
+  }
   const [codeEvent, setCodeEvent] = useState<'send' | 'resend' | 'sent'>(
     'send'
   );
   const [code, setCode] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -36,9 +60,29 @@ export default function RegisterPage() {
     };
   }, [codeEvent]);
 
-  async function onSendHandler(e: any) {
+  async function onConfirmSignup(e: any) {
     e.preventDefault();
-    await getEmailConfirmationCode();
+    setIsLoading(true);
+
+    try {
+      const { error } = await confirmSignup({ confirmation_code: code });
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      router.push('/login');
+    } catch (error: any) {
+      console.log(error);
+      setError(error?.message || 'Something went wrong');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function onGetCode(e: any) {
+    e.preventDefault();
+    getEmailConfirmationCode();
     setCodeEvent('sent');
   }
 
@@ -62,10 +106,10 @@ export default function RegisterPage() {
           <div>
             <InputLabel title="Code" important />
             <div className="relative">
-              <div className="absolute right-6 flex h-full items-center">
+              <div className="absolute right-6 top-2.5 flex items-center">
                 {codeEvent === 'send' && (
                   <button
-                    onClick={(e) => onSendHandler(e)}
+                    onClick={(e) => onGetCode(e)}
                     className="!cursor-pointer !text-sm !text-amber-400 hover:!underline"
                     style={{ all: 'unset' }}
                   >
@@ -74,7 +118,7 @@ export default function RegisterPage() {
                 )}
                 {codeEvent === 'resend' && (
                   <button
-                    onClick={(e) => onSendHandler(e)}
+                    onClick={(e) => onGetCode(e)}
                     className="!cursor-pointer !text-sm !text-amber-400 hover:!underline"
                     style={{ all: 'unset' }}
                   >
@@ -94,14 +138,18 @@ export default function RegisterPage() {
                 placeholder="000000"
                 onChange={(e) => setCode(e.target.value)}
               />
+              {error && <span className="text-xs text-red-500">{error}</span>}
             </div>
           </div>
 
           <Button
-            disabled={codeEvent === 'sent' || code.length < 6}
+            isLoading={isLoading}
+            disabled={codeEvent === 'sent' || code.length < 6 || isLoading}
             className="w-full"
             color="secondary"
             shape="rounded"
+            size="small"
+            onClick={(e) => onConfirmSignup(e)}
           >
             Confirm Email
           </Button>

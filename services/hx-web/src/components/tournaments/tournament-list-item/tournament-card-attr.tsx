@@ -24,8 +24,8 @@ const TournamentCardAttr = ({
 
   return (
     <div className="block">
-      <span className={classnames(sizeClassNames)}>{attr}</span>
-      <div className="flex items-center space-x-1 font-display">
+      <span className={classnames('text-xs', sizeClassNames)}>{attr}</span>
+      <div className="flex items-center space-x-1">
         {icon}
         <span
           className={classnames('font-bold text-white', {

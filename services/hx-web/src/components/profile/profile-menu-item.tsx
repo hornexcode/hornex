@@ -5,6 +5,8 @@ import { Fragment } from 'react';
 import { User } from '@/domain';
 import { useAuthContext } from '@/lib/auth';
 
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+
 export default function ProfileMenuItem({ user }: { user: User }) {
   const { logout } = useAuthContext();
   const handleLogout = async () => {
@@ -15,22 +17,10 @@ export default function ProfileMenuItem({ user }: { user: User }) {
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          <div className="flex items-center justify-center">
-            <div className="relative h-6 w-6 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
-              <svg
-                className="absolute -left-1 top-0 h-8 w-8 text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </div>
-          </div>
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         </Menu.Button>
       </div>
       <Transition

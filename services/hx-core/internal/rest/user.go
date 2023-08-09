@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
@@ -57,8 +58,9 @@ type User struct {
 }
 
 type SignUpRequest struct {
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
 	Email         string `json:"email"`
-	BirthDate     string `json:"birth_date"`
 	Password      string `json:"password"`
 	TermsAccepted bool   `json:"terms"`
 }
@@ -78,9 +80,10 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	params := internal.UserCreateParams{
-		Email:         req.Email,
+		FirstName:     strings.ToLower(strings.TrimSpace(req.FirstName)),
+		LastName:      strings.ToLower(strings.TrimSpace(req.LastName)),
+		Email:         strings.ToLower(strings.TrimSpace(req.Email)),
 		Password:      req.Password,
-		BirthDate:     req.BirthDate,
 		TermsAccepted: req.TermsAccepted,
 	}
 	if err := params.Validate(); err != nil {
@@ -99,6 +102,16 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 			AccessToken: token,
 		},
 		http.StatusCreated)
+}
+
+func (h *UserHandler) getEmailConfirmationCode(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	if err := h.userService.GetEmailConfirmationCode(r.Context(), claims["email"].(string)); err != nil {
+		renderErrorResponse(w, r, err.Error(), err)
+		return
+	}
+
+	renderResponse(w, r, nil, http.StatusAccepted)
 }
 
 type SignUpConfirmRequest struct {
@@ -187,14 +200,4 @@ func (h *UserHandler) currentUser(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 		http.StatusOK)
-}
-
-func (h *UserHandler) getEmailConfirmationCode(w http.ResponseWriter, r *http.Request) {
-	_, claims, _ := jwtauth.FromContext(r.Context())
-	if err := h.userService.GetEmailConfirmationCode(r.Context(), claims["email"].(string)); err != nil {
-		renderErrorResponse(w, r, err.Error(), err)
-		return
-	}
-
-	renderResponse(w, r, nil, http.StatusAccepted)
 }

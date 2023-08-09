@@ -7,7 +7,6 @@ import {
 import classnames from 'classnames';
 import Image, { StaticImageData } from 'next/image';
 
-import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import Button from '@/components/ui/button/button';
 
 import TournamentCardAttr from './tournament-card-attr';
@@ -24,8 +23,8 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
     <div className="rounded bg-light-dark shadow-card">
       {/* tournament card header */}
       <div className="flex items-start p-4">
-        <div className="block">
-          <Image className="w-28" src={HornexLogo} alt="thumbnail" />
+        <div className="block pr-4">
+          <Image className="w-28" src={tournament.thumbnail} alt="thumbnail" />
         </div>
         <div className="block">
           <span className="text-[11px]">SEP 02 @ 06:00 PM (-3)</span>
@@ -76,7 +75,7 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
                   data-tooltip="tooltip-prize"
                   className="text-xs font-bold text-white"
                 >
-                  120/1500 BRL
+                  1500 BRL
                 </span>
                 {/* <Tooltip id="tooltip-prize">Accumulated prize pool</Tooltip> */}
               </div>
@@ -117,7 +116,7 @@ export const TournamentListItem = ({ tournament }: TournamentCardInfoProps) => {
           </h4>
           <span className="text-xs">Closes in 7 days</span>
         </div>
-        <div>
+        <div className="text-right">
           <Button
             color="secondary"
             className="font-semibold"
