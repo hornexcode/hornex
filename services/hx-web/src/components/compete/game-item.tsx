@@ -92,18 +92,13 @@ export const GameItem: FC<GameItemProps> = ({
           </span>
           <h4 className="text-lg font-extrabold text-white">{name}</h4>
           <div className="flex items-center">
-            <Badge className="mr-2 rounded" variant="outline">
-              5v5
-            </Badge>
-            <Badge className="rounded" variant="outline">
-              TFT
-            </Badge>
+            <Badge className="mr-2 rounded">5v5</Badge>
+            <Badge className="rounded">TFT</Badge>
           </div>
         </div>
 
         <div className="block pt-2">
           <div className="flex flex-col justify-between ">
-            <p className="mb-2 text-xs text-slate-200">Platforms</p>
             <div className="flex flex-wrap items-center space-x-2">
               {platforms.map((platform, i) => (
                 <platform.Icon
@@ -127,7 +122,7 @@ export const GameItem: FC<GameItemProps> = ({
         shape="rounded"
         size="small"
       >
-        Play Now
+        Connect
       </Button>
     </div>
   </div>
