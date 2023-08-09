@@ -154,7 +154,7 @@ input.spin-button-hidden::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
+/* 
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -170,7 +170,7 @@ input.spin-button-hidden::-webkit-inner-spin-button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--color-brand));
-}
+} */
 
 @layer base {
   * {

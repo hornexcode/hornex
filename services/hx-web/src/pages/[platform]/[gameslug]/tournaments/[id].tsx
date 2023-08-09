@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import ESLOneLogo from '@/assets/images/esl-one-logo.png';
 import face from '@/assets/images/face.jpg';
+import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { TournamentStatus } from '@/components/tournaments/tournament';
 import TournamentCardAttr from '@/components/tournaments/tournament-list-item/tournament-card-attr';
 import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
@@ -32,8 +33,8 @@ export default function Tournament({ params }: TournamentProps) {
       <section className="h-[160px] md:h-[250px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-sky-400 to-sky-300">
           <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat"></figure>
-          <div className="absolute -bottom-[200px] left-8 flex h-[240px] w-56 items-center rounded-lg bg-light-dark ">
-            <Image src={ESLOneLogo} alt="ESL One Logo" />
+          <div className="absolute -bottom-[200px] left-8 flex h-[240px] w-56 items-center rounded-lg border border-slate-800 bg-dark p-8">
+            <Image className="" src={HornexLogo} alt="ESL One Logo" />
           </div>
         </div>
       </section>
@@ -50,8 +51,10 @@ export default function Tournament({ params }: TournamentProps) {
 
           <div className="flex items-end">
             <div className="flex flex-col justify-end pr-4 text-left">
-              <p className="text-xs">Registration ends in:</p>
-              <p className="text-white">5d 23:20:12</p>
+              <p className="text-sm font-semibold text-slate-200">
+                Registration ends in:
+              </p>
+              <p className="">5d 23:20:12</p>
             </div>
             <div className="w-64 border-l border-slate-800 pl-4">
               <TournamentStatus />
@@ -89,7 +92,7 @@ export default function Tournament({ params }: TournamentProps) {
               <Button
                 className="w-full"
                 size="small"
-                color="secondary"
+                color="danger"
                 shape="rounded"
               >
                 <div className="flex items-center">

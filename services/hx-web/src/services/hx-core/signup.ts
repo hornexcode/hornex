@@ -9,10 +9,11 @@ import z from 'zod';
 
 /* POST /api/v1/auth/signup */
 export const signupSchemaInput = z.object({
+  first_name: z.string().min(2),
+  last_name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8),
   terms: z.boolean(),
-  birth_date: z.string(),
 });
 export type SignupInput = z.infer<typeof signupSchemaInput>;
 

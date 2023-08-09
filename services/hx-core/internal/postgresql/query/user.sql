@@ -1,10 +1,14 @@
 -- name: InsertUser :one
 INSERT INTO users (
+  first_name,
+  last_name,
   email,
   birth_date,
   password
 )
 VALUES (
+  @first_name,
+  @last_name,
   @email,
   @birth_date,
   @password

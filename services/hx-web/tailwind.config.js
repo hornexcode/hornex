@@ -66,14 +66,7 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
-      animation: {
-        blink: 'blink 1.4s infinite both;',
-        'move-up': 'moveUp 500ms infinite alternate',
-        'scale-up': 'scaleUp 500ms infinite alternate',
-        'drip-expand': 'expand 500ms ease-in forwards',
-        'drip-expand-large': 'expand-large 600ms ease-in forwards',
-        'move-up-small': 'moveUpSmall 500ms infinite alternate',
-      },
+
       keyframes: {
         blink: {
           '0%': { opacity: 0.2 },
@@ -136,6 +129,12 @@ module.exports = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        blink: 'blink 1.4s infinite both;',
+        'move-up': 'moveUp 500ms infinite alternate',
+        'scale-up': 'scaleUp 500ms infinite alternate',
+        'drip-expand': 'expand 500ms ease-in forwards',
+        'drip-expand-large': 'expand-large 600ms ease-in forwards',
+        'move-up-small': 'moveUpSmall 500ms infinite alternate',
       },
     },
   },

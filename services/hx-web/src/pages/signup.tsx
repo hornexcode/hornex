@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import useSWR from 'swr';
-import z from 'zod';
 
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
@@ -90,16 +88,25 @@ export default function RegisterPage() {
           action=""
           className="mt-6 space-y-4 md:space-y-6"
         >
+          <div className="grid grid-cols-2 gap-4">
+            {/* FirstName */}
+            <div>
+              <InputLabel title="First Name" important />
+              <Input {...register('first_name')} placeholder="Your name here" />
+            </div>
+            {/* LastName */}
+            <div>
+              <InputLabel title="Last Name" important />
+              <Input
+                {...register('last_name')}
+                placeholder="Your family name here"
+              />
+            </div>
+          </div>
           {/* Email */}
           <div>
             <InputLabel title="Email" important />
             <Input {...register('email')} placeholder="Your real email here" />
-          </div>
-
-          {/* Birth Date */}
-          <div>
-            <InputLabel title="Birth Date" important />
-            <Input {...register('birth_date')} type="date" placeholder="" />
           </div>
 
           {/* Password */}
@@ -139,6 +146,7 @@ export default function RegisterPage() {
             type="submit"
             className="w-full"
             color="secondary"
+            size="small"
             shape="rounded"
           >
             Continue

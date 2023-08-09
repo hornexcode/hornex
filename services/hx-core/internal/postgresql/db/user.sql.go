@@ -14,9 +14,9 @@ import (
 
 const InsertUser = `-- name: InsertUser :one
 INSERT INTO users (
-  email,
   first_name,
   last_name,
+  email,
   birth_date,
   password
 )
@@ -31,9 +31,9 @@ RETURNING id, created_at, updated_at
 `
 
 type InsertUserParams struct {
-	Email     string
 	FirstName string
 	LastName  string
+	Email     string
 	BirthDate pgtype.Date
 	Password  string
 }
@@ -46,9 +46,9 @@ type InsertUserRow struct {
 
 func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (InsertUserRow, error) {
 	row := q.db.QueryRow(ctx, InsertUser,
-		arg.Email,
 		arg.FirstName,
 		arg.LastName,
+		arg.Email,
 		arg.BirthDate,
 		arg.Password,
 	)
@@ -116,7 +116,7 @@ type UpdateUserByIdParams struct {
 	FirstName      string
 	LastName       string
 	BirthDate      pgtype.Date
-	EmailConfirmed pgtype.Bool
+	EmailConfirmed bool
 	ID             uuid.UUID
 }
 
@@ -126,7 +126,7 @@ type UpdateUserByIdRow struct {
 	FirstName      string
 	LastName       string
 	BirthDate      pgtype.Date
-	EmailConfirmed pgtype.Bool
+	EmailConfirmed bool
 	CreatedAt      pgtype.Timestamp
 	UpdatedAt      pgtype.Timestamp
 }

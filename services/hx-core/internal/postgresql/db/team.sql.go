@@ -43,7 +43,7 @@ func (q *Queries) InsertTeam(ctx context.Context, arg InsertTeamParams) (InsertT
 }
 
 const SelectTeamById = `-- name: SelectTeamById :one
-SELECT id, name, created_by, created_at, updated_at FROM teams WHERE id = $1
+SELECT id, name, game_id, created_by, created_at, updated_at FROM teams WHERE id = $1
 `
 
 func (q *Queries) SelectTeamById(ctx context.Context, id uuid.UUID) (Teams, error) {
@@ -52,6 +52,7 @@ func (q *Queries) SelectTeamById(ctx context.Context, id uuid.UUID) (Teams, erro
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.GameID,
 		&i.CreatedBy,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -60,7 +61,7 @@ func (q *Queries) SelectTeamById(ctx context.Context, id uuid.UUID) (Teams, erro
 }
 
 const SelectTeamByName = `-- name: SelectTeamByName :one
-SELECT id, name, created_by, created_at, updated_at FROM teams WHERE name = $1
+SELECT id, name, game_id, created_by, created_at, updated_at FROM teams WHERE name = $1
 `
 
 func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, error) {
@@ -69,6 +70,7 @@ func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, err
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.GameID,
 		&i.CreatedBy,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -77,7 +79,7 @@ func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, err
 }
 
 const SelectTeamsByCreatorId = `-- name: SelectTeamsByCreatorId :many
-SELECT id, name, created_by, created_at, updated_at FROM teams WHERE created_by = $1
+SELECT id, name, game_id, created_by, created_at, updated_at FROM teams WHERE created_by = $1
 `
 
 func (q *Queries) SelectTeamsByCreatorId(ctx context.Context, createdBy uuid.UUID) ([]Teams, error) {
@@ -92,6 +94,7 @@ func (q *Queries) SelectTeamsByCreatorId(ctx context.Context, createdBy uuid.UUI
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.GameID,
 			&i.CreatedBy,
 			&i.CreatedAt,
 			&i.UpdatedAt,

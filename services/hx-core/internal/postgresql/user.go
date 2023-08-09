@@ -28,18 +28,17 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 	// XXX: `CreatedAt` is being created on the database side
 	// XXX: `UpdatedAt` is being created on the database side
 
-	dob, err := time.Parse("2006-01-02", params.BirthDate)
-	if err != nil {
-		return internal.User{}, err
-	}
+	// dob, err := time.Parse("2006-01-02", params.BirthDate)
+	// if err != nil {
+	// 	return internal.User{}, err
+	// }
 
+	// TODO: lowercase name
 	res, err := u.q.InsertUser(ctx, db.InsertUserParams{
-		Email:    params.Email,
-		Password: params.Password,
-		BirthDate: pgtype.Date{
-			Time:  dob,
-			Valid: true,
-		},
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
+		Email:     params.Email,
+		Password:  params.Password,
 	})
 	if err != nil {
 		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "insert user")
@@ -47,6 +46,8 @@ func (u *User) Create(ctx context.Context, params internal.UserCreateParams) (in
 
 	return internal.User{
 		ID:        res.ID.String(),
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
 		Email:     params.Email,
 		CreatedAt: res.CreatedAt.Time,
 		UpdatedAt: res.UpdatedAt.Time,
@@ -70,7 +71,7 @@ func (u *User) FindByEmail(ctx context.Context, email string) (internal.User, er
 		FirstName:      res.FirstName,
 		LastName:       res.LastName,
 		BirthDate:      res.BirthDate.Time.Format("2006-01-02"),
-		EmailConfirmed: res.EmailConfirmed.Bool,
+		EmailConfirmed: res.EmailConfirmed,
 		CreatedAt:      res.CreatedAt.Time,
 		UpdatedAt:      res.UpdatedAt.Time,
 	}, nil
@@ -93,7 +94,7 @@ func (u *User) Find(ctx context.Context, id string) (internal.User, error) {
 		Email:          res.Email,
 		FirstName:      res.FirstName,
 		LastName:       res.LastName,
-		EmailConfirmed: res.EmailConfirmed.Bool,
+		EmailConfirmed: res.EmailConfirmed,
 		CreatedAt:      res.CreatedAt.Time,
 		UpdatedAt:      res.UpdatedAt.Time,
 	}, nil
@@ -121,10 +122,7 @@ func (u *User) Update(ctx context.Context, params internal.UserUpdateParams) (in
 			Time:  dob,
 			Valid: true,
 		},
-		EmailConfirmed: pgtype.Bool{
-			Bool:  params.EmailConfirmed,
-			Valid: true,
-		},
+		EmailConfirmed: params.EmailConfirmed,
 	})
 	if err != nil {
 		return internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "update user")
@@ -135,7 +133,7 @@ func (u *User) Update(ctx context.Context, params internal.UserUpdateParams) (in
 		Email:          res.Email,
 		FirstName:      res.FirstName,
 		LastName:       res.LastName,
-		EmailConfirmed: res.EmailConfirmed.Bool,
+		EmailConfirmed: res.EmailConfirmed,
 		CreatedAt:      res.CreatedAt.Time,
 		UpdatedAt:      res.UpdatedAt.Time,
 	}, nil
