@@ -67,12 +67,14 @@ func (p UserSignInParams) Validate() error {
 type TeamCreateParams struct {
 	Name      string
 	CreatedBy string
+	GameID    string
 }
 
 func (p TeamCreateParams) Validate() error {
 	team := Team{
 		Name:      p.Name,
 		CreatedBy: p.CreatedBy,
+		GameID:    p.GameID,
 	}
 
 	if err := validation.Validate(&team); err != nil {

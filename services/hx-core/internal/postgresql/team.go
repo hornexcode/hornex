@@ -25,14 +25,19 @@ func (u *Team) Create(ctx context.Context, params *internal.TeamCreateParams) (i
 	// XXX: `CreatedAt` is being created on the database side
 	// XXX: `UpdatedAt` is being created on the database side
 
-	uuid, err := uuid.Parse(params.CreatedBy)
+	createdByUUID, err := uuid.Parse(params.CreatedBy)
+	if err != nil {
+		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+	gameUUID, err := uuid.Parse(params.GameID)
 	if err != nil {
 		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
 	}
 
 	res, err := u.q.InsertTeam(ctx, db.InsertTeamParams{
 		Name:      params.Name,
-		CreatedBy: uuid,
+		GameID:    gameUUID,
+		CreatedBy: createdByUUID,
 	})
 
 	if err != nil {
