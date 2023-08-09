@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import {
   GetServerSideProps,
   GetServerSidePropsContext,
-  InferGetServerSidePropsType
+  InferGetServerSidePropsType,
 } from 'next';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -23,11 +23,11 @@ import { dataLoaders, dataLoadersV2 } from '@/lib/api';
 import { getCookieFromRequest } from '@/lib/api/cookie';
 import {
   GetGamesOutput,
-  getGamesSchemaOutput as schema
-} from '@/services/hx-core/getGames';
+  getGamesSchemaOutput as schema,
+} from '@/services/hx-core/get-games';
 
 const createTeamFormSchema = z.object({
-  name: z.string().min(2, { message: 'Minimum 2 characters for team name' })
+  name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
   // game_id: z.string().uuid({ message: 'You have to chose a game' })
 });
 
@@ -38,14 +38,14 @@ const { post: createTeam } = dataLoadersV2<TeamCreated, CreateTeamForm>(
 );
 
 const TeamCreate = ({
-  games
+  games,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [isFetching, setIsFetching] = useState(false);
   const router = useRouter();
 
   const gameOptions = games.map((game) => ({
     value: game.id,
-    name: game.name
+    name: game.name,
   }));
 
   const [gameOption, setGameOption] = useState(gameOptions[0]);
@@ -56,9 +56,9 @@ const TeamCreate = ({
     reset,
     setError,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm<CreateTeamForm>({
-    resolver: zodResolver(createTeamFormSchema)
+    resolver: zodResolver(createTeamFormSchema),
   });
 
   const submitHandler = async (form: CreateTeamForm) => {
@@ -66,7 +66,7 @@ const TeamCreate = ({
       setIsFetching(true);
       const { data, error } = await createTeam({
         name: form.name,
-        game_id: gameOption.value
+        game_id: gameOption.value,
       });
       if (error) toast.error(error.message);
       if (data?.team && !error) toast.success('Team created successfully');
@@ -143,13 +143,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: {
         destination: '/login',
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   }
 
   const currentUser = await current({
-    Authorization: cookie ? `Bearer ${cookie}` : ''
+    Authorization: cookie ? `Bearer ${cookie}` : '',
   });
 
   // Check token validity
@@ -157,30 +157,30 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: {
         destination: '/login',
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   }
 
   const { data: games } = await getGames({
     headers: {
-      Authorization: cookie ? `Bearer ${cookie}` : ''
-    }
+      Authorization: cookie ? `Bearer ${cookie}` : '',
+    },
   });
 
   if (!games) {
     return {
       redirect: {
         destination: '/login',
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   }
 
   return {
     props: {
-      games
-    }
+      games,
+    },
   };
 };
 
