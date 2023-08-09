@@ -9,8 +9,9 @@ import (
 
 type Team struct {
 	ID        string `json:"id"`
-	CreatedBy string `json:"created_by"`
 	Name      string `json:"name"`
+	GameID    string `json:"game_id"`
+	CreatedBy string `json:"created_by"`
 	Members   []User `json:"members"`
 }
 
@@ -26,6 +27,7 @@ var regexpUUID = "^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a
 func (team Team) Validate() error {
 	if err := validation.ValidateStruct(&team,
 		validation.Field(&team.Name, validation.Required),
+		validation.Field(&team.GameID, validation.Required, validation.Match(regexp.MustCompile(regexpUUID))),
 		validation.Field(&team.CreatedBy, validation.Required, validation.Match(regexp.MustCompile(regexpUUID))),
 	); err != nil {
 		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "invalid values")

@@ -1,10 +1,12 @@
 -- name: InsertTeam :one
 INSERT INTO teams (
   name,
+  game_id,
   created_by
 )
 VALUES (
   @name,
+  @game_id,
   @created_by
 )
 RETURNING id, created_at, updated_at;

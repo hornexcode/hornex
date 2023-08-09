@@ -28,3 +28,8 @@ type EmailConfirmationCodeRepository interface {
 	Create(ctx context.Context, email string) error
 	Find(ctx context.Context, email string) (internal.EmailConfirmationCode, error)
 }
+
+type GameRepository interface {
+	Find(ctx context.Context, id string) (*internal.Game, error)
+	List(ctx context.Context) (*[]internal.Game, error)
+}
