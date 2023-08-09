@@ -4,7 +4,8 @@ import { User } from './user';
 export type Team = {
   id: string;
   name: string;
-  image: string;
+  created_by: string;
+  game_id: string;
   // game: Game;
   // members: User[];
 };

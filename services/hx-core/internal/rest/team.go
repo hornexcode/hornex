@@ -48,6 +48,7 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 type Team struct {
 	ID        string `json:"id"`
 	Name      string `json:"name"`
+	GameID    string `json:"game_id"`
 	CreatedBy string `json:"created_by"`
 }
 
@@ -181,6 +182,7 @@ func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
 			Team: Team{
 				ID:        team.ID,
 				Name:      team.Name,
+				GameID:    team.GameID,
 				CreatedBy: team.CreatedBy,
 			},
 		},
@@ -200,37 +202,16 @@ func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var teamsRes []Game
+	var teamsRes []Team
 
-	for _, game := range *teams {
-		teamsRes = append(teamsRes, Game{
-			ID:   game.ID,
-			Name: game.Name,
+	for _, team := range *teams {
+		teamsRes = append(teamsRes, Team{
+			ID:        team.ID,
+			Name:      team.Name,
+			GameID:    team.GameID,
+			CreatedBy: team.CreatedBy,
 		})
 	}
 
 	renderResponse(w, r, teamsRes, http.StatusOK)
 }
-
-/* teams := []MockedTeam{
-	{
-		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-		Name:  "HX Hornex",
-		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-	},
-	{
-		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-		Name:  "HX Hornex",
-		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-	},
-	{
-		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-		Name:  "HX Hornex",
-		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-	},
-	{
-		ID:    "03d56d76-b96e-47fb-8993-c5eea6943e0e",
-		Name:  "HX Hornex",
-		Image: "https://dvm9jp3urcf0o.cloudfront.net/logo-ideas/esports-logos/archer.png",
-	},
-} */

@@ -46,6 +46,7 @@ const TeamDetail = ({
 
   const { state } = useAuthContext();
 
+  console.log(state);
   useEffect(() => {
     if (!state.isAuthenticated) {
       router.push('/login');
