@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useRef } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import cn from "classnames";
-import { ChevronDown } from "@/components/ui/icons/chevron-down";
-import { Tab, TabItem, TabPanels, TabPanel } from "@/components/ui/tab";
-import { useBreakpoint } from "@/lib/hooks/use-breakpoint";
-import { useIsMounted } from "@/lib/hooks/use-is-mounted";
-import { useClickAway } from "@/lib/hooks/use-click-away";
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import cn from 'classnames';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
+
+import { Tab, TabItem, TabPanel, TabPanels } from '@/components/ui/tab';
+import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
+import { useClickAway } from '@/lib/hooks/use-click-away';
+import { useIsMounted } from '@/lib/hooks/use-is-mounted';
 
 interface TabMenuItem {
   title: React.ReactNode;
@@ -28,41 +29,38 @@ export default function ParamTab({ tabMenu, children }: ParamTabTypes) {
   let [selectedTabIndex, setSelectedTabIndex] = useState(0);
   let [visibleMobileMenu, setVisibleMobileMenu] = useState(false);
 
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const restQuery = {
-    view: searchParams.get("view"),
-  };
-
+  const {
+    query: { ...restQuery },
+  } = router;
   function handleTabChange(index: number) {
-    // router.push(
-    //   {
-    //     pathname,
-    //     query: { ...restQuery, view: tabMenu[index].path },
-    //   },
-    //   undefined
-    // );
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...restQuery, view: tabMenu[index].path },
+      },
+      undefined,
+      { scroll: false }
+    );
   }
   useEffect(() => {
-    if (searchParams.get("view")) {
+    if (router?.query?.view) {
       setSelectedTabIndex(
-        tabMenu.findIndex((item) => searchParams.get("view") === item.path)
+        tabMenu.findIndex((item) => router.query.view === item.path)
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [router.query]);
 
   useClickAway(dropdownEl, () => {
     setVisibleMobileMenu(false);
   });
-
   return (
     <Tab.Group
       selectedIndex={selectedTabIndex}
       onChange={(index: any) => handleTabChange(index)}
     >
-      <Tab.List className="relative mb-6 bg-body text-sm uppercase before:absolute before:bottom-0 before:left-0 before:w-full before:rounded-sm before:bg-gray-200 dark:bg-dark dark:before:bg-gray-800 sm:gap-8 sm:rounded-none md:before:h-[1px]">
-        {isMounted && ["xs", "sm"].indexOf(breakpoint) !== -1 ? (
+      <Tab.List className="relative mb-6 bg-body text-sm uppercase before:absolute before:bottom-0 before:left-0 before:w-full before:rounded-sm before:bg-gray-200 dark:bg-dark dark:before:bg-gray-800 sm:gap-8 sm:rounded-none md:before:h-0.5">
+        {isMounted && ['xs', 'sm'].indexOf(breakpoint) !== -1 ? (
           <div
             ref={dropdownEl}
             className="rounded-lg border-2 border-gray-200 dark:border-gray-700"
@@ -74,14 +72,14 @@ export default function ParamTab({ tabMenu, children }: ParamTabTypes) {
               <span className="font-medium text-gray-900 dark:text-gray-100">
                 {tabMenu[selectedTabIndex].title}
               </span>
-              <ChevronDown className="h-auto w-3.5" />
+              <ChevronDownIcon className="h-auto w-3.5" />
             </button>
             <div
               className={cn(
-                "xs:gap-1 absolute left-0 top-full z-10 mt-1 grid w-full gap-0.5 rounded-lg border border-gray-200 bg-white p-2 text-left shadow-large dark:border-gray-700 ",
+                'xs:gap-1 absolute left-0 top-full z-10 mt-1 grid w-full gap-0.5 rounded-lg border border-gray-200 bg-white p-2 text-left shadow-large dark:border-gray-700 dark:bg-gray-800',
                 visibleMobileMenu
-                  ? "visible opacity-100"
-                  : "invisible opacity-0"
+                  ? 'visible opacity-100'
+                  : 'invisible opacity-0'
               )}
             >
               {tabMenu.map((item) => (

@@ -1,15 +1,15 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth.context';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 const form = z.object({
   email: z.string().email({ message: 'Valid email required' }),
@@ -105,7 +105,7 @@ export default function LoginPage() {
           <Button
             isLoading={fetching}
             className="w-full"
-            color="info"
+            color="warning"
             shape="rounded"
           >
             Login
@@ -114,7 +114,7 @@ export default function LoginPage() {
           <p className="text-sm font-light text-gray-400">
             Não possui uma conta?{' '}
             <Link
-              href={`${routes.register}`}
+              href={`${routes.signup}`}
               className="font-medium text-blue-300 hover:underline"
             >
               Registre-se

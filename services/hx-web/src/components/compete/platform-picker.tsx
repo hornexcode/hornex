@@ -1,5 +1,4 @@
 'use client';
-import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ChevronDownIcon,
@@ -7,12 +6,14 @@ import {
   ComputerDesktopIcon,
   PlusIcon,
 } from '@heroicons/react/20/solid';
+import { Fragment } from 'react';
+
 import { XboxIcon } from '../ui/icons';
 
 export const PlatformPicker = () => {
   return (
     <Menu as="div" className="relative h-full">
-      <Menu.Button className="group flex h-full min-w-[8rem] items-center justify-center gap-3 rounded bg-slate-800 p-2 text-xs tracking-tight text-white shadow-card hover:cursor-pointer">
+      <Menu.Button className="group flex h-full min-w-[8rem] items-center justify-center gap-3 rounded bg-slate-800 p-2 text-sm font-medium text-white shadow-card hover:cursor-pointer">
         <span className="rounded bg-slate-600 p-1 transition-all group-hover:bg-slate-500">
           <PlusIcon className="w-4" />
         </span>

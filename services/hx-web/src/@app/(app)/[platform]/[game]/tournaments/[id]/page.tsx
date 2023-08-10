@@ -1,15 +1,16 @@
 'use client';
-import classnames from 'classnames';
-import { useState } from 'react';
-import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
 import { MapPinIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
-import { TournamentStatus } from '@/components/tournaments/tournament';
-import { SwordsIcon } from '@/components/ui/icons';
-import face from '@/assets/images/face.jpg';
-import TournamentCardAttr from '@/components/tournaments/tournament-list-item/tournament-card-attr';
-import Button from '@/components/ui/button/button';
-import ESLOneLogo from '@/assets/images/esl-one-logo.png';
+import classnames from 'classnames';
 import Image from 'next/image';
+import { useState } from 'react';
+
+import ESLOneLogo from '@/assets/images/esl-one-logo.png';
+import face from '@/assets/images/face.jpg';
+import { TournamentStatus } from '@/components/tournaments/tournament';
+import TournamentCardAttr from '@/components/tournaments/tournament-list-item/tournament-card-attr';
+import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
+import Button from '@/components/ui/button/button';
+import { SwordsIcon } from '@/components/ui/icons';
 
 type TournamentProps = {
   params: {

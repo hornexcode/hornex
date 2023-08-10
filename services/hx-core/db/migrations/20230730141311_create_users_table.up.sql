@@ -4,7 +4,8 @@ CREATE TABLE users (
   password         VARCHAR NOT NULL,
   first_name       VARCHAR NOT NULL,
   last_name        VARCHAR NOT NULL,
-  birth_date    DATE NOT NULL,
+  birth_date       DATE,
+  email_confirmed  BOOLEAN DEFAULT FALSE NOT NULL,
   created_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   updated_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );

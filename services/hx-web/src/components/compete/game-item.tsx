@@ -1,8 +1,10 @@
+import classNames from 'classnames';
 import Image, { StaticImageData } from 'next/image';
 import { FC } from 'react';
+
 import Button from '@/components/ui/button/button';
 
-import classNames from 'classnames';
+import { Badge } from '../ui/badge';
 
 type bgColorsType = {
   sky: string;
@@ -85,17 +87,18 @@ export const GameItem: FC<GameItemProps> = ({
       {/* tournament card body */}
       <div className="mt-4 block space-y-3 divide-y divide-slate-800">
         <div className="block">
-          <span className="text-[11px] text-slate-200">
+          <span className="text-xs text-slate-200">
             {registeredPlayers} Tournaments opened
           </span>
-          <h4 className="text-sm font-extrabold text-white">
-            {name} - {matchFormat}
-          </h4>
+          <h4 className="text-lg font-extrabold text-white">{name}</h4>
+          <div className="flex items-center">
+            <Badge className="mr-2 rounded">5v5</Badge>
+            <Badge className="rounded">TFT</Badge>
+          </div>
         </div>
 
         <div className="block pt-2">
           <div className="flex flex-col justify-between ">
-            <p className="mb-2 text-xs">Platforms</p>
             <div className="flex flex-wrap items-center space-x-2">
               {platforms.map((platform, i) => (
                 <platform.Icon
@@ -115,11 +118,11 @@ export const GameItem: FC<GameItemProps> = ({
     {/* tournament card footer */}
     <div className="rounded-b-lg border-t border-slate-700 bg-slate-800 p-4">
       <Button
-        className="w-full bg-gradient-to-r from-sky-400 to-sky-500 text-sm"
+        className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-sm"
         shape="rounded"
         size="small"
       >
-        Play Now
+        Connect
       </Button>
     </div>
   </div>

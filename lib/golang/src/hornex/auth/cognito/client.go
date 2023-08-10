@@ -15,7 +15,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	cognito "github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
-	"github.com/golang-jwt/jwt"
+	jwt "github.com/golang-jwt/jwt/v4"
 	"hornex.gg/hornex/auth"
 	"hornex.gg/hornex/errors"
 	rest "hornex.gg/hornex/http"

@@ -5,26 +5,19 @@ import (
 
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
-	"hornex.gg/hx-core/internal/repositories"
 )
 
 type Team struct {
-	teamRepository repositories.TeamRepository
-	userRepository repositories.UserRepository
+	teamRepository TeamRepository
+	userRepository UserRepository
 }
 
-func NewTeamService(trepo repositories.TeamRepository, urepo repositories.UserRepository) *Team {
+func NewTeamService(trepo TeamRepository, urepo UserRepository) *Team {
 	return &Team{teamRepository: trepo, userRepository: urepo}
 }
 
 func (t *Team) Create(ctx context.Context, params internal.TeamCreateParams) (internal.Team, error) {
-	user, err := t.userRepository.FindByEmail(ctx, params.OwnerEmail)
-	if err != nil {
-		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "userRepository.FindByEmail %s", err)
-	}
-	params.OwnerID = user.ID
-
-	err = params.Validate()
+	err := params.Validate()
 	if err != nil {
 		return internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "params.Validate")
 	}
@@ -40,4 +33,34 @@ func (t *Team) Create(ctx context.Context, params internal.TeamCreateParams) (in
 	}
 
 	return team, nil
+}
+
+func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
+	team, err := t.teamRepository.Find(ctx, id)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.Find")
+	}
+
+	return team, nil
+}
+
+func (t *Team) Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error) {
+	team, err := t.teamRepository.Update(ctx, id, &params)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.Update")
+	}
+
+	return team, nil
+}
+
+func (t *Team) List(ctx context.Context, params internal.TeamSearchParams) (*[]internal.Team, error) {
+	teams, err := t.teamRepository.List(ctx, &params)
+
+	if err != nil {
+		return &[]internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.List")
+	}
+
+	return teams, nil
 }

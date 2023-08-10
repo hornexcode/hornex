@@ -6,12 +6,17 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth/v5"
+	"github.com/go-chi/render"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 )
 
 type TeamService interface {
 	Create(ctx context.Context, params internal.TeamCreateParams) (internal.Team, error)
+	Find(ctx context.Context, id string) (*internal.Team, error)
+	Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error)
+	List(ctx context.Context, params internal.TeamSearchParams) (*[]internal.Team, error)
 }
 
 type TeamHandler struct {
@@ -26,21 +31,30 @@ func NewTeamHandler(teamService TeamService) *TeamHandler {
 
 func (h *TeamHandler) Register(r *chi.Mux) {
 	r.Group(func(r chi.Router) {
-		r.Use(IsAuthenticated)
+		// TODO: create a new lib for handling authentication
+		verifier := jwtauth.New("HS256", []byte("secret"), nil)
+		r.Use(jwtauth.Verifier(verifier))
+		r.Use(jwtauth.Authenticator)
 		r.Post("/api/v1/teams", h.create)
 		// r.Patch("/api/v1/teams", h.update)
+		r.Get("/api/v1/teams/{id}", h.find)
+		r.Get("/api/v1/teams", h.list)
+		r.Patch("/api/v1/teams/{id}", h.update)
 	})
 }
 
 // -
 
 type Team struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	GameID    string `json:"game_id"`
+	CreatedBy string `json:"created_by"`
 }
 
 type CreateTeamRequest struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	GameID string `json:"game_id"`
 }
 
 type CreateTeamResponse struct {
@@ -57,21 +71,25 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	user := UserFromContext(r.Context())
+	// TODO: handle error if claims is nil
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
 	team, err := h.teamService.Create(r.Context(), internal.TeamCreateParams{
-		Name:       req.Name,
-		OwnerEmail: user.Email,
+		Name:      req.Name,
+		CreatedBy: claims["id"].(string),
+		GameID:    req.GameID,
 	})
 
 	if err != nil {
-		renderErrorResponse(w, r, "failed to create team", err)
+		renderErrorResponse(w, r, err.Error(), err)
 		return
 	}
 
 	renderResponse(w, r, &CreateTeamResponse{
 		Team: Team{
-			ID:   team.ID,
-			Name: team.Name,
+			ID:        team.ID,
+			Name:      team.Name,
+			CreatedBy: team.CreatedBy,
 		},
 	}, http.StatusCreated)
 }
@@ -79,7 +97,6 @@ func (h *TeamHandler) create(w http.ResponseWriter, r *http.Request) {
 // -
 
 type UpdateTeamRequest struct {
-	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -87,24 +104,114 @@ type UpdateTeamResponse struct {
 	Team Team `json:"team"`
 }
 
-// func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
-// 	var req UpdateTeamRequest
-// 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-// 		renderErrorResponse(w, r, "invalid request",
-// 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+func (h *TeamHandler) update(w http.ResponseWriter, r *http.Request) {
+	var req UpdateTeamRequest
 
-// 		return
-// 	}
+	id := chi.URLParam(r, "id")
 
-// 	user := UserFromContext(r.Context())
-// 	team := h.teamService.FindByName(r.Context(), req.Name)
-// 	if team.OwnerID != user.ID {
-// 		renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(errors.ErrorCodePermissionDenied, "unauthorized"))
-// 		return
-// 	}
+	_, err := h.teamService.Find(r.Context(), id)
 
-// 	_, err := h.teamService.Update(r.Context(), req.ID, internal.TeamUpdateParams{
-// 		Name: req.Name,
-// 	})
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "team not found"})
+		return
+	}
 
-// }
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		renderErrorResponse(w, r, "invalid request",
+			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
+
+		return
+	}
+	defer r.Body.Close()
+
+	// TODO: check if user is the team creator
+	/*accessToken := strings.Split(r.Header.Get("Authorization"), "Bearer ")[1]
+
+	cognito := cognito.FromContext(r.Context())
+
+	u, err := cognito.ProviderUser(accessToken)
+
+	fmt.Printf("User: %v", u)
+
+
+		fmt.Printf("USER: %v", u)
+
+		if team.CreatedBy != u.Email {
+			renderErrorResponse(w, r, "unauthorized", errors.NewErrorf(http.StatusUnauthorized, "unauthorized"))
+			return
+		} */
+
+	upTeam, err := h.teamService.Update(r.Context(), id, internal.TeamUpdateParams{
+		Name: req.Name,
+	})
+
+	if err != nil {
+		renderErrorResponse(w, r, "could not update", errors.NewErrorf(http.StatusBadRequest, "bad request"))
+	}
+
+	renderResponse(w, r,
+		&UpdateTeamResponse{
+			Team: Team{
+				Name:      upTeam.Name,
+				ID:        upTeam.ID,
+				CreatedBy: upTeam.CreatedBy,
+			},
+		},
+		http.StatusOK)
+}
+
+type FindTeamResponse struct {
+	Team Team `json:"team"`
+}
+
+func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	team, err := t.teamService.Find(r.Context(), id)
+
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "team not found"})
+		return
+	}
+
+	renderResponse(w, r,
+
+		&FindTeamResponse{
+			Team: Team{
+				ID:        team.ID,
+				Name:      team.Name,
+				GameID:    team.GameID,
+				CreatedBy: team.CreatedBy,
+			},
+		},
+		http.StatusOK)
+}
+
+func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	teams, err := t.teamService.List(r.Context(), internal.TeamSearchParams{
+		CreatedBy: claims["id"].(string),
+	})
+
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "teams not found"})
+		return
+	}
+
+	var teamsRes []Team
+
+	for _, team := range *teams {
+		teamsRes = append(teamsRes, Team{
+			ID:        team.ID,
+			Name:      team.Name,
+			GameID:    team.GameID,
+			CreatedBy: team.CreatedBy,
+		})
+	}
+
+	renderResponse(w, r, teamsRes, http.StatusOK)
+}

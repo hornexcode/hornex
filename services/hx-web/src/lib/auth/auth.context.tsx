@@ -1,15 +1,9 @@
-import { User } from '@/domain';
-import { CurrentUserResponse } from '@/infra/hx-core/responses/current-user';
-import { LoginResponse } from '@/infra/hx-core/responses/login';
 import { get, set } from 'es-cookie';
-import React, {
-  Dispatch,
-  createContext,
-  use,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import React, { createContext, useEffect, useReducer, useState } from 'react';
+
+import { User } from '@/domain';
+import { CurrentUser } from '@/infra/hx-core/responses/current-user';
+import { LoginResponse } from '@/infra/hx-core/responses/login';
 
 type AuthContextState = {
   isAuthenticated: boolean;
@@ -27,7 +21,6 @@ type ActionType = {
 };
 
 const reducer = (state: AuthContextState, action: ActionType) => {
-  console.log('@reducing', state, action);
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       return {
@@ -74,14 +67,13 @@ export const AuthContextProvider = ({
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  console.log(state.isAuthenticated, state.user);
-
   useEffect(() => {
     const token = get('hx-auth.token');
 
     if (!state.isAuthenticated && token) {
       setFetching(true);
       setError(undefined);
+
       fetch('http://localhost:9234/api/v1/users/current', {
         method: 'GET',
         credentials: 'include',
@@ -92,7 +84,7 @@ export const AuthContextProvider = ({
         .then((res) => {
           return res.json();
         })
-        .then(({ user }: CurrentUserResponse) => {
+        .then(({ user }: CurrentUser) => {
           dispatch({
             type: 'LOGIN_SUCCESS',
             payload: {
@@ -103,6 +95,10 @@ export const AuthContextProvider = ({
             },
           });
           setFetching(false);
+        })
+        .catch((error) => {
+          console.log('Error fetching current user :', error);
+          dispatch({ type: 'LOGIN_FAILED' });
         })
         .finally(() => setFetching(false));
     }
@@ -128,16 +124,6 @@ export const AuthContextProvider = ({
       if (res.ok) {
         const data = (await res.json()) as LoginResponse;
         set('hx-auth.token', data.access_token, { expires: data.exp });
-
-        dispatch({
-          type: 'LOGIN_SUCCESS',
-          payload: {
-            id: data.user.id,
-            firstName: data.user.first_name,
-            lastName: data.user.last_name,
-            email: data.user.email,
-          },
-        });
 
         setError(undefined);
         setFetching(false);
