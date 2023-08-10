@@ -1,7 +1,8 @@
 import classnames from 'classnames';
 import { get } from 'es-cookie';
 import { CheckCheckIcon, LoaderIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import {
   Dialog,
@@ -10,7 +11,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/components/ui/dialog';
 import Input from '@/components/ui/form/input';
 import Label from '@/components/ui/form/input-label';
@@ -19,20 +20,31 @@ import Loader from '@/components/ui/loader';
 
 import Button from '../../ui/button/button';
 
+type Summoner = {
+  accountId: string;
+  name: string;
+  profileIconId: number;
+  puuid: string;
+  revisionDate: number;
+  summonerLevel: number;
+};
+
 const regionOptions = [
   {
     name: 'Select your region',
-    value: '0',
+    value: '0'
   },
   {
     name: 'Brasil',
-    value: 'br1',
-  },
+    value: 'br1'
+  }
 ];
 
 export const ConnectButton = () => {
   const [regionOption, setRegionOption] = useState(regionOptions[0]);
   const [isFetching, setIsFetching] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [summoner, setSummoner] = useState<Summoner>();
   const [summonerName, setSummonerName] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,13 +60,17 @@ export const ConnectButton = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + get('hx-auth.token'),
-          },
+            Authorization: 'Bearer ' + get('hx-auth.token')
+          }
         }
       );
-      const data = (await res.json()) as {
-        name: string;
-      };
+      const data = (await res.json()) as any;
+
+      if (data?.error) {
+        throw Error(data?.error);
+      }
+
+      setSummoner(data);
       setIsValid(true);
     } catch (error) {
       console.log(error);
@@ -63,6 +79,38 @@ export const ConnectButton = () => {
       setIsFetching(false);
     }
   };
+
+  const connectHandler = useCallback(async () => {
+    setIsConnecting(true);
+    try {
+      const res = await fetch(
+        `http://localhost:9234/api/v1/lol/summoner/connect`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + get('hx-auth.token')
+          },
+          body: JSON.stringify({
+            ...summoner,
+            region: regionOption.value
+          })
+        }
+      );
+      const data = (await res.json()) as any;
+
+      if (data?.error) {
+        throw Error(data?.error);
+      }
+      toast.success('Successfully connected!');
+    } catch (error: any) {
+      toast.error(error?.message);
+      console.log(error);
+    } finally {
+      setIsConnecting(false);
+    }
+  }, [summoner, regionOption]);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -97,7 +145,7 @@ export const ConnectButton = () => {
                 disabled={isFetching}
                 inputClassName={classnames(
                   {
-                    'ring-2 ring-green-500': isValid,
+                    'ring-2 ring-green-500': isValid
                   },
                   { 'ring-2 ring-red-500': error }
                 )}
@@ -116,6 +164,8 @@ export const ConnectButton = () => {
         </div>
         <DialogFooter>
           <Button
+            isLoading={isConnecting}
+            onClick={connectHandler}
             disabled={!isValid}
             type="submit"
             shape="rounded"
