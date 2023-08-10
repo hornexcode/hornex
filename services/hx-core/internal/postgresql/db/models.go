@@ -22,7 +22,30 @@ type Games struct {
 	Slug string
 }
 
+type LolAccounts struct {
+	ID            string
+	UserID        uuid.UUID
+	AccountID     string
+	Puuid         string
+	SummonerName  string
+	SummonerLevel int32
+	ProfileIconID int32
+	RevisionDate  int64
+	Verified      bool
+	CreatedAt     pgtype.Timestamp
+	UpdatedAt     pgtype.Timestamp
+}
+
 type Teams struct {
+	ID        uuid.UUID
+	Name      string
+	GameID    uuid.UUID
+	CreatedBy uuid.UUID
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+}
+
+type Tournaments struct {
 	ID        uuid.UUID
 	Name      string
 	GameID    uuid.UUID

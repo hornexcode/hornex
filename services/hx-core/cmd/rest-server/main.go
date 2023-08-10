@@ -203,6 +203,7 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	rest.NewUserHandler(usvc).Register(router)
 	rest.NewTeamHandler(tsvc).Register(router)
 	rest.NewGameHandler(gsvc).Register(router)
+	rest.NewLOLAccountHandler().Register(router)
 
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

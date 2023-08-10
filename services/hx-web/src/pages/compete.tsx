@@ -1,12 +1,16 @@
 import { ComputerDesktopIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
 import * as Cookies from 'es-cookie';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import CSChar from '@/assets/images/cs-char.png';
 import DotaChar from '@/assets/images/dota-char.png';
+import LeagueOfLegends from '@/assets/images/games/league-of-legends.jpeg';
 import LolChar from '@/assets/images/lol-bg-char.png';
 import RocketLeagueChar from '@/assets/images/rl-char.png';
 import { GameItem, GameItemProps, PlatformPicker } from '@/components/compete';
+import Button from '@/components/ui/button/button';
 import {
   CounterStrikeLogoIcon,
   DotaLogoIcon,
@@ -112,15 +116,15 @@ const CompetePage = ({}: InferGetServerSidePropsType<
   ];
   return (
     <div className="mx-auto space-y-8 p-8">
-      <div className="flex items-end justify-between border-b border-slate-800 pb-2">
+      {/* <div className="flex items-end justify-between border-b border-slate-800 pb-2">
         <h2 className="text-left text-xl font-bold leading-4 text-white lg:text-xl">
           Connected Games
         </h2>
 
         <PlatformPicker />
-      </div>
+      </div> */}
 
-      <section id="connected-games" className="space-y-10">
+      {/* <section id="connected-games" className="space-y-10">
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-light-dark p-4 transition-all hover:bg-slate-700">
@@ -131,7 +135,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section id="available-games">
         <div className="space-y-10">
@@ -141,21 +145,16 @@ const CompetePage = ({}: InferGetServerSidePropsType<
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {games.map((game, index) => (
-              <GameItem
-                key={index}
-                bgImage={game.bgImage}
-                hoverImage={game.hoverImage}
-                LogoComponentIcon={game.LogoComponentIcon}
-                bgColor={game.bgColor}
-                matchFormat={game.matchFormat}
-                name={game.name}
-                platforms={game.platforms}
-                registeredPlayers={game.registeredPlayers}
-                tournaments={game.tournaments}
-              />
-            ))}
+          <div className="flex">
+            <Link href="/compete/league-of-legends">
+              <div className="space-y-4 rounded-lg">
+                <Image
+                  src={LeagueOfLegends}
+                  className="w-[250px] rounded-lg"
+                  alt="league of legends"
+                />
+              </div>
+            </Link>
           </div>
         </div>
       </section>
