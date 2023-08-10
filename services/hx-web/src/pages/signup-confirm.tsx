@@ -10,7 +10,7 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { Logo } from '@/components/ui/logo';
-import { dataLoadersV2, FetchError, HTTPError } from '@/lib/api';
+import { dataLoadersV2 } from '@/lib/api';
 import { useAuthContext } from '@/lib/auth';
 
 const schema = z.object({
@@ -61,6 +61,7 @@ export default function RegisterPage() {
   }, [codeEvent]);
 
   async function onConfirmSignup(e: any) {
+    setError(null);
     e.preventDefault();
     setIsLoading(true);
 

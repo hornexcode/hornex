@@ -90,3 +90,10 @@ type TeamSearchParams struct {
 type TeamUpdateParams struct {
 	Name string
 }
+
+// - Account
+
+type LOLAccountCreateParams struct {
+	SummonerName string `json:"summoner_name"`
+	Region       string `json:"region"`
+}

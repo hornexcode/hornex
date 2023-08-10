@@ -86,8 +86,9 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		Password:      req.Password,
 		TermsAccepted: req.TermsAccepted,
 	}
+
 	if err := params.Validate(); err != nil {
-		renderErrorResponse(w, r, "invalid request", err)
+		renderErrorResponse(w, r, "invalid request", errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "validate"))
 		return
 	}
 
