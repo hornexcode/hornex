@@ -26,6 +26,7 @@ type LolAccounts struct {
 	ID            string
 	UserID        uuid.UUID
 	AccountID     string
+	Region        string
 	Puuid         string
 	SummonerName  string
 	SummonerLevel int32

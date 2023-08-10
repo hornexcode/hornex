@@ -16,6 +16,7 @@ INSERT INTO lol_accounts (
   id,
   user_id,
   account_id,
+  region,
   puuid,
   summoner_name,
   summoner_level,
@@ -30,15 +31,17 @@ VALUES (
   $5,
   $6,
   $7,
-  $8
+  $8,
+  $9
 )
-RETURNING id, user_id, account_id, puuid, summoner_name, summoner_level, profile_icon_id, revision_date, verified, created_at, updated_at
+RETURNING id, user_id, account_id, region, puuid, summoner_name, summoner_level, profile_icon_id, revision_date, verified, created_at, updated_at
 `
 
 type InsertAccountParams struct {
 	ID            string
 	UserID        uuid.UUID
 	AccountID     string
+	Region        string
 	Puuid         string
 	SummonerName  string
 	SummonerLevel int32
@@ -51,6 +54,7 @@ func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (L
 		arg.ID,
 		arg.UserID,
 		arg.AccountID,
+		arg.Region,
 		arg.Puuid,
 		arg.SummonerName,
 		arg.SummonerLevel,
@@ -62,6 +66,31 @@ func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (L
 		&i.ID,
 		&i.UserID,
 		&i.AccountID,
+		&i.Region,
+		&i.Puuid,
+		&i.SummonerName,
+		&i.SummonerLevel,
+		&i.ProfileIconID,
+		&i.RevisionDate,
+		&i.Verified,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const SelectAccountById = `-- name: SelectAccountById :one
+SELECT id, user_id, account_id, region, puuid, summoner_name, summoner_level, profile_icon_id, revision_date, verified, created_at, updated_at FROM lol_accounts WHERE id = $1
+`
+
+func (q *Queries) SelectAccountById(ctx context.Context, id string) (LolAccounts, error) {
+	row := q.db.QueryRow(ctx, SelectAccountById, id)
+	var i LolAccounts
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.AccountID,
+		&i.Region,
 		&i.Puuid,
 		&i.SummonerName,
 		&i.SummonerLevel,
