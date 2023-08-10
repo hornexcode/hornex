@@ -115,8 +115,7 @@ func (h *LOLAccountHandler) create(w http.ResponseWriter, r *http.Request) {
 	var summoner CreateAccountRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&summoner); err != nil {
-		renderErrorResponse(w, r, "invalid request",
-			errors.New("json decoder"))
+		renderErrorResponse(w, r, "invalid request", errors.New("json decoder"))
 
 		return
 	}
@@ -141,7 +140,7 @@ func (h *LOLAccountHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if exists.Puuid != summoner.Puuid {
-		renderErrorResponse(w, r, "Invalid summoner name or region", errors.New("Summoner does not exist"))
+		renderErrorResponse(w, r, "Invalid summoner name or region", errors.New("summoner does not exist"))
 		return
 	}
 
