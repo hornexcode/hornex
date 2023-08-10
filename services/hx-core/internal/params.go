@@ -94,6 +94,32 @@ type TeamUpdateParams struct {
 // - Account
 
 type LOLAccountCreateParams struct {
-	SummonerName string `json:"summoner_name"`
-	Region       string `json:"region"`
+	ID            string
+	UserID        string
+	AccountID     string
+	Region        string
+	Puuid         string
+	SummonerName  string
+	SummonerLevel int32
+	ProfileIconID int32
+	RevisionDate  int64
+}
+
+func (a LOLAccountCreateParams) Validate() error {
+	team := LOLAccount{
+		ID:            a.ID,
+		UserID:        a.UserID,
+		AccountID:     a.AccountID,
+		Region:        a.Region,
+		Puuid:         a.Puuid,
+		SummonerName:  a.SummonerName,
+		SummonerLevel: a.SummonerLevel,
+		ProfileIconID: a.ProfileIconID,
+		RevisionDate:  a.RevisionDate,
+	}
+
+	if err := validation.Validate(&team); err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "validation.Validate")
+	}
+	return nil
 }

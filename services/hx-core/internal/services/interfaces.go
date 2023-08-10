@@ -34,3 +34,8 @@ type GameRepository interface {
 	Find(ctx context.Context, id string) (*internal.Game, error)
 	List(ctx context.Context) (*[]internal.Game, error)
 }
+
+type AccountRepository interface {
+	Create(ctx context.Context, params *internal.LOLAccountCreateParams) (*internal.LOLAccount, error)
+	Find(ctx context.Context, id string) (*internal.LOLAccount, error)
+}
