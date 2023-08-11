@@ -4,7 +4,7 @@ CREATE TABLE invites (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   team_id UUID NOT NULL,
   user_id UUID NOT NULL,
-  status status_type,
+  status status_type DEFAULT 'pending',
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   

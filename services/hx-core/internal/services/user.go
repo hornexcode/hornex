@@ -132,3 +132,14 @@ func (u *User) GetEmailConfirmationCode(ctx context.Context, email string) error
 
 	return nil
 }
+
+func (u *User) Search(ctx context.Context, email string) (*internal.User, error) {
+
+	user, err := u.repo.FindByEmail(ctx, email)
+
+	if err != nil {
+		return &internal.User{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "repo.FindByEmail")
+	}
+
+	return &user, nil
+}

@@ -19,6 +19,7 @@ type UserService interface {
 	Login(ctx context.Context, email, password string) (string, error)
 	GetUserById(ctx context.Context, email string) (internal.User, error)
 	GetEmailConfirmationCode(ctx context.Context, email string) error
+	Search(ctx context.Context, email string) (*internal.User, error)
 }
 
 type UserHandler struct {
@@ -45,6 +46,7 @@ func (h *UserHandler) Register(r *chi.Mux) {
 		r.Get("/api/v1/auth/signup-confirm", h.getEmailConfirmationCode)
 		r.Post("/api/v1/auth/signup-confirm", h.signUpConfirm)
 		r.Get("/api/v1/users/current", h.currentUser)
+		r.Get("/api/v1/users/search", h.search)
 	})
 }
 
@@ -199,6 +201,38 @@ func (h *UserHandler) currentUser(w http.ResponseWriter, r *http.Request) {
 				FirstName: user.FirstName,
 				LastName:  user.LastName,
 			},
+		},
+		http.StatusOK)
+}
+
+type SearchUserResponse struct {
+	ID        string `json:"id"`
+	Email     string `json:"email"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+func (u *UserHandler) search(w http.ResponseWriter, r *http.Request) {
+	email := r.URL.Query().Get("email")
+
+	if email == "" {
+		renderErrorResponse(w, r, "invalid request", errors.NewErrorf(http.StatusBadRequest, "missing email"))
+		return
+	}
+
+	user, err := u.userService.Search(r.Context(), email)
+
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "user not found"})
+	}
+
+	renderResponse(w, r,
+		SearchUserResponse{
+			ID:        user.ID,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
 		},
 		http.StatusOK)
 }

@@ -46,6 +46,7 @@ type UserUpdateParams struct {
 
 type UserSearchParams struct {
 	Email string
+	Name  string
 }
 
 type UserSearchResults struct {

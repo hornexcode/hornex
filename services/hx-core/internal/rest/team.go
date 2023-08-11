@@ -40,6 +40,7 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 		r.Get("/api/v1/teams/{id}", h.find)
 		r.Get("/api/v1/teams", h.list)
 		r.Patch("/api/v1/teams/{id}", h.update)
+		r.Post("/api/v1/teams/{id}/members/invite", h.invite)
 	})
 }
 
@@ -214,4 +215,9 @@ func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
 	}
 
 	renderResponse(w, r, teamsRes, http.StatusOK)
+}
+
+func (t *TeamHandler) invite(w http.ResponseWriter, r *http.Request) {
+	// TODO: create invite at invites table
+	// TODO: send email
 }
