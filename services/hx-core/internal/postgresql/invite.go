@@ -105,11 +105,17 @@ func (i *Invite) Create(ctx context.Context, userId, teamId string) (*internal.I
 }
 
 func (i *Invite) Update(ctx context.Context, params internal.UpdateInviteParams) (*internal.Invite, error) {
+	inviteUUID, err := uuid.Parse(params.ID)
+	if err != nil {
+		return &internal.Invite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
 	res, err := i.q.UpdateInvite(ctx, db.UpdateInviteParams{
 		Status: db.NullTeamsStatusType{
 			TeamsStatusType: getStatusType(params.Status),
 			Valid:           true,
 		},
+		ID: inviteUUID,
 	})
 
 	if err != nil {

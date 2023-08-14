@@ -51,7 +51,7 @@ func (i *Invite) InviteMember(ctx context.Context, userEmail, teamId, inviterId 
 	return nil
 }
 
-func (i *Invite) AcceptInvite(ctx context.Context, userId, inviteId string) error {
+func (i *Invite) AcceptInvite(ctx context.Context, inviteId, userId string) error {
 	invite, err := i.inviteRepository.FindById(ctx, inviteId, userId)
 	if err != nil {
 		fmt.Println(err)
