@@ -12,6 +12,27 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const DeleteTeamMember = `-- name: DeleteTeamMember :one
+DELETE FROM teams_members WHERE team_id = $1 AND user_id = $2 RETURNING user_id, team_id
+`
+
+type DeleteTeamMemberParams struct {
+	TeamID uuid.UUID
+	UserID uuid.UUID
+}
+
+type DeleteTeamMemberRow struct {
+	UserID uuid.UUID
+	TeamID uuid.UUID
+}
+
+func (q *Queries) DeleteTeamMember(ctx context.Context, arg DeleteTeamMemberParams) (DeleteTeamMemberRow, error) {
+	row := q.db.QueryRow(ctx, DeleteTeamMember, arg.TeamID, arg.UserID)
+	var i DeleteTeamMemberRow
+	err := row.Scan(&i.UserID, &i.TeamID)
+	return i, err
+}
+
 const InsertTeam = `-- name: InsertTeam :one
 INSERT INTO teams (
   name,
@@ -42,6 +63,103 @@ func (q *Queries) InsertTeam(ctx context.Context, arg InsertTeamParams) (InsertT
 	row := q.db.QueryRow(ctx, InsertTeam, arg.Name, arg.GameID, arg.CreatedBy)
 	var i InsertTeamRow
 	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
+	return i, err
+}
+
+const InsertTeamInvite = `-- name: InsertTeamInvite :one
+INSERT INTO teams_invites (
+  team_id,
+  user_id
+) VALUES (
+  $1,
+  $2
+) RETURNING id, team_id, user_id, status, created_at, updated_at
+`
+
+type InsertTeamInviteParams struct {
+	TeamID uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) InsertTeamInvite(ctx context.Context, arg InsertTeamInviteParams) (TeamsInvites, error) {
+	row := q.db.QueryRow(ctx, InsertTeamInvite, arg.TeamID, arg.UserID)
+	var i TeamsInvites
+	err := row.Scan(
+		&i.ID,
+		&i.TeamID,
+		&i.UserID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const InsertTeamMember = `-- name: InsertTeamMember :one
+INSERT INTO teams_members (
+  team_id,
+  user_id
+) VALUES (
+  $1,
+  $2
+) RETURNING team_id, user_id, created_at
+`
+
+type InsertTeamMemberParams struct {
+	TeamID uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) InsertTeamMember(ctx context.Context, arg InsertTeamMemberParams) (TeamsMembers, error) {
+	row := q.db.QueryRow(ctx, InsertTeamMember, arg.TeamID, arg.UserID)
+	var i TeamsMembers
+	err := row.Scan(&i.TeamID, &i.UserID, &i.CreatedAt)
+	return i, err
+}
+
+const SelectInviteByIdAndUser = `-- name: SelectInviteByIdAndUser :one
+SELECT id, team_id, user_id, status, created_at, updated_at FROM teams_invites WHERE id = $1 AND user_id = $2
+`
+
+type SelectInviteByIdAndUserParams struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) SelectInviteByIdAndUser(ctx context.Context, arg SelectInviteByIdAndUserParams) (TeamsInvites, error) {
+	row := q.db.QueryRow(ctx, SelectInviteByIdAndUser, arg.ID, arg.UserID)
+	var i TeamsInvites
+	err := row.Scan(
+		&i.ID,
+		&i.TeamID,
+		&i.UserID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const SelectInviteByUserAndTeam = `-- name: SelectInviteByUserAndTeam :one
+SELECT id, team_id, user_id, status, created_at, updated_at FROM teams_invites WHERE team_id = $1 AND user_id = $2
+`
+
+type SelectInviteByUserAndTeamParams struct {
+	TeamID uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) SelectInviteByUserAndTeam(ctx context.Context, arg SelectInviteByUserAndTeamParams) (TeamsInvites, error) {
+	row := q.db.QueryRow(ctx, SelectInviteByUserAndTeam, arg.TeamID, arg.UserID)
+	var i TeamsInvites
+	err := row.Scan(
+		&i.ID,
+		&i.TeamID,
+		&i.UserID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }
 
@@ -110,6 +228,29 @@ func (q *Queries) SelectTeamsByCreatorId(ctx context.Context, createdBy uuid.UUI
 		return nil, err
 	}
 	return items, nil
+}
+
+const UpdateInvite = `-- name: UpdateInvite :one
+UPDATE teams_invites SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING id,team_id, user_id, status, created_at, updated_at
+`
+
+type UpdateInviteParams struct {
+	Status NullTeamsStatusType
+	ID     uuid.UUID
+}
+
+func (q *Queries) UpdateInvite(ctx context.Context, arg UpdateInviteParams) (TeamsInvites, error) {
+	row := q.db.QueryRow(ctx, UpdateInvite, arg.Status, arg.ID)
+	var i TeamsInvites
+	err := row.Scan(
+		&i.ID,
+		&i.TeamID,
+		&i.UserID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const UpdateTeam = `-- name: UpdateTeam :one

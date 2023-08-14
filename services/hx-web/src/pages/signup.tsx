@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
@@ -25,25 +26,23 @@ const { post: signup } = dataLoadersV2<SignupOutput, SignupInput>(
 
 export default function RegisterPage() {
   const [isFecthing, setIsFetching] = useState(false);
+  const [error, setError] = useState<string | null>();
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupInput>({
+  const { register, handleSubmit, formState, watch } = useForm<SignupInput>({
     resolver: zodResolver(signupSchemaInput),
   });
 
+  const terms = watch('terms');
+
   const onSignup = async (payload: SignupInput) => {
-    try {
-      const data = await signup(payload);
+    const { data, error } = await signup(payload);
+    if (!error && data) {
       set('hx-auth.token', data.access_token);
       router.push('/signup-confirm');
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
+    }
+    if (error) {
+      toast.error(error.message);
     }
   };
 
@@ -141,7 +140,7 @@ export default function RegisterPage() {
           </div>
 
           <Button
-            disabled={isFecthing}
+            disabled={isFecthing || !terms}
             isLoading={isFecthing}
             type="submit"
             className="w-full"

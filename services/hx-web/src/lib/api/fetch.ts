@@ -25,9 +25,9 @@ export const dataLoadersV2 = <T, Data = unknown>(
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: cookie ? `Bearer ${cookie}` : ''
+        Authorization: cookie ? `Bearer ${cookie}` : '',
       },
-      ...options
+      ...options,
     });
 
     try {
@@ -42,11 +42,13 @@ export const dataLoadersV2 = <T, Data = unknown>(
       } else {
         try {
           const errRes = await res.json();
+          console.log(errRes);
           error = {
             name: 'FetchError',
             message: errRes?.error ?? 'Unable to fetch',
+            validations: errRes?.validations,
             code: res.status,
-            response: errRes
+            response: errRes,
           };
         } catch (_) {
           const errorMessage = await res.text();
@@ -61,14 +63,14 @@ export const dataLoadersV2 = <T, Data = unknown>(
         data,
         error,
         headers: res.headers,
-        status: res.status
+        status: res.status,
       };
     }
   };
 
   const post = (payload?: Data): Promise<FetchResponse<T>> => {
     return _fetch(`${API_ROOT}/${path}`, {
-      body: payload ? JSON.stringify(payload) : ''
+      body: payload ? JSON.stringify(payload) : '',
     });
   };
 
@@ -81,7 +83,7 @@ export const dataLoadersV2 = <T, Data = unknown>(
     payload?: Data
   ): Promise<FetchResponse<T>> => {
     return _fetch(`${API_ROOT}/${path}/${param}`, {
-      body: payload ? JSON.stringify(payload) : ''
+      body: payload ? JSON.stringify(payload) : '',
     });
   };
 
@@ -98,8 +100,8 @@ export const dataLoadersV2 = <T, Data = unknown>(
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: cookie ? `Bearer ${cookie}` : ''
-        }
+          Authorization: cookie ? `Bearer ${cookie}` : '',
+        },
       }).then((res) => res.json())
     );
   };
@@ -108,19 +110,14 @@ export const dataLoadersV2 = <T, Data = unknown>(
     post,
     get,
     patch,
-    useData
+    useData,
   };
 };
-
-async function newHTTPError(response: Response, method?: string) {
-  try {
-    const errRes = await response.json();
-  } catch (error: any) {}
-}
 
 export interface FetchError extends Error {
   code?: number;
   response?: any;
+  validations?: Record<string, string>[];
 }
 
 export type FetchResponse<T> = {
@@ -128,10 +125,3 @@ export type FetchResponse<T> = {
   error?: FetchError;
   status?: number;
 };
-
-export class HTTPError extends Error {
-  constructor(public status: number, message: string) {
-    super(message);
-    this.status = status;
-  }
-}

@@ -28,8 +28,6 @@ func (u User) Validate() error {
 	if err := validation.ValidateStruct(&u,
 		validation.Field(&u.Email, validation.Required, validation.Match(regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`))),
 		validation.Field(&u.Password, validation.Required),
-		validation.Field(&u.FirstName, validation.Required),
-		validation.Field(&u.LastName, validation.Required),
 		validation.Field(&u.BirthDate, validation.Date("2006-01-02")),
 	); err != nil {
 		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "invalid values")

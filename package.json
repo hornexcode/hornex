@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "postgres:reset": "devops/scripts/postgres-reset",
-    "postgres:migrate": "devops/scripts/postgres-run-all-migrations"
+    "postgres:migrate:up": "devops/scripts/postgres-run-all-migrations",
+    "postgres:migrate:down": "devops/scripts/postgres-migrate-down"
   }
 }

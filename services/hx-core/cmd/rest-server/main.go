@@ -183,12 +183,14 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	evrepo := postgres.NewEmailConfirmationCode(conf.DB)
 	trepo := postgres.NewPostgresqlTeamRepositoryImpl(conf.DB)
 	grepo := postgres.NewPostgresqlGameRepositoryImpl(conf.DB)
+	arepo := postgres.NewPostgresqlAccountRepositoryImpl(conf.DB)
 
 	msgBroker := rmq.NewUser(conf.RabbitMQ.Channel)
 
 	usvc := services.NewUser(urepo, msgBroker, evrepo)
 	tsvc := services.NewTeamService(trepo, urepo)
 	gsvc := services.NewGameService(grepo)
+	asvc := services.NewAccountService(arepo)
 
 	router.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -203,6 +205,7 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	rest.NewUserHandler(usvc).Register(router)
 	rest.NewTeamHandler(tsvc).Register(router)
 	rest.NewGameHandler(gsvc).Register(router)
+	rest.NewLOLAccountHandler(asvc).Register(router)
 
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

@@ -46,6 +46,7 @@ type UserUpdateParams struct {
 
 type UserSearchParams struct {
 	Email string
+	Name  string
 }
 
 type UserSearchResults struct {
@@ -89,4 +90,43 @@ type TeamSearchParams struct {
 
 type TeamUpdateParams struct {
 	Name string
+}
+
+// - Account
+
+type LOLAccountCreateParams struct {
+	ID            string
+	UserID        string
+	AccountID     string
+	Region        string
+	Puuid         string
+	SummonerName  string
+	SummonerLevel int32
+	ProfileIconID int32
+	RevisionDate  int64
+}
+
+func (a LOLAccountCreateParams) Validate() error {
+	team := LOLAccount{
+		ID:            a.ID,
+		UserID:        a.UserID,
+		AccountID:     a.AccountID,
+		Region:        a.Region,
+		Puuid:         a.Puuid,
+		SummonerName:  a.SummonerName,
+		SummonerLevel: a.SummonerLevel,
+		ProfileIconID: a.ProfileIconID,
+		RevisionDate:  a.RevisionDate,
+	}
+
+	if err := validation.Validate(&team); err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "validation.Validate")
+	}
+	return nil
+}
+
+// -
+type UpdateInviteParams struct {
+	ID     string
+	Status StatusType
 }

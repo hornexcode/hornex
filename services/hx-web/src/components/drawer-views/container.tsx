@@ -1,13 +1,14 @@
 'use client';
 
-import { Fragment, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Fragment, useEffect } from 'react';
+
+import { DRAWER_VIEW, useDrawer } from '@/components/drawer-views/context';
 import { Dialog } from '@/components/ui/dialog';
 import { Transition } from '@/components/ui/transition';
-import { DRAWER_VIEW, useDrawer } from '@/components/drawer-views/context';
-import { useLayout } from '@/lib/hooks/use-layout';
 import { LAYOUT_OPTIONS } from '@/lib/constants';
+import { useLayout } from '@/lib/hooks/use-layout';
 // dynamic imports
 const Sidebar = dynamic(() => import('@/layouts/sidebar/sidebar'));
 const DrawerFilters = dynamic(() => import('@/components/search/filters'));

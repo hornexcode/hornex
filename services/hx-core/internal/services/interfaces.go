@@ -23,6 +23,12 @@ type TeamRepository interface {
 	Find(ctx context.Context, id string) (*internal.Team, error)
 	Update(ctx context.Context, id string, params *internal.TeamUpdateParams) (*internal.Team, error)
 	List(ctx context.Context, params *internal.TeamSearchParams) (*[]internal.Team, error)
+
+	//-
+	FindInviteById(ctx context.Context, id string) (*internal.TeamInvite, error)
+	FindInviteByUserAndTeam(ctx context.Context, userId, teamId string) (*internal.TeamInvite, error)
+	CreateInvite(ctx context.Context, userId, teamId string) (*internal.TeamInvite, error)
+	UpdateInvite(ctx context.Context, params internal.UpdateInviteParams) (*internal.TeamInvite, error)
 }
 
 type EmailConfirmationCodeRepository interface {
@@ -33,4 +39,9 @@ type EmailConfirmationCodeRepository interface {
 type GameRepository interface {
 	Find(ctx context.Context, id string) (*internal.Game, error)
 	List(ctx context.Context) (*[]internal.Game, error)
+}
+
+type AccountRepository interface {
+	Create(ctx context.Context, params *internal.LOLAccountCreateParams) (*internal.LOLAccount, error)
+	Find(ctx context.Context, id string) (*internal.LOLAccount, error)
 }
