@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
@@ -64,56 +63,4 @@ func (t *Team) List(ctx context.Context, params internal.TeamSearchParams) (*[]i
 	}
 
 	return teams, nil
-}
-
-func (t *Team) InviteMember(ctx context.Context, userEmail, teamId, inviterId string) error {
-	user, err := t.userRepository.FindByEmail(ctx, userEmail)
-	if err != nil {
-		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "userRepository.FindByEmail")
-	}
-
-	team, err := t.teamRepository.Find(ctx, teamId)
-	if err != nil {
-		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "teamRepository.Find")
-	}
-
-	if team.CreatedBy != inviterId {
-		fmt.Println(err)
-		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "only team owner can invite members")
-	}
-
-	_, err = t.teamRepository.FindInviteByUserAndTeam(ctx, user.ID, team.ID)
-	if err == nil {
-		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "user already invited")
-	}
-
-	_, err = t.teamRepository.CreateInvite(ctx, user.ID, team.ID)
-	if err != nil {
-		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.CreateInvite")
-	}
-
-	return nil
-}
-
-func (t *Team) AcceptInvite(ctx context.Context, userId, inviteId string) error {
-	invite, err := t.teamRepository.FindInviteById(ctx, inviteId)
-	if err != nil {
-		fmt.Println(err)
-		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "teamRepository.FindInviteByUserAndTeam")
-	}
-
-	if invite.UserID != userId {
-		fmt.Println(err)
-		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite does not belong to user")
-	}
-
-	if _, err = t.teamRepository.UpdateInvite(ctx, internal.UpdateInviteParams{
-		ID:     invite.ID,
-		Status: internal.StatusTypeAccepted,
-	}); err != nil {
-		fmt.Println(err)
-		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.AcceptInvite")
-	}
-
-	return nil
 }
