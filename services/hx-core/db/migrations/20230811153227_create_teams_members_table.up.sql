@@ -1,4 +1,4 @@
-CREATE TABLE team_members (
+CREATE TABLE teams_members (
   team_id          UUID NOT NULL,
   user_id          UUID NOT NULL,
   created_at       TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
@@ -7,4 +7,4 @@ CREATE TABLE team_members (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX team_members_team_id_idx ON team_members(team_id);
+CREATE INDEX teams_members_team_id_idx ON teams_members(team_id);

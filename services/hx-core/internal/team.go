@@ -2,6 +2,7 @@ package internal
 
 import (
 	"regexp"
+	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"hornex.gg/hornex/errors"
@@ -34,4 +35,24 @@ func (team Team) Validate() error {
 	}
 
 	return nil
+}
+
+// -
+
+type StatusType string
+
+const (
+	StatusTypePending  StatusType = "pending"
+	StatusTypeAccepted StatusType = "accepted"
+	StatusTypeDeclined StatusType = "declined"
+)
+
+type TeamInvite struct {
+	ID        string
+	TeamID    string
+	UserID    string
+	Status    StatusType
+	CreatedAt time.Time
+	Team      *Team
+	User      *User
 }

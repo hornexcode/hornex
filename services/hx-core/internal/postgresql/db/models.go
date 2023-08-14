@@ -5,9 +5,55 @@
 package db
 
 import (
+	"database/sql/driver"
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+type TeamsStatusType string
+
+const (
+	TeamsStatusTypePending  TeamsStatusType = "pending"
+	TeamsStatusTypeAccepted TeamsStatusType = "accepted"
+	TeamsStatusTypeDeclined TeamsStatusType = "declined"
+)
+
+func (e *TeamsStatusType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = TeamsStatusType(s)
+	case string:
+		*e = TeamsStatusType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for TeamsStatusType: %T", src)
+	}
+	return nil
+}
+
+type NullTeamsStatusType struct {
+	TeamsStatusType TeamsStatusType
+	Valid           bool // Valid is true if TeamsStatusType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullTeamsStatusType) Scan(value interface{}) error {
+	if value == nil {
+		ns.TeamsStatusType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.TeamsStatusType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullTeamsStatusType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.TeamsStatusType), nil
+}
 
 type EmailsConfirmationCode struct {
 	ID               uuid.UUID
@@ -22,7 +68,7 @@ type Games struct {
 	Slug string
 }
 
-type LolAccounts struct {
+type LeagueOfLegendsAccounts struct {
 	ID            string
 	UserID        uuid.UUID
 	AccountID     string
@@ -44,6 +90,21 @@ type Teams struct {
 	CreatedBy uuid.UUID
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
+}
+
+type TeamsInvites struct {
+	ID        uuid.UUID
+	TeamID    uuid.UUID
+	UserID    uuid.UUID
+	Status    NullTeamsStatusType
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+}
+
+type TeamsMembers struct {
+	TeamID    uuid.UUID
+	UserID    uuid.UUID
+	CreatedAt pgtype.Timestamp
 }
 
 type Tournaments struct {

@@ -144,3 +144,125 @@ func (t *Team) List(ctx context.Context, params *internal.TeamSearchParams) (*[]
 
 	return &teams, nil
 }
+
+func (t *Team) FindInviteById(ctx context.Context, id string, userId string) (*internal.TeamInvite, error) {
+	inviteUUID, err := uuid.Parse(id)
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	res, err := t.q.SelectInviteByIdAndUser(ctx, db.SelectInviteByIdAndUserParams{
+		ID:     inviteUUID,
+		UserID: userUUID,
+	})
+
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select team invite by id")
+	}
+
+	return &internal.TeamInvite{
+		ID:        res.ID.String(),
+		UserID:    res.UserID.String(),
+		TeamID:    res.TeamID.String(),
+		CreatedAt: res.CreatedAt.Time,
+	}, nil
+}
+
+func (t *Team) FindInviteByUserAndTeam(ctx context.Context, userId string, teamId string) (*internal.TeamInvite, error) {
+	teamUUID, err := uuid.Parse(teamId)
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	res, err := t.q.SelectInviteByUserAndTeam(ctx, db.SelectInviteByUserAndTeamParams{
+		UserID: userUUID,
+		TeamID: teamUUID,
+	})
+
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select team invite by user email and team id")
+	}
+
+	return &internal.TeamInvite{
+		ID:        res.ID.String(),
+		TeamID:    res.TeamID.String(),
+		UserID:    res.UserID.String(),
+		Status:    internal.StatusType(res.Status.TeamsStatusType),
+		CreatedAt: res.CreatedAt.Time,
+	}, nil
+}
+
+func (t *Team) CreateInvite(ctx context.Context, userId, teamId string) (*internal.TeamInvite, error) {
+	teamUUID, err := uuid.Parse(teamId)
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	res, err := t.q.InsertTeamInvite(ctx, db.InsertTeamInviteParams{
+		TeamID: teamUUID,
+		UserID: userUUID,
+	})
+
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "insert team invite")
+	}
+
+	return &internal.TeamInvite{
+		ID:        res.ID.String(),
+		TeamID:    res.TeamID.String(),
+		UserID:    res.UserID.String(),
+		Status:    internal.StatusType(res.Status.TeamsStatusType),
+		CreatedAt: res.CreatedAt.Time,
+	}, nil
+}
+
+func (t *Team) UpdateInvite(ctx context.Context, params internal.UpdateInviteParams) (*internal.TeamInvite, error) {
+	res, err := t.q.UpdateInvite(ctx, db.UpdateInviteParams{
+		Status: db.NullTeamsStatusType{
+			TeamsStatusType: getStatusType(params.Status),
+			Valid:           true,
+		},
+	})
+
+	if err != nil {
+		return &internal.TeamInvite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "update team invite")
+	}
+
+	return &internal.TeamInvite{
+		ID:        res.ID.String(),
+		TeamID:    res.TeamID.String(),
+		UserID:    res.UserID.String(),
+		Status:    internal.StatusType(res.Status.TeamsStatusType),
+		CreatedAt: res.CreatedAt.Time,
+	}, nil
+}
+
+// -
+
+func getStatusType(status internal.StatusType) db.TeamsStatusType {
+	switch status {
+	case internal.StatusTypePending:
+		return db.TeamsStatusTypePending
+	case internal.StatusTypeAccepted:
+		return db.TeamsStatusTypeAccepted
+	case internal.StatusTypeDeclined:
+		return db.TeamsStatusTypeDeclined
+	default:
+		return db.TeamsStatusTypePending
+	}
+}

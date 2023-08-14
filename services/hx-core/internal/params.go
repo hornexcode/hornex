@@ -124,3 +124,9 @@ func (a LOLAccountCreateParams) Validate() error {
 	}
 	return nil
 }
+
+// -
+type UpdateInviteParams struct {
+	ID     string
+	Status StatusType
+}

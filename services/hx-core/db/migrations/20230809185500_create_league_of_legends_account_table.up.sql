@@ -1,4 +1,4 @@
-CREATE TABLE lol_accounts (
+CREATE TABLE league_of_legends_accounts (
   id VARCHAR NOT NULL PRIMARY KEY,
   user_id UUID NOT NULL,
   account_id VARCHAR NOT NULL,
