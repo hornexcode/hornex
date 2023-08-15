@@ -55,7 +55,7 @@ func (i *Invite) AcceptInvite(ctx context.Context, inviteId, userId string) erro
 	invite, err := i.inviteRepository.FindById(ctx, inviteId, userId)
 	if err != nil {
 		fmt.Println(err)
-		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "inviteRepository.FindByUserAndTeam")
+		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "inviteRepository.FindById")
 	}
 
 	if invite.UserID != userId {
@@ -69,6 +69,29 @@ func (i *Invite) AcceptInvite(ctx context.Context, inviteId, userId string) erro
 	}); err != nil {
 		fmt.Println(err)
 		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
+	}
+
+	return nil
+}
+
+func (i *Invite) DeclineInvite(ctx context.Context, inviteId, userId string) error {
+	invite, err := i.inviteRepository.FindById(ctx, inviteId, userId)
+	if err != nil {
+		fmt.Println(err)
+		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "inviteRepository.FindById")
+	}
+
+	if invite.UserID != userId {
+		fmt.Println(err)
+		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite does not belong to user")
+	}
+
+	if _, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
+		ID:     invite.ID,
+		Status: internal.StatusTypeDeclined,
+	}); err != nil {
+		fmt.Println(err)
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.RejectInvite")
 	}
 
 	return nil

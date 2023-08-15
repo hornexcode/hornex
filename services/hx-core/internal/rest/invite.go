@@ -14,6 +14,7 @@ import (
 type InviteService interface {
 	InviteMember(ctx context.Context, memberEmail, teamId, invitedBy string) error
 	AcceptInvite(ctx context.Context, inviteId, userId string) error
+	DeclineInvite(ctx context.Context, inviteId, userId string) error
 }
 
 type InviteHandler struct {
@@ -34,6 +35,7 @@ func (h *InviteHandler) Register(r *chi.Mux) {
 
 		r.Post("/api/v1/invites", h.invite)
 		r.Get("/api/v1/invites/{id}/accept", h.acceptInvite)
+		r.Get("/api/v1/invites/{id}/decline", h.declineInvite)
 	})
 }
 
@@ -69,6 +71,21 @@ func (i *InviteHandler) acceptInvite(w http.ResponseWriter, r *http.Request) {
 	inviteID := chi.URLParam(r, "id")
 
 	err := i.inviteService.AcceptInvite(r.Context(), inviteID, claims["id"].(string))
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "could not accept invite"})
+		return
+	}
+
+	renderResponse(w, r, nil, http.StatusOK)
+}
+
+func (i *InviteHandler) declineInvite(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	inviteID := chi.URLParam(r, "id")
+
+	err := i.inviteService.DeclineInvite(r.Context(), inviteID, claims["id"].(string))
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
 		render.JSON(w, r, map[string]string{"error": "could not accept invite"})
