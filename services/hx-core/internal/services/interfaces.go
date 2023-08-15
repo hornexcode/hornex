@@ -23,6 +23,8 @@ type TeamRepository interface {
 	Find(ctx context.Context, id string) (*internal.Team, error)
 	Update(ctx context.Context, id string, params *internal.TeamUpdateParams) (*internal.Team, error)
 	List(ctx context.Context, params *internal.TeamSearchParams) (*[]internal.Team, error)
+	CreateTeamMember(ctx context.Context, memberId, teamId string) (*internal.TeamMember, error)
+	FindTeamMember(ctx context.Context, memberId, teamId string) (*internal.TeamMember, error)
 }
 
 type EmailConfirmationCodeRepository interface {

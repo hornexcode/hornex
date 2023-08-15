@@ -124,6 +124,22 @@ func (q *Queries) SelectTeamByName(ctx context.Context, name string) (Teams, err
 	return i, err
 }
 
+const SelectTeamMemberByMemberAndTeam = `-- name: SelectTeamMemberByMemberAndTeam :one
+SELECT team_id, user_id, created_at FROM teams_members WHERE team_id = $1 AND user_id = $2
+`
+
+type SelectTeamMemberByMemberAndTeamParams struct {
+	TeamID uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) SelectTeamMemberByMemberAndTeam(ctx context.Context, arg SelectTeamMemberByMemberAndTeamParams) (TeamsMembers, error) {
+	row := q.db.QueryRow(ctx, SelectTeamMemberByMemberAndTeam, arg.TeamID, arg.UserID)
+	var i TeamsMembers
+	err := row.Scan(&i.TeamID, &i.UserID, &i.CreatedAt)
+	return i, err
+}
+
 const SelectTeamsByCreatorId = `-- name: SelectTeamsByCreatorId :many
 SELECT id, name, game_id, created_by, created_at, updated_at FROM teams WHERE created_by = $1
 `

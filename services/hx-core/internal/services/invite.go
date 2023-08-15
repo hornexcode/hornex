@@ -63,12 +63,34 @@ func (i *Invite) AcceptInvite(ctx context.Context, inviteId, userId string) erro
 		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite does not belong to user")
 	}
 
-	if _, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
+	if invite.Status != internal.StatusTypePending {
+		fmt.Println(err)
+		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite can't be accepted anymore")
+	}
+
+	// create team member
+	memberExists, _ := i.teamRepository.FindTeamMember(ctx, invite.UserID, invite.TeamID)
+	if memberExists.UserID != "" {
+		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "member already belongs to the team")
+	}
+
+	// accept invite
+	if invite, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
 		ID:     invite.ID,
 		Status: internal.StatusTypeAccepted,
 	}); err != nil {
-		fmt.Println(err)
 		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
+	}
+
+	if invite.Status != internal.StatusTypeAccepted {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
+	}
+
+	// create team member
+	_, err = i.teamRepository.CreateTeamMember(ctx, invite.UserID, invite.TeamID)
+
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.CreateTeamMember")
 	}
 
 	return nil

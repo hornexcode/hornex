@@ -42,6 +42,7 @@ func (i *Invite) FindById(ctx context.Context, id, userId string) (*internal.Inv
 		ID:        res.ID.String(),
 		UserID:    res.UserID.String(),
 		TeamID:    res.TeamID.String(),
+		Status:    internal.StatusType(res.Status.TeamsStatusType),
 		CreatedAt: res.CreatedAt.Time,
 	}, nil
 }

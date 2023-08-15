@@ -34,3 +34,6 @@ INSERT INTO teams_members (
 
 -- name: DeleteTeamMember :one
 DELETE FROM teams_members WHERE team_id = @team_id AND user_id = @user_id RETURNING user_id, team_id;
+
+-- name: SelectTeamMemberByMemberAndTeam :one
+SELECT * FROM teams_members WHERE team_id = @team_id AND user_id = @user_id;

@@ -8,15 +8,14 @@ import (
 )
 
 type Team struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	GameID    string `json:"game_id"`
-	CreatedBy string `json:"created_by"`
-	Members   []User `json:"members"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	GameID      string `json:"game_id"`
+	CreatedBy   string `json:"created_by"`
+	TeamMembers []User `json:"members"`
 }
 
-type Member struct {
-	ID     string `json:"id"`
+type TeamMember struct {
 	UserID string `json:"user_id"`
 	TeamID string `json:"team_id"`
 }
