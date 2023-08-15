@@ -17,10 +17,6 @@ type TeamService interface {
 	Find(ctx context.Context, id string) (*internal.Team, error)
 	Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error)
 	List(ctx context.Context, params internal.TeamSearchParams) (*[]internal.Team, error)
-
-	//- Members
-	InviteMember(ctx context.Context, memberEmail, teamId, invitedBy string) error
-	AcceptInvite(ctx context.Context, inviteId, userId string) error
 }
 
 type TeamHandler struct {
@@ -44,9 +40,6 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 		r.Get("/api/v1/teams/{id}", h.find)
 		r.Get("/api/v1/teams", h.list)
 		r.Patch("/api/v1/teams/{id}", h.update)
-
-		r.Post("/api/v1/invites", h.invite)
-		r.Get("/api/v1/invites/{id}/accept", h.acceptInvite)
 	})
 }
 
@@ -221,47 +214,4 @@ func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
 	}
 
 	renderResponse(w, r, teamsRes, http.StatusOK)
-}
-
-// -
-
-type InviteMemberRequest struct {
-	TeamID string `json:"team_id"`
-	Email  string `json:"email"`
-}
-
-func (t *TeamHandler) invite(w http.ResponseWriter, r *http.Request) {
-	var req InviteMemberRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		renderErrorResponse(w, r, "invalid request",
-			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
-		return
-	}
-	defer r.Body.Close()
-
-	_, claims, _ := jwtauth.FromContext(r.Context())
-
-	err := t.teamService.InviteMember(r.Context(), req.Email, req.TeamID, claims["id"].(string))
-	if err != nil {
-		render.Status(r, http.StatusNotFound)
-		render.JSON(w, r, map[string]string{"error": "could not invite member"})
-		return
-	}
-
-	renderResponse(w, r, nil, http.StatusOK)
-}
-
-func (t *TeamHandler) acceptInvite(w http.ResponseWriter, r *http.Request) {
-	_, claims, _ := jwtauth.FromContext(r.Context())
-
-	inviteID := chi.URLParam(r, "id")
-
-	err := t.teamService.AcceptInvite(r.Context(), inviteID, claims["id"].(string))
-	if err != nil {
-		render.Status(r, http.StatusNotFound)
-		render.JSON(w, r, map[string]string{"error": "could not accept invite"})
-		return
-	}
-
-	renderResponse(w, r, nil, http.StatusOK)
 }
