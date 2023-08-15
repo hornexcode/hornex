@@ -123,3 +123,13 @@ func (i *Invite) Decline(ctx context.Context, inviteId, userId string) error {
 
 	return nil
 }
+
+func (i *Invite) List(ctx context.Context, userId string) (*[]internal.Invite, error) {
+	invites, err := i.inviteRepository.List(ctx, userId)
+
+	if err != nil {
+		return &[]internal.Invite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.List")
+	}
+
+	return invites, nil
+}

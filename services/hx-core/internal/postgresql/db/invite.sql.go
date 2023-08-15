@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const InsertTeamInvite = `-- name: InsertTeamInvite :one
@@ -84,6 +85,48 @@ func (q *Queries) SelectInviteByUserAndTeam(ctx context.Context, arg SelectInvit
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const SelectInvitesWhereUserId = `-- name: SelectInvitesWhereUserId :many
+SELECT ti.id, ti.team_id, ti.user_id, ti.status, ti.created_at, ti.updated_at, t.name FROM teams_invites AS ti JOIN teams t ON ti.team_id = t.id WHERE user_id = $1
+`
+
+type SelectInvitesWhereUserIdRow struct {
+	ID        uuid.UUID
+	TeamID    uuid.UUID
+	UserID    uuid.UUID
+	Status    NullTeamsStatusType
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+	Name      string
+}
+
+func (q *Queries) SelectInvitesWhereUserId(ctx context.Context, userID uuid.UUID) ([]SelectInvitesWhereUserIdRow, error) {
+	rows, err := q.db.Query(ctx, SelectInvitesWhereUserId, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SelectInvitesWhereUserIdRow{}
+	for rows.Next() {
+		var i SelectInvitesWhereUserIdRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.TeamID,
+			&i.UserID,
+			&i.Status,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Name,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const UpdateInvite = `-- name: UpdateInvite :one

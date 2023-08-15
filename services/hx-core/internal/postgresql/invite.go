@@ -132,6 +132,42 @@ func (i *Invite) Update(ctx context.Context, params internal.UpdateInviteParams)
 	}, nil
 }
 
+func (i *Invite) List(ctx context.Context, userId string) (*[]internal.Invite, error) {
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return &[]internal.Invite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	res, err := i.q.SelectInvitesWhereUserId(ctx, userUUID)
+
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return &[]internal.Invite{}, errors.WrapErrorf(err, errors.ErrorCodeNotFound, "select invites")
+		}
+	}
+
+	var invites []internal.Invite
+
+	for _, invite := range res {
+		team := internal.Team{
+			ID:   invite.TeamID.String(),
+			Name: invite.Name,
+		}
+
+		invites = append(invites, internal.Invite{
+			ID:        invite.ID.String(),
+			TeamID:    invite.TeamID.String(),
+			UserID:    invite.UserID.String(),
+			Status:    internal.StatusType(invite.Status.TeamsStatusType),
+			CreatedAt: invite.CreatedAt.Time,
+			Team:      &team,
+		})
+	}
+
+	return &invites, nil
+
+}
+
 func getStatusType(status internal.StatusType) db.TeamsStatusType {
 	switch status {
 	case internal.StatusTypePending:

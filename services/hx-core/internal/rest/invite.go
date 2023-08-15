@@ -9,12 +9,14 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-chi/render"
 	"hornex.gg/hornex/errors"
+	"hornex.gg/hx-core/internal"
 )
 
 type InviteService interface {
 	Create(ctx context.Context, memberEmail, teamId, invitedBy string) error
 	Accept(ctx context.Context, inviteId, userId string) error
 	Decline(ctx context.Context, inviteId, userId string) error
+	List(ctx context.Context, useId string) (*[]internal.Invite, error)
 }
 
 type InviteHandler struct {
@@ -36,12 +38,25 @@ func (h *InviteHandler) Register(r *chi.Mux) {
 		r.Post("/api/v1/invites", h.create)
 		r.Get("/api/v1/invites/{id}/accept", h.accept)
 		r.Get("/api/v1/invites/{id}/decline", h.decline)
+		r.Get("/api/v1/invites", h.list)
 	})
 }
 
 type InviteMemberRequest struct {
 	TeamID string `json:"team_id"`
 	Email  string `json:"email"`
+}
+
+type TeamResponse struct {
+	Name string `json:"name"`
+}
+type InviteResponse struct {
+	ID        string              `json:"id"`
+	TeamID    string              `json:"team_id"`
+	UserID    string              `json:"user_id"`
+	Status    internal.StatusType `json:"status"`
+	CreatedAt string              `json:"created_at"`
+	Team      TeamResponse        `json:"team"`
 }
 
 func (i *InviteHandler) create(w http.ResponseWriter, r *http.Request) {
@@ -93,4 +108,33 @@ func (i *InviteHandler) decline(w http.ResponseWriter, r *http.Request) {
 	}
 
 	renderResponse(w, r, nil, http.StatusOK)
+}
+
+func (i *InviteHandler) list(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	invites, err := i.inviteService.List(r.Context(), claims["id"].(string))
+
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "teams not found"})
+		return
+	}
+
+	var invitesResponse []InviteResponse
+
+	for _, invite := range *invites {
+		invitesResponse = append(invitesResponse, InviteResponse{
+			ID:        invite.ID,
+			TeamID:    invite.TeamID,
+			UserID:    invite.UserID,
+			Status:    invite.Status,
+			CreatedAt: invite.CreatedAt.String(),
+			Team: TeamResponse{
+				Name: invite.Team.Name,
+			},
+		})
+	}
+
+	renderResponse(w, r, invitesResponse, http.StatusOK)
 }
