@@ -144,3 +144,53 @@ func (t *Team) List(ctx context.Context, params *internal.TeamSearchParams) (*[]
 
 	return &teams, nil
 }
+
+func (t *Team) FindTeamMember(ctx context.Context, memberId, teamId string) (*internal.TeamMember, error) {
+	memberUUID, err := uuid.Parse(memberId)
+	if err != nil {
+		return &internal.TeamMember{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+	teamUUID, err := uuid.Parse(teamId)
+	if err != nil {
+		return &internal.TeamMember{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+
+	res, err := t.q.SelectTeamMemberByMemberAndTeam(ctx, db.SelectTeamMemberByMemberAndTeamParams{
+		TeamID: teamUUID,
+		UserID: memberUUID,
+	})
+
+	if err != nil {
+		return &internal.TeamMember{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "find team member")
+	}
+
+	return &internal.TeamMember{
+		UserID: res.TeamID.String(),
+		TeamID: res.TeamID.String(),
+	}, nil
+}
+
+func (t *Team) CreateTeamMember(ctx context.Context, memberId, teamId string) (*internal.TeamMember, error) {
+	memberUUID, err := uuid.Parse(memberId)
+	if err != nil {
+		return &internal.TeamMember{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+	teamUUID, err := uuid.Parse(teamId)
+	if err != nil {
+		return &internal.TeamMember{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+
+	res, err := t.q.InsertTeamMember(ctx, db.InsertTeamMemberParams{
+		TeamID: teamUUID,
+		UserID: memberUUID,
+	})
+
+	if err != nil {
+		return &internal.TeamMember{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "insert team member")
+	}
+
+	return &internal.TeamMember{
+		UserID: res.UserID.String(),
+		TeamID: res.TeamID.String(),
+	}, nil
+}
