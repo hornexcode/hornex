@@ -12,8 +12,9 @@ import (
 )
 
 type InviteService interface {
-	InviteMember(ctx context.Context, memberEmail, teamId, invitedBy string) error
-	AcceptInvite(ctx context.Context, inviteId, userId string) error
+	Create(ctx context.Context, memberEmail, teamId, invitedBy string) error
+	Accept(ctx context.Context, inviteId, userId string) error
+	Decline(ctx context.Context, inviteId, userId string) error
 }
 
 type InviteHandler struct {
@@ -32,8 +33,9 @@ func (h *InviteHandler) Register(r *chi.Mux) {
 		r.Use(jwtauth.Verifier(verifier))
 		r.Use(jwtauth.Authenticator)
 
-		r.Post("/api/v1/invites", h.invite)
-		r.Get("/api/v1/invites/{id}/accept", h.acceptInvite)
+		r.Post("/api/v1/invites", h.create)
+		r.Get("/api/v1/invites/{id}/accept", h.accept)
+		r.Get("/api/v1/invites/{id}/decline", h.decline)
 	})
 }
 
@@ -42,7 +44,7 @@ type InviteMemberRequest struct {
 	Email  string `json:"email"`
 }
 
-func (i *InviteHandler) invite(w http.ResponseWriter, r *http.Request) {
+func (i *InviteHandler) create(w http.ResponseWriter, r *http.Request) {
 	var req InviteMemberRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		renderErrorResponse(w, r, "invalid request",
@@ -53,7 +55,7 @@ func (i *InviteHandler) invite(w http.ResponseWriter, r *http.Request) {
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
 
-	err := i.inviteService.InviteMember(r.Context(), req.Email, req.TeamID, claims["id"].(string))
+	err := i.inviteService.Create(r.Context(), req.Email, req.TeamID, claims["id"].(string))
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
 		render.JSON(w, r, map[string]string{"error": "could not invite member"})
@@ -63,12 +65,27 @@ func (i *InviteHandler) invite(w http.ResponseWriter, r *http.Request) {
 	renderResponse(w, r, nil, http.StatusOK)
 }
 
-func (i *InviteHandler) acceptInvite(w http.ResponseWriter, r *http.Request) {
+func (i *InviteHandler) accept(w http.ResponseWriter, r *http.Request) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 
 	inviteID := chi.URLParam(r, "id")
 
-	err := i.inviteService.AcceptInvite(r.Context(), inviteID, claims["id"].(string))
+	err := i.inviteService.Accept(r.Context(), inviteID, claims["id"].(string))
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "could not accept invite"})
+		return
+	}
+
+	renderResponse(w, r, nil, http.StatusOK)
+}
+
+func (i *InviteHandler) decline(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	inviteID := chi.URLParam(r, "id")
+
+	err := i.inviteService.Decline(r.Context(), inviteID, claims["id"].(string))
 	if err != nil {
 		render.Status(r, http.StatusNotFound)
 		render.JSON(w, r, map[string]string{"error": "could not accept invite"})

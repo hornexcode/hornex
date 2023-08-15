@@ -22,7 +22,7 @@ func NewInviteService(irepo InviteRepository, urepo UserRepository, trepo TeamRe
 	}
 }
 
-func (i *Invite) InviteMember(ctx context.Context, userEmail, teamId, inviterId string) error {
+func (i *Invite) Create(ctx context.Context, userEmail, teamId, inviterId string) error {
 	user, err := i.userRepository.FindByEmail(ctx, userEmail)
 	if err != nil {
 		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "userRepository.FindByEmail")
@@ -51,11 +51,11 @@ func (i *Invite) InviteMember(ctx context.Context, userEmail, teamId, inviterId 
 	return nil
 }
 
-func (i *Invite) AcceptInvite(ctx context.Context, inviteId, userId string) error {
+func (i *Invite) Accept(ctx context.Context, inviteId, userId string) error {
 	invite, err := i.inviteRepository.FindById(ctx, inviteId, userId)
 	if err != nil {
 		fmt.Println(err)
-		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "inviteRepository.FindByUserAndTeam")
+		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "inviteRepository.FindById")
 	}
 
 	if invite.UserID != userId {
@@ -69,6 +69,34 @@ func (i *Invite) AcceptInvite(ctx context.Context, inviteId, userId string) erro
 	}); err != nil {
 		fmt.Println(err)
 		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
+	}
+
+	return nil
+}
+
+func (i *Invite) Decline(ctx context.Context, inviteId, userId string) error {
+	invite, err := i.inviteRepository.FindById(ctx, inviteId, userId)
+	if err != nil {
+		fmt.Println(err)
+		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "inviteRepository.FindById")
+	}
+
+	if invite.UserID != userId {
+		fmt.Println(err)
+		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite does not belong to user")
+	}
+
+	if invite.Status != internal.StatusTypePending {
+		fmt.Println(err)
+		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite can't be declined anymore")
+	}
+
+	if _, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
+		ID:     invite.ID,
+		Status: internal.StatusTypeDeclined,
+	}); err != nil {
+		fmt.Println(err)
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.RejectInvite")
 	}
 
 	return nil
