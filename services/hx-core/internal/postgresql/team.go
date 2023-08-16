@@ -2,6 +2,8 @@ package postgresql
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/google/uuid"
 	"hornex.gg/hornex/errors"
@@ -115,6 +117,52 @@ func (t *Team) Find(ctx context.Context, id string) (*internal.Team, error) {
 		ID:        res.ID.String(),
 		Name:      res.Name,
 		CreatedBy: res.CreatedBy.String(),
+	}, nil
+
+}
+
+var rawMembers []struct {
+	ID        string `json:"id"`
+	FirstName string `json:"first_name"`
+	Email     string `json:"email"`
+}
+
+func (t *Team) FindWithMembers(ctx context.Context, id string) (*internal.Team, error) {
+	uuid, err := uuid.Parse(id)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
+	}
+
+	res, err := t.q.SelectTeamWithMembersById(ctx, uuid)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select team by id")
+	}
+
+	err = json.Unmarshal([]byte(res.Members), &rawMembers)
+
+	if err != nil {
+		fmt.Println("Error parsing JSON:", err)
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "json.Unmarshal")
+	}
+
+	var members []internal.User
+
+	for _, member := range rawMembers {
+		members = append(members, internal.User{
+			ID:        member.ID,
+			Email:     member.Email,
+			FirstName: member.FirstName,
+		})
+	}
+
+	return &internal.Team{
+		ID:        res.ID.String(),
+		Name:      res.Name,
+		CreatedBy: res.CreatedBy.String(),
+		GameID:    res.GameID.String(),
+		Members:   members,
 	}, nil
 }
 

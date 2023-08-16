@@ -43,13 +43,18 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 	})
 }
 
-// -
+type Member struct {
+	ID    string `json:"id"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
+}
 
 type Team struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	GameID    string `json:"game_id"`
-	CreatedBy string `json:"created_by"`
+	ID        string   `json:"id"`
+	Name      string   `json:"name"`
+	GameID    string   `json:"game_id"`
+	CreatedBy string   `json:"created_by"`
+	Members   []Member `json:"members"`
 }
 
 type CreateTeamRequest struct {
@@ -176,6 +181,16 @@ func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var members []Member
+
+	for _, member := range team.Members {
+		members = append(members, Member{
+			ID:    member.ID,
+			Email: member.Email,
+			Name:  member.FirstName,
+		})
+	}
+
 	renderResponse(w, r,
 
 		&FindTeamResponse{
@@ -184,6 +199,7 @@ func (t *TeamHandler) find(w http.ResponseWriter, r *http.Request) {
 				Name:      team.Name,
 				GameID:    team.GameID,
 				CreatedBy: team.CreatedBy,
+				Members:   members,
 			},
 		},
 		http.StatusOK)
