@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const InsertTeamInvite = `-- name: InsertTeamInvite :one
@@ -86,12 +87,65 @@ func (q *Queries) SelectInviteByUserAndTeam(ctx context.Context, arg SelectInvit
 	return i, err
 }
 
+const SelectInvitesByUser = `-- name: SelectInvitesByUser :many
+SELECT 
+  ti.status as status, 
+  ti.created_at as created_at, 
+  ti.id as id, 
+  t.id as team_id, 
+  t.name team_name,
+  t.game_id as game_id,
+  t.created_by as created_by
+FROM 
+  teams_invites ti 
+JOIN teams t ON ti.team_id = t.id 
+WHERE ti.user_id = $1
+`
+
+type SelectInvitesByUserRow struct {
+	Status    NullInviteStatusType
+	CreatedAt pgtype.Timestamp
+	ID        uuid.UUID
+	TeamID    uuid.UUID
+	TeamName  string
+	GameID    uuid.UUID
+	CreatedBy uuid.UUID
+}
+
+func (q *Queries) SelectInvitesByUser(ctx context.Context, userID uuid.UUID) ([]SelectInvitesByUserRow, error) {
+	rows, err := q.db.Query(ctx, SelectInvitesByUser, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SelectInvitesByUserRow{}
+	for rows.Next() {
+		var i SelectInvitesByUserRow
+		if err := rows.Scan(
+			&i.Status,
+			&i.CreatedAt,
+			&i.ID,
+			&i.TeamID,
+			&i.TeamName,
+			&i.GameID,
+			&i.CreatedBy,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const UpdateInvite = `-- name: UpdateInvite :one
 UPDATE teams_invites SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING id,team_id, user_id, status, created_at, updated_at
 `
 
 type UpdateInviteParams struct {
-	Status NullTeamsStatusType
+	Status NullInviteStatusType
 	ID     uuid.UUID
 }
 

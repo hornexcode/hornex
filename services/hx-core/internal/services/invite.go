@@ -63,7 +63,7 @@ func (i *Invite) Accept(ctx context.Context, inviteId, userId string) error {
 		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite does not belong to user")
 	}
 
-	if invite.Status != internal.StatusTypePending {
+	if invite.Status != internal.InviteStatusTypePending {
 		fmt.Println(err)
 		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite can't be accepted anymore")
 	}
@@ -74,15 +74,15 @@ func (i *Invite) Accept(ctx context.Context, inviteId, userId string) error {
 		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "member already belongs to the team")
 	}
 
-	// accept invite
-	if invite, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
-		ID:     invite.ID,
-		Status: internal.StatusTypeAccepted,
-	}); err != nil {
+	if invite.Status != internal.InviteStatusTypeAccepted {
 		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
 	}
 
-	if invite.Status != internal.StatusTypeAccepted {
+	// accept invite
+	if invite, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
+		ID:     invite.ID,
+		Status: internal.InviteStatusTypeAccepted,
+	}); err != nil {
 		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
 	}
 
@@ -108,18 +108,28 @@ func (i *Invite) Decline(ctx context.Context, inviteId, userId string) error {
 		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite does not belong to user")
 	}
 
-	if invite.Status != internal.StatusTypePending {
+	if invite.Status != internal.InviteStatusTypePending {
 		fmt.Println(err)
 		return errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invite can't be declined anymore")
 	}
 
 	if _, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
 		ID:     invite.ID,
-		Status: internal.StatusTypeDeclined,
+		Status: internal.InviteStatusTypeDeclined,
 	}); err != nil {
 		fmt.Println(err)
 		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.RejectInvite")
 	}
 
 	return nil
+}
+
+func (i *Invite) List(ctx context.Context, userId string) (*[]internal.Invite, error) {
+	invites, err := i.inviteRepository.List(ctx, userId)
+
+	if err != nil {
+		return &[]internal.Invite{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.List")
+	}
+
+	return invites, nil
 }

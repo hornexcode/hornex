@@ -47,4 +47,5 @@ type InviteRepository interface {
 	FindByUserAndTeam(ctx context.Context, userId, teamId string) (*internal.Invite, error)
 	Create(ctx context.Context, userId, teamId string) (*internal.Invite, error)
 	Update(ctx context.Context, params internal.UpdateInviteParams) (*internal.Invite, error)
+	List(ctx context.Context, userId string) (*[]internal.Invite, error)
 }
