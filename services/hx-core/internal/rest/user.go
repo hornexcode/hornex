@@ -13,6 +13,9 @@ import (
 	"hornex.gg/hx-core/internal"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
+//counterfeiter:generate -o ./restfakes/user_service.gen.go . UserService
 type UserService interface {
 	SignUp(ctx context.Context, params internal.UserCreateParams) (internal.User, string, error)
 	ConfirmSignUp(ctx context.Context, email, confirmationCode string) error
