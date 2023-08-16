@@ -42,25 +42,22 @@ func (h *InviteHandler) Register(r *chi.Mux) {
 	})
 }
 
-type InviteMemberRequest struct {
+type Invite struct {
+	ID        string                    `json:"id"`
+	TeamID    string                    `json:"team_id"`
+	UserID    string                    `json:"user_id"`
+	Status    internal.InviteStatusType `json:"status"`
+	CreatedAt string                    `json:"created_at"`
+	Team      Team                      `json:"team"`
+}
+
+type CreateInviteRequest struct {
 	TeamID string `json:"team_id"`
 	Email  string `json:"email"`
 }
 
-type TeamResponse struct {
-	Name string `json:"name"`
-}
-type InviteResponse struct {
-	ID        string              `json:"id"`
-	TeamID    string              `json:"team_id"`
-	UserID    string              `json:"user_id"`
-	Status    internal.StatusType `json:"status"`
-	CreatedAt string              `json:"created_at"`
-	Team      TeamResponse        `json:"team"`
-}
-
 func (i *InviteHandler) create(w http.ResponseWriter, r *http.Request) {
-	var req InviteMemberRequest
+	var req CreateInviteRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		renderErrorResponse(w, r, "invalid request",
 			errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "json decoder"))
@@ -121,17 +118,20 @@ func (i *InviteHandler) list(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var invitesResponse []InviteResponse
+	var invitesResponse []Invite
 
 	for _, invite := range *invites {
-		invitesResponse = append(invitesResponse, InviteResponse{
+		invitesResponse = append(invitesResponse, Invite{
 			ID:        invite.ID,
 			TeamID:    invite.TeamID,
 			UserID:    invite.UserID,
 			Status:    invite.Status,
 			CreatedAt: invite.CreatedAt.String(),
-			Team: TeamResponse{
-				Name: invite.Team.Name,
+			Team: Team{
+				ID:        invite.Team.ID,
+				Name:      invite.Team.Name,
+				GameID:    invite.Team.GameID,
+				CreatedBy: invite.Team.CreatedBy,
 			},
 		})
 	}
