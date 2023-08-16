@@ -1,10 +1,10 @@
-CREATE TYPE teams_status_type AS ENUM ('pending', 'accepted', 'declined');
+CREATE TYPE invite_status_type AS ENUM ('pending', 'accepted', 'declined');
 
 CREATE TABLE teams_invites (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   team_id UUID NOT NULL,
   user_id UUID NOT NULL,
-  status teams_status_type DEFAULT 'pending',
+  status invite_status_type DEFAULT 'pending',
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   

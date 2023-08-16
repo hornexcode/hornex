@@ -12,47 +12,47 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type TeamsStatusType string
+type InviteStatusType string
 
 const (
-	TeamsStatusTypePending  TeamsStatusType = "pending"
-	TeamsStatusTypeAccepted TeamsStatusType = "accepted"
-	TeamsStatusTypeDeclined TeamsStatusType = "declined"
+	InviteStatusTypePending  InviteStatusType = "pending"
+	InviteStatusTypeAccepted InviteStatusType = "accepted"
+	InviteStatusTypeDeclined InviteStatusType = "declined"
 )
 
-func (e *TeamsStatusType) Scan(src interface{}) error {
+func (e *InviteStatusType) Scan(src interface{}) error {
 	switch s := src.(type) {
 	case []byte:
-		*e = TeamsStatusType(s)
+		*e = InviteStatusType(s)
 	case string:
-		*e = TeamsStatusType(s)
+		*e = InviteStatusType(s)
 	default:
-		return fmt.Errorf("unsupported scan type for TeamsStatusType: %T", src)
+		return fmt.Errorf("unsupported scan type for InviteStatusType: %T", src)
 	}
 	return nil
 }
 
-type NullTeamsStatusType struct {
-	TeamsStatusType TeamsStatusType
-	Valid           bool // Valid is true if TeamsStatusType is not NULL
+type NullInviteStatusType struct {
+	InviteStatusType InviteStatusType
+	Valid            bool // Valid is true if InviteStatusType is not NULL
 }
 
 // Scan implements the Scanner interface.
-func (ns *NullTeamsStatusType) Scan(value interface{}) error {
+func (ns *NullInviteStatusType) Scan(value interface{}) error {
 	if value == nil {
-		ns.TeamsStatusType, ns.Valid = "", false
+		ns.InviteStatusType, ns.Valid = "", false
 		return nil
 	}
 	ns.Valid = true
-	return ns.TeamsStatusType.Scan(value)
+	return ns.InviteStatusType.Scan(value)
 }
 
 // Value implements the driver Valuer interface.
-func (ns NullTeamsStatusType) Value() (driver.Value, error) {
+func (ns NullInviteStatusType) Value() (driver.Value, error) {
 	if !ns.Valid {
 		return nil, nil
 	}
-	return string(ns.TeamsStatusType), nil
+	return string(ns.InviteStatusType), nil
 }
 
 type EmailsConfirmationCode struct {
@@ -96,7 +96,7 @@ type TeamsInvites struct {
 	ID        uuid.UUID
 	TeamID    uuid.UUID
 	UserID    uuid.UUID
-	Status    NullTeamsStatusType
+	Status    NullInviteStatusType
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }

@@ -128,5 +128,5 @@ func (a LOLAccountCreateParams) Validate() error {
 // -
 type UpdateInviteParams struct {
 	ID     string
-	Status StatusType
+	Status InviteStatusType
 }

@@ -87,37 +87,48 @@ func (q *Queries) SelectInviteByUserAndTeam(ctx context.Context, arg SelectInvit
 	return i, err
 }
 
-const SelectInvitesWhereUserId = `-- name: SelectInvitesWhereUserId :many
-SELECT ti.id, ti.team_id, ti.user_id, ti.status, ti.created_at, ti.updated_at, t.name FROM teams_invites AS ti JOIN teams t ON ti.team_id = t.id WHERE user_id = $1
+const SelectInvitesByUser = `-- name: SelectInvitesByUser :many
+SELECT 
+  ti.status as status, 
+  ti.created_at as created_at, 
+  ti.id as id, 
+  t.id as team_id, 
+  t.name team_name,
+  t.game_id as game_id,
+  t.created_by as created_by
+FROM 
+  teams_invites ti 
+JOIN teams t ON ti.team_id = t.id 
+WHERE ti.user_id = $1
 `
 
-type SelectInvitesWhereUserIdRow struct {
+type SelectInvitesByUserRow struct {
+	Status    NullInviteStatusType
+	CreatedAt pgtype.Timestamp
 	ID        uuid.UUID
 	TeamID    uuid.UUID
-	UserID    uuid.UUID
-	Status    NullTeamsStatusType
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
-	Name      string
+	TeamName  string
+	GameID    uuid.UUID
+	CreatedBy uuid.UUID
 }
 
-func (q *Queries) SelectInvitesWhereUserId(ctx context.Context, userID uuid.UUID) ([]SelectInvitesWhereUserIdRow, error) {
-	rows, err := q.db.Query(ctx, SelectInvitesWhereUserId, userID)
+func (q *Queries) SelectInvitesByUser(ctx context.Context, userID uuid.UUID) ([]SelectInvitesByUserRow, error) {
+	rows, err := q.db.Query(ctx, SelectInvitesByUser, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []SelectInvitesWhereUserIdRow{}
+	items := []SelectInvitesByUserRow{}
 	for rows.Next() {
-		var i SelectInvitesWhereUserIdRow
+		var i SelectInvitesByUserRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.TeamID,
-			&i.UserID,
 			&i.Status,
 			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Name,
+			&i.ID,
+			&i.TeamID,
+			&i.TeamName,
+			&i.GameID,
+			&i.CreatedBy,
 		); err != nil {
 			return nil, err
 		}
@@ -134,7 +145,7 @@ UPDATE teams_invites SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING
 `
 
 type UpdateInviteParams struct {
-	Status NullTeamsStatusType
+	Status NullInviteStatusType
 	ID     uuid.UUID
 }
 

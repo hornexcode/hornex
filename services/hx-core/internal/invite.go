@@ -2,19 +2,19 @@ package internal
 
 import "time"
 
-type StatusType string
+type InviteStatusType string
 
 const (
-	StatusTypePending  StatusType = "pending"
-	StatusTypeAccepted StatusType = "accepted"
-	StatusTypeDeclined StatusType = "declined"
+	InviteStatusTypePending  InviteStatusType = "pending"
+	InviteStatusTypeAccepted InviteStatusType = "accepted"
+	InviteStatusTypeDeclined InviteStatusType = "declined"
 )
 
 type Invite struct {
 	ID        string
 	TeamID    string
 	UserID    string
-	Status    StatusType
+	Status    InviteStatusType
 	CreatedAt time.Time
 	Team      *Team
 	User      *User
