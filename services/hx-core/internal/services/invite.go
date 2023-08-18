@@ -74,15 +74,15 @@ func (i *Invite) Accept(ctx context.Context, inviteId, userId string) error {
 		return errors.WrapErrorf(err, errors.ErrorCodeNotFound, "member already belongs to the team")
 	}
 
-	if invite.Status != internal.InviteStatusTypeAccepted {
-		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
-	}
-
 	// accept invite
 	if invite, err = i.inviteRepository.Update(ctx, internal.UpdateInviteParams{
 		ID:     invite.ID,
 		Status: internal.InviteStatusTypeAccepted,
 	}); err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
+	}
+
+	if invite.Status != internal.InviteStatusTypeAccepted {
 		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "inviteRepository.AcceptInvite")
 	}
 

@@ -8,11 +8,11 @@ import (
 )
 
 type Team struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	GameID      string `json:"game_id"`
-	CreatedBy   string `json:"created_by"`
-	TeamMembers []User `json:"members"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	GameID    string `json:"game_id"`
+	CreatedBy string `json:"created_by"`
+	Members   []User `json:"members"`
 }
 
 type TeamMember struct {
