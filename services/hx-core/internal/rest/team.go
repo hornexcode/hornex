@@ -17,6 +17,7 @@ type TeamService interface {
 	Find(ctx context.Context, id string) (*internal.Team, error)
 	Update(ctx context.Context, id string, params internal.TeamUpdateParams) (*internal.Team, error)
 	List(ctx context.Context, params internal.TeamSearchParams) (*[]internal.Team, error)
+	RemoveMember(ctx context.Context, ownerId, teamId, memberId string) error
 }
 
 type TeamHandler struct {
@@ -40,6 +41,7 @@ func (h *TeamHandler) Register(r *chi.Mux) {
 		r.Get("/api/v1/teams/{id}", h.find)
 		r.Get("/api/v1/teams", h.list)
 		r.Patch("/api/v1/teams/{id}", h.update)
+		r.Delete("/api/v1/teams/{teamId}/members/{memberId}", h.removeMember)
 	})
 }
 
@@ -230,4 +232,26 @@ func (t *TeamHandler) list(w http.ResponseWriter, r *http.Request) {
 	}
 
 	renderResponse(w, r, teamsRes, http.StatusOK)
+}
+
+func (h *TeamHandler) removeMember(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	teamId := chi.URLParam(r, "teamId")
+	memberId := chi.URLParam(r, "memberId")
+
+	if teamId == "" || memberId == "" {
+		renderErrorResponse(w, r, "invalid request", errors.NewErrorf(errors.ErrorCodeInvalidArgument, "invalid request"))
+		return
+	}
+
+	err := h.teamService.RemoveMember(r.Context(), claims["id"].(string), teamId, memberId)
+
+	if err != nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "could not remove team"})
+		return
+	}
+
+	renderResponse(w, r, nil, http.StatusNoContent)
 }
