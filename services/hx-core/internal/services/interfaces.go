@@ -51,3 +51,8 @@ type InviteRepository interface {
 	Update(ctx context.Context, params internal.UpdateInviteParams) (*internal.Invite, error)
 	List(ctx context.Context, userId string) (*[]internal.Invite, error)
 }
+
+type TournamentRepository interface {
+	Create(ctx context.Context, params *internal.CreateTournamentParams) (internal.Tournament, error)
+	FindByName(ctx context.Context, params string) (internal.Tournament, error)
+}

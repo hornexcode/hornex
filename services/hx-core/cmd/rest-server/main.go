@@ -185,6 +185,7 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	grepo := postgres.NewPostgresqlGameRepositoryImpl(conf.DB)
 	arepo := postgres.NewPostgresqlAccountRepositoryImpl(conf.DB)
 	irepo := postgres.NewPostgresqlInviteRepositoryImpl(conf.DB)
+	tournamentRepo := postgres.NewPostgresqlTournamentRepositoryImpl(conf.DB)
 
 	msgBroker := rmq.NewUser(conf.RabbitMQ.Channel)
 
@@ -193,6 +194,7 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	gsvc := services.NewGameService(grepo)
 	asvc := services.NewAccountService(arepo)
 	isvc := services.NewInviteService(irepo, urepo, trepo)
+	tournamentService := services.NewTournamentService(tournamentRepo, urepo)
 
 	router.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -209,6 +211,7 @@ func newServer(conf ServerConfig) (*http.Server, error) {
 	rest.NewGameHandler(gsvc).Register(router)
 	rest.NewLOLAccountHandler(asvc).Register(router)
 	rest.NewInviteHandler(isvc).Register(router)
+	rest.NewTournamentHandler(tournamentService).Register(router)
 
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
