@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"hornex.gg/hornex/errors"
 	"hornex.gg/hx-core/internal"
 	"hornex.gg/hx-core/internal/postgresql/db"
@@ -29,17 +30,28 @@ func (u *Tournament) Create(ctx context.Context, params *internal.CreateTourname
 		return internal.Tournament{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
 	}
 
-	// TODO : To finish
+	dueDate, err := time.Parse("2006-01-02", params.DueDate)
+	if err != nil {
+		return internal.Tournament{}, err
+	}
+
 	res, err := u.q.InsertTournament(ctx, db.InsertTournamentParams{
-		Name:        params.Name,
-		GameID:      gameUUID,
-		CreatedBy:   createdByUUID,
-		Description: params.Description,
-		EntryFee:    params.EntryFee,
-		PrizePool:   params.PrizePool,
-		IsActive:    true,
-		Status:      db.NullTournamentsStatusType{TournamentsStatusType: db.TournamentsStatusTypeCreated},
-		DueDate:     time.Now(),
+		Name:      params.Name,
+		GameID:    gameUUID,
+		CreatedBy: createdByUUID,
+		Description: pgtype.Text{
+			String: params.Description,
+		},
+		EntryFee:  params.EntryFee,
+		PrizePool: params.PrizePool,
+		IsActive: pgtype.Bool{
+			Bool: true,
+		},
+		Status: db.NullTournamentsStatusType{TournamentsStatusType: db.TournamentsStatusTypeCreated},
+		DueDate: pgtype.Timestamp{
+			Time:  dueDate,
+			Valid: true,
+		},
 	})
 
 	if err != nil {
@@ -48,8 +60,8 @@ func (u *Tournament) Create(ctx context.Context, params *internal.CreateTourname
 
 	return internal.Tournament{
 		ID:        res.ID.String(),
-		Name:      params.Name,
-		CreatedBy: params.CreatedBy,
+		Name:      res.Name,
+		CreatedAt: res.CreatedAt.Time,
 	}, nil
 }
 

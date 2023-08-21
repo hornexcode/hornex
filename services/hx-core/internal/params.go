@@ -140,6 +140,7 @@ type CreateTournamentParams struct {
 	EntryFee    int32
 	PrizePool   int32
 	CreatedBy   string
+	DueDate     string
 }
 
 func (tournament CreateTournamentParams) Validate() error {
@@ -152,6 +153,7 @@ func (tournament CreateTournamentParams) Validate() error {
 		validation.Field(&tournament.EntryFee, validation.Required),
 		validation.Field(&tournament.PrizePool, validation.Required),
 		validation.Field(&tournament.CreatedBy, validation.Required, validation.Match(regexp.MustCompile(regexpUUID))),
+		validation.Field(&tournament.DueDate, validation.Required),
 	); err != nil {
 		return errors.WrapErrorf(err, errors.ErrorCodeInvalidArgument, "invalid values")
 	}

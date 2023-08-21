@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -39,9 +38,15 @@ type CreateTournamentRequest struct {
 	Name        string `json:"name"`
 	GameID      string `json:"game_id"`
 	Description string `json:"description"`
-	EntryFee    int    `json:"entry_fee"`
-	PrizePool   int    `json:"prize_pool"`
-	CreatedBy   string `json:"created_by"`
+	EntryFee    int32  `json:"entry_fee"`
+	PrizePool   int32  `json:"prize_pool"`
+	DueDate     string `json:"due_date"`
+}
+
+type CreateTournamentResponse struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	CreatedAt string `json:"created_at"`
 }
 
 func (h *TournamentHandler) create(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +62,30 @@ func (h *TournamentHandler) create(w http.ResponseWriter, r *http.Request) {
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
 
-	fmt.Printf(claims["first_name"].(string))
-	// TODO: dá para colocar uma coluna no user `bool is_admin` e pegar aqui no `claims` para validação
+	// TODO: coluna `bool | is_admin` em users
+	/* if !claims["is_admin"].(bool) {
+		render.Status(r, http.StatusForbidden)
+		render.JSON(w, r, map[string]string{"error": "user is not admin"})
+	} */
+
+	tournament, err := h.tournamentService.Create(r.Context(), internal.CreateTournamentParams{
+		Name:        body.Name,
+		GameID:      body.GameID,
+		Description: body.Description,
+		EntryFee:    body.EntryFee,
+		PrizePool:   body.PrizePool,
+		CreatedBy:   claims["id"].(string),
+		DueDate:     body.DueDate,
+	})
+
+	if err != nil {
+		renderErrorResponse(w, r, err.Error(), err)
+		return
+	}
+
+	renderResponse(w, r, &CreateTournamentResponse{
+		ID:        tournament.ID,
+		Name:      tournament.Name,
+		CreatedAt: tournament.CreatedAt.String(),
+	}, http.StatusCreated)
 }
