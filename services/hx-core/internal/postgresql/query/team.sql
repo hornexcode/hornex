@@ -14,20 +14,15 @@ RETURNING id, created_at, updated_at;
 -- name: SelectTeamById :one
 SELECT * FROM teams WHERE id = @id;
 
--- name: SelectTeamWithMembersById :one
+-- name: SelectTeamMembers :many
 SELECT
-    t.*,
-    json_agg(json_build_object('id', m.id, 'first_name', m.first_name, 'email', m.email)) AS members
+    *
 FROM
-    teams t
+    teams_members tm
 JOIN
-    teams_members tm ON t.id = tm.team_id
-JOIN
-    users m ON tm.user_id = m.id
+    users m ON m.id = tm.user_id
 WHERE
-    t.id = @id
-GROUP BY
-    t.id, t.name, t.created_by, t.created_at;
+    team_id = @team_id;
 
 -- name: SelectTeamsByCreatorId :many
 SELECT * FROM teams WHERE created_by = @created_by;
