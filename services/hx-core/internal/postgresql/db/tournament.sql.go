@@ -21,7 +21,8 @@ INSERT INTO tournaments (
   prize_pool,
   is_active,
   status,
-  due_date,
+  start_time,
+  end_time,
   created_by
 )
 VALUES (
@@ -33,7 +34,8 @@ VALUES (
   $6,
   $7,
   $8,
-  $9
+  $9,
+  $10
 )
 RETURNING id, name, created_at
 `
@@ -46,7 +48,8 @@ type InsertTournamentParams struct {
 	PrizePool   int32
 	IsActive    pgtype.Bool
 	Status      NullTournamentsStatusType
-	DueDate     pgtype.Timestamp
+	StartTime   pgtype.Timestamp
+	EndTime     pgtype.Timestamp
 	CreatedBy   uuid.UUID
 }
 
@@ -65,7 +68,8 @@ func (q *Queries) InsertTournament(ctx context.Context, arg InsertTournamentPara
 		arg.PrizePool,
 		arg.IsActive,
 		arg.Status,
-		arg.DueDate,
+		arg.StartTime,
+		arg.EndTime,
 		arg.CreatedBy,
 	)
 	var i InsertTournamentRow
@@ -74,7 +78,7 @@ func (q *Queries) InsertTournament(ctx context.Context, arg InsertTournamentPara
 }
 
 const SelectTournamentByName = `-- name: SelectTournamentByName :one
-SELECT id, name, game_id, description, entry_fee, prize_pool, is_active, status, due_date, created_by, created_at, updated_at FROM tournaments WHERE name = $1
+SELECT id, name, game_id, description, entry_fee, prize_pool, is_active, status, start_time, end_time, created_by, created_at, updated_at FROM tournaments WHERE name = $1
 `
 
 func (q *Queries) SelectTournamentByName(ctx context.Context, name string) (Tournaments, error) {
@@ -89,7 +93,8 @@ func (q *Queries) SelectTournamentByName(ctx context.Context, name string) (Tour
 		&i.PrizePool,
 		&i.IsActive,
 		&i.Status,
-		&i.DueDate,
+		&i.StartTime,
+		&i.EndTime,
 		&i.CreatedBy,
 		&i.CreatedAt,
 		&i.UpdatedAt,

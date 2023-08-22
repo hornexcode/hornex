@@ -40,7 +40,8 @@ type CreateTournamentRequest struct {
 	Description string `json:"description"`
 	EntryFee    int32  `json:"entry_fee"`
 	PrizePool   int32  `json:"prize_pool"`
-	DueDate     string `json:"due_date"`
+	StartTime   string `json:"start_time"`
+	EndTime     string `json:"end_time"`
 }
 
 type CreateTournamentResponse struct {
@@ -75,7 +76,8 @@ func (h *TournamentHandler) create(w http.ResponseWriter, r *http.Request) {
 		EntryFee:    body.EntryFee,
 		PrizePool:   body.PrizePool,
 		CreatedBy:   claims["id"].(string),
-		DueDate:     body.DueDate,
+		StartTime:   body.StartTime,
+		EndTime:     body.EndTime,
 	})
 
 	if err != nil {

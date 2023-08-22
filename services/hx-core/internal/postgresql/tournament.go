@@ -30,7 +30,12 @@ func (u *Tournament) Create(ctx context.Context, params *internal.CreateTourname
 		return internal.Tournament{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
 	}
 
-	dueDate, err := time.Parse("2006-01-02", params.DueDate)
+	startTime, err := time.Parse(time.DateTime, params.StartTime)
+	if err != nil {
+		return internal.Tournament{}, err
+	}
+
+	endTime, err := time.Parse(time.DateTime, params.EndTime)
 	if err != nil {
 		return internal.Tournament{}, err
 	}
@@ -41,15 +46,24 @@ func (u *Tournament) Create(ctx context.Context, params *internal.CreateTourname
 		CreatedBy: createdByUUID,
 		Description: pgtype.Text{
 			String: params.Description,
+			Valid:  params.Description != "",
 		},
 		EntryFee:  params.EntryFee,
 		PrizePool: params.PrizePool,
 		IsActive: pgtype.Bool{
-			Bool: true,
+			Bool:  true,
+			Valid: true,
 		},
-		Status: db.NullTournamentsStatusType{TournamentsStatusType: db.TournamentsStatusTypeCreated},
-		DueDate: pgtype.Timestamp{
-			Time:  dueDate,
+		Status: db.NullTournamentsStatusType{
+			TournamentsStatusType: db.TournamentsStatusTypeCreated,
+			Valid:                 true,
+		},
+		StartTime: pgtype.Timestamp{
+			Time:  startTime,
+			Valid: true,
+		},
+		EndTime: pgtype.Timestamp{
+			Time:  endTime,
 			Valid: true,
 		},
 	})

@@ -160,7 +160,8 @@ type Tournaments struct {
 	PrizePool   int32
 	IsActive    pgtype.Bool
 	Status      NullTournamentsStatusType
-	DueDate     pgtype.Timestamp
+	StartTime   pgtype.Timestamp
+	EndTime     pgtype.Timestamp
 	CreatedBy   uuid.UUID
 	CreatedAt   pgtype.Timestamp
 	UpdatedAt   pgtype.Timestamp

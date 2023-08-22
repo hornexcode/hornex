@@ -22,7 +22,8 @@ type Tournament struct {
 	PrizePool   int32                `json:"prize_pool"`
 	IsActive    bool                 `json:"is_active"`
 	Status      TournamentStatusType `json:"status"`
-	DueDate     time.Time            `json:"due_date"`
+	StartTime   time.Time            `json:"start_time"`
+	EndTime     time.Time            `json:"end_time"`
 	CreatedBy   string               `json:"created_by"`
 	CreatedAt   time.Time            `json:"created_at"`
 	UpdatedAt   time.Time            `json:"updated_at"`

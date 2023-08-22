@@ -8,7 +8,8 @@ INSERT INTO tournaments (
   prize_pool,
   is_active,
   status,
-  due_date,
+  start_time,
+  end_time,
   created_by
 )
 VALUES (
@@ -19,7 +20,8 @@ VALUES (
   @prize_pool,
   @is_active,
   @status,
-  @due_date,
+  @start_time,
+  @end_time,
   @created_by
 )
 RETURNING id, name, created_at;
