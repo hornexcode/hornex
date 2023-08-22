@@ -2,7 +2,6 @@ package postgresql
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -134,13 +133,17 @@ func (t *Team) FindWithMembers(ctx context.Context, id string) (*internal.Team, 
 		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.Parse")
 	}
 
-	res, err := t.q.SelectTeamWithMembersById(ctx, uuid)
+	team, err := t.q.SelectTeamById(ctx, uuid)
 
 	if err != nil {
 		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select team by id")
 	}
 
-	err = json.Unmarshal([]byte(res.Members), &rawMembers)
+	rawMembers, err := t.q.SelectTeamMembers(ctx, uuid)
+
+	if err != nil {
+		return &internal.Team{}, errors.WrapErrorf(err, errors.ErrorCodeUnknown, "select team members")
+	}
 
 	if err != nil {
 		fmt.Println("Error parsing JSON:", err)
@@ -151,17 +154,17 @@ func (t *Team) FindWithMembers(ctx context.Context, id string) (*internal.Team, 
 
 	for _, member := range rawMembers {
 		members = append(members, internal.User{
-			ID:        member.ID,
+			ID:        member.ID.String(),
 			Email:     member.Email,
 			FirstName: member.FirstName,
 		})
 	}
 
 	return &internal.Team{
-		ID:        res.ID.String(),
-		Name:      res.Name,
-		CreatedBy: res.CreatedBy.String(),
-		GameID:    res.GameID.String(),
+		ID:        team.ID.String(),
+		Name:      team.Name,
+		CreatedBy: team.CreatedBy.String(),
+		GameID:    team.GameID.String(),
 		Members:   members,
 	}, nil
 }

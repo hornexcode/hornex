@@ -140,9 +140,69 @@ func (q *Queries) SelectTeamMemberByMemberAndTeam(ctx context.Context, arg Selec
 	return i, err
 }
 
-const SelectTeamWithMembersById = `-- name: SelectTeamWithMembersById :one
+const SelectTeamMembers = `-- name: SelectTeamMembers :many
 SELECT
-    t.id, t.name, t.game_id, t.created_by, t.created_at, t.updated_at,
+    team_id, user_id, tm.created_at, id, email, password, first_name, last_name, birth_date, email_confirmed, m.created_at, updated_at
+FROM
+    teams_members tm
+JOIN
+    users m ON m.id = tm.user_id
+WHERE
+    team_id = $1
+`
+
+type SelectTeamMembersRow struct {
+	TeamID         uuid.UUID
+	UserID         uuid.UUID
+	CreatedAt      pgtype.Timestamp
+	ID             uuid.UUID
+	Email          string
+	Password       string
+	FirstName      string
+	LastName       string
+	BirthDate      pgtype.Date
+	EmailConfirmed bool
+	CreatedAt_2    pgtype.Timestamp
+	UpdatedAt      pgtype.Timestamp
+}
+
+func (q *Queries) SelectTeamMembers(ctx context.Context, teamID uuid.UUID) ([]SelectTeamMembersRow, error) {
+	rows, err := q.db.Query(ctx, SelectTeamMembers, teamID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SelectTeamMembersRow{}
+	for rows.Next() {
+		var i SelectTeamMembersRow
+		if err := rows.Scan(
+			&i.TeamID,
+			&i.UserID,
+			&i.CreatedAt,
+			&i.ID,
+			&i.Email,
+			&i.Password,
+			&i.FirstName,
+			&i.LastName,
+			&i.BirthDate,
+			&i.EmailConfirmed,
+			&i.CreatedAt_2,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const SelectTeamsByCreatorId = `-- name: SelectTeamsByCreatorId :many
+/* -- name: SelectTeamWithMembersById :one
+SELECT
+    t.*,
     json_agg(json_build_object('id', m.id, 'first_name', m.first_name, 'email', m.email)) AS members
 FROM
     teams t
@@ -151,37 +211,10 @@ JOIN
 JOIN
     users m ON tm.user_id = m.id
 WHERE
-    t.id = $1
+    t.id = @id
 GROUP BY
-    t.id, t.name, t.created_by, t.created_at
-`
-
-type SelectTeamWithMembersByIdRow struct {
-	ID        uuid.UUID
-	Name      string
-	GameID    uuid.UUID
-	CreatedBy uuid.UUID
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
-	Members   []byte
-}
-
-func (q *Queries) SelectTeamWithMembersById(ctx context.Context, id uuid.UUID) (SelectTeamWithMembersByIdRow, error) {
-	row := q.db.QueryRow(ctx, SelectTeamWithMembersById, id)
-	var i SelectTeamWithMembersByIdRow
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.GameID,
-		&i.CreatedBy,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.Members,
-	)
-	return i, err
-}
-
-const SelectTeamsByCreatorId = `-- name: SelectTeamsByCreatorId :many
+    t.id, t.name, t.created_by, t.created_at;
+ */
 SELECT id, name, game_id, created_by, created_at, updated_at FROM teams WHERE created_by = $1
 `
 
