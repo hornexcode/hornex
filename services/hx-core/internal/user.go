@@ -17,6 +17,8 @@ type User struct {
 	LastName  string `json:"last_name"`
 	BirthDate string `json:"birth_date"`
 
+	IsStaff        bool `json:"is_staff"`
+	IsSuperuser    bool `json:"is_superuser"`
 	EmailConfirmed bool `json:"email_confirmed"`
 
 	CreatedAt time.Time `json:"created_at"`
