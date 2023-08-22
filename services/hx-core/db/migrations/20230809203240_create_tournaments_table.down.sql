@@ -1,3 +1,2 @@
 DROP TABLE IF EXISTS tournaments;
-
-DROP INDEX IF EXISTS tournaments_game_id_idx;
+DROP TYPE IF EXISTS tournaments_status_type;

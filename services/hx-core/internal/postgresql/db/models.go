@@ -55,6 +55,50 @@ func (ns NullInviteStatusType) Value() (driver.Value, error) {
 	return string(ns.InviteStatusType), nil
 }
 
+type TournamentsStatusType string
+
+const (
+	TournamentsStatusTypeCreated   TournamentsStatusType = "created"
+	TournamentsStatusTypeStarted   TournamentsStatusType = "started"
+	TournamentsStatusTypeFinished  TournamentsStatusType = "finished"
+	TournamentsStatusTypeCancelled TournamentsStatusType = "cancelled"
+)
+
+func (e *TournamentsStatusType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = TournamentsStatusType(s)
+	case string:
+		*e = TournamentsStatusType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for TournamentsStatusType: %T", src)
+	}
+	return nil
+}
+
+type NullTournamentsStatusType struct {
+	TournamentsStatusType TournamentsStatusType
+	Valid                 bool // Valid is true if TournamentsStatusType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullTournamentsStatusType) Scan(value interface{}) error {
+	if value == nil {
+		ns.TournamentsStatusType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.TournamentsStatusType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullTournamentsStatusType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.TournamentsStatusType), nil
+}
+
 type EmailsConfirmationCode struct {
 	ID               uuid.UUID
 	Email            string
@@ -108,12 +152,19 @@ type TeamsMembers struct {
 }
 
 type Tournaments struct {
-	ID        uuid.UUID
-	Name      string
-	GameID    uuid.UUID
-	CreatedBy uuid.UUID
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	ID          uuid.UUID
+	Name        string
+	GameID      uuid.UUID
+	Description pgtype.Text
+	EntryFee    int32
+	PrizePool   int32
+	IsActive    pgtype.Bool
+	Status      NullTournamentsStatusType
+	StartTime   pgtype.Timestamp
+	EndTime     pgtype.Timestamp
+	CreatedBy   uuid.UUID
+	CreatedAt   pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
 }
 
 type Users struct {
