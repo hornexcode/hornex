@@ -64,3 +64,23 @@ func (t *Team) List(ctx context.Context, params internal.TeamSearchParams) (*[]i
 
 	return teams, nil
 }
+
+func (t *Team) RemoveMember(ctx context.Context, ownerId, teamId, memberId string) error {
+	team, err := t.teamRepository.Find(ctx, teamId)
+
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.Find")
+	}
+
+	if team.CreatedBy != ownerId {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "RemoveMember")
+	}
+
+	err = t.teamRepository.RemoveMember(ctx, teamId, memberId)
+
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "teamRepository.RemoveMember")
+	}
+
+	return nil
+}

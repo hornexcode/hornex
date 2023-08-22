@@ -242,3 +242,26 @@ func (t *Team) CreateTeamMember(ctx context.Context, memberId, teamId string) (*
 		TeamID: res.TeamID.String(),
 	}, nil
 }
+
+func (t *Team) RemoveMember(ctx context.Context, teamId, memberId string) error {
+	teamUUID, err := uuid.Parse(teamId)
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+
+	memberUUID, err := uuid.Parse(memberId)
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "uuid.NewUUID")
+	}
+
+	_, err = t.q.DeleteTeamMember(ctx, db.DeleteTeamMemberParams{
+		TeamID: teamUUID,
+		UserID: memberUUID,
+	})
+
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "delete team member")
+	}
+
+	return nil
+}
