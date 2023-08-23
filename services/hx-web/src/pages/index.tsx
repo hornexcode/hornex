@@ -6,7 +6,7 @@ import BullHorn from '@/assets/images/hornex/hornex-logo.png';
 import Tournament from '@/assets/images/tournaments/tournament.png';
 import Button from '@/components/ui/button/button';
 import routes from '@/config/routes';
-import { useAuthContext } from '@/lib/auth/auth.context';
+import { useAuthContext } from '@/lib/auth/auth-context';
 import {
   ArrowRightOnRectangleIcon,
   ArrowUpRightIcon,

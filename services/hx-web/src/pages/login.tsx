@@ -2,7 +2,7 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import routes from '@/config/routes';
-import { useAuthContext } from '@/lib/auth/auth.context';
+import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -39,29 +39,34 @@ export default function LoginPage() {
       password: data.password,
     });
 
-    router.push(routes.compete);
+    if (state.isAuthenticated) {
+      router.push(routes.compete);
+    }
   };
 
   useEffect(() => {
     if (state.isAuthenticated) {
       router.push(routes.compete);
     }
-  }, []);
+  }, [state.isAuthenticated]);
 
   // TODO: remove in production
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      setValue('email', 'pehome7132@kkoup.com');
-      setValue('password', 'Password@123!');
+      setValue('email', 'peter.parker@hornex.gg');
+      setValue('password', 'Password@123');
     }
   }, [setValue]);
 
   return (
     <div className="flex h-screen flex-col items-center justify-between">
-      <div className="shadow-highlight-100 m-auto w-[450px] space-y-4 rounded border border-gray-800 bg-gray-800 p-6 sm:p-8 md:space-y-6">
-        {/* <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-white md:text-3xl">
-          Login
-        </h1> */}
+      <div className="mt-8 self-center">
+        <Logo size="sm" />
+      </div>
+      <div className="m-auto w-[450px] space-y-4 p-6 sm:p-8 md:space-y-6">
+        <div className="text-center">
+          <h1 className="text-xl font-bold text-white md:text-4xl">Welcome</h1>
+        </div>
         {error && (
           <div className="rounded bg-red-500 p-2 text-center text-sm text-white">
             {error}
@@ -103,9 +108,11 @@ export default function LoginPage() {
 
           <Button
             isLoading={fetching}
+            disabled={fetching}
             className="w-full"
             color="warning"
             shape="rounded"
+            size="small"
           >
             Login
           </Button>

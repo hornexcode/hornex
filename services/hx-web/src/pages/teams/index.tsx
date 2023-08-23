@@ -19,14 +19,10 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
 >) => {
   const { data: teams, error, isLoading } = getTeams();
 
-  if (!teams || isLoading) {
-    return <></>;
-  }
-
   return (
     <div className="mx-auto space-y-8 p-8">
       <div className="flex items-end justify-between border-b border-slate-800 pb-2">
-        <h2 className="text-left font-display text-xl font-bold leading-4 tracking-tight text-white lg:text-xl">
+        <h2 className="text-left text-xl font-bold leading-4 tracking-tight text-white lg:text-xl">
           My Teams
         </h2>
       </div>
@@ -43,7 +39,7 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
                 Create new team
               </span>
             </Link>
-            <TeamList teams={teams} />
+            {teams && <TeamList teams={teams} />}
           </div>
         </div>
       </section>
