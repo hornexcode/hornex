@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen min-w-full flex-col items-center justify-center">
+    <section className="flex flex-col w-full h-screen items-center justify-center bg-background">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center">Login</CardTitle>
@@ -38,6 +38,6 @@ export default function Home() {
           <Button className="w-full">Login</Button>
         </CardFooter>
       </Card>
-    </main>
+    </section>
   )
 }
