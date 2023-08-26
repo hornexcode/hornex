@@ -27,7 +27,11 @@ export default function Home() {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" />
+            <Input
+              id="password"
+              type="password"
+              placeholder="****************"
+            />
           </div>
         </CardContent>
         <CardFooter>
