@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "users",
+    "teams",
+    "invites",
 ]
 
 MIDDLEWARE = [
@@ -143,8 +145,11 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "JWT_SECRET_KEY": SECRET_KEY,
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "JWT_ALGORITHM": "HS256",
     "JWT_ALLOW_REFRESH": True,
     "JWT_EXPIRATION_DELTA": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+APPEND_SLASH = False
