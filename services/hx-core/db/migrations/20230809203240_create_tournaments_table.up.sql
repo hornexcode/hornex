@@ -11,6 +11,7 @@ CREATE TABLE tournaments (
   status            tournaments_status_type DEFAULT 'created',
   start_time        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   end_time          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  max_participants  INTEGER NOT NULL,
   created_by        UUID NOT NULL,
   created_at        TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   updated_at        TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
