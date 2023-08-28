@@ -30,6 +30,15 @@ class TeamSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
+    def update(self, instance, validated_data):
+        if instance.owner != self.context["request"].user:
+            raise serializers.ValidationError(
+                {"message": "You do not have permission to update this team."}
+            )
+        return super().update(instance, validated_data)
+
+    # TODO deactivate method
+
 
 class TeamInviteSerializer(serializers.ModelSerializer):
     class Meta:

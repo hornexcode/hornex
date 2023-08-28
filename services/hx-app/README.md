@@ -3,4 +3,7 @@
 ## Routes
 
 - /teams -> return all teams related to a user
-- /tournament/:id/teams -> return all teams related to a tournament
+- /tournament/:id -> return all teams related to a tournament
+
+- /teams/:id/invites
+- /invites

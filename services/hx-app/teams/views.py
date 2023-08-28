@@ -11,8 +11,10 @@ from teams.serializers import TeamSerializer, TeamInviteSerializer
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+    lookup_field = "id"
 
 
 class TeamInviteViewSet(viewsets.ModelViewSet):
     queryset = TeamInvite.objects.all()
     serializer_class = TeamInviteSerializer
+    lookup_field = "id"
