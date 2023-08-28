@@ -19,4 +19,5 @@ urlpatterns = [
     path("api/v1/invites", include("invites.urls")),
     path("api/v1/tournaments", include("tournaments.urls")),
     path("api/v1/platforms", include("platforms.urls")),
+    path("api/v1/games", include("games.urls")),
 ]
