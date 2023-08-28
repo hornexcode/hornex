@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "teams",
     "invites",
     "tournaments",
+    "platforms",
 ]
 
 MIDDLEWARE = [
