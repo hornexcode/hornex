@@ -3,3 +3,4 @@ node_modules/
 
 go.work.sum
 */**/__pycache__/
+services/hx-app/*/__pycache__/
