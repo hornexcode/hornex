@@ -4,9 +4,11 @@ import uuid
 
 class Team(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    owner = models.ForeignKey("users.User", on_delete=models.RESTRICT)
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100, null=True, blank=True)
+    game = models.ForeignKey("games.Game", on_delete=models.RESTRICT)
+    platform = models.ForeignKey("platforms.Platform", on_delete=models.RESTRICT)
+    created_by = models.ForeignKey("users.User", on_delete=models.RESTRICT)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
