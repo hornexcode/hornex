@@ -4,11 +4,12 @@ from teams.errors import user_not_found, team_invite_already_exists
 from users.models import User
 from typing import Optional
 from datetime import datetime
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-def get_user(email: str) -> Optional[User]:
+def get_user(id: str) -> Optional[User]:
     try:
-        return User.objects.get(email=email)
+        return User.objects.get(id)
     except User.DoesNotExist:
         return None
 
@@ -17,21 +18,26 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
-        read_only_fields = ["id", "owner", "created_at", "updated_at", "deactivated_at"]
+        read_only_fields = [
+            "id",
+            "created_by",
+            "created_at",
+            "updated_at",
+            "deactivated_at",
+        ]
 
     def create(self, validated_data):
-        validated_data["owner"] = self.context["request"].user
+        jwt_authentication = JWTAuthentication()
+        request = self.context["request"]
 
-        u = get_user(validated_data["owner"])
-        if u is None:
-            raise user_not_found
+        user, _ = jwt_authentication.authenticate(request)
 
-        validated_data["owner"] = u
+        validated_data["created_by"] = user
 
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if instance.owner != self.context["request"].user:
+        if instance.created_by != self.context["request"].user:
             raise serializers.ValidationError(
                 {"message": "You do not have permission to update this team."}
             )

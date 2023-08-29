@@ -5,11 +5,11 @@ from teams.views import TeamViewSet, TeamInviteViewSet
 urlpatterns = [
     path(
         "",
-        TeamViewSet.as_view({"get": "list", "post": "create", "get": "retrieve"}),
+        TeamViewSet.as_view({"get": "list", "post": "create"}),
         name="team-list",
     ),
     path(
-        "<str:id>",
+        "/<str:id>",
         TeamViewSet.as_view({"get": "retrieve", "put": "update", "delete": "destroy"}),
         name="team-list",
     ),
