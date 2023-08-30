@@ -14,3 +14,7 @@ slugs_required = Response(
 unauthorized_to_update_team = serializers.ValidationError(
     {"message": "You do not have permission to update this team."}
 )
+unauthorized_to_delete = Response(
+    {"message": "You do not have permission to delete this team."},
+    status=status.HTTP_400_BAD_REQUEST,
+)
