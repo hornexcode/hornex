@@ -112,3 +112,4 @@ class TeamInviteSerializer(serializers.ModelSerializer):
 
         self.instance.accepted_at = datetime.utcnow()
         self.instance.save()
+        TeamMember.objects.create(team=self.instance.team, user=self.instance.user)
