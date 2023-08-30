@@ -1,5 +1,8 @@
 from django.db import models
 import uuid
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from users.models import User
 
 
 class Team(models.Model):
@@ -26,6 +29,9 @@ class TeamMember(models.Model):
 
     joined_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self) -> str:
+        return f"{self.user.name} ({self.team.name})"
+
 
 class TeamInvite(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -47,3 +53,10 @@ class TeamInvite(models.Model):
 
     def __str__(self) -> str:
         return f"Invite from {self.team.name} to {self.user.name} - ({self.status()})"
+
+
+@receiver(post_save, sender=Team)
+def create_team_member(sender, instance, created, **kwargs):
+    if created:
+        user = instance.created_by
+        team_member = TeamMember.objects.create(team=instance, user=user)

@@ -1,17 +1,8 @@
 from rest_framework import serializers
-from teams.models import Team, TeamInvite
-from teams.errors import user_not_found, team_invite_already_exists
-from users.models import User
-from typing import Optional
+from teams.models import Team, TeamInvite, TeamMember
+from teams.errors import team_invite_already_exists
 from datetime import datetime
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
-
-def get_user(id: str) -> Optional[User]:
-    try:
-        return User.objects.get(id)
-    except User.DoesNotExist:
-        return None
 
 
 class TeamSerializer(serializers.ModelSerializer):
