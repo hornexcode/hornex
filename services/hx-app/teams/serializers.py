@@ -17,7 +17,16 @@ def get_user(id: str) -> Optional[User]:
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "description",
+            "game",
+            "platform",
+            "created_by",
+            "created_at",
+            "updated_at",
+        ]
         read_only_fields = [
             "id",
             "created_by",
@@ -27,10 +36,7 @@ class TeamSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        jwt_authentication = JWTAuthentication()
-        request = self.context["request"]
-
-        user, _ = jwt_authentication.authenticate(request)
+        user = self.context["request"].user
 
         validated_data["created_by"] = user
 
