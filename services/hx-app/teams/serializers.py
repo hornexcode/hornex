@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from teams.models import Team, TeamInvite, TeamMember
 from teams.errors import team_invite_already_exists
+from teams.errors import team_invite_already_exists
 from datetime import datetime
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -43,7 +44,39 @@ class TeamSerializer(serializers.ModelSerializer):
             )
         return super().update(instance, validated_data)
 
+    def to_representation(self, instance):
+        user = self.context["request"].user
+        print(user.id)
+        if self.context["view"].action == "retrieve":
+            data = super().to_representation(instance)
+
+            data["game"] = instance.game.name
+            data["platform"] = instance.platform.name
+
+            del data["description"]
+            del data["created_at"]
+            del data["updated_at"]
+            del data["deactivated_at"]
+            del data["created_by"]
+
+            members = TeamMember.objects.filter(team=instance)
+            member_data = [
+                {"user": member.user.id, "is_admin": member.is_admin}
+                for member in members
+            ]
+            data["members"] = member_data
+
+            return data
+
+        return super().to_representation(instance)
+
     # TODO deactivate method
+
+
+class TeamMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamMember
+        fields = "__all__"
 
 
 class TeamInviteSerializer(serializers.ModelSerializer):
