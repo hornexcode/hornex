@@ -1,6 +1,7 @@
 node_modules/
 .DS_Store
 
-go.work.sum
+*.pot
+*.pyc
+__pycache__/
 */**/__pycache__/
-services/hx-app/*/__pycache__/
