@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from teams.models import Team, TeamInvite, TeamMember
-from teams.errors import team_invite_already_exists
-from teams.errors import team_invite_already_exists
+from teams.errors import unauthorized_to_update_team, team_invite_already_exists
 from datetime import datetime
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -38,15 +37,11 @@ class TeamSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if instance.created_by != self.context["request"].user:
-            raise serializers.ValidationError(
-                {"message": "You do not have permission to update this team."}
-            )
+        if instance.created_by.id != self.context["request"].user.id:
+            raise unauthorized_to_update_team
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
-        user = self.context["request"].user
-        print(user.id)
         if self.context["view"].action == "retrieve":
             data = super().to_representation(instance)
 
@@ -61,8 +56,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
             members = TeamMember.objects.filter(team=instance)
             member_data = [
-                {"user": member.user.id, "is_admin": member.is_admin}
-                for member in members
+                {"user": member.user, "is_admin": member.is_admin} for member in members
             ]
             data["members"] = member_data
 
