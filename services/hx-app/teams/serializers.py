@@ -27,7 +27,10 @@ class TeamSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        user = self.context["request"].user
+        jwt_authentication = JWTAuthentication()
+        request = self.context["request"]
+
+        user, _ = jwt_authentication.authenticate(request)
 
         validated_data["created_by"] = user
 
