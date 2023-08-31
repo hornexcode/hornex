@@ -7,7 +7,7 @@ class InviteSerializer(serializers.Serializer):
 
     team = serializers.RelatedField(read_only=True)
     accepted = serializers.SerializerMethodField()
-    rejected = serializers.SerializerMethodField()
+    declined = serializers.SerializerMethodField()
 
     def to_representation(self, instance):
         return {
@@ -18,7 +18,7 @@ class InviteSerializer(serializers.Serializer):
                 "description": instance.team.description,
             },
             "accepted": instance.accepted_at is not None,
-            "rejected": instance.rejected_at is not None,
+            "declined": instance.declined_at is not None,
         }
 
     def accept(self, instance):

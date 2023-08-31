@@ -82,7 +82,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "accepted_at",
-            "rejected_at",
+            "declined_at",
             "expired_at",
         ]
 
@@ -95,14 +95,14 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def accept(self):
-        if self.context["request"].user != self.instance.user:
+        if self.context["request"].user.id != str(self.instance.user.id):
             raise serializers.ValidationError(
                 {"message": "You do not have permission to accept this invite."}
             )
 
-        if self.instance.rejected_at is not None:
+        if self.instance.declined_at is not None:
             raise serializers.ValidationError(
-                {"message": "Invite has already been rejected."}
+                {"message": "Invite has already been declined."}
             )
 
         if self.instance.accepted_at is not None:
@@ -113,3 +113,22 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         self.instance.accepted_at = datetime.utcnow()
         self.instance.save()
         TeamMember.objects.create(team=self.instance.team, user=self.instance.user)
+
+    def decline(self):
+        if self.context["request"].user.id != str(self.instance.user.id):
+            raise serializers.ValidationError(
+                {"message": "You do not have permission to accept this invite."}
+            )
+
+        if self.instance.declined_at is not None:
+            raise serializers.ValidationError(
+                {"message": "Invite has already been declined."}
+            )
+
+        if self.instance.accepted_at is not None:
+            raise serializers.ValidationError(
+                {"message": "Invite has already been accepted."}
+            )
+
+        self.instance.declined_at = datetime.utcnow()
+        self.instance.save()
