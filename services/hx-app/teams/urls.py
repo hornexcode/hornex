@@ -15,7 +15,6 @@ urlpatterns = [
                 "get": "retrieve",
                 "put": "update",
                 "delete": "destroy",
-                "patch": "partial_update",
             }
         ),
         name="team-list",
