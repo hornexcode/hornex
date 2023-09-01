@@ -1,17 +1,26 @@
 from rest_framework import viewsets
-from django_filters.rest_framework import DjangoFilterBackend
 
 from teams.models import Team, TeamInvite
 from teams.serializers import TeamSerializer, TeamInviteSerializer
+from .errors import slugs_required
+from .filters import TeamFilter
+from django_filters import rest_framework as filters
 
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     lookup_field = "id"
+    filter_backends = (filters.DjangoFilterBackend, TeamFilter)
 
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["platform", "game"]
+    def list(self, request, *args, **kwargs):
+        gslug = request.query_params.get("game")
+        pslug = request.query_params.get("platform")
+
+        if not (gslug and pslug):
+            return slugs_required
+
+        return super().list(request, *args, **kwargs)
 
 
 class TeamInviteViewSet(viewsets.ModelViewSet):
