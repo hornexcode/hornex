@@ -18,15 +18,15 @@ def get_invites(request):
     filtering = {"status": request.query_params.get("status", None)}
     if filtering["status"] is not None and filtering["status"] == "accepted":
         il = TeamInvite.objects.filter(
-            user__id=u.id, accepted_at__isnull=False, rejected_at__isnull=True
+            user__id=u.id, accepted_at__isnull=False, declined_at__isnull=True
         )
-    elif filtering["status"] is not None and filtering["status"] == "rejected":
+    elif filtering["status"] is not None and filtering["status"] == "declined":
         il = TeamInvite.objects.filter(
-            user__id=u.id, rejected_at__isnull=True, accepted_at__isnull=False
+            user__id=u.id, declined_at__isnull=True, accepted_at__isnull=False
         )
     elif filtering["status"] is not None and filtering["status"] == "pending":
         il = TeamInvite.objects.filter(
-            user__id=u.id, accepted_at__isnull=True, rejected_at__isnull=True
+            user__id=u.id, accepted_at__isnull=True, declined_at__isnull=True
         )
     else:
         il = TeamInvite.objects.filter(user__id=u.id)
@@ -51,5 +51,24 @@ def accept_invite(request):
 
     ies = TeamInviteSerializer(invite, context={"request": request})
     ies.accept()
+
+    return Response(status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def decline_invite(request):
+    invite_id = request.data.get("invite_id", None)
+
+    try:
+        invite = TeamInvite.objects.get(id=invite_id)
+    except TeamInvite.DoesNotExist:
+        return Response(
+            {"error": "Invite not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    ies = TeamInviteSerializer(invite, context={"request": request})
+    ies.decline()
 
     return Response(status=status.HTTP_200_OK)

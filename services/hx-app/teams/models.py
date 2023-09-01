@@ -41,14 +41,14 @@ class TeamInvite(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     accepted_at = models.DateTimeField(null=True, blank=True)
-    rejected_at = models.DateTimeField(null=True, blank=True)
+    declined_at = models.DateTimeField(null=True, blank=True)
     expired_at = models.DateTimeField(null=True, blank=True)
 
     def status(self):
         if self.accepted_at is not None:
             return "accepted"
-        if self.rejected_at is not None:
-            return "rejected"
+        if self.declined_at is not None:
+            return "declined"
         return "pending"
 
     def __str__(self) -> str:
