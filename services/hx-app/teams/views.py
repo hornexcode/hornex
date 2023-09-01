@@ -2,7 +2,7 @@ from rest_framework import viewsets
 
 from teams.models import Team, TeamInvite
 from teams.serializers import TeamSerializer, TeamInviteSerializer
-from .errors import slugs_required, unauthorized_to_delete
+from .errors import slugs_required, unauthorized
 from .filters import TeamFilter
 from django_filters import rest_framework as filters
 
@@ -28,7 +28,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         print(instance.created_by.id, request.user.id)
 
         if instance.created_by.id != request.user.id:
-            return unauthorized_to_delete
+            return unauthorized
 
         return super().destroy(self, request, *args, **kwargs)
 
