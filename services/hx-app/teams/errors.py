@@ -8,6 +8,6 @@ team_invite_already_exists = serializers.ValidationError(
     code=status.HTTP_409_CONFLICT,
 )
 slugs_required = Response(
-    {"error": "Both gslug (game slug) and pslug (platform slug) are required."},
+    {"error": "Both game and platform are required."},
     status=status.HTTP_400_BAD_REQUEST,
 )
