@@ -18,3 +18,4 @@ unauthorized = Response(
     {"message": "You do not have permission."},
     status=status.HTTP_401_UNAUTHORIZED,
 )
+member_not_found = serializers.ValidationError({"message": "Member not found"})

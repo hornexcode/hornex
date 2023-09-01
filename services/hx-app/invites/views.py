@@ -4,9 +4,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from invites.serializers import InviteSerializer
-from teams.models import TeamInvite
+from teams.models import TeamInvite, TeamMember
 from teams.serializers import TeamInviteSerializer
-from datetime import datetime
+from .errors import not_found
 
 
 @api_view(["GET"])
@@ -44,10 +44,7 @@ def accept_invite(request):
     try:
         invite = TeamInvite.objects.get(id=invite_id)
     except TeamInvite.DoesNotExist:
-        return Response(
-            {"error": "Invite not found."},
-            status=status.HTTP_404_NOT_FOUND,
-        )
+        return not_found
 
     ies = TeamInviteSerializer(invite, context={"request": request})
     ies.accept()

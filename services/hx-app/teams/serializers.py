@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from teams.models import Team, TeamInvite, TeamMember
-from teams.errors import unauthorized_serialize, team_invite_already_exists
+from teams.errors import (
+    unauthorized_serialize,
+    member_not_found,
+    team_invite_already_exists,
+)
 from datetime import datetime
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -87,10 +91,20 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        u = validated_data["user"]
-        it = TeamInvite.objects.filter(team=validated_data["team"], user=u)
+        admin = self.context["request"].user
+
+        user = validated_data["user"]
+        team = validated_data["team"]
+        it = TeamInvite.objects.filter(team=team, user=user)
         if it.exists():
             raise team_invite_already_exists
+
+        member = TeamMember.objects.filter(team=team, user__id=admin.id).first()
+        if member is None:
+            raise member_not_found
+
+        if not member.is_admin:
+            raise unauthorized_serialize
 
         return super().create(validated_data)
 
