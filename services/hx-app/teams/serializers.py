@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from teams.models import Team, TeamInvite, TeamMember
-from teams.errors import unauthorized_to_update_team, team_invite_already_exists
+from teams.errors import unauthorized_serialize, team_invite_already_exists
 from datetime import datetime
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -38,7 +38,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if instance.created_by.id != self.context["request"].user.id:
-            raise unauthorized_to_update_team
+            raise unauthorized_serialize
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):

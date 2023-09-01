@@ -11,6 +11,10 @@ slugs_required = Response(
     {"error": "Both game and platform are required."},
     status=status.HTTP_400_BAD_REQUEST,
 )
-unauthorized_to_update_team = serializers.ValidationError(
-    {"message": "You do not have permission to update this team."}
+unauthorized_serialize = serializers.ValidationError(
+    {"message": "You do not have permission."},
+)
+unauthorized = Response(
+    {"message": "You do not have permission."},
+    status=status.HTTP_401_UNAUTHORIZED,
 )
