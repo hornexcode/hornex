@@ -10,7 +10,13 @@ urlpatterns = [
     ),
     path(
         "/<str:id>",
-        TeamViewSet.as_view({"get": "retrieve", "put": "update", "delete": "destroy"}),
+        TeamViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "delete": "destroy",
+            }
+        ),
         name="team-list",
     ),
     path(
