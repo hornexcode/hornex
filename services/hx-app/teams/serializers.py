@@ -1,12 +1,16 @@
 from rest_framework import serializers
 from teams.models import Team, TeamInvite, TeamMember
 from teams.errors import (
-    unauthorized_serialize,
+    unauthorized_error,
     member_not_found,
     team_invite_already_exists,
 )
 from datetime import datetime
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+def check_is_owner(user, team):
+    return user.id == team.created_by.id
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -41,8 +45,10 @@ class TeamSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if instance.created_by.id != self.context["request"].user.id:
-            raise unauthorized_serialize
+        is_owner = check_is_owner(self.context["request"].user, instance)
+        if not is_owner:
+            raise unauthorized_error
+
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
@@ -104,7 +110,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
             raise member_not_found
 
         if not member.is_admin:
-            raise unauthorized_serialize
+            raise unauthorized_error
 
         return super().create(validated_data)
 
