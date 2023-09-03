@@ -148,6 +148,7 @@ REST_FRAMEWORK = {
         # other authentication classes
     ],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
 SIMPLE_JWT = {

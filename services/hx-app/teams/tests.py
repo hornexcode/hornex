@@ -1,3 +1,109 @@
-from django.test import TestCase
+import uuid
+from django.urls import include, path, reverse
+from rest_framework.test import APITestCase, URLPatternsTestCase
+from users.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.settings import api_settings
+from platforms.models import Platform
+from games.models import Game
+from teams.models import Team
 
-# Create your tests here.
+
+class TeamTests(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path("api/v1/teams", include("teams.urls")),
+    ]
+
+    def setUp(self):
+        self.credentials = {
+            "email": "testuser",
+            "password": "testpass",
+        }
+
+        self.user = User.objects.create_user(**self.credentials)
+
+        # Generating a JWT token for the test user
+        self.refresh = RefreshToken.for_user(self.user)
+
+        # Authenticate the client with the token
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+        self.platform = Platform.objects.create(name="test platform")
+        self.game = Game.objects.create(name="test game")
+        self.game.platforms.set([self.platform])
+
+    def test_create_team_201(self):
+        """
+        Ensure we can create a new team object.
+        """
+
+        url = reverse("team-list")
+        resp = self.client.post(
+            url,
+            {"name": "test team", "game": self.game.id, "platform": self.platform.id},
+        )
+
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(resp.data["name"], "test team")
+
+    def test_create_team_401(self):
+        """
+        Ensure we can't create a new team object without authentication.
+        """
+
+        self.client.credentials()
+        url = reverse("team-list")
+        resp = self.client.post(
+            url,
+            {"name": "test team", "game": self.game.id, "platform": self.platform.id},
+        )
+
+        self.assertEqual(resp.status_code, 401)
+
+    def test_create_team_400(self):
+        """
+        Ensure we can't create a new team object with a missing field.
+        """
+
+        url = reverse("team-list")
+        resp = self.client.post(
+            url,
+            {"name": "test team", "game": self.game.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+
+    def test_list_teams_200(self):
+        """
+        Ensure we can list teams.
+        """
+
+        Team.objects.create(
+            name="test team 1",
+            game=self.game,
+            platform=self.platform,
+            created_by=self.user,
+        )
+
+        url = "%s?game=%s&platform=%s" % (
+            reverse("team-list"),
+            self.game.slug,
+            self.platform.slug,
+        )
+        resp = self.client.get(url)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 1)
+
+        # When it returns an empty list
+        url = "%s?game=%s&platform=%s" % (
+            reverse("team-list"),
+            "fake-team-slug",
+            "fake-platform-slug",
+        )
+        resp = self.client.get(url)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 0)

@@ -17,7 +17,7 @@ urlpatterns = [
                 "delete": "destroy",
             }
         ),
-        name="team-list",
+        name="team-details",
     ),
     path(
         "/<str:id>/invites",

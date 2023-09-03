@@ -7,12 +7,22 @@ from invites.serializers import InviteSerializer
 from teams.models import TeamInvite, TeamMember
 from teams.serializers import TeamInviteSerializer
 from .errors import not_found
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
+@swagger_auto_schema(
+    operation_description="GET /api/v1/invites",
+    operation_summary="List all team invites for a user",
+    methods=["get"],
+    responses={
+        200: openapi.Response("response description", InviteSerializer),
+    },
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_invites(request):
-    """Returns all team invites for a user."""
     u = request.user
 
     filtering = {"status": request.query_params.get("status", None)}
