@@ -1,0 +1,51 @@
+name: Django Rest Framework CI with Poetry
+
+on:
+  pull_request:
+    branches-ignore:
+      - main # This ensures the CI runs on any pull request, regardless of the branch.
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python 3.11.4
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11.4
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Install dependencies
+      run: |
+        poetry config virtualenvs.create true
+        poetry config virtualenvs.in-project true
+        poetry install
+
+    - name: Set up Django settings for tests
+      run: echo "DJANGO_SETTINGS_MODULE=myapp.settings_test" >> $GITHUB_ENV # Adjust to your test settings module
+
+    - name: Run migrations
+      run: poetry run python manage.py migrate
+
+    - name: Run tests
+      run: poetry run python manage.py test
+
