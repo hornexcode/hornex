@@ -1,12 +1,12 @@
 name: Django Rest Framework CI with Poetry
 
 on:
-  push:
-    branches:
-      - "**" # This ensures the CI runs on any branch.
-  pull_request:
-    branches-ignore:
-      - main # This ensures the CI runs on any pull request, regardless of the branch.
+  # push:
+  #   branches:
+  #     - "**" # This ensures the CI runs on any branch.
+  # pull_request:
+  #   branches-ignore:
+  #     - main # This ensures the CI runs on any pull request, regardless of the branch.
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.9, 3.11]
+        python-version: [3.11]
         
     steps:
     - name: Checkout code
