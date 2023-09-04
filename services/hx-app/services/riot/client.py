@@ -1,5 +1,7 @@
 import abc
 
+import requests
+
 
 class Clientable(metaclass=abc.ABCMeta):
     @classmethod
@@ -14,12 +16,20 @@ class Clientable(metaclass=abc.ABCMeta):
         """Gets a summoner by summoner name."""
         pass
 
+    def get_base_url(self, region: str) -> str:
+        return f"https://{region}.api.riotgames.com/lol"
+
 
 class Client(Clientable):
     def __init__(self, api_key: str):
         self.api_key = api_key
-        self.base_url = "https://na1.api.riotgames.com/lol"
+
+    def get_a_summoner_by_summoner_name(self, name: str, region: str) -> dict:
+        url = f"{self.get_base_url(region)}/summoner/v4/summoners/by-name/{name}"
+        headers = {"X-Riot-Token": self.api_key}
+        response = requests.get(url, headers=headers)
+        return response.json()
 
 
-def new_client(api_key: str) -> Clientable:
+def new_riot_client(api_key: str) -> Clientable:
     return Client(api_key)
