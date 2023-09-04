@@ -19,3 +19,12 @@ class TournamentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tournament
         fields = "__all__"
+
+
+class RegistrationSerializer(serializers.Serializer):
+    team = serializers.UUIDField()
+    tournament = serializers.UUIDField()
+    user = serializers.UUIDField()
+
+    def create(self, validated_data):
+        pass

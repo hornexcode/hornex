@@ -19,3 +19,39 @@ class Game(models.Model):
     def save(self, *args, **kwargs):
         self.slug = self.name.lower().replace(" ", "-")
         super(Game, self).save(*args, **kwargs)
+
+
+class GameAccount(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    game = models.ForeignKey("games.Game", on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class GameAccountRiot(GameAccount):
+    """
+    Riot Games API
+
+    https://developer.riotgames.com/apis#summoner-v4
+    """
+
+    class RegionChoicesType(models.TextChoices):
+        BR1 = "BR1"
+
+    encrypted_account_id = models.CharField(max_length=30)
+    encrypted_puuid = models.CharField(max_length=78)
+    username = models.CharField(max_length=30)
+    region = models.CharField(max_length=4, choices=RegionChoicesType.choices)
+    encrypted_summoner_id = models.CharField(max_length=63)
+    summoner_name = models.CharField(max_length=30)  # Summoner name.
+    summoner_level = (
+        models.IntegerField()
+    )  # Summoner level associated with the summoner.
+    revision_date = (
+        models.BigIntegerField()
+    )  # Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: summoner name change, summoner level change, or profile icon change.
