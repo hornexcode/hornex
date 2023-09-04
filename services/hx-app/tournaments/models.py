@@ -37,7 +37,15 @@ class Tournament(models.Model):
     )
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    potential_prize_pool = models.IntegerField(default=0, null=True, blank=True)
+
+    is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
+
+    # If not fixed, we can set custom prize amount
+    is_prize_pool_fixed = models.BooleanField(
+        default=True, help_text="Fixed prize pool"
+    )
+
+    prize_pool = models.IntegerField(default=0, null=True, blank=True)
     entry_fee = models.IntegerField(default=0, null=True, blank=True)
 
     max_teams = models.IntegerField(default=0)
@@ -47,6 +55,16 @@ class Tournament(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class TournamentTeam(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.tournament.name} - {self.team.name}"
 
 
 class TournamentRegistration(models.Model):

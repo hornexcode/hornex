@@ -47,6 +47,7 @@ class TeamTests(APITestCase, URLPatternsTestCase):
 
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(resp.data["name"], "test team")
+        self.assertEqual(Team.objects.count(), 1)
 
     def test_create_team_401(self):
         """

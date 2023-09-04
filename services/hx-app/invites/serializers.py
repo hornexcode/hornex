@@ -6,8 +6,8 @@ class InviteSerializer(serializers.Serializer):
     """Returns all team invites for a user."""
 
     team = serializers.RelatedField(read_only=True)
-    accepted = serializers.SerializerMethodField()
-    declined = serializers.SerializerMethodField()
+    accepted = serializers.BooleanField(read_only=True)
+    declined = serializers.BooleanField(read_only=True)
 
     def to_representation(self, instance):
         return {

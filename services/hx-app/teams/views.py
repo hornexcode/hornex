@@ -74,3 +74,10 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="GET /api/v1/teams/<id>/invites/<id>",
+        operation_summary="Retrieve an invite for a team",
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)

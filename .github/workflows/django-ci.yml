@@ -1,34 +1,30 @@
 name: Django Rest Framework CI with Poetry
 
 on:
-  pull_request:
-    branches-ignore:
-      - main # This ensures the CI runs on any pull request, regardless of the branch.
+  # push:
+  #   branches:
+  #     - "**" # This ensures the CI runs on any branch.
+  # pull_request:
+  #   branches-ignore:
+  #     - main # This ensures the CI runs on any pull request, regardless of the branch.
 
 jobs:
-  test:
+  build:
 
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.11]
+        
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Set up Python 3.11.4
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: 3.11.4
+        python-version: ${{ matrix.python-version }}
 
     - name: Install Poetry
       run: |
@@ -41,7 +37,7 @@ jobs:
         poetry install
 
     - name: Set up Django settings for tests
-      run: echo "DJANGO_SETTINGS_MODULE=myapp.settings_test" >> $GITHUB_ENV # Adjust to your test settings module
+      run: echo "DJANGO_SETTINGS_MODULE=hxapp.settings" >> $GITHUB_ENV # Adjust to your test settings module
 
     - name: Run migrations
       run: poetry run python manage.py migrate
