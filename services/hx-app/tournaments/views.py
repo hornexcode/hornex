@@ -1,7 +1,12 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
+from django_filters.rest_framework import DjangoFilterBackend
+
 from tournaments.models import Tournament
+from tournaments.filters import TournamentListFilter
 from tournaments.serializers import (
     TournamentListSerializer,
     TournamentSerializer,
@@ -9,14 +14,12 @@ from tournaments.serializers import (
 )
 from tournaments.services import TournamentService
 
-from rest_framework import status
-from rest_framework.response import Response
-from django.core.exceptions import ObjectDoesNotExist
-
 
 class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentListSerializer
+    lookup_field = "id"
+    filter_backends = (DjangoFilterBackend, TournamentListFilter)
 
 
 class TournamentViewSet(viewsets.ModelViewSet):
