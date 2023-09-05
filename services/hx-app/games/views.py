@@ -1,3 +1,4 @@
+import os
 from requests import exceptions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets
@@ -5,7 +6,8 @@ from rest_framework.response import Response
 from games.models import Game, GameAccountRiot
 from users.models import User
 from games.serializers import GameSerializer
-from services.riot import client
+from services.riot.client import new_riot_client
+from services.riot.exceptions import RiotApiError
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
@@ -41,17 +43,12 @@ class GameViewSet(viewsets.ModelViewSet):
 
 
 def summoner_by_name(name: str, region: str):
-    riot_client = client.new_riot_client("RGAPI-67fb115d-cafd-414b-9d5f-3251774f0e24")
+    api_key = "RGAPI-5f97cf92-2c9e-41b0-8130-8a9678199ccc"
+    # api_key = os.environ.get("RIOT_API_KEY")
+    riot_client = new_riot_client(api_key)
 
-    try:
-        data = riot_client.get_a_summoner_by_summoner_name(name, region)
-    except exceptions.HTTPError as err:
-        if err.response.status_code == 403:
-            print("API KEY OUTDATED")
-            raise exceptions.HTTPError("Internal server error", 500)
-        else:
-            print(f"HTTP Error {err.response.status_code}")
-            raise
+    data = riot_client.get_a_summoner_by_summoner_name(name, region)
+
     return data
 
 
@@ -87,10 +84,14 @@ def create_game_account(request, id):
         try:
             data = summoner_by_name(name, region)
         except exceptions.HTTPError as err:
-            print(err)
             return Response(
-                {"error": f"Failed to get summoner by name: {err}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                {"error": f"Failed to get summoner by name"},
+                status=err.response.status_code,
+            )
+        except RiotApiError as err:
+            return Response(
+                {"error": str(err)},
+                status=err.status_code,
             )
 
         game_account = GameAccountRiot.objects.filter(

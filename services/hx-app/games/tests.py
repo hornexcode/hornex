@@ -46,20 +46,18 @@ class GameAccountRiotTests(APITestCase, URLPatternsTestCase):
         # League of Legends because of the if statement game.slug == "league-of-legends"
         self.game = Game.objects.create(name="League of Legends")
         self.game.platforms.set([self.platform])
+        self.url = reverse("game-account", kwargs={"id": self.game.id})
 
     def test_connect_account_204(self):
-        url = reverse("game-account", kwargs={"id": self.game.id})
-        resp = self.client.post(url, {"name": "Celus o recomeço", "region": "BR1"})
+        resp = self.client.post(self.url, {"name": "Celus o recomeço", "region": "BR1"})
 
         self.assertEqual(resp.status_code, 204)
 
     def test_connect_account_400_name_or_region_not_sent(self):
-        url = reverse("game-account", kwargs={"id": self.game.id})
-
-        resp = self.client.post(url, {"region": "BR1"})
+        resp = self.client.post(self.url, {"region": "BR1"})
         self.assertEqual(resp.status_code, 400)
 
-        resp = self.client.post(url, {"name": "Celus o recomeço"})
+        resp = self.client.post(self.url, {"name": "Celus o recomeço"})
         self.assertEqual(resp.status_code, 400)
 
     def test_connect_account_404_invalid_uuid(self):
@@ -76,8 +74,16 @@ class GameAccountRiotTests(APITestCase, URLPatternsTestCase):
 
         self.assertEqual(resp.status_code, 404)
 
-    def test_connect_account_400_fake_summoner_name(self):
-        url = reverse("game-account", kwargs={"id": self.game.id})
-        resp = self.client.post(url, {"name": "fake-summoner-name", "region": "BR1"})
+    def test_connect_account_404_wrong_summoner_name(self):
+        resp = self.client.post(
+            self.url, {"name": "fake-summoner-name", "region": "BR1"}
+        )
+
+        self.assertEqual(resp.status_code, 404)
+
+    def test_connect_account_400_wrong_region(self):
+        resp = self.client.post(
+            self.url, {"name": "Celus o recomeço", "region": "fake-region"}
+        )
 
         self.assertEqual(resp.status_code, 400)

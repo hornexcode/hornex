@@ -1,5 +1,6 @@
 import abc
 import requests
+from .exceptions import RiotApiError
 
 
 class Clientable(metaclass=abc.ABCMeta):
@@ -35,7 +36,7 @@ class Clientable(metaclass=abc.ABCMeta):
             "VN2": "vn2.api.riotgames.com",
         }
         if region not in regions:
-            raise requests.exceptions.HTTPError(f"Invalid region: {region}")
+            raise RiotApiError(f"Invalid region: {region}", 400)
 
         return f"https://{regions[region]}/lol"
 
@@ -51,7 +52,8 @@ class Client(Clientable):
             response = requests.get(url, headers=headers)
             response.raise_for_status()
         except requests.exceptions.HTTPError as err:
-            print(err)
+            if err.response.status_code == 401 or err.response.status_code == 403:
+                raise RiotApiError("Internal server error", 500)
             raise
 
         return response.json()
