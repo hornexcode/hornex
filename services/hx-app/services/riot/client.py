@@ -1,5 +1,4 @@
 import abc
-
 import requests
 
 
@@ -17,7 +16,28 @@ class Clientable(metaclass=abc.ABCMeta):
         pass
 
     def get_base_url(self, region: str) -> str:
-        return f"https://{region}.api.riotgames.com/lol"
+        regions = {
+            "BR1": "br1.api.riotgames.com",
+            "EUN1": "eun1.api.riotgames.com",
+            "EUW1": "euw1.api.riotgames.com",
+            "JP1": "jp1.api.riotgames.com",
+            "KR": "kr.api.riotgames.com",
+            "LA1": "la1.api.riotgames.com",
+            "LA2": "la2.api.riotgames.com",
+            "NA1": "na1.api.riotgames.com",
+            "OC1": "oc1.api.riotgames.com",
+            "TR1": "tr1.api.riotgames.com",
+            "RU": "ru.api.riotgames.com",
+            "PH2": "ph2.api.riotgames.com",
+            "SG2": "sg2.api.riotgames.com",
+            "TH2": "th2.api.riotgames.com",
+            "TW2": "tw2.api.riotgames.com",
+            "VN2": "vn2.api.riotgames.com",
+        }
+        if region not in regions:
+            raise requests.exceptions.HTTPError(f"Invalid region: {region}")
+
+        return f"https://{regions[region]}/lol"
 
 
 class Client(Clientable):
@@ -27,7 +47,13 @@ class Client(Clientable):
     def get_a_summoner_by_summoner_name(self, name: str, region: str) -> dict:
         url = f"{self.get_base_url(region)}/summoner/v4/summoners/by-name/{name}"
         headers = {"X-Riot-Token": self.api_key}
-        response = requests.get(url, headers=headers)
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            print(err)
+            raise
+
         return response.json()
 
 

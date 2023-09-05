@@ -140,7 +140,6 @@ AUTH_USER_MODEL = "users.User"
 
 # https://jpadilla.github.io/django-rest-framework-jwt/
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
         "rest_framework.authentication.SessionAuthentication",
