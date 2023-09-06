@@ -4,6 +4,12 @@ from users.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from games.models import Game
 from platforms.models import Platform
+from mock import patch, Mock
+from services.riot.client import Client
+from services.riot import exceptions
+from requests.exceptions import HTTPError
+from rest_framework import status
+from requests.models import Response
 
 
 class GameTests(APITestCase, URLPatternsTestCase):
@@ -48,10 +54,27 @@ class GameAccountRiotTests(APITestCase, URLPatternsTestCase):
         self.game.platforms.set([self.platform])
         self.url = reverse("game-account", kwargs={"id": self.game.id})
 
-    def test_connect_account_204(self):
+    @patch.object(
+        Client,
+        "get_a_summoner_by_summoner_name",
+        return_value={
+            "id": "fake-id",
+            "accountId": "fake-account-id",
+            "puuid": "fake-puuid",
+            "name": "Celus o recomeço",
+            "profileIconId": 456,
+            "revisionDate": 1627777777777,
+            "summonerLevel": 123,
+        },
+    )
+    def test_connect_account_204(self, mock_get_a_summoner_by_summoner_name):
         resp = self.client.post(self.url, {"name": "Celus o recomeço", "region": "BR1"})
 
         self.assertEqual(resp.status_code, 204)
+        self.assertEqual(resp.data["message"], "Account created")
+        mock_get_a_summoner_by_summoner_name.assert_called_once_with(
+            "Celus o recomeço", "BR1"
+        )
 
     def test_connect_account_400_name_or_region_not_sent(self):
         resp = self.client.post(self.url, {"region": "BR1"})
@@ -74,16 +97,40 @@ class GameAccountRiotTests(APITestCase, URLPatternsTestCase):
 
         self.assertEqual(resp.status_code, 404)
 
-    def test_connect_account_404_wrong_summoner_name(self):
+    @patch.object(Client, "get_a_summoner_by_summoner_name")
+    def test_connect_account_404_wrong_summoner_name(
+        self, mock_get_a_summoner_by_summoner_name
+    ):
+        mock_response = Mock(spec=Response)
+        mock_response.status_code = 404
+
+        http_error = HTTPError()
+        http_error.response = mock_response
+
+        mock_get_a_summoner_by_summoner_name.side_effect = http_error
+
         resp = self.client.post(
             self.url, {"name": "fake-summoner-name", "region": "BR1"}
         )
 
         self.assertEqual(resp.status_code, 404)
+        mock_get_a_summoner_by_summoner_name.assert_called_once_with(
+            "fake-summoner-name", "BR1"
+        )
 
-    def test_connect_account_400_wrong_region(self):
+    @patch.object(
+        Client,
+        "get_a_summoner_by_summoner_name",
+        side_effect=exceptions.RiotApiError(f"Invalid region: fake-region", 400),
+    )
+    def test_connect_account_400_wrong_region(
+        self, mock_get_a_summoner_by_summoner_name
+    ):
         resp = self.client.post(
             self.url, {"name": "Celus o recomeço", "region": "fake-region"}
         )
 
         self.assertEqual(resp.status_code, 400)
+        mock_get_a_summoner_by_summoner_name.assert_called_once_with(
+            "Celus o recomeço", "fake-region"
+        )
