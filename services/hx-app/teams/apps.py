@@ -6,4 +6,4 @@ class TeamsConfig(AppConfig):
     name = "teams"
 
     def ready(self):
-        import teams.models
+        import teams.signals
