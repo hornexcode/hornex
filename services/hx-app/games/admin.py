@@ -1,4 +1,4 @@
 from django.contrib import admin
-from games.models import Game
+from games.models import Game, GameAccountRiot
 
-admin.site.register(Game)
+admin.site.register([Game, GameAccountRiot])

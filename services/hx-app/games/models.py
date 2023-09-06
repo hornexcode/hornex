@@ -42,6 +42,21 @@ class GameAccountRiot(GameAccount):
 
     class RegionChoicesType(models.TextChoices):
         BR1 = "BR1"
+        EUN1 = "EUN1"
+        EUW1 = "EUW1"
+        JP1 = "JP1"
+        KR = "KR"
+        LA1 = "LA1"
+        LA2 = "LA2"
+        NA1 = "NA1"
+        OC1 = "OC1"
+        TR1 = "TR1"
+        RU = "RU"
+        PH2 = "PH2"
+        SG2 = "SG2"
+        TH2 = "TH2"
+        TW2 = "TW2"
+        VN2 = "VN2"
 
     encrypted_account_id = models.CharField(max_length=30)
     encrypted_puuid = models.CharField(max_length=78)
@@ -55,3 +70,6 @@ class GameAccountRiot(GameAccount):
     revision_date = (
         models.BigIntegerField()
     )  # Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: summoner name change, summoner level change, or profile icon change.
+
+    def __str__(self) -> str:
+        return f"{self.summoner_name} ({self.id})"
