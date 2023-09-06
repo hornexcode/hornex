@@ -12,3 +12,7 @@ class TournamentListFilter(filters.BaseFilterBackend):
             queryset = queryset.filter(game__platforms__slug=pslug)
 
         return queryset
+
+
+class TournamentListOrdering(filters.OrderingFilter):
+    ordering_fields = "__all__"

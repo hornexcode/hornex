@@ -4,22 +4,52 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 from tournaments.models import Tournament
-from tournaments.filters import TournamentListFilter
+from tournaments.filters import TournamentListFilter, TournamentListOrdering
 from tournaments.serializers import (
     TournamentListSerializer,
     TournamentSerializer,
     RegistrationSerializer,
 )
 from tournaments.services import TournamentService
+from tournaments.pagination import TournamentPagination
+
+game_qp = openapi.Parameter(
+    "game",
+    openapi.IN_QUERY,
+    description="Filter the list by game slug",
+    type=openapi.TYPE_STRING,
+)
+platform_qp = openapi.Parameter(
+    "platform",
+    openapi.IN_QUERY,
+    description="Filter the list by platform slug",
+    type=openapi.TYPE_STRING,
+)
 
 
 class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentListSerializer
     lookup_field = "id"
-    filter_backends = (DjangoFilterBackend, TournamentListFilter)
+    filter_backends = (
+        DjangoFilterBackend,
+        TournamentListFilter,
+        TournamentListOrdering,
+    )
+    pagination_class = TournamentPagination
+
+    @swagger_auto_schema(
+        operation_description="GET /api/v1/tournaments",
+        operation_summary="List and filter paginated a tournaments",
+        manual_parameters=[game_qp, platform_qp],
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class TournamentViewSet(viewsets.ModelViewSet):
