@@ -45,16 +45,18 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
             platform=self.platform,
         )
 
-        self.tournament = Tournament.objects.create(
-            name="test tournament",
-            game=Game.objects.first(),
-            platform=self.platform,
-            max_teams=2,
-            entry_fee=15.00,
-            start_time=timezone.now(),
-            end_time=(timedelta(days=7) + timezone.now()),
-            organizer=self.user,
-        )
+        self.tournament_data = {
+            "name": "test tournament",
+            "game": Game.objects.first(),
+            "platform": self.platform,
+            "max_teams": 2,
+            "entry_fee": 15.00,
+            "start_time": timezone.now(),
+            "end_time": (timedelta(days=7) + timezone.now()),
+            "organizer": self.user,
+        }
+
+        self.tournament = Tournament.objects.create(**self.tournament_data)
 
         return super().setUp()
 
@@ -161,9 +163,6 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(len(resp.data["results"]), 1)
 
     def test_list_200_filter(self):
-        # first Tournament
-        Tournament.objects.create(**self.tournament_data)
-
         # second Tournament
         game = Game.objects.create(name="test game 2")
         game.platforms.set([self.platform])
@@ -178,7 +177,7 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(len(resp.data["results"]), 1)
 
     def test_list_200_pagination(self):
-        # Create three tournaments
+        # Create three tournaments, so we'll have three
         Tournament.objects.create(**self.tournament_data)
         Tournament.objects.create(**self.tournament_data)
         Tournament.objects.create(**self.tournament_data)
@@ -187,13 +186,13 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         resp = self.client.get(f"{url}?page=1&page_size=2")
 
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data["count"], 3)
+        self.assertEqual(resp.data["count"], 4)
         self.assertEqual(len(resp.data["results"]), 2)
 
     def test_list_200_ordering(self):
         # Create first tournament
         self.tournament_data["name"] = "first"
-        self.tournament_data["start_time"] = timezone.now()
+        self.tournament_data["start_time"] = timezone.now() - timezone.timedelta(days=7)
         Tournament.objects.create(**self.tournament_data)
 
         # Create second tournament with start_time 7 days after
