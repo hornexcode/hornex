@@ -1,8 +1,5 @@
 from django.db import models
 import uuid
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from users.models import User
 
 
 class Team(models.Model):
@@ -12,6 +9,9 @@ class Team(models.Model):
     game = models.ForeignKey("games.Game", on_delete=models.RESTRICT)
     platform = models.ForeignKey("platforms.Platform", on_delete=models.RESTRICT)
     created_by = models.ForeignKey("users.User", on_delete=models.RESTRICT)
+    members = models.ManyToManyField(
+        "users.User", through="TeamMember", related_name="teams"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -53,10 +53,3 @@ class TeamInvite(models.Model):
 
     def __str__(self) -> str:
         return f"Invite from {self.team.name} to {self.user.name} - ({self.status()})"
-
-
-@receiver(post_save, sender=Team)
-def create_team_member(sender, instance, created, **kwargs):
-    if created:
-        user = instance.created_by
-        team_member = TeamMember.objects.create(team=instance, user=user)

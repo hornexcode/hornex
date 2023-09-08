@@ -6,7 +6,7 @@ from teams.errors import (
     team_invite_already_exists,
 )
 from datetime import datetime
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from users.models import User
 
 
 def check_is_owner(user, team):
@@ -35,13 +35,11 @@ class TeamSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        jwt_authentication = JWTAuthentication()
         request = self.context["request"]
-
-        user, _ = jwt_authentication.authenticate(request)
-
-        validated_data["created_by"] = user
-
+        validated_data["created_by"] = request.user.id
+        u = User.objects.get(id=request.user.id)
+        validated_data = {**validated_data, **{"created_by": u}}
+        
         return super().create(validated_data)
 
     def update(self, instance, validated_data):

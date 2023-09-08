@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from tournaments.models import Tournament
+from teams.models import Team
 
 
 class TournamentListSerializer(serializers.Serializer):
@@ -24,7 +25,3 @@ class TournamentSerializer(serializers.ModelSerializer):
 class RegistrationSerializer(serializers.Serializer):
     team = serializers.UUIDField()
     tournament = serializers.UUIDField()
-    user = serializers.UUIDField()
-
-    def create(self, validated_data):
-        pass

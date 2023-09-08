@@ -1,18 +1,20 @@
 from rest_framework import viewsets
 
-from teams.models import Team, TeamInvite
-from teams.serializers import TeamSerializer, TeamInviteSerializer
-from .errors import slugs_required
-from .filters import TeamFilter
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
 
+from teams.filters import TeamFilter
+from teams.errors import slugs_required
+from teams.models import Team, TeamInvite
+from teams.serializers import TeamSerializer, TeamInviteSerializer
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     lookup_field = "id"
     filter_backends = (filters.DjangoFilterBackend, TeamFilter)
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         operation_description="GET /api/v1/teams",
