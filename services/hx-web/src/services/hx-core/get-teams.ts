@@ -14,8 +14,8 @@ export const getTeamsSchemaOutput = z.array(
     id: z.string(),
     name: z.string(),
     created_by: z.string().uuid(),
-    game_id: z.string().uuid()
-  })
+    game_id: z.string().uuid(),
+  }),
 );
 
 export type GetTeamsOutput = z.infer<typeof getTeamsSchemaOutput>;

@@ -22,25 +22,25 @@ import { useAuthContext } from '@/lib/auth';
 import {
   UpdateTeamInput,
   UpdateTeamOutput,
-  updateTeamSchemaInput
+  updateTeamSchemaInput,
 } from '@/services/hx-core/updateTeam';
 
 const inviteForm = z.object({
-  username: z.string().min(1, { message: 'Username is required' })
+  username: z.string().min(1, { message: 'Username is required' }),
 });
 
 type MemberForm = z.infer<typeof inviteForm>;
 
 const updateTeamForm = z.object({
-  team: z.string().min(2, { message: 'Minimum 2 characters for team name' })
+  team: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
 });
 
 const { patch: updateTeam } = dataLoadersV2<UpdateTeamOutput, UpdateTeamInput>(
-  'updateTeam'
+  'updateTeam',
 );
 
 const TeamDetail = ({
-  team
+  team,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
 
@@ -68,9 +68,9 @@ const TeamDetail = ({
     handleSubmit,
     reset,
     setError,
-    formState: { errors }
+    formState: { errors },
   } = useForm<MemberForm>({
-    resolver: zodResolver(inviteForm)
+    resolver: zodResolver(inviteForm),
   });
 
   const addMember = async (data: MemberForm) => {
@@ -92,8 +92,8 @@ const TeamDetail = ({
         ...prev,
         {
           id: Math.random() + members.length,
-          username: data.username.toLowerCase()
-        }
+          username: data.username.toLowerCase(),
+        },
       ];
     });
 
@@ -104,9 +104,9 @@ const TeamDetail = ({
   const {
     register: teamRegister,
     handleSubmit: teamSubmit,
-    formState: { errors: teamErro }
+    formState: { errors: teamErro },
   } = useForm<UpdateTeamInput>({
-    resolver: zodResolver(updateTeamSchemaInput)
+    resolver: zodResolver(updateTeamSchemaInput),
   });
 
   const teamSubmitHandler = async (data: UpdateTeamInput) => {
@@ -141,7 +141,7 @@ const TeamDetail = ({
             <Input
               defaultValue={team.name}
               inputClassName={classnames({
-                'border-red-500': teamErro.name
+                'border-red-500': teamErro.name,
               })}
               error={teamErro.name?.message}
               {...teamRegister('name', { required: true })}
@@ -183,7 +183,8 @@ const TeamDetail = ({
                 disabled={fetching || isLimitReached}
                 inputClassName={classnames({
                   'border-red-500': errors.username,
-                  'placeholder-red-500 hover:cursor-not-allowed': isLimitReached
+                  'placeholder-red-500 hover:cursor-not-allowed':
+                    isLimitReached,
                 })}
                 error={errors.username?.message}
                 {...register('username', { required: true })}
@@ -232,13 +233,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: {
         destination: '/login',
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   }
 
   const currentUser = await current({
-    Authorization: cookie ? `Bearer ${cookie}` : ''
+    Authorization: cookie ? `Bearer ${cookie}` : '',
   });
 
   // Check token validity
@@ -246,21 +247,21 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: {
         destination: '/login',
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   }
 
   const params = ctx.params;
 
   const { team } = await findTeam(params?.id as string, {
-    Authorization: cookie ? `Bearer ${cookie}` : ''
+    Authorization: cookie ? `Bearer ${cookie}` : '',
   });
 
   return {
     props: {
-      team
-    }
+      team,
+    },
   };
 };
 

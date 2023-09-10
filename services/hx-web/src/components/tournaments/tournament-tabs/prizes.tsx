@@ -1,4 +1,4 @@
-import classnames from "classnames";
+import classnames from 'classnames';
 
 interface PrizesProps {
   classNames?: string;
@@ -10,7 +10,7 @@ interface TextProps {
 }
 const Heading = ({ children, className }: TextProps) => (
   <h2
-    className={classnames("font-bold tracking-tighter md:text-xl", className)}
+    className={classnames('font-bold tracking-tighter md:text-xl', className)}
   >
     {children}
   </h2>
@@ -23,11 +23,11 @@ interface UnorderedListProps {
 
 export const UnorderedList: React.FC<UnorderedListProps> = ({
   children,
-  className
+  className,
 }) => {
   return (
     <ul
-      className={classnames("list-disc space-y-2 p-2 pl-8 text-sm", className)}
+      className={classnames('list-disc space-y-2 p-2 pl-8 text-sm', className)}
     >
       {children}
     </ul>
@@ -36,7 +36,7 @@ export const UnorderedList: React.FC<UnorderedListProps> = ({
 
 export const Prizes: React.FC<PrizesProps> = ({ classNames }) => {
   return (
-    <div className={classnames("text-slate-300", classNames)}>
+    <div className={classnames('text-slate-300', classNames)}>
       <section className="flex flex-col gap-4 divide-y divide-slate-800">
         <div>
           <Heading>Tournament Prizes</Heading>
@@ -68,9 +68,9 @@ export const Prizes: React.FC<PrizesProps> = ({ classNames }) => {
               TEAMS.
             </li>
             <li>
-              This tournament{" "}
+              This tournament{' '}
               <strong>
-                does not receive any kind of sponsorship from{" "}
+                does not receive any kind of sponsorship from{' '}
                 <em>Riot Games</em>
               </strong>
               , it only makes the tournament prize pool available through the

@@ -1,5 +1,5 @@
-import classnames from "classnames";
-import styles from "./table.module.scss";
+import classnames from 'classnames';
+import styles from './table.module.scss';
 
 export const THead = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -66,7 +66,7 @@ const Table = ({ children }: { children: React.ReactNode }) => {
     <table
       className={classnames(
         styles.table,
-        "w-full table-fixed rounded-lg bg-white shadow-highlight-100 ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-0"
+        'w-full table-fixed rounded-lg bg-white shadow-highlight-100 ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-0',
       )}
     >
       {children}

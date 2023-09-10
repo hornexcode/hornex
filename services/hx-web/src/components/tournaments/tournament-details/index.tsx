@@ -1,1 +1,1 @@
-export { default } from "./tournament-details";
+export { default } from './tournament-details';

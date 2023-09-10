@@ -1,21 +1,21 @@
-import { useState } from "react";
-import { RadioGroup } from "@headlessui/react";
+import { useState } from 'react';
+import { RadioGroup } from '@headlessui/react';
 
 const bets = [
   {
-    name: "Conservador",
+    name: 'Conservador',
     amount: 5,
   },
   {
-    name: "Moderado",
+    name: 'Moderado',
     amount: 10,
   },
   {
-    name: "Arriscado",
+    name: 'Arriscado',
     amount: 20,
   },
   {
-    name: "Maluco",
+    name: 'Maluco',
     amount: 150,
   },
 ];
@@ -36,13 +36,13 @@ export default function BetPicker() {
                 className={({ active, checked }) =>
                   `${
                     active
-                      ? "ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300"
-                      : ""
+                      ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
+                      : ''
                   }
                   ${
                     checked
-                      ? "bg-opacity-75 bg-gradient-to-br from-sky-950 to-sky-800 text-white"
-                      : "bg-opacity-75 bg-gradient-to-br from-slate-950 to-slate-800"
+                      ? 'bg-opacity-75 bg-gradient-to-br from-sky-950 to-sky-800 text-white'
+                      : 'bg-opacity-75 bg-gradient-to-br from-slate-950 to-slate-800'
                   }
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                 }
@@ -55,7 +55,7 @@ export default function BetPicker() {
                           <RadioGroup.Label
                             as="p"
                             className={`font-medium  ${
-                              checked ? "text-white" : "text-white"
+                              checked ? 'text-white' : 'text-white'
                             }`}
                           >
                             {bet.name}
@@ -63,10 +63,10 @@ export default function BetPicker() {
                           <RadioGroup.Description
                             as="span"
                             className={`inline ${
-                              checked ? "text-sky-100" : "text-gray-200"
+                              checked ? 'text-sky-100' : 'text-gray-200'
                             }`}
                           >
-                            <span>{`R$ ${bet.amount},00`}</span>{" "}
+                            <span>{`R$ ${bet.amount},00`}</span>{' '}
                             {/* <span aria-hidden="true">&middot;</span>{" "}
                             <span>jogador</span> */}
                           </RadioGroup.Description>

@@ -1,7 +1,7 @@
-import { Game } from "@/types/game";
-import { on } from "events";
-import Image from "next/image";
-import { useRouter } from "next/router";
+import { Game } from '@/types/game';
+import { on } from 'events';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 export const GameListItem = ({ game }: { game: Game }) => {
   return (

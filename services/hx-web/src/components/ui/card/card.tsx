@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import classNames from 'classnames';
 
 export type CardProps = {
   children: React.ReactNode;
@@ -11,8 +11,8 @@ const Card = ({ children, className, ...rest }: CardProps) => {
   return (
     <div
       className={classNames(
-        "rounded-lg bg-light-dark shadow-card p-5 md:p-6",
-        className
+        'rounded-lg bg-light-dark shadow-card p-5 md:p-6',
+        className,
       )}
       {...rest}
     >

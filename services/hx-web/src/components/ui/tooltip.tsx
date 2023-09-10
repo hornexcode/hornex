@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import classNames from 'classnames';
 
 interface TooltipProps {
   children: React.ReactNode;
@@ -12,8 +12,8 @@ const Tooltip: React.FC<TooltipProps> = ({ children, className, id }) => {
       id={id}
       role="tooltip"
       className={classNames(
-        "tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700",
-        className
+        'tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700',
+        className,
       )}
     >
       {children}

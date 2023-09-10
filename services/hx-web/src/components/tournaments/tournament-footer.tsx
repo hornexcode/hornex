@@ -21,7 +21,7 @@ export default function TournamentFooter({
     <div
       className={classnames(
         'sticky bottom-0 z-10 flex-shrink-0 border-t-2 border-slate-700 pb-4 pt-2',
-        className
+        className,
       )}
     >
       <div className="py-4">
@@ -58,7 +58,7 @@ export default function TournamentFooter({
               <div
                 className={classnames(
                   'h-2 rounded-full bg-green-400',
-                  'w-[70%]'
+                  'w-[70%]',
                 )}
               ></div>
             </div>

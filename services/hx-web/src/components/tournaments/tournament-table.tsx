@@ -1,10 +1,10 @@
-import Image from "next/image";
-import classnames from "classnames";
-import { useRouter } from "next/navigation";
+import Image from 'next/image';
+import classnames from 'classnames';
+import { useRouter } from 'next/navigation';
 
-import LeagueOfLegendsThumb from "@/assets/images/games/league-of-legends.jpg";
-import Table from "../../ui/Table";
-import { EyeIcon } from "../../ui/Icons/eye-icon";
+import LeagueOfLegendsThumb from '@/assets/images/games/league-of-legends.jpg';
+import Table from '../../ui/Table';
+import { EyeIcon } from '../../ui/Icons/eye-icon';
 
 export type TournamentTableProps = {
   children: React.ReactNode;
@@ -33,7 +33,7 @@ export const TournamentTable = () => {
             {Array.from({ length: 5 }).map((_, index) => (
               <Table.TRow
                 key={index}
-                onClick={() => router.push("/league-of-legends/tournaments/1")}
+                onClick={() => router.push('/league-of-legends/tournaments/1')}
                 className="group/item transition-all hover:cursor-pointer hover:bg-slate-700/40 "
               >
                 <Table.TData colSpan={3}>
@@ -72,8 +72,8 @@ export const TournamentTable = () => {
                     <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
                       <div
                         className={classnames(
-                          "h-1.5 rounded-full bg-green-600",
-                          "w-[70%]"
+                          'h-1.5 rounded-full bg-green-600',
+                          'w-[70%]',
                         )}
                       ></div>
                     </div>
@@ -98,7 +98,7 @@ export const TournamentTable = () => {
                     </span>
                     <div
                       className={classnames(
-                        "absolute inset-x-[100rem] top-0 flex h-full w-full items-center justify-center  bg-sky-500 transition-all group-hover/item:inset-x-0"
+                        'absolute inset-x-[100rem] top-0 flex h-full w-full items-center justify-center  bg-sky-500 transition-all group-hover/item:inset-x-0',
                       )}
                     >
                       <span className="font-semibold italic text-white">

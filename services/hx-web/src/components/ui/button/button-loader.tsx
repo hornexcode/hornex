@@ -1,7 +1,7 @@
 import Loader, {
   LoaderSizeTypes,
   LoaderVariantTypes,
-} from "@/components/ui/loader";
+} from '@/components/ui/loader';
 
 export default function ButtonLoader({
   size,
@@ -22,4 +22,4 @@ export default function ButtonLoader({
   );
 }
 
-ButtonLoader.displayName = "ButtonLoader";
+ButtonLoader.displayName = 'ButtonLoader';

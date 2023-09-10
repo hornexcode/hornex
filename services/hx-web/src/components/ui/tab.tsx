@@ -20,7 +20,7 @@ export function TabItem({
             'text-brand dark:text-gray-100': selected,
             'text-gray-600 dark:text-gray-400': !selected,
           },
-          className
+          className,
         )
       }
     >

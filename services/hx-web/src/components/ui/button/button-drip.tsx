@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef } from "react";
-import cn from "classnames";
+import { useEffect, useRef } from 'react';
+import cn from 'classnames';
 
 interface ButtonDripTypes {
   x: number;
@@ -22,11 +22,11 @@ export default function ButtonDrip({
   let left = Number.isNaN(+x) ? 0 : x - 10;
   useEffect(() => {
     if (!dripRef.current) return;
-    dripRef.current.addEventListener("animationend", onCompleted);
+    dripRef.current.addEventListener('animationend', onCompleted);
     return () => {
       if (!dripRef.current) return;
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      dripRef.current.removeEventListener("animationend", onCompleted);
+      dripRef.current.removeEventListener('animationend', onCompleted);
     };
   });
   return (
@@ -36,8 +36,8 @@ export default function ButtonDrip({
         height="20"
         viewBox="0 0 20 20"
         className={cn(
-          "absolute h-4 w-4",
-          fullWidth ? "animate-drip-expand-large" : "animate-drip-expand"
+          'absolute h-4 w-4',
+          fullWidth ? 'animate-drip-expand-large' : 'animate-drip-expand',
         )}
         style={{ top, left }}
       >
@@ -51,4 +51,4 @@ export default function ButtonDrip({
   );
 }
 
-ButtonDrip.displayName = "ButtonDrip";
+ButtonDrip.displayName = 'ButtonDrip';

@@ -78,7 +78,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onClick,
       ...buttonProps
     },
-    ref: React.Ref<HTMLButtonElement | null>
+    ref: React.Ref<HTMLButtonElement | null>,
   ) => {
     let [dripShow, setDripShow] = useState<boolean>(false);
     let [dripX, setDripX] = useState<number>(0);
@@ -144,7 +144,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             : variants[variant],
           shapes[shape],
           shape === 'circle' ? `${sizeClassNames[1]}` : `${sizeClassNames[0]}`,
-          className
+          className,
         )}
         disabled={disabled}
         {...buttonProps}
@@ -172,7 +172,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

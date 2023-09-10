@@ -1,7 +1,7 @@
-import classnames from "classnames";
-import styles from "./toournament-details.module.scss";
-import { TicketIcon, TrophyIcon, UsersIcon } from "@heroicons/react/20/solid";
-import Badge from "@/components/ui/badge";
+import classnames from 'classnames';
+import styles from './toournament-details.module.scss';
+import { TicketIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
+import Badge from '@/components/ui/badge';
 
 const TournamentDetails = () => {
   return (
@@ -18,7 +18,7 @@ const TournamentDetails = () => {
         <div className="grid grid-cols-2 gap-5 md:grid-cols-4 md:gap-0">
           <div className={classnames(styles.tournament_badge_info)}>
             <span className={classnames(styles.tournament_badge_label)}>
-              {" "}
+              {' '}
               <UsersIcon className="mr-2 h-4 w-4" /> Max Teams
             </span>
             <span className="text-center text-lg font-medium text-slate-200 md:text-right">

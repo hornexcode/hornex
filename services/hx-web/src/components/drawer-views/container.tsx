@@ -14,7 +14,7 @@ const Sidebar = dynamic(() => import('@/layouts/sidebar/sidebar'));
 const DrawerFilters = dynamic(() => import('@/components/search/filters'));
 const DrawerMenu = dynamic(() => import('@/layouts/sidebar/_layout-menu'));
 const PreviewContent = dynamic(
-  () => import('@/components/create-nft/nft-preview-content')
+  () => import('@/components/create-nft/nft-preview-content'),
 );
 
 function renderDrawerContent(view: DRAWER_VIEW | string) {
@@ -41,7 +41,7 @@ export default function DrawersContainer() {
   // set initial layout on component mount
   useEffect(() => {
     const initialLayout = layoutOptions.find(
-      (layout) => layout === layoutSegmentFromURL
+      (layout) => layout === layoutSegmentFromURL,
     );
     setLayout(() => initialLayout ?? layoutOptions[0]);
   }, [pathname]);

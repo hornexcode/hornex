@@ -10,7 +10,7 @@ import { AppLayout } from '@/layouts';
 import { dataLoadersV2 } from '@/lib/api';
 import {
   GetTeamsOutput,
-  getTeamsSchemaOutput as schema
+  getTeamsSchemaOutput as schema,
 } from '@/services/hx-core/get-teams';
 
 const { useData: getTeams } = dataLoadersV2<GetTeamsOutput>('getTeams', schema);
@@ -63,12 +63,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     cookies['hx-auth.token'] !== ''
   ) {
     return {
-      props: {}
+      props: {},
     };
   }
 
   return {
-    props: {}
+    props: {},
   };
 };
 

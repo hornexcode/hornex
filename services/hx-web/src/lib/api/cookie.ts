@@ -12,7 +12,7 @@ import { IncomingMessage } from 'http';
  */
 export function getCookieFromRequest(
   req: IncomingMessage,
-  name: string = ''
+  name: string = '',
 ): string | undefined {
   if (req.headers.cookie) {
     const { [name]: cookie } = parseCookie(req.headers.cookie);

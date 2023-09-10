@@ -6,11 +6,11 @@ import { Method } from '../routes/routes';
 export const routes = {
   login: {
     path: 'v1/auth/login',
-    method: Method.POST
+    method: Method.POST,
   },
   signup: {
     path: 'v1/auth/signup',
-    method: Method.POST
+    method: Method.POST,
   },
   signup: {
     path: 'v1/auth/signup',
@@ -18,38 +18,38 @@ export const routes = {
   },
   logout: {
     path: 'v1/auth/logout',
-    method: Method.POST
+    method: Method.POST,
   },
   currentUser: {
     path: 'v1/users/current',
-    method: Method.GET
+    method: Method.GET,
   },
   createTeam: {
     path: 'v1/teams',
-    method: Method.POST
+    method: Method.POST,
   },
   findTeam: {
     path: 'v1/teams',
-    method: Method.GET
+    method: Method.GET,
   },
   getTeams: {
     path: 'v1/teams',
-    method: Method.GET
+    method: Method.GET,
   },
   updateTeam: {
     path: 'v1/teams',
-    method: Method.PATCH
+    method: Method.PATCH,
   },
   getEmailConfirmationCode: {
     path: 'v1/auth/signup-confirm',
-    method: Method.GET
+    method: Method.GET,
   },
   confirmSignup: {
     path: 'v1/auth/signup-confirm',
-    method: Method.POST
+    method: Method.POST,
   },
   getGames: {
     path: 'v1/games',
-    method: Method.GET
-  }
+    method: Method.GET,
+  },
 };

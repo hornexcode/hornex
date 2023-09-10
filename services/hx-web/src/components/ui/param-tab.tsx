@@ -39,13 +39,13 @@ export default function ParamTab({ tabMenu, children }: ParamTabTypes) {
         query: { ...restQuery, view: tabMenu[index].path },
       },
       undefined,
-      { scroll: false }
+      { scroll: false },
     );
   }
   useEffect(() => {
     if (router?.query?.view) {
       setSelectedTabIndex(
-        tabMenu.findIndex((item) => router.query.view === item.path)
+        tabMenu.findIndex((item) => router.query.view === item.path),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,7 +79,7 @@ export default function ParamTab({ tabMenu, children }: ParamTabTypes) {
                 'xs:gap-1 absolute left-0 top-full z-10 mt-1 grid w-full gap-0.5 rounded-lg border border-gray-200 bg-white p-2 text-left shadow-large dark:border-gray-700 dark:bg-gray-800',
                 visibleMobileMenu
                   ? 'visible opacity-100'
-                  : 'invisible opacity-0'
+                  : 'invisible opacity-0',
               )}
             >
               {tabMenu.map((item) => (

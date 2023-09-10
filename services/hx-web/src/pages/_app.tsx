@@ -38,7 +38,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       <div
         className={classnames(
           'bg-dark text-xs text-slate-500 antialiased',
-          kanit.className
+          kanit.className,
         )}
       >
         <AuthContextProvider>

@@ -65,13 +65,13 @@ export const GameItem: FC<GameItemProps> = ({
           backgroundRepeat: 'no-repeat',
         }}
         className={classNames(
-          'group relative h-full w-full overflow-hidden rounded'
+          'group relative h-full w-full overflow-hidden rounded',
         )}
       >
         <div
           className={classNames(
             'absolute top-0 h-full w-full rounded opacity-70 transition-opacity duration-500 ease-linear',
-            bgColors[bgColor]
+            bgColors[bgColor],
           )}
         ></div>
         <div className="relative top-4 flex h-full flex-col items-center">
@@ -105,7 +105,7 @@ export const GameItem: FC<GameItemProps> = ({
                   key={i}
                   className={classNames(
                     'w-7 rounded-md fill-white p-1',
-                    platform.bgColor
+                    platform.bgColor,
                   )}
                 />
               ))}

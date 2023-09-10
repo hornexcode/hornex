@@ -25,7 +25,7 @@ export default function Compete() {
       platforms: [
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -47,7 +47,7 @@ export default function Compete() {
         },
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -69,7 +69,7 @@ export default function Compete() {
       platforms: [
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -91,7 +91,7 @@ export default function Compete() {
         },
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },

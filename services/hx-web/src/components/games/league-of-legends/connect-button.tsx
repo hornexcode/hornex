@@ -11,7 +11,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import Input from '@/components/ui/form/input';
 import Label from '@/components/ui/form/input-label';
@@ -32,12 +32,12 @@ type Summoner = {
 const regionOptions = [
   {
     name: 'Select your region',
-    value: '0'
+    value: '0',
   },
   {
     name: 'Brasil',
-    value: 'br1'
-  }
+    value: 'br1',
+  },
 ];
 
 export const ConnectButton = () => {
@@ -60,9 +60,9 @@ export const ConnectButton = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + get('hx-auth.token')
-          }
-        }
+            Authorization: 'Bearer ' + get('hx-auth.token'),
+          },
+        },
       );
       const data = (await res.json()) as any;
 
@@ -89,13 +89,13 @@ export const ConnectButton = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + get('hx-auth.token')
+            Authorization: 'Bearer ' + get('hx-auth.token'),
           },
           body: JSON.stringify({
             ...summoner,
-            region: regionOption.value
-          })
-        }
+            region: regionOption.value,
+          }),
+        },
       );
       const data = (await res.json()) as any;
 
@@ -145,9 +145,9 @@ export const ConnectButton = () => {
                 disabled={isFetching}
                 inputClassName={classnames(
                   {
-                    'ring-2 ring-green-500': isValid
+                    'ring-2 ring-green-500': isValid,
                   },
-                  { 'ring-2 ring-red-500': error }
+                  { 'ring-2 ring-red-500': error },
                 )}
                 onBlur={onSearchSummoner}
                 name="summoner_name"

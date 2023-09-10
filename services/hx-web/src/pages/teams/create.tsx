@@ -34,7 +34,7 @@ const createTeamFormSchema = z.object({
 type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
 
 const { post: createTeam } = dataLoadersV2<TeamCreated, CreateTeamForm>(
-  'createTeam'
+  'createTeam',
 );
 
 const TeamCreate = ({
@@ -96,7 +96,7 @@ const TeamCreate = ({
           <Input
             disabled={isFetching}
             inputClassName={classnames(
-              errors.name?.message ? 'focus:ring-red-500' : ''
+              errors.name?.message ? 'focus:ring-red-500' : '',
             )}
             placeholder="Choose a cool name like: #1 HX 🐐"
             error={errors.name?.message}

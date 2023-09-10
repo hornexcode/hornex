@@ -14,7 +14,7 @@ export const getGamesSchemaOutput = z.array(
     id: z.string(),
     name: z.string(),
     slug: z.string(),
-  })
+  }),
 );
 
 export type GetGamesOutput = z.infer<typeof getGamesSchemaOutput>;

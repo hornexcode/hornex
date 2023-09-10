@@ -44,7 +44,7 @@ export default function Listbox({
         <HeadlessListbox.Button
           className={cn(
             'text-case-inherit letter-space-inherit flex h-8 w-full items-center justify-between rounded-lg px-4 text-sm font-medium outline-none duration-200 sm:h-10 sm:px-5',
-            listboxVariantClasses[variant]
+            listboxVariantClasses[variant],
           )}
         >
           <div className="flex items-center">{selectedOption?.name}</div>

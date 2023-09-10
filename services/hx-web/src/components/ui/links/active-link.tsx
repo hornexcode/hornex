@@ -1,16 +1,16 @@
-import type { LinkProps } from "next/link";
-import { usePathname } from "next/navigation";
-import cn from "classnames";
-import AnchorLink from "@/components/ui/links/anchor-link";
+import type { LinkProps } from 'next/link';
+import { usePathname } from 'next/navigation';
+import cn from 'classnames';
+import AnchorLink from '@/components/ui/links/anchor-link';
 
 interface ActiveLinkProps extends LinkProps {
   activeClassName?: string;
 }
 const ActiveLink: React.FC<
-  ActiveLinkProps & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
-> = ({ href, className, activeClassName = "active", ...props }) => {
+  ActiveLinkProps & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>
+> = ({ href, className, activeClassName = 'active', ...props }) => {
   const pathname = usePathname();
-  const _href = typeof href === "object" ? href.pathname : href;
+  const _href = typeof href === 'object' ? href.pathname : href;
   return (
     <AnchorLink
       href={href}

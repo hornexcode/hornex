@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import Button from "@/components/ui/button/button";
-import Input from "@/components/ui/form/input";
-import InputLabel from "@/components/ui/form/input-label";
+import Button from '@/components/ui/button/button';
+import Input from '@/components/ui/form/input';
+import InputLabel from '@/components/ui/form/input-label';
 
 export default function SignInPage() {
   return (
@@ -34,7 +34,7 @@ export default function SignInPage() {
               />
             </div>
             <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-              Eu concordo com os{" "}
+              Eu concordo com os{' '}
               <a
                 href="#"
                 className="text-blue-600 hover:underline dark:text-blue-500"

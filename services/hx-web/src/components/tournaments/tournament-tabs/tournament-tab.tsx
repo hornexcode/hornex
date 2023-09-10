@@ -34,7 +34,7 @@ export function TournamentTabs() {
                   'text-md -mb-1.5 whitespace-nowrap px-4 py-4 font-semibold text-slate-400 outline-none transition-colors hover:text-sky-400',
                   selected
                     ? 'border-b-2 border-sky-400 !text-white'
-                    : 'text-slate-400'
+                    : 'text-slate-400',
                 )
               }
             >

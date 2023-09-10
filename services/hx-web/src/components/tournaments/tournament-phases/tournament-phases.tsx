@@ -1,6 +1,6 @@
-import { ClockIcon } from "@heroicons/react/20/solid";
-import TournamentFooter from "../tournament-footer";
-import TournamentStepper from "../tournament-stepper";
+import { ClockIcon } from '@heroicons/react/20/solid';
+import TournamentFooter from '../tournament-footer';
+import TournamentStepper from '../tournament-stepper';
 
 export type TournamentPhasesProps = {
   className?: string;
@@ -28,7 +28,7 @@ export const TournamentPhases = ({ className }: TournamentPhasesProps) => {
       <TournamentFooter
         className="mt-8 hidden md:block"
         isJoined={false}
-        joinTournament={() => console.log("join tournament")}
+        joinTournament={() => console.log('join tournament')}
       />
     </div>
   );

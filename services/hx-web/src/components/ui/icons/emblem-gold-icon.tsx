@@ -1,6 +1,6 @@
-import classnames from "classnames";
-import EmblemGold from "@/assets/images/ranked-emblem/emblem-gold.png";
-import Image from "next/image";
+import classnames from 'classnames';
+import EmblemGold from '@/assets/images/ranked-emblem/emblem-gold.png';
+import Image from 'next/image';
 
 export const EmblemGoldIcon = ({ className }: { className?: string }) => {
   return (

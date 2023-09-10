@@ -1,4 +1,4 @@
-import classnames from "classnames";
+import classnames from 'classnames';
 
 interface TeamsProps {
   classNames?: string;
@@ -7,149 +7,149 @@ interface TeamsProps {
 export const Teams: React.FC<TeamsProps> = ({ classNames }) => {
   const teams = [
     {
-      name: "Phoenix",
+      name: 'Phoenix',
       members: [
         {
-          username: "ShadowSlayer",
-          elo: "Diamond",
+          username: 'ShadowSlayer',
+          elo: 'Diamond',
           wins: 15,
-          losses: 5
+          losses: 5,
         },
         {
-          username: "BlazeFire",
-          elo: "Platinum",
+          username: 'BlazeFire',
+          elo: 'Platinum',
           wins: 10,
-          losses: 8
+          losses: 8,
         },
         {
-          username: "MysticSorcerer",
-          elo: "Gold",
+          username: 'MysticSorcerer',
+          elo: 'Gold',
           wins: 12,
-          losses: 6
+          losses: 6,
         },
         {
-          username: "DragonFang",
-          elo: "Silver",
+          username: 'DragonFang',
+          elo: 'Silver',
           wins: 8,
-          losses: 10
+          losses: 10,
         },
         {
-          username: "StarGazer",
-          elo: "Bronze",
+          username: 'StarGazer',
+          elo: 'Bronze',
           wins: 210,
-          losses: 150
-        }
-      ]
+          losses: 150,
+        },
+      ],
     },
     {
-      name: "Titans",
+      name: 'Titans',
       members: [
         {
-          username: "WarriorKing",
-          elo: "Platinum",
+          username: 'WarriorKing',
+          elo: 'Platinum',
           wins: 12,
-          losses: 7
+          losses: 7,
         },
         {
-          username: "StormBreaker",
-          elo: "Gold",
+          username: 'StormBreaker',
+          elo: 'Gold',
           wins: 11,
-          losses: 9
+          losses: 9,
         },
         {
-          username: "Thunderstrike",
-          elo: "Silver",
+          username: 'Thunderstrike',
+          elo: 'Silver',
           wins: 9,
-          losses: 11
+          losses: 11,
         },
         {
-          username: "IronClad",
-          elo: "Bronze",
+          username: 'IronClad',
+          elo: 'Bronze',
           wins: 6,
-          losses: 14
+          losses: 14,
         },
         {
-          username: "BattleMaiden",
-          elo: "Iron",
+          username: 'BattleMaiden',
+          elo: 'Iron',
           wins: 4,
-          losses: 16
-        }
-      ]
+          losses: 16,
+        },
+      ],
     },
     {
-      name: "Legends",
+      name: 'Legends',
       members: [
         {
-          username: "EternalChampion",
-          elo: "Diamond",
+          username: 'EternalChampion',
+          elo: 'Diamond',
           wins: 13,
-          losses: 7
+          losses: 7,
         },
         {
-          username: "MythicalSword",
-          elo: "Platinum",
+          username: 'MythicalSword',
+          elo: 'Platinum',
           wins: 9,
-          losses: 11
+          losses: 11,
         },
         {
-          username: "ArcaneMage",
-          elo: "Gold",
+          username: 'ArcaneMage',
+          elo: 'Gold',
           wins: 11,
-          losses: 9
+          losses: 9,
         },
         {
-          username: "ValiantKnight",
-          elo: "Silver",
+          username: 'ValiantKnight',
+          elo: 'Silver',
           wins: 7,
-          losses: 13
+          losses: 13,
         },
         {
-          username: "MagicWarden",
-          elo: "Bronze",
+          username: 'MagicWarden',
+          elo: 'Bronze',
           wins: 6,
-          losses: 14
-        }
-      ]
+          losses: 14,
+        },
+      ],
     },
     {
-      name: "Guardians",
+      name: 'Guardians',
       members: [
         {
-          username: "SwiftArrow",
-          elo: "Platinum",
+          username: 'SwiftArrow',
+          elo: 'Platinum',
           wins: 14,
-          losses: 6
+          losses: 6,
         },
         {
-          username: "IronShield",
-          elo: "Gold",
+          username: 'IronShield',
+          elo: 'Gold',
           wins: 10,
-          losses: 10
+          losses: 10,
         },
         {
-          username: "StormDancer",
-          elo: "Silver",
+          username: 'StormDancer',
+          elo: 'Silver',
           wins: 8,
-          losses: 12
+          losses: 12,
         },
         {
-          username: "SoulBinder",
-          elo: "Bronze",
+          username: 'SoulBinder',
+          elo: 'Bronze',
           wins: 7,
-          losses: 13
+          losses: 13,
         },
         {
-          username: "GuardianSpirit",
-          elo: "Iron",
+          username: 'GuardianSpirit',
+          elo: 'Iron',
           wins: 3,
-          losses: 17
-        }
-      ]
-    }
+          losses: 17,
+        },
+      ],
+    },
   ];
 
   return (
-    <div className={classnames("m-auto flex max-w-5xl", classNames)}>
+    <div className={classnames('m-auto flex max-w-5xl', classNames)}>
       <section className="flex w-full flex-col gap-4">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 xl:gap-4">
@@ -181,7 +181,7 @@ export const Teams: React.FC<TeamsProps> = ({ classNames }) => {
                       <li
                         key={i}
                         className={classnames(
-                          "grid grid-cols-6 justify-items-center rounded-md p-2 text-xs even:ring-1 even:ring-inset even:ring-slate-700"
+                          'grid grid-cols-6 justify-items-center rounded-md p-2 text-xs even:ring-1 even:ring-inset even:ring-slate-700',
                         )}
                       >
                         <span className="col-span-3 place-self-start text-sky-200">

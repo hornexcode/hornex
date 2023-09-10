@@ -10,28 +10,28 @@ export default function TeamPage() {
     {
       id: 1,
       name: 'Alpha',
-      matches: 20
+      matches: 20,
     },
     {
       id: 2,
       name: 'Bravo',
-      matches: 18
+      matches: 18,
     },
     {
       id: 3,
       name: 'Charlie',
-      matches: 23
+      matches: 23,
     },
     {
       id: 4,
       name: 'Delta',
-      matches: 15
+      matches: 15,
     },
     {
       id: 5,
       name: 'Echo',
-      matches: 25
-    }
+      matches: 25,
+    },
   ];
 
   return (

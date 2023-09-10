@@ -10,14 +10,14 @@ const fetcher = async (url: string, options?: RequestInit) => {
 };
 
 export const dataLoaders = <T, Data = unknown>(
-  routeKey: keyof typeof routes
+  routeKey: keyof typeof routes,
 ) => {
   const { path, method } = routes[routeKey];
 
   // Post data to the API
   const post = async (
     payload?: Data,
-    headers: Record<string, string> = {}
+    headers: Record<string, string> = {},
   ): Promise<T> => {
     let error: FetchError | null = null;
     let data: T;
@@ -32,9 +32,9 @@ export const dataLoaders = <T, Data = unknown>(
         headers: {
           'Content-Type': 'application/json',
           Authorization: cookie ? `Bearer ${cookie}` : '',
-          ...headers
+          ...headers,
         },
-        body: payload ? JSON.stringify(payload) : ''
+        body: payload ? JSON.stringify(payload) : '',
       });
 
       if (r.ok) {
@@ -68,8 +68,8 @@ export const dataLoaders = <T, Data = unknown>(
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          ...headers
-        }
+          ...headers,
+        },
       });
 
       if (r.ok) {
@@ -105,8 +105,8 @@ export const dataLoaders = <T, Data = unknown>(
         headers: {
           'Content-Type': 'application/json',
           Authorization: cookie ? `Bearer ${cookie}` : '',
-          ...headers
-        }
+          ...headers,
+        },
       });
 
       if (r.ok) {
@@ -133,7 +133,7 @@ export const dataLoaders = <T, Data = unknown>(
   return {
     post,
     get,
-    find
+    find,
   };
 };
 

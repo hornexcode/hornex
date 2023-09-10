@@ -23,11 +23,11 @@ type ConfirmSignupInput = z.infer<typeof schema>;
 
 const { post: confirmSignup } = dataLoadersV2<{}, ConfirmSignupInput>(
   'confirmSignup',
-  schema
+  schema,
 );
 
 const { get: getEmailConfirmationCode } = dataLoadersV2<{}>(
-  'getEmailConfirmationCode'
+  'getEmailConfirmationCode',
 );
 
 export default function RegisterPage() {
@@ -39,7 +39,7 @@ export default function RegisterPage() {
     router.push('/compete');
   }
   const [codeEvent, setCodeEvent] = useState<'send' | 'resend' | 'sent'>(
-    'send'
+    'send',
   );
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);

@@ -30,7 +30,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
       platforms: [
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -52,7 +52,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
         },
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -74,7 +74,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
       platforms: [
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -96,7 +96,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
         },
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
+            props: React.SVGAttributes<{}>,
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },

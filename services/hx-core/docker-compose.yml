@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: ./build/rest-server/Dockerfile
     ports:
-      - "9234:9234"
+      - '9234:9234'
     command: rest-server -env /api/env.example
     environment:
-      DATABASE_HOST: "postgres"
-      VAULT_ADDRESS:     "http://vault:8300"
+      DATABASE_HOST: 'postgres'
+      VAULT_ADDRESS: 'http://vault:8300'
     depends_on:
       postgres:
         condition: service_healthy
@@ -18,14 +18,14 @@ services:
   postgres:
     image: postgres:15.2-bullseye
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
-      POSTGRES_DB:               "hxcore"
-      POSTGRES_HOST_AUTH_METHOD: "trust"
-      POSTGRES_PASSWORD:         "password"
-      POSTGRES_USER:             "hxcore"
+      POSTGRES_DB: 'hxcore'
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_USER: 'hxcore'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ['CMD-SHELL', 'pg_isready']
       interval: 10s
       timeout: 5s
       retries: 10
@@ -34,15 +34,15 @@ services:
   vault:
     image: vault:1.12.4
     ports:
-      - "8300:8300"
+      - '8300:8300'
     cap_add:
       - IPC_LOCK
     environment:
-      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8300"
-      VAULT_DEV_ROOT_TOKEN_ID:  "myroot"
+      VAULT_DEV_LISTEN_ADDRESS: '0.0.0.0:8300'
+      VAULT_DEV_ROOT_TOKEN_ID: 'myroot'
 
   rabbitmq:
     image: rabbitmq:3.11.10-management-alpine
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '5672:5672'
+      - '15672:15672'

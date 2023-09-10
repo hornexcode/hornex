@@ -68,7 +68,7 @@ export default function UserSearchList({ onSelect }: CollectionSelectTypes) {
           'absolute top-12 z-30 mt-1 w-full rounded bg-gray-800 py-3 transition-all',
           {
             hidden: searchKeyword.length === 0,
-          }
+          },
         )}
       >
         {coinListData.length > 0 ? (

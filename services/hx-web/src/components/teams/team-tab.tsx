@@ -25,7 +25,7 @@ export function TeamTab() {
       <TabPanel className="focus:outline-none">
         <div
           className={cn(
-            'xs:grid-cols-2 3xl:grid-cols-3 4xl:grid-cols-4 grid gap-4 md:grid-cols-1 lg:grid-cols-2 lg:gap-5 xl:gap-6'
+            'xs:grid-cols-2 3xl:grid-cols-3 4xl:grid-cols-4 grid gap-4 md:grid-cols-1 lg:grid-cols-2 lg:gap-5 xl:gap-6',
           )}
         >
           <p>

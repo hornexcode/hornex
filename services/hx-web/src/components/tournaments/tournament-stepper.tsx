@@ -1,5 +1,5 @@
-import Badge from "@/components/ui/badge";
-import { ClockIcon } from "@heroicons/react/20/solid";
+import Badge from '@/components/ui/badge';
+import { ClockIcon } from '@heroicons/react/20/solid';
 
 const TournamentStepper = () => {
   return (

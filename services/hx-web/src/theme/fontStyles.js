@@ -1,8 +1,8 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   fontSize: {
     ...defaultTheme.fontSize,
-    base: "1rem",
+    base: '1rem',
   },
 };

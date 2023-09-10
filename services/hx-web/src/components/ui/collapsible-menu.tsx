@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import cn from "classnames";
-import { motion } from "framer-motion";
-import { useMeasure } from "@/lib/hooks/use-measure";
-import { useLayout } from "@/lib/hooks/use-layout";
-import ActiveLink from "@/components/ui/links/active-link";
-import { ChevronDown } from "@/components/ui/icons/chevron-down";
-import routes from "@/config/routes";
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import cn from 'classnames';
+import { motion } from 'framer-motion';
+import { useMeasure } from '@/lib/hooks/use-measure';
+import { useLayout } from '@/lib/hooks/use-layout';
+import ActiveLink from '@/components/ui/links/active-link';
+import { ChevronDown } from '@/components/ui/icons/chevron-down';
+import routes from '@/config/routes';
 
 type MenuItemProps = {
   name?: string;
@@ -31,7 +31,7 @@ export function MenuItem({
   isActive,
 }: MenuItemProps) {
   const { layout } = useLayout();
-  const pathname = "/" + usePathname();
+  const pathname = '/' + usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [ref, { height }] = useMeasure<HTMLUListElement>();
   const isChildrenActive =
@@ -48,20 +48,20 @@ export function MenuItem({
         <>
           <div
             className={cn(
-              "relative flex h-12 cursor-pointer items-center justify-between whitespace-nowrap  rounded-lg px-4 text-sm transition-all",
+              'relative flex h-12 cursor-pointer items-center justify-between whitespace-nowrap  rounded-lg px-4 text-sm transition-all',
               isChildrenActive
-                ? "text-white"
-                : "hover:text-brand text-gray-500 dark:hover:text-white"
+                ? 'text-white'
+                : 'hover:text-brand text-gray-500 dark:hover:text-white',
             )}
             onClick={() => setIsOpen(!isOpen)}
           >
             <span className="z-[1] flex items-center ltr:mr-3 rtl:ml-3">
-              <span className={cn("ltr:mr-3 rtl:ml-3")}>{icon}</span>
+              <span className={cn('ltr:mr-3 rtl:ml-3')}>{icon}</span>
               {name}
             </span>
             <span
               className={`z-[1] transition-transform duration-200 ${
-                isOpen ? "rotate-180" : ""
+                isOpen ? 'rotate-180' : ''
               }`}
             >
               <ChevronDown />
@@ -102,20 +102,20 @@ export function MenuItem({
         <ActiveLink
           href={href}
           className={cn(
-            "hover:text-brand relative flex h-12 items-center whitespace-nowrap rounded-lg px-4 text-sm text-gray-500 transition-all dark:hover:text-white",
+            'hover:text-brand relative flex h-12 items-center whitespace-nowrap rounded-lg px-4 text-sm text-gray-500 transition-all dark:hover:text-white',
             {
-              "bg-brand": isActive,
-            }
+              'bg-brand': isActive,
+            },
           )}
           activeClassName="!text-white"
         >
           <span
             className={cn(
-              "relative z-[1] duration-100 before:absolute before:-right-3 before:top-[50%] before:h-1 before:w-1 before:-translate-y-2/4 before:rounded-full before:bg-none ltr:mr-3 rtl:ml-3",
+              'relative z-[1] duration-100 before:absolute before:-right-3 before:top-[50%] before:h-1 before:w-1 before:-translate-y-2/4 before:rounded-full before:bg-none ltr:mr-3 rtl:ml-3',
               {
-                "text-white": isActive,
-                "text-gray-500": !isActive && !name,
-              }
+                'text-white': isActive,
+                'text-gray-500': !isActive && !name,
+              },
             )}
           >
             {icon}

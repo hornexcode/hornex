@@ -135,7 +135,7 @@ export const AuthContextProvider = ({
             errorResponse.message ||
               errorResponse?.detail ||
               errorResponse?.error ||
-              'Error logging in'
+              'Error logging in',
           );
         } catch (error) {
           // Error 500
