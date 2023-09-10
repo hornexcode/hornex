@@ -22,14 +22,14 @@ const CompetePage = ({}: InferGetServerSidePropsType<
 >) => {
   const games: GameItemProps[] = [
     {
-      bgImage: 'http://localhost:3000/images/card-background-lol.png',
+      bgImage: '/images/card-background-lol.png',
       LogoComponentIcon: LolLogoIcon,
       hoverImage: LolChar,
       bgColor: 'sky',
       platforms: [
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>,
+            props: React.SVGAttributes<{}>
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -40,7 +40,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
       tournaments: 23,
     },
     {
-      bgImage: 'http://localhost:3000/images/bg-cs-go.png',
+      bgImage: '/images/bg-cs-go.png',
       LogoComponentIcon: CounterStrikeLogoIcon,
       hoverImage: CSChar,
       bgColor: 'yellow',
@@ -51,7 +51,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
         },
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>,
+            props: React.SVGAttributes<{}>
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -66,14 +66,14 @@ const CompetePage = ({}: InferGetServerSidePropsType<
       tournaments: 57,
     },
     {
-      bgImage: 'http://localhost:3000/images/bg-dota.webp',
+      bgImage: '/images/bg-dota.webp',
       LogoComponentIcon: DotaLogoIcon,
       hoverImage: DotaChar,
       bgColor: 'red',
       platforms: [
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>,
+            props: React.SVGAttributes<{}>
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },
@@ -84,7 +84,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
       tournaments: 15,
     },
     {
-      bgImage: 'http://localhost:3000/images/bg-rocket-league.webp',
+      bgImage: '/images/bg-rocket-league.webp',
       LogoComponentIcon: RocketLeagueLogoIcon,
       hoverImage: RocketLeagueChar,
       bgColor: 'purple',
@@ -95,7 +95,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
         },
         {
           Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>,
+            props: React.SVGAttributes<{}>
           ) => JSX.Element,
           bgColor: 'bg-sky-500',
         },

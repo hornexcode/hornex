@@ -15,7 +15,7 @@ const Tournaments = ({}: InferGetServerSidePropsType<
   // const {} = useFormContext()
   return (
     <>
-      <section className="relative mx-auto h-80 bg-[url('http://localhost:3000/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat">
+      <section className="relative mx-auto h-80 bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat">
         <div className="absolute inset-0 bg-amber-400/50">
           <div className="flex  p-4">
             <Image

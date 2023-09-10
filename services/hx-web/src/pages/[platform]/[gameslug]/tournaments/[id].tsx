@@ -29,8 +29,8 @@ export default function Tournament({ params }: TournamentProps) {
     <div className="">
       <section className="h-[160px] md:h-[250px]">
         <div className="group relative flex h-full items-end bg-gradient-to-br from-amber-400 to-amber-300">
-          <figure className="flex h-full w-full flex-col justify-end bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-no-repeat"></figure>
-          <div className="absolute -bottom-[200px] left-8 flex h-[240px] w-56 items-center rounded-lg border border-slate-800 bg-dark p-8">
+          <figure className="flex h-full w-full flex-col justify-end bg-[url('/images/jinks.jpg')] bg-cover bg-no-repeat"></figure>
+          <div className="bg-dark absolute -bottom-[200px] left-8 flex h-[240px] w-56 items-center rounded-lg border border-slate-800 p-8">
             <Image className="" src={HornexLogo} alt="ESL One Logo" />
           </div>
         </div>

@@ -129,7 +129,7 @@ export default function HomePage() {
       </nav>
 
       <section id="home" className="relative h-[calc(90vh-68px)]">
-        {/* <div className="absolute inset-0 top-0 -z-10 h-full w-full bg-[url('http://localhost:3000/images/major.avif')] bg-cover bg-no-Hornex">
+        {/* <div className="absolute inset-0 top-0 -z-10 h-full w-full bg-[url('/images/major.avif')] bg-cover bg-no-Hornex">
           <div className="h-full w-full bg-dark/95" />
         </div> */}
 
@@ -232,7 +232,7 @@ export default function HomePage() {
           <div className="mt-10 grid grid-cols-4 gap-4 px-4 text-gray-500">
             {/* league of legends */}
             <Link href={routes.compete} className="group">
-              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('/images/jinks.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-sky-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
@@ -250,7 +250,7 @@ export default function HomePage() {
 
             {/* csgo */}
             <Link href={routes.compete} className="group">
-              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/cs-go/ct-bot.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('/images/cs-go/ct-bot.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-purple-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
@@ -268,7 +268,7 @@ export default function HomePage() {
 
             {/* free fire */}
             <Link href={routes.compete} className="group">
-              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/free-fire/battle-royale.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('/images/free-fire/battle-royale.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-red-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
@@ -286,7 +286,7 @@ export default function HomePage() {
 
             {/* rocket league */}
             <Link href={routes.compete} className="group">
-              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/bg-rocket-league.webp')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('/images/bg-rocket-league.webp')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-green-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
