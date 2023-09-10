@@ -5,7 +5,7 @@ import ProfileMenuItem from '@/components/profile/profile-menu-item';
 import { User } from '@/domain';
 import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { dataLoaders } from '@/lib/api/client';
-import { useAuthContext } from '@/lib/auth/auth.context';
+import { useAuthContext } from '@/lib/auth/auth-context';
 import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
 import { useIsMounted } from '@/lib/hooks/use-is-mounted';
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid';

@@ -2,7 +2,7 @@ import '@/styles/global.css';
 import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { AuthContextProvider } from '@/lib/auth/auth.context';
+import { AuthContextProvider } from '@/lib/auth/auth-context';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -37,7 +37,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       <div
         className={classnames(
           'bg-dark text-xs text-slate-500 antialiased',
-          kanit.className,
+          kanit.className
         )}
       >
         <AuthContextProvider>

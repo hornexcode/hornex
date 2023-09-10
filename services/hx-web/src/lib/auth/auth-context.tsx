@@ -122,8 +122,25 @@ export const AuthContextProvider = ({
 
       if (res.ok) {
         const data = (await res.json()) as LoginResponse;
-        set('hx-auth.token', data.access_token, { expires: data.exp });
+        const payload = JSON.parse(atob(data.access_token.split('.')[1])) as {
+          id: string
+          email: string
+          first_name: string
+          last_name: string
+          exp: number
+        };
 
+        set('hx-auth.token', data.access_token, { expires: payload.exp });
+
+        dispatch({
+          type: 'LOGIN_SUCCESS',
+          payload: {
+            id: payload.id,
+            firstName: payload.first_name,
+            lastName: payload.last_name,
+            email: payload.email,
+          },
+        });
         setError(undefined);
         setFetching(false);
       } else {
