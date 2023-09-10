@@ -1,6 +1,6 @@
 const routes = {
   home: '/',
-  termsOfUse: 'terms-of-use',
+  termsAndConditions: 'terms-and-conditions',
   privacyPolicy: 'privacy-policy',
   about: '',
   contactUs: 'contact-us',

@@ -1,9 +1,7 @@
 import { MapPinIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
-import classnames from 'classnames';
 import Image from 'next/image';
 import { useState } from 'react';
 
-import ESLOneLogo from '@/assets/images/esl-one-logo.png';
 import face from '@/assets/images/face.jpg';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { TournamentStatus } from '@/components/tournaments/tournament';

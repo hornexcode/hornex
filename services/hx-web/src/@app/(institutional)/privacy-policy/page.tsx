@@ -1,5 +1,6 @@
-import { ArrowLongLeftIcon } from '@/components/ui/icons';
 import Link from 'next/link';
+
+import { ArrowLongLeftIcon } from '@/components/ui/icons';
 
 export default function PrivacyPolicy() {
   return (

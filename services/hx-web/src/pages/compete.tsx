@@ -1,16 +1,13 @@
-import { ComputerDesktopIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
+import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
 import * as Cookies from 'es-cookie';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import CSChar from '@/assets/images/cs-char.png';
 import DotaChar from '@/assets/images/dota-char.png';
-import LeagueOfLegends from '@/assets/images/games/league-of-legends.jpeg';
 import LolChar from '@/assets/images/lol-bg-char.png';
 import RocketLeagueChar from '@/assets/images/rl-char.png';
-import { GameItem, GameItemProps, PlatformPicker } from '@/components/compete';
-import Button from '@/components/ui/button/button';
+import { GameItemProps } from '@/components/compete';
 import {
   CounterStrikeLogoIcon,
   DotaLogoIcon,
@@ -148,11 +145,11 @@ const CompetePage = ({}: InferGetServerSidePropsType<
           <div className="flex">
             <Link href="/compete/league-of-legends">
               <div className="space-y-4 rounded-lg">
-                <Image
+                {/* <Image
                   src={LeagueOfLegends}
                   className="w-[250px] rounded-lg"
                   alt="league of legends"
-                />
+                /> */}
               </div>
             </Link>
           </div>

@@ -6,18 +6,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import BullHorn from '@/assets/images/bull-horn.png';
-import CsGo from '@/assets/images/hero/csgo-logo.png';
-import Dota2 from '@/assets/images/hero/dota-logo.png';
-import GameScreen from '@/assets/images/hero/game.png';
-import LeagueOfLegends from '@/assets/images/hero/league-of-legends-icon.png';
-import PickGameScreen from '@/assets/images/hero/pick-game.png';
-import RocketLeague from '@/assets/images/hero/rl-logo.png';
-import TournamentScreen from '@/assets/images/hero/tournament.png';
+import FreeFireLogo from '@/assets/images/games/free-fire/logo.png';
+import LeagueOfLegendsLogo from '@/assets/images/games/league-of-legends/logo.png';
+import CsGoLogo from '@/assets/images/hero/csgo-logo.png';
+import RocketLeagueLogo from '@/assets/images/hero/rl-logo.png';
+import BullHorn from '@/assets/images/hornex/hornex-logo.png';
+import Tournament from '@/assets/images/tournaments/tournament.png';
 import Button from '@/components/ui/button/button';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth.context';
-import { Team } from '@/types/team';
 
 export default function HomePage() {
   const router = useRouter();
@@ -29,18 +26,18 @@ export default function HomePage() {
 
   return (
     <main className="">
-      <div className="bg-red-600 py-1 text-center">
+      {/* <div className="bg-amber-500 py-1 text-center">
         <span className="text-xs text-white">
           We are still developing this platform, Hornex is lunching soon...
         </span>
-      </div>
-      <nav className="w-full border-b border-slate-700 bg-dark/75">
+      </div> */}
+      <nav className="fixed top-0 z-10 w-full border-b border-slate-700 bg-dark/40">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 text-sm">
-          <a href="/hero" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <span className="self-center text-2xl font-bold tracking-tighter dark:text-white md:text-3xl">
               Hornex
             </span>
-          </a>
+          </Link>
           <div className="flex items-center gap-4 md:order-2 md:gap-8">
             {!state.isAuthenticated ? (
               <>
@@ -53,7 +50,7 @@ export default function HomePage() {
                 </Link>
                 <Link
                   href={routes.signup}
-                  className="rounded bg-sky-400/90 px-4 py-2 font-medium tracking-tight text-white hover:bg-sky-400 focus:ring-2"
+                  className="rounded bg-amber-500 px-4 py-2 font-medium tracking-tight text-white hover:bg-amber-400 focus:ring-2"
                 >
                   Register now
                 </Link>
@@ -97,7 +94,7 @@ export default function HomePage() {
               <li>
                 <a
                   href="#home"
-                  className="block rounded py-2 pl-3 pr-4 text-white md:bg-transparent md:p-0 md:text-sky-400"
+                  className="block rounded py-2 pl-3 pr-4 text-white md:bg-transparent md:p-0"
                   aria-current="page"
                 >
                   Home
@@ -106,7 +103,7 @@ export default function HomePage() {
               <li>
                 <a
                   href="#supported-games"
-                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-sky-400 md:p-0"
+                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-amber-400 md:p-0"
                 >
                   Supported Games
                 </a>
@@ -114,15 +111,15 @@ export default function HomePage() {
               <li>
                 <a
                   href="#how-to-play"
-                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-sky-400 md:p-0"
+                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-amber-400 md:p-0"
                 >
                   How to play
                 </a>
               </li>
               <li>
                 <Link
-                  href={routes.contactUs}
-                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-sky-400 md:p-0"
+                  href="#contact"
+                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-amber-400 md:p-0"
                 >
                   Contact
                 </Link>
@@ -132,32 +129,24 @@ export default function HomePage() {
         </div>
       </nav>
 
-      <section id="home" className="h-[calc(100vh-68px)] bg-dark/75">
+      <section id="home" className="relative h-[calc(90vh-68px)]">
         {/* <div className="absolute inset-0 top-0 -z-10 h-full w-full bg-[url('http://localhost:3000/images/major.avif')] bg-cover bg-no-Hornex">
           <div className="h-full w-full bg-dark/95" />
         </div> */}
 
-        <video
-          className="absolute top-0 -z-10 h-full w-full object-cover object-center"
-          preload="metadata"
-          data-object-fit="cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-          data-object-position="center center"
-        >
-          <source
-            src="/videos/hero-0632cbf2872c5cc0dffa93d2ae8a29e8.webm"
-            type="video/webm"
-          />
-          <source
-            src="/videos/hero-de0ba45b1d0959277d12545fbb645722.mp4"
-            type="video/mp4"
-          />
-        </video>
+        <div className="absolute h-full">
+          <video
+            className="left-0 top-0 h-full w-full bg-dark/70 object-cover object-center"
+            autoPlay
+            loop
+            muted
+          >
+            <source src="/videos/hornex-gaming.webm" type="video/webm" />
+          </video>
+          <div className="absolute inset-0 bg-dark/80"></div>
+        </div>
 
-        <div className="mx-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
+        <div className="absolute top-20 my-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
           <a
             href="#"
             className="mb-7 inline-flex items-center justify-between rounded-full bg-gray-100 px-1 py-1 pr-4 text-sm text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
@@ -181,20 +170,21 @@ export default function HomePage() {
             </svg>
           </a>
 
-          <div className="flex flex-col items-center">
-            <Image src={BullHorn} alt="horn" width={250} height={250} />
+          <div className="mb-8 flex flex-col items-center">
+            <Image src={BullHorn} alt="horn" width={128} height={128} />
           </div>
-          <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
-            Compete in Tournaments within a few clicks
+          <h1 className="mb-4 text-4xl font-extrabold uppercase leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-5xl">
+            <span className="text-amber-400">get paid</span> playing your
+            favorite games
           </h1>
-          <p className="mb-8 text-xl font-normal text-gray-500 dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
+          <p className="mb-8 text-xl font-normal text-gray-500 dark:text-white sm:px-16 lg:text-xl xl:px-48">
             The newest online sports tournaments company. A trustable company
             that allow you to compete on your favorite e-sports.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
             <Link
               href={routes.compete}
-              className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-center text-base font-medium text-gray-900 hover:border-sky-400 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-sky-400 dark:focus:ring-sky-600"
+              className="inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-light-dark dark:focus:ring-white"
             >
               Play now
               <svg
@@ -228,76 +218,105 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="supported-games" className="bg-dark py-14 md:py-28">
-        <div className="container mx-auto text-center">
-          <h2 className="mb-8 text-4xl font-extrabold leading-none tracking-tight dark:text-white  md:text-5xl">
-            Supported Games
-          </h2>
+      <section id="supported-games" className="md:py-15 bg-light-dark py-14">
+        <div className="container">
+          <div className="px-4 text-center md:text-left">
+            <h2 className="text-3xl font-extrabold leading-none tracking-tight dark:text-slate-200 md:text-2xl">
+              {' '}
+              Supported Games{' '}
+            </h2>
+            <p>
+              Select your favorite game and get paid for playing tournaments
+            </p>
+          </div>
 
-          <div className="flex items-center justify-evenly px-2 text-gray-500">
-            <a
-              href="#"
-              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
-            >
-              <Image
-                src={LeagueOfLegends}
-                className="contrast-0"
-                alt="League of Legends icon"
-                width={150}
-                height={150}
-              />
-            </a>
-            <a
-              href="#"
-              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
-            >
-              <Image
-                src={CsGo}
-                className="contrast-0"
-                alt="Counter Strike Global Offensive icon"
-                width={150}
-                height={150}
-              />
-            </a>
-            <a
-              href="#"
-              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
-            >
-              <Image
-                src={Dota2}
-                className="contrast-0"
-                alt="Counter Strike Global Offensive icon"
-                width={150}
-                height={150}
-              />
-            </a>
-            <a
-              href="#"
-              className="p-2 hover:text-gray-800 dark:hover:text-gray-400 md:p-0"
-            >
-              <Image
-                src={RocketLeague}
-                className="contrast-0"
-                alt="Counter Strike Global Offensive icon"
-                width={150}
-                height={150}
-              />
-            </a>
+          <div className="mt-10 grid grid-cols-4 gap-4 px-4 text-gray-500">
+            {/* league of legends */}
+            <Link href={routes.compete} className="group">
+              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+                <div className="absolute inset-0 rounded-md bg-sky-600/60"></div>
+                <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
+                  <Image
+                    src={LeagueOfLegendsLogo}
+                    width={200}
+                    className="absolute bottom-0 left-0 right-0 top-0 m-auto pt-8 brightness-0 invert"
+                    alt="League of Legends"
+                  />
+                </div>
+                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-sky-600/70 p-4 text-center">
+                  <h4 className="text-xl font-bold text-white">Jogar</h4>
+                </div>
+              </div>
+            </Link>
+
+            {/* csgo */}
+            <Link href={routes.compete} className="group">
+              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/cs-go/ct-bot.jpg')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+                <div className="absolute inset-0 rounded-md bg-purple-600/60"></div>
+                <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
+                  <Image
+                    src={CsGoLogo}
+                    width={200}
+                    className="absolute bottom-0 left-0 right-0 top-0 m-auto pt-8 brightness-0 invert"
+                    alt="League of Legends"
+                  />
+                </div>
+                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-purple-600/70 p-4 text-center">
+                  <h4 className="text-xl font-bold text-white">Jogar</h4>
+                </div>
+              </div>
+            </Link>
+
+            {/* free fire */}
+            <Link href={routes.compete} className="group">
+              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/free-fire/battle-royale.jpg')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+                <div className="absolute inset-0 rounded-md bg-red-600/60"></div>
+                <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
+                  <Image
+                    src={FreeFireLogo}
+                    width={200}
+                    className="absolute bottom-0 left-0 right-0 top-0 m-auto pt-8 brightness-0 invert"
+                    alt="League of Legends"
+                  />
+                </div>
+                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-red-600/70 p-4 text-center">
+                  <h4 className="text-xl font-bold text-white">Jogar</h4>
+                </div>
+              </div>
+            </Link>
+
+            {/* rocket league */}
+            <Link href={routes.compete} className="group">
+              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/bg-rocket-league.webp')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+                <div className="absolute inset-0 rounded-md bg-green-600/60"></div>
+                <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
+                  <Image
+                    src={RocketLeagueLogo}
+                    width={200}
+                    className="absolute bottom-0 left-0 right-0 top-0 m-auto pt-8 brightness-0 invert"
+                    alt="League of Legends"
+                  />
+                </div>
+                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-green-600/70 p-4 text-center">
+                  <h4 className="text-xl font-bold text-white">Jogar</h4>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
 
       <section
-        className="bg-light-dark py-14 text-slate-300 md:py-28"
+        className="bg-gradient-to-r from-amber-400 to-amber-600 pb-14 pt-10  text-slate-300 "
         id="how-to-play"
       >
         <div className="container mx-auto grid md:grid-cols-2">
-          <div className="space-y-12 px-4 text-center md:text-left">
+          <div className="space-y-12 px-4 py-10 text-center md:py-20 md:text-left">
             <h2 className="text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
               {' '}
               Play Unlimited Tournaments{' '}
             </h2>
-            <p className="font-light sm:text-xl md:w-[500px]">
+            <p className="text-white sm:text-xl md:w-[500px]">
               On Hornex you can play in an unlimited number of tournaments with
               your team. All the results are automatically updated on the
               platform and we are going to ensure a fair competition.
@@ -305,28 +324,54 @@ export default function HomePage() {
 
             <div>
               <Link
-                href={'/register'}
-                className="rounded bg-sky-400/90 px-4 py-2 font-medium tracking-tight text-white hover:bg-sky-400 focus:ring-2"
+                href={routes.compete}
+                className="inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-light-dark dark:focus:ring-white"
               >
-                Register now
+                Play now
+                <svg
+                  className="-mr-1 ml-2 h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
               </Link>
             </div>
           </div>
-          <div className="relative hidden px-4 md:block">
-            <div className="absolute left-0 top-0 rounded border border-slate-700">
+          <div className="relative hidden md:block">
+            <div className="absolute left-10 top-16 shadow-card">
               <Image
-                src={GameScreen}
-                className="rounded"
+                src={Tournament}
+                className="w-60 rounded"
                 alt="Pick Game Screen"
               />
             </div>
-            <div className="absolute -left-10 top-40 w-[80%] rounded border border-slate-700">
+            <div className="absolute right-10 top-16 shadow-card">
+              <Image
+                src={Tournament}
+                className="w-60 rounded"
+                alt="Pick Game Screen"
+              />
+            </div>
+            <div className="absolute left-40 top-0 shadow-card">
+              <Image
+                src={Tournament}
+                className="w-80 rounded"
+                alt="Pick Game Screen"
+              />
+            </div>
+            {/* <div className="absolute -left-10 top-40 w-[80%] rounded border border-slate-700">
               <Image
                 src={PickGameScreen}
                 className="rounded"
                 alt="Pick Game Screen"
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -334,20 +379,32 @@ export default function HomePage() {
       <section id="automatedResultTracking" className="bg-dark py-14 md:py-28">
         <div className="container mx-auto space-y-12 px-4 text-center">
           <h2 className="mb-4 text-center text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl">
-            Automated Result Tracking
+            Get paid organizing tournaments
           </h2>
-          <p className="mx-auto mb-8 text-center font-light sm:text-xl md:w-[500px]">
-            Once you have connected your game account to Hornex Profile you are
-            good to go. Everything afterwards is on us, no downloads and no
-            match & result submission.
+          <p className="mx-auto mb-8 text-center font-light sm:text-xl md:w-[600px]">
+            Our platform is going to help you to organize tournaments and get
+            paid for it. We are going to provide you a fair competition and a
+            lot of tools to help you to organize your tournaments.
           </p>
-          <div className="mx-auto hidden w-[50%] rounded border border-slate-700 md:block">
-            <Image
-              src={TournamentScreen}
-              className="rounded"
-              alt="Pick Game Screen"
-            />
-          </div>
+
+          <Link
+            href={routes.compete}
+            className="inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-light-dark dark:focus:ring-white"
+          >
+            More
+            <svg
+              className="-mr-1 ml-2 h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </Link>
         </div>
       </section>
 
@@ -416,14 +473,17 @@ export default function HomePage() {
         </div>
       </section> */}
 
-      <footer className="mx-auto border-t border-gray-800 bg-white p-6 dark:bg-gray-900 md:p-14">
+      <footer
+        id="contact"
+        className="mx-auto border-t border-gray-800 bg-white p-6 dark:bg-gray-900 md:p-14"
+      >
         <div className="mx-auto w-full max-w-screen-xl">
           <div className="grid grid-cols-2 gap-6 py-6 md:grid-cols-6">
             <div className="col-span-2">
               <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
                 Hornex
               </h2>
-              <ul className="font-medium text-gray-500 dark:text-gray-400">
+              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <a
                     href="https://www.google.com/maps/place/R.+Dailton+Fernandes+de+Carvalho,+32+-+S%C3%A3o+Pedro,+Barra+Mansa+-+RJ,+27340-010/@-22.5741039,-44.172524,17z/data=!3m1!4b1!4m6!3m5!1s0x9e9c2765cde3fb:0xe14e22a0f778d62b!8m2!3d-22.5741039!4d-44.172524!16s%2Fg%2F11c2gymxc8?entry=ttu"
@@ -445,10 +505,10 @@ export default function HomePage() {
                 </li>
                 <li className="mb-4">
                   <a
-                    href="mailto:pedro357bm@gmail.com"
+                    href="mailto:accounts@hornex.gg"
                     className="hover:underline"
                   >
-                    pedro357bm@gmail.com
+                    accounts@hornex.gg
                   </a>
                 </li>
               </ul>
@@ -458,19 +518,14 @@ export default function HomePage() {
               <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
                 Help center
               </h2>
-              <ul className="font-medium text-gray-500 dark:text-gray-400">
+              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <a href="#" className="hover:underline">
                     Discord Server
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Twitter
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <Link href={routes.contactUs} className="hover:underline">
+                  <Link href="#contact" className="hover:underline">
                     Contact Us
                   </Link>
                 </li>
@@ -480,7 +535,7 @@ export default function HomePage() {
               <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
                 Account
               </h2>
-              <ul className="font-medium text-gray-500 dark:text-gray-400">
+              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <Link href={routes.login} className="hover:underline">
                     Login
@@ -497,14 +552,17 @@ export default function HomePage() {
               <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
                 Legal
               </h2>
-              <ul className="font-medium text-gray-500 dark:text-gray-400">
+              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <Link href={routes.privacyPolicy} className="hover:underline">
                     Privacy Policy
                   </Link>
                 </li>
                 <li className="mb-4">
-                  <Link href={routes.termsOfUse} className="hover:underline">
+                  <Link
+                    href={routes.termsAndConditions}
+                    className="hover:underline"
+                  >
                     Terms &amp; Conditions
                   </Link>
                 </li>
@@ -514,7 +572,7 @@ export default function HomePage() {
               <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
                 Company
               </h2>
-              <ul className="font-medium text-gray-500 dark:text-gray-400">
+              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <a href="#" className=" hover:underline">
                     About
@@ -525,11 +583,11 @@ export default function HomePage() {
           </div>
           <div className="mx-auto border-t border-gray-800 px-4 py-6 md:flex md:items-center md:justify-between">
             <span className="text-sm text-gray-500 dark:text-gray-300 sm:text-center">
-              © 2023 <a href="/hero">Hornex™</a>
+              © 2023 <Link href="/">Hornex™</Link>
               <br />
               All Rights Reserved.
             </span>
-            <div className="mt-4 flex space-x-5 sm:justify-center md:mt-0">
+            <div className="mt-4 flex items-center space-x-5 sm:justify-center md:mt-0">
               <a
                 href="#"
                 className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -564,9 +622,27 @@ export default function HomePage() {
                 </svg>
                 <span className="sr-only">Twitter page</span>
               </a>
+              <a
+                href="#"
+                className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="sr-only">Instagram page</span>
+              </a>
             </div>
           </div>
-          <p className="p-6 md:px-16 md:text-center">
+          <p className="p-6 text-sm md:px-16 md:text-center">
             Hornex is not endorsed by, directly affiliated with, maintained or
             sponsored by Apple Inc, Electronic Arts, Activision Blizzard,
             Take-Two Interactive, Riot Games, Microsoft, Xbox or Epic Games. All

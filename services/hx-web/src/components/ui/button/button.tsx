@@ -21,7 +21,7 @@ type ColorNames =
 type SizeNames = 'large' | 'medium' | 'small' | 'mini';
 
 const shapes: Record<ShapeNames, string[]> = {
-  rounded: ['rounded-lg'],
+  rounded: ['rounded-md'],
   pill: ['rounded-full'],
   circle: ['rounded-full'],
 };
@@ -136,7 +136,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             : 'cursor-not-allowed bg-slate-700 !text-red-500',
           disabled || isLoading || variant === 'transparent'
             ? ''
-            : 'hover:shadow-large focus:shadow-large hover:-translate-y-0.5 focus:-translate-y-0.5 focus:outline-none',
+            : 'hover:-translate-y-0.5 hover:shadow-large focus:-translate-y-0.5 focus:shadow-large focus:outline-none',
           isLoading && 'pointer-events-auto cursor-default focus:outline-none',
           fullWidth && 'w-full',
           color === 'white' || color === 'gray'

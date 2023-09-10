@@ -1,12 +1,11 @@
-import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import * as Cookies from 'es-cookie';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useForm, useFormContext } from 'react-hook-form';
 
-import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
+import LeagueOfLegendsLogo from '@/assets/images/games/league-of-legends/logo.png';
 import HornexVariantLogo from '@/assets/images/hornex/hornex-variant-logo.png';
-import { ConnectButton } from '@/components/games/league-of-legends';
+import LeagueBanner from '@/assets/images/tournaments/leaguebanner.png';
 import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
@@ -17,12 +16,17 @@ const Tournaments = ({}: InferGetServerSidePropsType<
   // const {} = useFormContext()
   return (
     <>
-      <section className="mx-auto space-y-8 p-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-slate-200">
-            League of Legends
-          </h1>
-          <ConnectButton />
+      <section className="relative mx-auto h-80 bg-[url('http://localhost:3000/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat">
+        <div className="absolute inset-0 bg-amber-400/50">
+          <div className="flex  p-4">
+            <Image
+              src={LeagueOfLegendsLogo}
+              width={200}
+              className="brightness-0 invert"
+              alt="League of Legends"
+            />
+            {/* <ConnectButton /> */}
+          </div>
         </div>
       </section>
       <section className="mx-auto space-y-8 p-8">
@@ -32,16 +36,18 @@ const Tournaments = ({}: InferGetServerSidePropsType<
           </h2>
         </div>
 
-        <div className="grid hidden grid-cols-12">
+        <div className="grid grid-cols-12">
           <div className="col-span-12">
             {/* grid-cols-1 gap-4 */}
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5 ">
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4 2xl:grid-cols-5 ">
               <li className="">
                 <Link
                   className="divide-y divide-slate-700"
                   href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                 >
-                  <TournamentListItem tournament={{ thumbnail: HornexLogo }} />
+                  <TournamentListItem
+                    tournament={{ thumbnail: LeagueBanner }}
+                  />
                 </Link>
               </li>
               <li className="">
@@ -49,7 +55,9 @@ const Tournaments = ({}: InferGetServerSidePropsType<
                   className="divide-y divide-slate-700"
                   href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                 >
-                  <TournamentListItem tournament={{ thumbnail: HornexLogo }} />
+                  <TournamentListItem
+                    tournament={{ thumbnail: LeagueBanner }}
+                  />
                 </Link>
               </li>
               <li className="">
@@ -57,7 +65,9 @@ const Tournaments = ({}: InferGetServerSidePropsType<
                   className="divide-y divide-slate-700"
                   href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                 >
-                  <TournamentListItem tournament={{ thumbnail: HornexLogo }} />
+                  <TournamentListItem
+                    tournament={{ thumbnail: LeagueBanner }}
+                  />
                 </Link>
               </li>
               <li className="">
@@ -65,7 +75,9 @@ const Tournaments = ({}: InferGetServerSidePropsType<
                   className="divide-y divide-slate-700"
                   href={`/${routes.platform}/league-of-legends/${routes.tournaments}/0d6934cc-19ca-4384-ab3b-e6c6406a10d3`}
                 >
-                  <TournamentListItem tournament={{ thumbnail: HornexLogo }} />
+                  <TournamentListItem
+                    tournament={{ thumbnail: LeagueBanner }}
+                  />
                 </Link>
               </li>
             </ul>
@@ -82,7 +94,7 @@ const Tournaments = ({}: InferGetServerSidePropsType<
         <div className="grid grid-cols-12">
           <div className="col-span-12">
             {/* grid-cols-1 gap-4 */}
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4 2xl:grid-cols-5 ">
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4 2xl:grid-cols-5 ">
               <li className="">
                 <Link
                   className="divide-y divide-slate-700"

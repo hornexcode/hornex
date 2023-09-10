@@ -1,10 +1,9 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 import { AppLayout } from '@/layouts';
-import { ssrAuthGuard } from '@/lib/utils/ssrAuthGuard';
 
 const ProfilePage = ({
-  user
+  user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <div className="mx-auto space-y-8 p-8">
@@ -21,14 +20,12 @@ ProfilePage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export const getServerSideProps: GetServerSideProps = ssrAuthGuard(
-  async (ctx) => {
-    return {
-      props: {
-        user: {}
-      }
-    };
-  }
-);
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    props: {
+      user: {},
+    },
+  };
+};
 
 export default ProfilePage;

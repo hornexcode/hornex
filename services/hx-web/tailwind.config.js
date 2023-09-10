@@ -22,6 +22,16 @@ module.exports = {
         body: ['kanit', 'sans-serif'],
         display: ['Fira Sans', 'sans-serif'],
       },
+      boxShadow: {
+        main: '0px 6px 18px rgba(0, 0, 0, 0.04)',
+        light: '0px 4px 4px rgba(0, 0, 0, 0.08)',
+        large: '0px 8px 16px rgba(17, 24, 39, 0.1)',
+        card: '0px 2px 6px rgba(0, 0, 0, 0.06)',
+        transaction: '0px 8px 16px rgba(17, 24, 39, 0.06)',
+        expand: '0px 0px 50px rgba(17, 24, 39, 0.2)',
+        button:
+          '0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1)',
+      },
       colors: {
         body: '#fcfcfc',
         primary: '#0D1321',
