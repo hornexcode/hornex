@@ -1,12 +1,3 @@
-import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { set } from 'es-cookie';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
@@ -18,6 +9,14 @@ import {
   signupSchemaInput,
   signupSchemaOutput as schema,
 } from '@/services/hx-core/signup';
+import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { set } from 'es-cookie';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const { post: signup } = dataLoadersV2<SignupOutput, SignupInput>(
   'signup',

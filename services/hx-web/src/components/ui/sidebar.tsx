@@ -1,4 +1,10 @@
 import {
+  CounterStrikeLogoIcon,
+  LolIcon,
+  SwordsIcon,
+} from '@/components/ui/icons';
+import routes from '@/config/routes';
+import {
   HomeIcon,
   PlusCircleIcon,
   PlusIcon,
@@ -7,13 +13,6 @@ import {
 } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import Link from 'next/link';
-
-import {
-  CounterStrikeLogoIcon,
-  LolIcon,
-  SwordsIcon,
-} from '@/components/ui/icons';
-import routes from '@/config/routes';
 
 export const Sidebar = ({ className }: { className?: string }) => {
   return (

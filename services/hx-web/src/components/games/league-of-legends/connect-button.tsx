@@ -1,9 +1,4 @@
-import classnames from 'classnames';
-import { get } from 'es-cookie';
-import { CheckCheckIcon, LoaderIcon } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import { toast } from 'react-toastify';
-
+import Button from '../../ui/button/button';
 import {
   Dialog,
   DialogContent,
@@ -17,8 +12,11 @@ import Input from '@/components/ui/form/input';
 import Label from '@/components/ui/form/input-label';
 import Listbox from '@/components/ui/list-box';
 import Loader from '@/components/ui/loader';
-
-import Button from '../../ui/button/button';
+import classnames from 'classnames';
+import { get } from 'es-cookie';
+import { CheckCheckIcon, LoaderIcon } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { toast } from 'react-toastify';
 
 type Summoner = {
   accountId: string;

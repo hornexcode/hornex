@@ -1,7 +1,6 @@
+import HxLogo from '@/assets/images/hornex/hornex-logo.png';
 import classnames from 'classnames';
 import Image from 'next/image';
-
-import HxLogo from '@/assets/images/hornex/hornex-logo.png';
 
 const sizes = {
   lg: 'w-[128px]',

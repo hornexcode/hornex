@@ -1,11 +1,9 @@
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { User } from '@/domain';
+import { useAuthContext } from '@/lib/auth';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
-
-import { User } from '@/domain';
-import { useAuthContext } from '@/lib/auth';
-
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export default function ProfileMenuItem({ user }: { user: User }) {
   const { logout } = useAuthContext();

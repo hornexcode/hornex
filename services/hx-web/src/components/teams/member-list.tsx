@@ -1,8 +1,7 @@
-import { TrashIcon } from '@heroicons/react/20/solid';
-import { FC } from 'react';
-
 import Button from '@/components/ui/button/button';
 import { Member } from '@/domain';
+import { TrashIcon } from '@heroicons/react/20/solid';
+import { FC } from 'react';
 
 type MemberListProps = {
   members: Member[];

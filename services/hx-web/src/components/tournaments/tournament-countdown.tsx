@@ -1,6 +1,6 @@
 'use client';
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 import Countdown, { zeroPad } from 'react-countdown';
 
 function CountdownDisplayWrapper({ days, hours, minutes, seconds }: any) {

@@ -31,5 +31,6 @@ module.exports = {
       },
     ],
     'spaced-comment': 'error',
+    'react-hooks/exhaustive-deps': 0,
   },
 };

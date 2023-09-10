@@ -1,7 +1,7 @@
+import AnchorLink from '@/components/ui/links/anchor-link';
+import cn from 'classnames';
 import type { LinkProps } from 'next/link';
 import { usePathname } from 'next/navigation';
-import cn from 'classnames';
-import AnchorLink from '@/components/ui/links/anchor-link';
 
 interface ActiveLinkProps extends LinkProps {
   activeClassName?: string;

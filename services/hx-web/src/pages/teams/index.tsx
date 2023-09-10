@@ -1,9 +1,3 @@
-import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import * as Cookies from 'es-cookie';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Link from 'next/link';
-import useSWR from 'swr';
-
 import { TeamList } from '@/components/teams/team-list';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
@@ -12,6 +6,11 @@ import {
   GetTeamsOutput,
   getTeamsSchemaOutput as schema,
 } from '@/services/hx-core/get-teams';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
+import * as Cookies from 'es-cookie';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
+import useSWR from 'swr';
 
 const { useData: getTeams } = dataLoadersV2<GetTeamsOutput>('getTeams', schema);
 

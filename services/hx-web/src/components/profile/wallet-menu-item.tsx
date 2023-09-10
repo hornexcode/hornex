@@ -1,4 +1,5 @@
 'use client';
+import { User } from '@/domain';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ArrowDownIcon,
@@ -6,8 +7,6 @@ import {
   PlusCircleIcon,
 } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
-
-import { User } from '@/domain';
 
 export default function WalletMenuItem({ user }: { user: User }) {
   return (

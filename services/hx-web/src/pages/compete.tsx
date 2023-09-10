@@ -1,8 +1,3 @@
-import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
-import * as Cookies from 'es-cookie';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Link from 'next/link';
-
 import CSChar from '@/assets/images/cs-char.png';
 import DotaChar from '@/assets/images/dota-char.png';
 import LolChar from '@/assets/images/lol-bg-char.png';
@@ -17,6 +12,10 @@ import {
   XboxIcon,
 } from '@/components/ui/icons';
 import { AppLayout } from '@/layouts';
+import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
+import * as Cookies from 'es-cookie';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
 
 const CompetePage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps

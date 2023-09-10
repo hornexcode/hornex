@@ -1,7 +1,7 @@
-import { Game } from '@/types/game';
 import { GameListItem } from './game-list-item';
-import { useRouter } from 'next/router';
+import { Game } from '@/types/game';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export type GameListProps = {
   games: Game[];

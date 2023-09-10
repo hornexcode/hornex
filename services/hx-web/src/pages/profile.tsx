@@ -1,6 +1,5 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-
 import { AppLayout } from '@/layouts';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const ProfilePage = ({
   user,

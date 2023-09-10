@@ -1,6 +1,5 @@
-import z from 'zod';
-
 import { Method } from '../routes/routes';
+import z from 'zod';
 // const routes: APIRouteMap = {} as APIRouteMap;
 
 export const routes = {

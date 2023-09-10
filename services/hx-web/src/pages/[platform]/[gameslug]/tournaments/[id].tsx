@@ -1,7 +1,3 @@
-import { MapPinIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
-import Image from 'next/image';
-import { useState } from 'react';
-
 import face from '@/assets/images/face.jpg';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { TournamentStatus } from '@/components/tournaments/tournament';
@@ -10,6 +6,9 @@ import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
 import Button from '@/components/ui/button/button';
 import { SwordsIcon } from '@/components/ui/icons';
 import { AppLayout } from '@/layouts';
+import { MapPinIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
+import Image from 'next/image';
+import { useState } from 'react';
 
 type TournamentProps = {
   params: {

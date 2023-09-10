@@ -1,4 +1,5 @@
 'use client';
+import { XboxIcon } from '../ui/icons';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ChevronDownIcon,
@@ -7,8 +8,6 @@ import {
   PlusIcon,
 } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
-
-import { XboxIcon } from '../ui/icons';
 
 export const PlatformPicker = () => {
   return (

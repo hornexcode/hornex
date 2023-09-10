@@ -1,12 +1,11 @@
 'use client';
 
-import cn from 'classnames';
-import { useState } from 'react';
-
 import Input from '@/components/ui/form/input';
 import { ProfileIcon } from '@/components/ui/icons/profile-icon';
 import { SearchIcon } from '@/components/ui/icons/search';
 import { XMarkIcon } from '@/components/ui/icons/x-mark-icon';
+import cn from 'classnames';
+import { useState } from 'react';
 
 export const collectionList = [
   {

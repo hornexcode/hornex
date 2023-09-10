@@ -1,12 +1,10 @@
+import TournamentCardAttr from './tournament-card-attr';
+import TournamentCardBadge from './tournament-card-badge';
+import Button from '@/components/ui/button/button';
 import { TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
 import { DollarSign } from 'lucide-react';
 import Image, { StaticImageData } from 'next/image';
-
-import Button from '@/components/ui/button/button';
-
-import TournamentCardAttr from './tournament-card-attr';
-import TournamentCardBadge from './tournament-card-badge';
 
 type TournamentCardInfoProps = {
   tournament: {

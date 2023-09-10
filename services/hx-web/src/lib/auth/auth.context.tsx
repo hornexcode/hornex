@@ -1,9 +1,8 @@
-import { get, set } from 'es-cookie';
-import React, { createContext, useEffect, useReducer, useState } from 'react';
-
 import { User } from '@/domain';
 import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { LoginResponse } from '@/infra/hx-core/responses/login';
+import { get, set } from 'es-cookie';
+import React, { createContext, useEffect, useReducer, useState } from 'react';
 
 type AuthContextState = {
   isAuthenticated: boolean;

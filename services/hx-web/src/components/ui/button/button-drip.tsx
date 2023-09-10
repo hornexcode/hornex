@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef } from 'react';
 import cn from 'classnames';
+import { useEffect, useRef } from 'react';
 
 interface ButtonDripTypes {
   x: number;

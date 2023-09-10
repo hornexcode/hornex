@@ -1,8 +1,7 @@
+import { routes } from './routes';
 import * as Cookie from 'es-cookie';
 import useSWR from 'swr';
 import z from 'zod';
-
-import { routes } from './routes';
 
 const isServer = typeof window === 'undefined';
 const API_ROOT = `${process.env.NEXT_PUBLIC_API_URL}`;

@@ -1,10 +1,9 @@
-import Image from 'next/image';
-import classnames from 'classnames';
-import { useRouter } from 'next/navigation';
-
-import LeagueOfLegendsThumb from '@/assets/images/games/league-of-legends.jpg';
-import Table from '../ui/table/table';
 import { EyeIcon } from '../ui/icons';
+import Table from '../ui/table/table';
+import LeagueOfLegendsThumb from '@/assets/images/games/league-of-legends.jpg';
+import classnames from 'classnames';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export type TournamentTableProps = {
   children: React.ReactNode;

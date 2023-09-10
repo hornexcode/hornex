@@ -1,13 +1,12 @@
-import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import * as Cookies from 'es-cookie';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Link from 'next/link';
-
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import HornexVariantLogo from '@/assets/images/hornex/hornex-variant-logo.png';
 import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
+import * as Cookies from 'es-cookie';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
 
 const Game = ({}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (

@@ -1,11 +1,11 @@
 'use client';
-import { Fragment } from 'react';
 import { menuItems } from './_menu-items';
-import { Menu } from '@/components/ui/menu';
 import { ChevronDown } from '@/components/ui/icons/chevron-down';
-import { Transition } from '@/components/ui/transition';
 import ActiveLink from '@/components/ui/links/active-link';
+import { Menu } from '@/components/ui/menu';
+import { Transition } from '@/components/ui/transition';
 import routes from '@/config/routes';
+import { Fragment } from 'react';
 
 export default function MenuItems() {
   return (

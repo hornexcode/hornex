@@ -1,6 +1,6 @@
+import classnames from 'classnames';
 import Link from 'next/link';
 import React from 'react';
-import classnames from 'classnames';
 
 export const LinkButton = ({
   children,

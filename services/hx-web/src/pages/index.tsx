@@ -1,11 +1,3 @@
-import {
-  ArrowRightOnRectangleIcon,
-  ArrowUpRightIcon,
-} from '@heroicons/react/20/solid';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-
 import FreeFireLogo from '@/assets/images/games/free-fire/logo.png';
 import LeagueOfLegendsLogo from '@/assets/images/games/league-of-legends/logo.png';
 import CsGoLogo from '@/assets/images/hero/csgo-logo.png';
@@ -15,6 +7,13 @@ import Tournament from '@/assets/images/tournaments/tournament.png';
 import Button from '@/components/ui/button/button';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth.context';
+import {
+  ArrowRightOnRectangleIcon,
+  ArrowUpRightIcon,
+} from '@heroicons/react/20/solid';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function HomePage() {
   const router = useRouter();

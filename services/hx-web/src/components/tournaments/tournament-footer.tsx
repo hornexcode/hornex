@@ -1,10 +1,10 @@
-import classnames from 'classnames';
 import Button from '@/components/ui/button/button';
 import {
   ArrowRightIcon,
   CurrencyDollarIcon,
   UsersIcon,
 } from '@heroicons/react/20/solid';
+import classnames from 'classnames';
 
 interface TournamentFooterProps {
   className?: string;

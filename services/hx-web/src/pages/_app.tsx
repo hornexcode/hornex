@@ -2,6 +2,7 @@ import '@/styles/global.css';
 import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { AuthContextProvider } from '@/lib/auth/auth.context';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -9,8 +10,6 @@ import { Cabin, Kanit, Nunito, Oswald } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
-
-import { AuthContextProvider } from '@/lib/auth/auth.context';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;

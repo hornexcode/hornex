@@ -1,10 +1,8 @@
+import { ChevronDown } from './icons';
+import { Transition } from '@/components/ui/transition';
 import { Listbox as HeadlessListbox } from '@headlessui/react';
 import cn from 'classnames';
 import { Fragment } from 'react';
-
-import { Transition } from '@/components/ui/transition';
-
-import { ChevronDown } from './icons';
 
 export type ListboxOption = {
   name: string;

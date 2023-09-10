@@ -1,8 +1,4 @@
-import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FC } from 'react';
-
+import MenuItems from './menu/_default';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
@@ -12,8 +8,10 @@ import { dataLoaders } from '@/lib/api/client';
 import { useAuthContext } from '@/lib/auth/auth.context';
 import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
 import { useIsMounted } from '@/lib/hooks/use-is-mounted';
-
-import MenuItems from './menu/_default';
+import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
+import Image from 'next/image';
+import Link from 'next/link';
+import { FC } from 'react';
 
 interface HeaderRightAreaProps {
   user: User;

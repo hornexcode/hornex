@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
+import { useState } from 'react';
 
 const bets = [
   {

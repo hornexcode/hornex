@@ -1,6 +1,5 @@
-import * as Cookie from 'es-cookie';
-
 import { routes } from './routes';
+import * as Cookie from 'es-cookie';
 
 const isServer = typeof window === 'undefined';
 const API_ROOT = `${process.env.NEXT_PUBLIC_API_URL}`;

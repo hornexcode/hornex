@@ -1,5 +1,5 @@
-import classnames from 'classnames';
 import styles from './table.module.scss';
+import classnames from 'classnames';
 
 export const THead = ({ children }: { children: React.ReactNode }) => {
   return (

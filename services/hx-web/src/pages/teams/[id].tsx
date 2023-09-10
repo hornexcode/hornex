@@ -1,12 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import classnames from 'classnames';
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import { useRouter } from 'next/router';
-import { FC, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { z } from 'zod';
-
 import { MemberList } from '@/components/teams';
 import { TeamTab } from '@/components/teams/team-tab';
 import Button from '@/components/ui/button/button';
@@ -24,6 +15,14 @@ import {
   UpdateTeamOutput,
   updateTeamSchemaInput,
 } from '@/services/hx-core/updateTeam';
+import { zodResolver } from '@hookform/resolvers/zod';
+import classnames from 'classnames';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import { useRouter } from 'next/router';
+import { FC, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import { z } from 'zod';
 
 const inviteForm = z.object({
   username: z.string().min(1, { message: 'Username is required' }),

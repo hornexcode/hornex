@@ -1,7 +1,6 @@
-import classnames from 'classnames';
-
 import Card from '@/components/ui/card';
-import { PodiumIcon, MedalIcon, TeamIcon } from '@/components/ui/icons';
+import { MedalIcon, PodiumIcon, TeamIcon } from '@/components/ui/icons';
+import Tag from '@/components/ui/tag';
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -11,7 +10,7 @@ import {
   ServerStackIcon,
   TrophyIcon,
 } from '@heroicons/react/20/solid';
-import Tag from '@/components/ui/tag';
+import classnames from 'classnames';
 
 interface OverviewProps {
   classNames?: string;

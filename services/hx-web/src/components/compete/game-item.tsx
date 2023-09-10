@@ -1,10 +1,8 @@
+import { Badge } from '../ui/badge';
+import Button from '@/components/ui/button/button';
 import classNames from 'classnames';
 import Image, { StaticImageData } from 'next/image';
 import { FC } from 'react';
-
-import Button from '@/components/ui/button/button';
-
-import { Badge } from '../ui/badge';
 
 type bgColorsType = {
   sky: string;

@@ -1,3 +1,9 @@
+import Button from '@/components/ui/button/button';
+import Input from '@/components/ui/form/input';
+import InputLabel from '@/components/ui/form/input-label';
+import { Logo } from '@/components/ui/logo';
+import { dataLoadersV2 } from '@/lib/api';
+import { useAuthContext } from '@/lib/auth';
 import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -5,13 +11,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-import Button from '@/components/ui/button/button';
-import Input from '@/components/ui/form/input';
-import InputLabel from '@/components/ui/form/input-label';
-import { Logo } from '@/components/ui/logo';
-import { dataLoadersV2 } from '@/lib/api';
-import { useAuthContext } from '@/lib/auth';
 
 const schema = z.object({
   confirmation_code: z

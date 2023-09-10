@@ -1,13 +1,12 @@
-import { useState } from 'react';
-import { Tab } from '@headlessui/react';
-
 import {
-  Rules,
-  Prizes,
-  Overview,
-  Teams,
   HowItWorks,
+  Overview,
+  Prizes,
+  Rules,
+  Teams,
 } from '@/components/tournaments/tournament-tabs';
+import { Tab } from '@headlessui/react';
+import { useState } from 'react';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');

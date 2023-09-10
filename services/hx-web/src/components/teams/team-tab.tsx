@@ -1,6 +1,5 @@
-import cn from 'classnames';
-
 import ParamTab, { TabPanel } from '@/components/ui/param-tab';
+import cn from 'classnames';
 // static data
 
 const tabMenu = [

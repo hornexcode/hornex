@@ -1,6 +1,5 @@
-import Link from 'next/link';
-
 import { ArrowLongLeftIcon } from '@/components/ui/icons';
+import Link from 'next/link';
 
 export default function TermsAndConditions() {
   return (

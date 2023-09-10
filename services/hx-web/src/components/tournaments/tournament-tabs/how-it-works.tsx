@@ -1,10 +1,10 @@
-import Card from '@/components/ui/card/card';
-import classnames from 'classnames';
-import Image from 'next/image';
+import award from '@/assets/images/award.webp';
 import connect from '@/assets/images/connect.webp';
 import graphs from '@/assets/images/graphs.webp';
 import infinity from '@/assets/images/infinity.png';
-import award from '@/assets/images/award.webp';
+import Card from '@/components/ui/card/card';
+import classnames from 'classnames';
+import Image from 'next/image';
 
 interface HowItWorksProps {
   classNames?: string;
