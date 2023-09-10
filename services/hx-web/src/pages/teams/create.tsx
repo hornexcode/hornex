@@ -2,7 +2,6 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import Listbox from '@/components/ui/list-box';
-import { Select, SelectGroup, SelectLabel } from '@/components/ui/select';
 import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { TeamCreated } from '@/infra/hx-core/responses/team-created';
 import { AppLayout } from '@/layouts';
@@ -14,11 +13,7 @@ import {
 } from '@/services/hx-core/get-games';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';

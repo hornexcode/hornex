@@ -1,6 +1,7 @@
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import { Logo } from '@/components/ui/logo';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -51,12 +52,7 @@ export default function LoginPage() {
   }, [state.isAuthenticated]);
 
   // TODO: remove in production
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      setValue('email', 'peter.parker@hornex.gg');
-      setValue('password', 'Password@123');
-    }
-  }, [setValue]);
+  useEffect(() => {}, [setValue]);
 
   return (
     <div className="flex h-screen flex-col items-center justify-between">
