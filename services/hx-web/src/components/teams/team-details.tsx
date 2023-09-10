@@ -1,5 +1,5 @@
-import { Team } from "@/types/team";
-import { FC } from "react";
+import { Team } from '@/types/team';
+import { FC } from 'react';
 
 export type TeamDetailsProps = {
   team: Team;

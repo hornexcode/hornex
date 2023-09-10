@@ -1,7 +1,4 @@
-import {
-  EllipsisHorizontalIcon,
-  EllipsisVerticalIcon
-} from '@heroicons/react/20/solid';
+import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
 import {
   Cloud,
   CreditCard,
@@ -14,15 +11,11 @@ import {
   Plus,
   PlusCircle,
   Settings,
-  User,
   UserPlus,
-  Users
+  Users,
 } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { FC } from 'react';
 
-import Button from '@/components/ui/button/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,11 +28,10 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import routes from '@/config/routes';
-import { Team } from '@/domain/team';
 
+import { Team } from '@/domain/team';
 import { Badge } from '../ui/badge';
 
 type TeamProps = Team;

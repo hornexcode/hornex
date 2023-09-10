@@ -13,7 +13,7 @@ export const getGamesSchemaOutput = z.array(
   z.object({
     id: z.string(),
     name: z.string(),
-    slug: z.string()
+    slug: z.string(),
   })
 );
 

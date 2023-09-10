@@ -5,7 +5,7 @@ import Link from 'next/link';
 import TV4 from '@/assets/images/tournaments/tournament-v4.jpg';
 import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
 import Button from '@/components/ui/button/button';
-import { LolIcon, LolLogoIcon } from '@/components/ui/icons';
+import { LolIcon } from '@/components/ui/icons';
 import routes from '@/config/routes';
 
 type GamePageProps = {

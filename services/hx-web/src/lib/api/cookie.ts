@@ -1,8 +1,4 @@
-import {
-  get as getCookie,
-  parse as parseCookie,
-  set as setCookie,
-} from 'es-cookie';
+import { parse as parseCookie } from 'es-cookie';
 import { IncomingMessage } from 'http';
 
 /**

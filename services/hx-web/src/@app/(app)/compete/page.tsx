@@ -1,20 +1,19 @@
 'use client';
 
-import { ComputerDesktopIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
-import { GameItem, GameItemProps, PlatformPicker } from '@/components/compete';
-import LolChar from '@/assets/images/lol-bg-char.png';
-import DotaChar from '@/assets/images/dota-char.png';
 import CSChar from '@/assets/images/cs-char.png';
+import DotaChar from '@/assets/images/dota-char.png';
+import LolChar from '@/assets/images/lol-bg-char.png';
 import RocketLeagueChar from '@/assets/images/rl-char.png';
+import { GameItem, GameItemProps, PlatformPicker } from '@/components/compete';
 import {
-  LolLogoIcon,
-  RocketLeagueLogoIcon,
   CounterStrikeLogoIcon,
   DotaLogoIcon,
-  CellPhoneIcon,
+  LolLogoIcon,
   PlayStationIcon,
+  RocketLeagueLogoIcon,
   XboxIcon,
 } from '@/components/ui/icons';
+import { ComputerDesktopIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
 
 export default function Compete() {
   const games: GameItemProps[] = [

@@ -16,7 +16,7 @@ type MemberListItemProps = {
 
 const MemberListItem: FC<MemberListItemProps> = ({
   member,
-  onRemoveMember
+  onRemoveMember,
 }) => (
   <li className="flex items-center rounded bg-light-dark p-4">
     <span className="text-white">{member.username}</span>
@@ -38,7 +38,7 @@ const MemberListItem: FC<MemberListItemProps> = ({
 
 export const MemberList: FC<MemberListProps> = ({
   members,
-  onRemoveMember
+  onRemoveMember,
 }) => {
   return (
     <ul className="space-y-4">
