@@ -1,9 +1,10 @@
-import NextAuth, { NextAuthOptions, User, Session } from 'next-auth';
+import NextAuth, { NextAuthOptions, Session, User } from 'next-auth';
+import { AdapterUser } from 'next-auth/adapters';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { LoginResponse } from '@/infra/hx-core/responses/login';
-import { AdapterUser } from 'next-auth/adapters';
 import { JWT } from 'next-auth/jwt';
+
+import { LoginResponse } from '@/infra/hx-core/responses/login';
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options

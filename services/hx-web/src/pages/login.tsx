@@ -114,7 +114,7 @@ export default function LoginPage() {
           <p className="text-sm font-light text-gray-400">
             Não possui uma conta?{' '}
             <Link
-              href={`${routes.signup}`}
+              href={`${routes.register}`}
               className="font-medium text-blue-300 hover:underline"
             >
               Registre-se

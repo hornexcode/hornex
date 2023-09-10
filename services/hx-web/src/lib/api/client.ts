@@ -10,16 +10,16 @@ const fetcher = async (url: string, options?: RequestInit) => {
 };
 
 export const dataLoaders = <T, Data = unknown>(
-  routeKey: keyof typeof routes,
+  routeKey: keyof typeof routes
 ) => {
   const { path, method } = routes[routeKey];
 
   // Post data to the API
   const post = async (
     payload?: Data,
-    headers: Record<string, string> = {},
+    headers: Record<string, string> = {}
   ): Promise<T> => {
-    let error: FetchError | null = null;
+    let error: HttpError | null = null;
     let data: T;
 
     const cookie = isServer ? null : Cookie.get('hx-auth.token');
@@ -46,7 +46,7 @@ export const dataLoaders = <T, Data = unknown>(
         }
       } else {
         try {
-          error = (await r.json()) as FetchError;
+          error = (await r.json()) as HttpError;
         } catch (e: any) {
           throw new Error("Couldn't parse response");
         }
@@ -60,7 +60,7 @@ export const dataLoaders = <T, Data = unknown>(
   };
 
   const get = async (headers: Record<string, string> = {}) => {
-    let error: FetchError;
+    let error: HttpError;
 
     try {
       const r = await fetcher(`${API_ROOT}/${path}`, {
@@ -80,7 +80,7 @@ export const dataLoaders = <T, Data = unknown>(
         }
       } else {
         try {
-          error = (await r.json()) as FetchError;
+          error = (await r.json()) as HttpError;
         } catch (e: any) {
           throw new Error("Couldn't parse response");
         }
@@ -95,7 +95,7 @@ export const dataLoaders = <T, Data = unknown>(
 
   const find = async (param: string, headers: Record<string, string> = {}) => {
     const cookie = isServer ? null : Cookie.get('hx-auth.token');
-    let error: FetchError;
+    let error: HttpError;
 
     try {
       const r = await fetcher(`${API_ROOT}/${path}/${param}`, {
@@ -117,7 +117,7 @@ export const dataLoaders = <T, Data = unknown>(
         }
       } else {
         try {
-          error = (await r.json()) as FetchError;
+          error = (await r.json()) as HttpError;
         } catch (e: any) {
           throw new Error("Couldn't parse response");
         }
@@ -137,7 +137,7 @@ export const dataLoaders = <T, Data = unknown>(
   };
 };
 
-export interface FetchError extends Error {
+export interface HttpError extends Error {
   code?: number;
   id?: string;
   response?: any;

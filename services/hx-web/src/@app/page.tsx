@@ -33,7 +33,7 @@ export default function HomePage() {
           We are still developing this platform, Hornex is lunching soon...
         </span>
       </div>
-      <nav className="w-full border-b border-slate-700 bg-dark/75">
+      <nav className="bg-dark/75 w-full border-b border-slate-700">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
           <a href="/hero" className="flex items-center">
             <span className="self-center text-2xl font-bold tracking-tighter dark:text-white md:text-3xl">
@@ -117,7 +117,7 @@ export default function HomePage() {
         </div>
       </nav>
 
-      <section id="home" className="h-[calc(100vh-68px)] bg-dark/75">
+      <section id="home" className="bg-dark/75 h-[calc(100vh-68px)]">
         {/* <div className="absolute inset-0 top-0 -z-10 h-full w-full bg-[url('http://localhost:3000/images/major.avif')] bg-cover bg-no-Hornex">
           <div className="h-full w-full bg-dark/95" />
         </div> */}
@@ -489,7 +489,10 @@ export default function HomePage() {
                   </Link>
                 </li>
                 <li className="mb-4">
-                  <Link href={routes.termsOfUse} className="hover:underline">
+                  <Link
+                    href={routes.termsAndConditions}
+                    className="hover:underline"
+                  >
                     Terms &amp; Conditions
                   </Link>
                 </li>

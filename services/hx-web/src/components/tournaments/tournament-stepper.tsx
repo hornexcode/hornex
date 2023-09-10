@@ -1,11 +1,11 @@
-import Badge from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { ClockIcon } from '@heroicons/react/20/solid';
 
 const TournamentStepper = () => {
   return (
     <ol className="relative border-l border-gray-200 text-gray-500 dark:border-gray-700 dark:text-gray-400">
       <li className="mb-10 ml-6 flex items-center">
-        <span className="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-green-200 ring-8 ring-white dark:bg-green-600 dark:ring-dark">
+        <span className="dark:ring-dark absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-green-200 ring-8 ring-white dark:bg-green-600">
           <svg
             className="h-2.5 w-2.5 text-green-500 dark:text-green-400"
             aria-hidden="true"
@@ -35,7 +35,7 @@ const TournamentStepper = () => {
         </div>
       </li>
       <li className="mb-10 ml-6 flex items-center">
-        <span className="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700 dark:ring-dark">
+        <span className="dark:ring-dark absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700">
           <svg
             className="h-2.5 w-2.5 text-gray-500 dark:text-gray-400"
             aria-hidden="true"
@@ -51,7 +51,7 @@ const TournamentStepper = () => {
         </h3>
       </li>
       <li className="mb-10 ml-6 flex items-center">
-        <span className="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700 dark:ring-dark">
+        <span className="dark:ring-dark absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700">
           <svg
             className="h-2.5 w-2.5 text-gray-500 dark:text-gray-400"
             aria-hidden="true"
@@ -65,7 +65,7 @@ const TournamentStepper = () => {
         <h3 className="text-sm font-medium leading-3  text-gray-400">Review</h3>
       </li>
       <li className="ml-6 flex items-center">
-        <span className="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700 dark:ring-dark">
+        <span className="dark:ring-dark absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700">
           <svg
             className="h-2.5 w-2.5 text-gray-500 dark:text-gray-400"
             aria-hidden="true"

@@ -5,10 +5,8 @@ import { usePathname } from 'next/navigation';
 import cn from 'classnames';
 import { motion } from 'framer-motion';
 import { useMeasure } from '@/lib/hooks/use-measure';
-import { useLayout } from '@/lib/hooks/use-layout';
 import ActiveLink from '@/components/ui/links/active-link';
 import { ChevronDown } from '@/components/ui/icons/chevron-down';
-import routes from '@/config/routes';
 
 type MenuItemProps = {
   name?: string;
@@ -30,7 +28,6 @@ export function MenuItem({
   dropdownItems,
   isActive,
 }: MenuItemProps) {
-  const { layout } = useLayout();
   const pathname = '/' + usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [ref, { height }] = useMeasure<HTMLUListElement>();
@@ -51,7 +48,7 @@ export function MenuItem({
               'relative flex h-12 cursor-pointer items-center justify-between whitespace-nowrap  rounded-lg px-4 text-sm transition-all',
               isChildrenActive
                 ? 'text-white'
-                : 'hover:text-brand text-gray-500 dark:hover:text-white',
+                : 'hover:text-brand text-gray-500 dark:hover:text-white'
             )}
             onClick={() => setIsOpen(!isOpen)}
           >
@@ -69,7 +66,7 @@ export function MenuItem({
 
             {isChildrenActive && (
               <motion.span
-                className="bg-brand absolute bottom-0 left-0 right-0 h-full w-full rounded-lg shadow-large"
+                className="bg-brand shadow-large absolute bottom-0 left-0 right-0 h-full w-full rounded-lg"
                 layoutId="menu-item-active-indicator"
               />
             )}
@@ -105,7 +102,7 @@ export function MenuItem({
             'hover:text-brand relative flex h-12 items-center whitespace-nowrap rounded-lg px-4 text-sm text-gray-500 transition-all dark:hover:text-white',
             {
               'bg-brand': isActive,
-            },
+            }
           )}
           activeClassName="!text-white"
         >
@@ -115,7 +112,7 @@ export function MenuItem({
               {
                 'text-white': isActive,
                 'text-gray-500': !isActive && !name,
-              },
+              }
             )}
           >
             {icon}
@@ -124,7 +121,7 @@ export function MenuItem({
 
           {href === pathname && (
             <motion.span
-              className="bg-brand absolute bottom-0 left-0 right-0 h-full w-full rounded-lg shadow-large"
+              className="bg-brand shadow-large absolute bottom-0 left-0 right-0 h-full w-full rounded-lg"
               layoutId="menu-item-active-indicator"
             />
           )}

@@ -36,7 +36,7 @@ const updateTeamForm = z.object({
 });
 
 const { patch: updateTeam } = dataLoadersV2<UpdateTeamOutput, UpdateTeamInput>(
-  'updateTeam',
+  'updateTeam'
 );
 
 const TeamDetail = ({
@@ -112,8 +112,6 @@ const TeamDetail = ({
   const teamSubmitHandler = async (data: UpdateTeamInput) => {
     try {
       setIsUpdating(true);
-      const { name } = await updateTeam(team.id, data);
-
       toast.success('Team updated successfully');
 
       router.push(`${team.id}`);
@@ -129,7 +127,7 @@ const TeamDetail = ({
   return (
     <div className="mx-auto space-y-8 p-8">
       <div className="flex items-end justify-between pb-2">
-        <h2 className="text-left font-display text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">
+        <h2 className="font-display text-left text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">
           {team.name}
         </h2>
       </div>

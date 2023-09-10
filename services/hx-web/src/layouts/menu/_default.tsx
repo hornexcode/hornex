@@ -2,8 +2,8 @@
 import { Fragment } from 'react';
 import { menuItems } from './_menu-items';
 import { Menu } from '@/components/ui/menu';
-import { Transition } from '@/components/ui/transition';
 import { ChevronDown } from '@/components/ui/icons/chevron-down';
+import { Transition } from '@/components/ui/transition';
 import ActiveLink from '@/components/ui/links/active-link';
 import routes from '@/config/routes';
 
@@ -30,7 +30,7 @@ export default function MenuItems() {
                   leaveFrom="opacity-100 translate-y-0"
                   leaveTo="opacity-0 translate-y-4"
                 >
-                  <Menu.Items className="absolute mt-5 w-64 origin-top-right rounded-lg bg-white p-3 shadow-large ltr:right-0 rtl:left-0 dark:bg-gray-800">
+                  <Menu.Items className="shadow-large absolute mt-5 w-64 origin-top-right rounded-lg bg-white p-3 ltr:right-0 rtl:left-0 dark:bg-gray-800">
                     {item.dropdownItems.map((dropDownItem, index) => (
                       <Menu.Item key={dropDownItem.name + index}>
                         <div>

@@ -9,7 +9,7 @@ type MenuItem = {
 export const menuItems: MenuItem[] = [
   {
     name: 'Terms of use',
-    href: routes.termsOfUse,
+    href: routes.termsAndConditions,
   },
   {
     name: 'About',

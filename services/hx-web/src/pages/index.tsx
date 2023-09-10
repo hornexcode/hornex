@@ -31,7 +31,7 @@ export default function HomePage() {
           We are still developing this platform, Hornex is lunching soon...
         </span>
       </div> */}
-      <nav className="fixed top-0 z-10 w-full border-b border-slate-700 bg-dark/40">
+      <nav className="bg-dark/40 fixed top-0 z-10 w-full border-b border-slate-700">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 text-sm">
           <Link href="/" className="flex items-center">
             <span className="self-center text-2xl font-bold tracking-tighter dark:text-white md:text-3xl">
@@ -49,7 +49,7 @@ export default function HomePage() {
                   <ArrowUpRightIcon className="ml-2 w-4" />
                 </Link>
                 <Link
-                  href={routes.signup}
+                  href={routes.register}
                   className="rounded bg-amber-500 px-4 py-2 font-medium tracking-tight text-white hover:bg-amber-400 focus:ring-2"
                 >
                   Register now
@@ -136,14 +136,14 @@ export default function HomePage() {
 
         <div className="absolute h-full">
           <video
-            className="left-0 top-0 h-full w-full bg-dark/70 object-cover object-center"
+            className="bg-dark/70 left-0 top-0 h-full w-full object-cover object-center"
             autoPlay
             loop
             muted
           >
             <source src="/videos/hornex-gaming.webm" type="video/webm" />
           </video>
-          <div className="absolute inset-0 bg-dark/80"></div>
+          <div className="bg-dark/80 absolute inset-0"></div>
         </div>
 
         <div className="absolute top-20 my-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
@@ -184,7 +184,7 @@ export default function HomePage() {
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
             <Link
               href={routes.compete}
-              className="inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-light-dark dark:focus:ring-white"
+              className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
             >
               Play now
               <svg
@@ -233,7 +233,7 @@ export default function HomePage() {
           <div className="mt-10 grid grid-cols-4 gap-4 px-4 text-gray-500">
             {/* league of legends */}
             <Link href={routes.compete} className="group">
-              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/jinks.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-sky-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
@@ -251,7 +251,7 @@ export default function HomePage() {
 
             {/* csgo */}
             <Link href={routes.compete} className="group">
-              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/cs-go/ct-bot.jpg')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/cs-go/ct-bot.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-purple-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
@@ -269,7 +269,7 @@ export default function HomePage() {
 
             {/* free fire */}
             <Link href={routes.compete} className="group">
-              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/free-fire/battle-royale.jpg')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/free-fire/battle-royale.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-red-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
@@ -287,7 +287,7 @@ export default function HomePage() {
 
             {/* rocket league */}
             <Link href={routes.compete} className="group">
-              <div className="relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/bg-rocket-league.webp')] bg-cover bg-center bg-no-repeat shadow-main transition-all group-hover:scale-105">
+              <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('http://localhost:3000/images/bg-rocket-league.webp')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
                 <div className="absolute inset-0 rounded-md bg-green-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
@@ -325,7 +325,7 @@ export default function HomePage() {
             <div>
               <Link
                 href={routes.compete}
-                className="inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-light-dark dark:focus:ring-white"
+                className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
               >
                 Play now
                 <svg
@@ -344,21 +344,21 @@ export default function HomePage() {
             </div>
           </div>
           <div className="relative hidden md:block">
-            <div className="absolute left-10 top-16 shadow-card">
+            <div className="shadow-card absolute left-10 top-16">
               <Image
                 src={Tournament}
                 className="w-60 rounded"
                 alt="Pick Game Screen"
               />
             </div>
-            <div className="absolute right-10 top-16 shadow-card">
+            <div className="shadow-card absolute right-10 top-16">
               <Image
                 src={Tournament}
                 className="w-60 rounded"
                 alt="Pick Game Screen"
               />
             </div>
-            <div className="absolute left-40 top-0 shadow-card">
+            <div className="shadow-card absolute left-40 top-0">
               <Image
                 src={Tournament}
                 className="w-80 rounded"
@@ -389,7 +389,7 @@ export default function HomePage() {
 
           <Link
             href={routes.compete}
-            className="inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-light-dark dark:focus:ring-white"
+            className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
           >
             More
             <svg
@@ -499,6 +499,7 @@ export default function HomePage() {
                     target="_blank"
                     href="tel:+55(24)981655545"
                     className="hover:underline"
+                    rel="noreferrer"
                   >
                     +55 (24) 98165-5545
                   </a>
@@ -542,7 +543,7 @@ export default function HomePage() {
                   </Link>
                 </li>
                 <li className="mb-4">
-                  <Link href={routes.signup} className="hover:underline">
+                  <Link href={routes.register} className="hover:underline">
                     Register
                   </Link>
                 </li>

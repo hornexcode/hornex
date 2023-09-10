@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import styles from './toournament-details.module.scss';
 import { TicketIcon, TrophyIcon, UsersIcon } from '@heroicons/react/20/solid';
-import Badge from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 
 const TournamentDetails = () => {
   return (

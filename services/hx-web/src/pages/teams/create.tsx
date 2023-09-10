@@ -28,13 +28,13 @@ import {
 
 const createTeamFormSchema = z.object({
   name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
-  // game_id: z.string().uuid({ message: 'You have to chose a game' })
+  game_id: z.string().uuid({ message: 'You have to chose a game' }),
 });
 
 type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
 
 const { post: createTeam } = dataLoadersV2<TeamCreated, CreateTeamForm>(
-  'createTeam',
+  'createTeam'
 );
 
 const TeamCreate = ({
@@ -53,9 +53,6 @@ const TeamCreate = ({
   const {
     register,
     handleSubmit,
-    reset,
-    setError,
-    setValue,
     formState: { errors },
   } = useForm<CreateTeamForm>({
     resolver: zodResolver(createTeamFormSchema),
@@ -96,7 +93,7 @@ const TeamCreate = ({
           <Input
             disabled={isFetching}
             inputClassName={classnames(
-              errors.name?.message ? 'focus:ring-red-500' : '',
+              errors.name?.message ? 'focus:ring-red-500' : ''
             )}
             placeholder="Choose a cool name like: #1 HX 🐐"
             error={errors.name?.message}

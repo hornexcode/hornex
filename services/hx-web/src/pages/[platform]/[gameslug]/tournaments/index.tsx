@@ -4,8 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import LeagueOfLegendsLogo from '@/assets/images/games/league-of-legends/logo.png';
-import HornexVariantLogo from '@/assets/images/hornex/hornex-variant-logo.png';
 import LeagueBanner from '@/assets/images/tournaments/leaguebanner.png';
+import HornexVariantLogo from '@/assets/images/hornex/hornex-variant-logo.png';
 import { TournamentListItem } from '@/components/tournaments/tournament-list-item';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
