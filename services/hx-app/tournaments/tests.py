@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.test import RequestFactory
 
 
 from django.contrib import admin
@@ -320,7 +321,8 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
 
     def test_tournament_registration_already_at_tournament(self):
         TournamentTeam.objects.create(
-            tournament=self.tournament, team=self.team,
+            tournament=self.tournament,
+            team=self.team,
         )
 
         tournament_registration = TournamentRegistration.objects.create(
@@ -334,7 +336,6 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             self.assertRaises(Exception, e)
             self.assertEqual(str(e), "Team is already at tournament.")
 
-    
     def test_tournament_is_full(self):
         self.tournament_data["max_teams"] = 1
         self.tournament = Tournament.objects.create(**self.tournament_data)
@@ -355,12 +356,11 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
         )
 
         try:
-          self.confirm_registration(first_regis)
-          self.confirm_registration(sec_regis)
+            self.confirm_registration(first_regis)
+            self.confirm_registration(sec_regis)
         except Exception as e:
             self.assertRaises(Exception, e)
             self.assertEqual(str(e), "Tournament is full.")
-       
 
     def test_tournament_registration_tournament_not_open(self):
         self.tournament.status = Tournament.TournamentStatusType.CANCELLED
