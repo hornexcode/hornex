@@ -43,7 +43,7 @@ class Tournament(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name} ({self.id})"
 
 
 class TournamentTeam(models.Model):
@@ -61,6 +61,7 @@ class TournamentRegistration(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    confirmed_at = models.DateTimeField(null=True, blank=True)
     cancelled_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:

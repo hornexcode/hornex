@@ -5,13 +5,15 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.test import RequestFactory
 
-
+from django.contrib import admin
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
 from teams.models import Team
-from tournaments.models import Tournament
+from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
+from tournaments.admin import accept_team_registration
 
 
 class TournamentTests(APITestCase, URLPatternsTestCase):
@@ -209,3 +211,152 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         resp = self.client.get(f"{url}?ordering=-start_time")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data["results"][0]["name"], "second")
+
+
+class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path("admin/", admin.site.urls),
+    ]
+
+    def setUp(self) -> None:
+        self.credentials = {
+            "email": "admin",
+            "password": "admin",
+        }
+
+        self.user = User.objects.create_superuser(**self.credentials)
+
+        # Generating a JWT token for the test user
+        self.refresh = RefreshToken.for_user(self.user)
+
+        # Authenticate the client with the token
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+        self.platform = Platform.objects.create(name="test platform")
+        self.game = Game.objects.create(name="test game")
+        self.game.platforms.set([self.platform])
+        self.team = Team.objects.create(
+            name="test team",
+            created_by=self.user,
+            game=self.game,
+            platform=self.platform,
+        )
+
+        self.tournament_data = {
+            "name": "test tournament",
+            "game": Game.objects.first(),
+            "platform": self.platform,
+            "max_teams": 2,
+            "entry_fee": 15.00,
+            "start_time": timezone.now(),
+            "end_time": (timedelta(days=7) + timezone.now()),
+            "organizer": self.user,
+        }
+
+        self.tournament = Tournament.objects.create(**self.tournament_data)
+
+        self.tournament_registration = TournamentRegistration.objects.create(
+            tournament=self.tournament, team=self.team
+        )
+
+        return super().setUp()
+
+    def test_accept_tournament_registration(self):
+        accept_team_registration(
+            self,
+            request=None,
+            queryset=TournamentRegistration.objects.filter(
+                id=self.tournament_registration.id
+            ),
+        )
+
+        self.tournament_registration.refresh_from_db()
+
+        self.assertIsNotNone(
+            TournamentTeam.objects.filter(
+                tournament=self.tournament_registration.tournament,
+                team=self.tournament_registration.team,
+            ).first()
+        )
+        self.assertIsNotNone(self.tournament_registration.confirmed_at)
+
+    def test_accept_multiple_tournament_registrations(self):
+        # Create second registration
+        team = Team.objects.create(
+            name="test team second",
+            created_by=self.user,
+            game=self.game,
+            platform=self.platform,
+        )
+
+        tournament_registration = TournamentRegistration.objects.create(
+            tournament=self.tournament, team=team
+        )
+
+        accept_team_registration(
+            self,
+            request=None,
+            queryset=TournamentRegistration.objects.filter(
+                id__in=[self.tournament_registration.id, tournament_registration.id]
+            ),
+        )
+
+        # Refresh registrations after accepting
+        self.tournament_registration.refresh_from_db()
+        tournament_registration.refresh_from_db()
+
+        tournament_teams = TournamentTeam.objects.filter(
+            tournament=self.tournament_registration.tournament,
+        ).all()
+
+        self.assertEqual(len(tournament_teams), 2)
+        self.assertIsNotNone(self.tournament_registration.confirmed_at)
+        self.assertIsNotNone(tournament_registration.confirmed_at)
+
+    """
+        2. check if tournament is full
+        3. check if tournament is open
+    """
+
+    def test_tournament_is_full(self):
+        request = RequestFactory().post(
+            reverse("admin:tournaments_tournamentregistration_changelist")
+        )
+        self.tournament_data["max_teams"] = 1
+        self.tournament = Tournament.objects.create(**self.tournament_data)
+
+        # Create second registration
+        team = Team.objects.create(
+            name="test team second",
+            created_by=self.user,
+            game=self.game,
+            platform=self.platform,
+        )
+
+        first_regis = TournamentRegistration.objects.create(
+            tournament=self.tournament, team=self.team
+        )
+        sec_regis = TournamentRegistration.objects.create(
+            tournament=self.tournament, team=team
+        )
+
+        try:
+            accept_team_registration(
+                self,
+                request=request,
+                queryset=TournamentRegistration.objects.filter(
+                    id__in=[first_regis.id, sec_regis.id]
+                ),
+            )
+        except Exception as e:
+            self.assertRaises(Exception, e)
+
+    def test_tournament_registration_already_at_tournament(self):
+        # TODO
+        pass
+
+    def test_tournament_registration_tournament_not_open(self):
+        # TODO
+        pass
