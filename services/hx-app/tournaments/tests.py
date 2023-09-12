@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-from mock import patch
+
 
 from django.contrib import admin
 from users.models import User
@@ -319,14 +319,23 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
         self.assertIsNotNone(tournament_registration.confirmed_at)
 
     def test_tournament_registration_already_at_tournament(self):
-        # TODO
-        pass
+        TournamentTeam.objects.create(
+            tournament=self.tournament, team=self.team,
+        )
 
-    @patch(
-        "tournaments.admin.TournamentRegistrationAdmin.accept_team_registration",
-        side_effect=Exception("Tournament is full."),
-    )
-    def test_tournament_is_full(self, mock_accept_team_registration):
+        tournament_registration = TournamentRegistration.objects.create(
+            tournament=self.tournament, team=self.team
+        )
+
+        try:
+            self.confirm_registration(tournament_registration)
+
+        except Exception as e:
+            self.assertRaises(Exception, e)
+            self.assertEqual(str(e), "Team is already at tournament.")
+
+    
+    def test_tournament_is_full(self):
         self.tournament_data["max_teams"] = 1
         self.tournament = Tournament.objects.create(**self.tournament_data)
 
@@ -346,17 +355,12 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
         )
 
         try:
-            mock_accept_team_registration(
-                self,
-                request=None,
-                queryset=TournamentRegistration.objects.filter(
-                    id__in=[first_regis.id, sec_regis.id]
-                ),
-            )
+          self.confirm_registration(first_regis)
+          self.confirm_registration(sec_regis)
         except Exception as e:
             self.assertRaises(Exception, e)
             self.assertEqual(str(e), "Tournament is full.")
-            mock_accept_team_registration.assert_called_once()
+       
 
     def test_tournament_registration_tournament_not_open(self):
         self.tournament.status = Tournament.TournamentStatusType.CANCELLED
