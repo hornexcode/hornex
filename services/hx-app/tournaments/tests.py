@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.test import RequestFactory
+from mock import patch
 
 from django.contrib import admin
 from users.models import User
@@ -13,7 +13,8 @@ from platforms.models import Platform
 from games.models import Game
 from teams.models import Team
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
-from tournaments.admin import accept_team_registration
+from tournaments.admin import TournamentRegistrationAdmin
+from tournaments.services import TournamentService
 
 
 class TournamentTests(APITestCase, URLPatternsTestCase):
@@ -261,10 +262,12 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team=self.team
         )
 
+        self.confirm_registration = TournamentService().confirm_registration
+
         return super().setUp()
 
     def test_accept_tournament_registration(self):
-        accept_team_registration(
+        TournamentRegistrationAdmin.accept_team_registration(
             self,
             request=None,
             queryset=TournamentRegistration.objects.filter(
@@ -295,7 +298,7 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team=team
         )
 
-        accept_team_registration(
+        TournamentRegistrationAdmin.accept_team_registration(
             self,
             request=None,
             queryset=TournamentRegistration.objects.filter(
@@ -315,15 +318,15 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
         self.assertIsNotNone(self.tournament_registration.confirmed_at)
         self.assertIsNotNone(tournament_registration.confirmed_at)
 
-    """
-        2. check if tournament is full
-        3. check if tournament is open
-    """
+    def test_tournament_registration_already_at_tournament(self):
+        # TODO
+        pass
 
-    def test_tournament_is_full(self):
-        request = RequestFactory().post(
-            reverse("admin:tournaments_tournamentregistration_changelist")
-        )
+    @patch(
+        "tournaments.admin.TournamentRegistrationAdmin.accept_team_registration",
+        side_effect=Exception("Tournament is full."),
+    )
+    def test_tournament_is_full(self, mock_accept_team_registration):
         self.tournament_data["max_teams"] = 1
         self.tournament = Tournament.objects.create(**self.tournament_data)
 
@@ -343,20 +346,30 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
         )
 
         try:
-            accept_team_registration(
+            mock_accept_team_registration(
                 self,
-                request=request,
+                request=None,
                 queryset=TournamentRegistration.objects.filter(
                     id__in=[first_regis.id, sec_regis.id]
                 ),
             )
         except Exception as e:
             self.assertRaises(Exception, e)
-
-    def test_tournament_registration_already_at_tournament(self):
-        # TODO
-        pass
+            self.assertEqual(str(e), "Tournament is full.")
+            mock_accept_team_registration.assert_called_once()
 
     def test_tournament_registration_tournament_not_open(self):
-        # TODO
-        pass
+        self.tournament.status = Tournament.TournamentStatusType.CANCELLED
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        tournament_registration = TournamentRegistration.objects.create(
+            tournament=self.tournament, team=self.team
+        )
+
+        try:
+            self.confirm_registration(tournament_registration)
+
+        except Exception as e:
+            self.assertRaises(Exception, e)
+            self.assertEqual(str(e), "Tournament has started or finished.")
