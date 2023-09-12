@@ -377,3 +377,60 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
         except Exception as e:
             self.assertRaises(Exception, e)
             self.assertEqual(str(e), "Tournament has started or finished.")
+
+
+class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path("tournament-register", include("tournaments.urls")),
+    ]
+
+    def setUp(self) -> None:
+        self.credentials = {
+            "email": "admin",
+            "password": "admin",
+        }
+
+        self.user = User.objects.create_user(**self.credentials)
+
+        # Generating a JWT token for the test user
+        self.refresh = RefreshToken.for_user(self.user)
+
+        # Authenticate the client with the token
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+        self.platform = Platform.objects.create(name="test platform")
+        self.game = Game.objects.create(name="test game")
+        self.game.platforms.set([self.platform])
+        self.team = Team.objects.create(
+            name="test team",
+            created_by=self.user,
+            game=self.game,
+            platform=self.platform,
+        )
+
+        self.tournament_data = {
+            "name": "test tournament",
+            "game": Game.objects.first(),
+            "platform": self.platform,
+            "max_teams": 2,
+            "entry_fee": 15.00,
+            "start_time": timezone.now(),
+            "end_time": (timedelta(days=7) + timezone.now()),
+            "organizer": self.user,
+        }
+
+        self.tournament = Tournament.objects.create(**self.tournament_data)
+
+        self.tournament_registration = TournamentRegistration.objects.create(
+            tournament=self.tournament, team=self.team
+        )
+
+        self.confirm_registration = TournamentService().confirm_registration
+
+        return super().setUp()
+
+    def test_unregister_team_204(self):
+        # TODO
+        pass

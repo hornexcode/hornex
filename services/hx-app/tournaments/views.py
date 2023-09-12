@@ -8,7 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
-from tournaments.models import Tournament
+from tournaments.models import Tournament, TournamentRegistration
 from tournaments.filters import TournamentListFilter, TournamentListOrdering
 from tournaments.serializers import (
     TournamentListSerializer,
@@ -86,3 +86,16 @@ class TournamentViewSet(viewsets.ModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True,
+        methods=["delete"],
+    )
+    def unregister(self, request, id=None):
+        svc = TournamentService()
+        try:
+            svc.unregister(id, user_id=request.user.id)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

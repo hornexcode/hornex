@@ -13,7 +13,7 @@ urlpatterns = [
     ),
     path(
         "/<str:id>/register",
-        TournamentViewSet.as_view({"post": "register"}),
+        TournamentViewSet.as_view({"post": "register", "delete": "unregister"}),
         name="tournament-register",
     ),
 ]
