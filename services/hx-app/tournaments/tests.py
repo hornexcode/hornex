@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.test import RequestFactory
+from mock import patch
 
 
 from django.contrib import admin
