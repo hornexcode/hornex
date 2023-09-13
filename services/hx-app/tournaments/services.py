@@ -2,7 +2,7 @@ from tournaments.models import Tournament, TournamentRegistration, TournamentTea
 from teams.models import Team, TeamMember
 from users.models import User
 from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import BadRequest, PermissionDenied
 
 
 class TournamentService:
@@ -81,19 +81,16 @@ class TournamentService:
         if not TeamMember.objects.filter(
             team=registration.team, user=user, is_admin=True
         ).exists():
-            raise Exception("Only team admin can unregister from a tournament.")
+            raise PermissionDenied("Only team admin can unregister from a tournament.")
 
         # not registered
         if not registration.confirmed_at:
             raise Exception("The team is not confirmed at tournament")
 
-        tournament_team = TournamentTeam.objects.get(
+        # We've confirmed_at, but TournamentTeam is null, "Internal error" will be 404
+        TournamentTeam.objects.get(
             team=registration.team, tournament=registration.tournament
         )
-
-        # We've confirmed_at, but TournamentTeam is null, "Inter error"
-        if not tournament_team:
-            raise Exception("Team already unregistered.")
 
         registration.cancelled_at = timezone.now()
         registration.save()

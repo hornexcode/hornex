@@ -12,7 +12,7 @@ from django.contrib import admin
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
-from teams.models import Team
+from teams.models import Team, TeamMember
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
 from tournaments.admin import TournamentRegistrationAdmin
 from tournaments.services import TournamentService
@@ -379,15 +379,15 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             self.assertEqual(str(e), "Tournament has started or finished.")
 
 
-class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
+class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
     urlpatterns = [
         path("tournament-register", include("tournaments.urls")),
     ]
 
     def setUp(self) -> None:
         self.credentials = {
-            "email": "admin",
-            "password": "admin",
+            "email": "test",
+            "password": "testpass",
         }
 
         self.user = User.objects.create_user(**self.credentials)
@@ -424,13 +424,68 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
         self.tournament = Tournament.objects.create(**self.tournament_data)
 
         self.tournament_registration = TournamentRegistration.objects.create(
-            tournament=self.tournament, team=self.team
+            tournament=self.tournament, team=self.team, confirmed_at=timezone.now()
         )
 
-        self.confirm_registration = TournamentService().confirm_registration
+        self.tournament_team = TournamentTeam.objects.create(
+            tournament=self.tournament, team=self.team
+        )
 
         return super().setUp()
 
     def test_unregister_team_204(self):
-        # TODO
-        pass
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+
+        resp = self.client.delete(url)
+        self.tournament_registration.refresh_from_db()
+        self.assertIsNotNone(self.tournament_registration.cancelled_at)
+        self.assertEqual(resp.status_code, 204)
+
+    def test_can_not_list_canceled_registration(self):
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+
+        url = reverse("tournament-registration")
+        resp = self.client.get(url)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 0)
+
+    def test_only_admin_can_unregister_team(self):
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+        team_member = TeamMember.objects.get(user=self.user, team=self.team)
+        team_member.is_admin = False
+        team_member.save()
+        team_member.refresh_from_db()
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_team_is_not_confirmed_at_tournament(self):
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+
+        self.tournament_registration.confirmed_at = None
+        self.tournament_registration.save()
+        self.tournament_registration.refresh_from_db()
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_tournament_team_not_found_404(self):
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+
+        self.tournament_team.delete()
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
