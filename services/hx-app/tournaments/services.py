@@ -1,4 +1,4 @@
-from tournaments.models import Tournament, TournamentRegistration
+from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
 from teams.models import Team, TeamMember
 from users.models import User
 from django.utils import timezone
@@ -25,9 +25,7 @@ class TournamentService:
         # check if tournament is full
         if (
             tournament.max_teams
-            <= TournamentRegistration.objects.filter(
-                team=team, tournament=tournament
-            ).count()
+            <= TournamentTeam.objects.filter(tournament=tournament).count()
         ):
             raise Exception("Tournament is full.")
 
@@ -43,5 +41,34 @@ class TournamentService:
 
         return TournamentRegistration.objects.create(team=team, tournament=tournament)
 
-    def confirm_registration():
-        pass
+    def confirm_registration(self, tournament_registration: TournamentRegistration):
+        tournament = tournament_registration.tournament
+        team = tournament_registration.team
+
+        # check if team is already at tournament
+        if TournamentTeam.objects.filter(team=team, tournament=tournament).exists():
+            raise Exception("Team is already at tournament.")
+
+        # check if tournament is full
+        if (
+            tournament.max_teams
+            <= TournamentTeam.objects.filter(tournament=tournament).count()
+        ):
+            raise Exception("Tournament is full.")
+
+        # check if tournament is open
+        if (
+            tournament.status != Tournament.TournamentStatusType.NOT_STARTED
+            or tournament.end_time < timezone.now()
+        ):
+            raise Exception("Tournament has started or finished.")
+
+        tournament_team = TournamentTeam.objects.create(
+            team=team, tournament=tournament
+        )
+
+        if not tournament_team:
+            raise Exception("Could not confirm registration.")
+
+        tournament_registration.confirmed_at = timezone.now()
+        tournament_registration.save()
