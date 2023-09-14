@@ -93,6 +93,25 @@ class TournamentViewSet(viewsets.ModelViewSet):
 
     @swagger_auto_schema(
         operation_description="DELETE /api/v1/tournaments/:id/register",
+        operation_summary="Cancel team's tournament registration",
+    )
+    @action(
+        detail=True,
+        methods=["delete"],
+    )
+    def cancel(self, request, id=None):
+        svc = TournamentService()
+        try:
+            svc.cancel_registration(id, user_id=request.user.id)
+        except ObjectDoesNotExist as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionDenied as e:
+            return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @swagger_auto_schema(
+        operation_description="DELETE /api/v1/tournaments/:id/unregister",
         operation_summary="Unregister team from tournament",
     )
     @action(

@@ -73,6 +73,18 @@ class TournamentService:
         tournament_registration.confirmed_at = timezone.now()
         tournament_registration.save()
 
+    def cancel_registration(self, registration_id: int, user_id: int):
+        user = User.objects.get(id=user_id)
+        registration = TournamentRegistration.objects.get(id=registration_id)
+
+        if not TeamMember.objects.filter(
+            team=registration.team, user=user, is_admin=True
+        ).exists():
+            raise PermissionDenied("Only team admin can cancel registration.")
+
+        registration.cancelled_at = timezone.now()
+        registration.save()
+
     def unregister(self, registration_id: int, user_id: int):
         user = User.objects.get(id=user_id)
         registration = TournamentRegistration.objects.get(id=registration_id)

@@ -22,7 +22,12 @@ urlpatterns = [
     ),
     path(
         "/<str:id>/register",
-        TournamentViewSet.as_view({"post": "register", "delete": "unregister"}),
+        TournamentViewSet.as_view({"post": "register", "delete": "cancel"}),
         name="tournament-register",
+    ),
+    path(
+        "/<str:id>/unregister",
+        TournamentViewSet.as_view({"delete": "unregister"}),
+        name="tournament-unregister",
     ),
 ]
