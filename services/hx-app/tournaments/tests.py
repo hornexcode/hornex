@@ -5,10 +5,7 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-from mock import patch
 
-
-from django.contrib import admin
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
@@ -217,7 +214,7 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
 
 class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path("admin/", admin.site.urls),
+        path("api/v1/tournaments", include("tournaments.urls")),
     ]
 
     def setUp(self) -> None:
@@ -378,10 +375,44 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             self.assertRaises(Exception, e)
             self.assertEqual(str(e), "Tournament has started or finished.")
 
+    def test_cancel_registration_204(self):
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+        resp = self.client.delete(url)
+        self.tournament_registration.refresh_from_db()
+
+        self.assertIsNotNone(self.tournament_registration.cancelled_at)
+        self.assertEqual(resp.status_code, 204)
+
+    def test_cancel_registration_404(self):
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+        self.tournament_registration.delete()
+
+        resp = self.client.delete(url)
+
+        self.assertEqual(resp.status_code, 404)
+
+    def test_cancel_registration_403(self):
+        url = reverse(
+            "tournament-register", kwargs={"id": self.tournament_registration.id}
+        )
+        team_member = TeamMember.objects.get(user=self.user, team=self.team)
+        team_member.is_admin = False
+        team_member.save()
+        team_member.refresh_from_db()
+
+        resp = self.client.delete(url)
+
+        self.assertIsNone(self.tournament_registration.cancelled_at)
+        self.assertEqual(resp.status_code, 403)
+
 
 class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path("tournament-register", include("tournaments.urls")),
+        path("tournament-unregister", include("tournaments.urls")),
     ]
 
     def setUp(self) -> None:
@@ -435,7 +466,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
 
     def test_unregister_team_204(self):
         url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
+            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
         )
 
         resp = self.client.delete(url)
@@ -445,7 +476,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
 
     def test_can_not_list_canceled_registration(self):
         url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
+            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
         )
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 204)
@@ -458,7 +489,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
 
     def test_only_admin_can_unregister_team(self):
         url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
+            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
         )
         team_member = TeamMember.objects.get(user=self.user, team=self.team)
         team_member.is_admin = False
@@ -470,7 +501,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
 
     def test_team_is_not_confirmed_at_tournament(self):
         url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
+            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
         )
 
         self.tournament_registration.confirmed_at = None
@@ -482,7 +513,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
 
     def test_tournament_team_not_found_404(self):
         url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
+            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
         )
 
         self.tournament_team.delete()
