@@ -42,14 +42,14 @@ export default function HomePage() {
               <>
                 <Link
                   href={routes.login}
-                  className="flex items-center text-white"
+                  className="flex items-center text-white transition-colors hover:text-amber-400"
                 >
                   Login
                   <ArrowUpRightIcon className="ml-2 w-4" />
                 </Link>
                 <Link
                   href={routes.register}
-                  className="rounded bg-amber-500 px-4 py-2 font-medium tracking-tight text-white hover:bg-amber-400 focus:ring-2"
+                  className="rounded bg-amber-500 px-4 py-2 font-medium tracking-tight text-white transition-colors hover:bg-amber-400 focus:ring-2"
                 >
                   Register now
                 </Link>
@@ -93,7 +93,7 @@ export default function HomePage() {
               <li>
                 <a
                   href="#home"
-                  className="block rounded py-2 pl-3 pr-4 text-white md:bg-transparent md:p-0"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:bg-transparent md:p-0"
                   aria-current="page"
                 >
                   Home
@@ -102,7 +102,7 @@ export default function HomePage() {
               <li>
                 <a
                   href="#supported-games"
-                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-amber-400 md:p-0"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:p-0"
                 >
                   Supported Games
                 </a>
@@ -110,7 +110,7 @@ export default function HomePage() {
               <li>
                 <a
                   href="#how-to-play"
-                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-amber-400 md:p-0"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:p-0"
                 >
                   How to play
                 </a>
@@ -118,7 +118,7 @@ export default function HomePage() {
               <li>
                 <Link
                   href="#contact"
-                  className="block rounded py-2 pl-3 pr-4 text-white hover:text-amber-400 md:p-0"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:p-0"
                 >
                   Contact
                 </Link>
@@ -133,7 +133,7 @@ export default function HomePage() {
           <div className="h-full w-full bg-dark/95" />
         </div> */}
 
-        <div className="absolute h-full">
+        <div className="absolute left-0 right-0 m-auto h-full">
           <video
             className="bg-dark/70 left-0 top-0 h-full w-full object-cover object-center"
             autoPlay
@@ -145,13 +145,13 @@ export default function HomePage() {
           <div className="bg-dark/80 absolute inset-0"></div>
         </div>
 
-        <div className="absolute top-20 my-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
+        <div className="absolute left-0 right-0 top-20 mx-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
           <a
             href="#"
             className="mb-7 inline-flex items-center justify-between rounded-full bg-gray-100 px-1 py-1 pr-4 text-sm text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
             role="alert"
           >
-            <span className="bg-primary-600 mr-3 rounded-full px-4 py-1.5 text-xs text-white">
+            <span className="bg-primary-600 mr-3 rounded-full px-4 py-1.5 text-xs text-white transition-colors">
               Coming soon
             </span>
             <span className="text-sm font-medium">Hx is launching soon. </span>
@@ -183,7 +183,7 @@ export default function HomePage() {
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
             <Link
               href={routes.compete}
-              className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
+              className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium transition-colors hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-2 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
             >
               Play now
               <svg
@@ -324,7 +324,7 @@ export default function HomePage() {
             <div>
               <Link
                 href={routes.compete}
-                className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
+                className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium transition-colors hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-2 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
               >
                 Play now
                 <svg
@@ -388,7 +388,7 @@ export default function HomePage() {
 
           <Link
             href={routes.compete}
-            className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-4 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
+            className="dark:hover:text-light-dark inline-flex items-center justify-center rounded-lg border border-white px-5 py-3 text-center text-base font-medium transition-colors hover:border-amber-400 hover:bg-gray-100 hover:text-white focus:ring-2 focus:ring-gray-100 dark:border-white dark:text-white dark:hover:bg-white dark:focus:ring-white"
           >
             More
             <svg
@@ -472,10 +472,7 @@ export default function HomePage() {
         </div>
       </section> */}
 
-      <footer
-        id="contact"
-        className="mx-auto border-t border-gray-800 bg-white p-6 dark:bg-gray-900 md:p-14"
-      >
+      <footer className="mx-auto border-t border-gray-800 bg-white p-6 dark:bg-gray-900 md:p-14">
         <div className="mx-auto w-full max-w-screen-xl">
           <div className="grid grid-cols-2 gap-6 py-6 md:grid-cols-6">
             <div className="col-span-2">
@@ -604,7 +601,8 @@ export default function HomePage() {
                 <span className="sr-only">Discord community</span>
               </a>
               <a
-                href="#"
+                href="https://twitter.com/hornexgg"
+                target="_blank"
                 className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
               >
                 <svg
@@ -623,7 +621,8 @@ export default function HomePage() {
                 <span className="sr-only">Twitter page</span>
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/hornexgg/"
+                target="_blank"
                 className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
               >
                 <svg

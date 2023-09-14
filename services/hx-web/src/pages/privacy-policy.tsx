@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
               this Privacy Policy shall have the meaning given in the&nbsp;
             </span>
             <Link href="/terms-of-use" className="text-sky-400 hover:underline">
-              <span>Termos e Condições</span>
+              <span>Terms and Conditions</span>
             </Link>
             <span>&nbsp;of Service (the “T&amp;Cs”).</span>
           </p>
@@ -233,12 +233,12 @@ export default function PrivacyPolicy() {
               <br />
             </span>
             <Link
-              href="mailto:pedro357bm@gmail.com"
+              href="mailto:accounts@hornex.gg"
               className="text-sky-400 hover:underline"
             >
               <span>Email:</span>
               <span>&nbsp;</span>
-              <span>pedro357bm@gmail.com</span>
+              <span>accounts@hornex.gg</span>
             </Link>
           </p>
           <ol className="list-decimal pl-8" start={2}>
@@ -1612,9 +1612,9 @@ export default function PrivacyPolicy() {
             </span>
             <Link
               className="text-sky-400 hover:underline"
-              href="mailto:pedro357bm@gmail.com"
+              href="mailto:accounts@hornex.gg"
             >
-              pedro357bm@gmail.com
+              accounts@hornex.gg
             </Link>
             <span>.</span>
           </p>

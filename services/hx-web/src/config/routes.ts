@@ -5,7 +5,7 @@ const routes = {
   about: '',
   contactUs: 'contact-us',
   login: 'login',
-  register: 'register',
+  register: 'signup',
   compete: 'compete',
   tournaments: 'tournaments',
   platform: 'platform',
