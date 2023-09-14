@@ -53,10 +53,17 @@ class TournamentTeam(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.tournament.name} - {self.team.name}"
+        return f"{self.tournament.name} - {self.team.name} ({self.id})"
+
+
+class TournamentRegistrationManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(cancelled_at__isnull=True)
 
 
 class TournamentRegistration(models.Model):
+    objects = TournamentRegistrationManager()
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
@@ -65,4 +72,4 @@ class TournamentRegistration(models.Model):
     cancelled_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.tournament.name} - {self.team.name}"
+        return f"{self.tournament.name} - {self.team.name} ({self.id})"

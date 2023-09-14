@@ -2,13 +2,13 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
-from tournaments.models import Tournament
+from tournaments.models import Tournament, TournamentRegistration
 from tournaments.filters import TournamentListFilter, TournamentListOrdering
 from tournaments.serializers import (
     TournamentListSerializer,
@@ -58,6 +58,10 @@ class TournamentViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        operation_description="POST /api/v1/tournaments/:id/register",
+        operation_summary="Register team at tournament",
+    )
     @action(
         detail=True,
         methods=["post"],
@@ -86,3 +90,31 @@ class TournamentViewSet(viewsets.ModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_201_CREATED)
+
+    @swagger_auto_schema(
+        operation_description="DELETE /api/v1/tournaments/:id/register",
+        operation_summary="Unregister team from tournament",
+    )
+    @action(
+        detail=True,
+        methods=["delete"],
+    )
+    def unregister(self, request, id=None):
+        svc = TournamentService()
+        try:
+            svc.unregister(id, user_id=request.user.id)
+        except ObjectDoesNotExist as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionDenied as e:
+            return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TournamentRegistrationViewSet(viewsets.ModelViewSet):
+    queryset = TournamentRegistration.objects.all()
+    serializer_class = RegistrationSerializer
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated]
