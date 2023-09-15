@@ -18,15 +18,15 @@ const schema = z.object({
     .min(6, { message: 'Minimum 6 characters for code' }),
 });
 
-type ConfirmSignupInput = z.infer<typeof schema>;
+type ConfirmRegisterInput = z.infer<typeof schema>;
 
-const { post: confirmSignup } = dataLoadersV2<{}, ConfirmSignupInput>(
-  'confirmSignup',
-  schema,
+const { post: confirmRegister } = dataLoadersV2<{}, ConfirmRegisterInput>(
+  'confirmRegister',
+  schema
 );
 
 const { get: getEmailConfirmationCode } = dataLoadersV2<{}>(
-  'getEmailConfirmationCode',
+  'getEmailConfirmationCode'
 );
 
 export default function RegisterPage() {
@@ -38,7 +38,7 @@ export default function RegisterPage() {
     router.push('/compete');
   }
   const [codeEvent, setCodeEvent] = useState<'send' | 'resend' | 'sent'>(
-    'send',
+    'send'
   );
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -59,13 +59,13 @@ export default function RegisterPage() {
     };
   }, [codeEvent]);
 
-  async function onConfirmSignup(e: any) {
+  async function onConfirmRegister(e: any) {
     setError(null);
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await confirmSignup({ confirmation_code: code });
+      const { error } = await confirmRegister({ confirmation_code: code });
       if (error) {
         setError(error.message);
         return;
@@ -149,7 +149,7 @@ export default function RegisterPage() {
             color="secondary"
             shape="rounded"
             size="small"
-            onClick={(e) => onConfirmSignup(e)}
+            onClick={(e) => onConfirmRegister(e)}
           >
             Confirm Email
           </Button>

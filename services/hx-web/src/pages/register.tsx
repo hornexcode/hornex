@@ -4,11 +4,11 @@ import InputLabel from '@/components/ui/form/input-label';
 import { Logo } from '@/components/ui/logo';
 import { dataLoadersV2 } from '@/lib/api';
 import {
-  SignupInput,
-  SignupOutput,
-  signupSchemaInput,
-  signupSchemaOutput as schema,
-} from '@/services/hx-core/signup';
+  RegisterInput,
+  RegisterOutput,
+  registerSchemaInput,
+  registerSchemaOutput as schema,
+} from '@/services/hx-core/register';
 import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { set } from 'es-cookie';
@@ -18,8 +18,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-const { post: signup } = dataLoadersV2<SignupOutput, SignupInput>(
-  'signup',
+const { post: registerRequest } = dataLoadersV2<RegisterOutput, RegisterInput>(
+  'register',
   schema
 );
 
@@ -28,14 +28,14 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>();
   const router = useRouter();
 
-  const { register, handleSubmit, formState, watch } = useForm<SignupInput>({
-    resolver: zodResolver(signupSchemaInput),
+  const { register, handleSubmit, formState, watch } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchemaInput),
   });
 
   const terms = watch('terms');
 
-  const onSignup = async (payload: SignupInput) => {
-    const { data, error } = await signup(payload);
+  const onRegister = async (payload: RegisterInput) => {
+    const { data, error } = await registerRequest(payload);
     if (!error && data) {
       set('hx-auth.token', data.access_token);
       router.push('/signup-confirm');
@@ -82,7 +82,7 @@ export default function RegisterPage() {
           </p>
         </div>
         <form
-          onSubmit={handleSubmit(onSignup)}
+          onSubmit={handleSubmit(onRegister)}
           action=""
           className="mt-6 space-y-4 md:space-y-6"
         >
