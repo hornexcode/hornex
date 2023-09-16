@@ -7,8 +7,8 @@ export const routes = {
     path: 'v1/auth/login',
     method: Method.POST,
   },
-  signup: {
-    path: 'v1/auth/signup',
+  register: {
+    path: 'v1/auth/register',
     method: Method.POST,
   },
   logout: {
@@ -36,11 +36,11 @@ export const routes = {
     method: Method.PATCH,
   },
   getEmailConfirmationCode: {
-    path: 'v1/auth/signup-confirm',
+    path: 'v1/auth/register-confirm',
     method: Method.GET,
   },
-  confirmSignup: {
-    path: 'v1/auth/signup-confirm',
+  confirmRegister: {
+    path: 'v1/auth/register-confirm',
     method: Method.POST,
   },
   getGames: {
