@@ -3,6 +3,9 @@ from django.db import models
 
 
 class Tournament(models.Model):
+    class GameType(models.TextChoices):
+        LEAGUE_OF_LEGENDS = "league-of-legends"
+
     class TournamentStatusType(models.TextChoices):
         NOT_STARTED = "not_started"
         STARTED = "started"
@@ -73,3 +76,6 @@ class TournamentRegistration(models.Model):
 
     def __str__(self) -> str:
         return f"{self.tournament.name} - {self.team.name} ({self.id})"
+
+
+# TournamentEntry

@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
-from tournaments.services import TournamentService
+from tournaments.services import TournamentManagementService
 
 admin.site.register(Tournament, list_display=["name", "game", "status", "prize_pool"])
 
@@ -10,11 +10,11 @@ class TournamentRegistrationAdmin(admin.ModelAdmin):
 
     @admin.action(description="Accept registration", permissions=["change"])
     def accept_team_registration(modeladmin, request, queryset):
-        tournamentService = TournamentService()
+        svc = TournamentManagementService()
 
         for tournament_registration in queryset:
             try:
-                tournamentService.confirm_registration(tournament_registration)
+                svc.confirm_registration(tournament_registration)
             except Exception as e:
                 return messages.error(request, str(e))
 

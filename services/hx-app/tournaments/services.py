@@ -2,10 +2,13 @@ from tournaments.models import Tournament, TournamentRegistration, TournamentTea
 from teams.models import Team, TeamMember
 from users.models import User
 from django.utils import timezone
-from django.core.exceptions import BadRequest, PermissionDenied
+from django.core.exceptions import PermissionDenied
+from django.db import transaction
+from tournaments.leagueoflegends.tasks import register_tournament_for_game
+from tournaments.events import TournamentRegistrationConfirmed
 
 
-class TournamentService:
+class TournamentManagementService:
     def register(
         self, team_id: str, tournament_id: str, user_id: str
     ) -> TournamentRegistration:
@@ -39,8 +42,15 @@ class TournamentService:
         if not TeamMember.objects.filter(team=team, user=user, is_admin=True).exists():
             raise Exception("Only team admin can register for a tournament.")
 
+        if tournament.game != team.game:
+            raise Exception("Team's game does not match tournament's game.")
+
+        if tournament.platform != team.platform:
+            raise Exception("Team's platform does not match tournament's platform.")
+
         return TournamentRegistration.objects.create(team=team, tournament=tournament)
 
+    @transaction.atomic
     def confirm_registration(self, tournament_registration: TournamentRegistration):
         tournament = tournament_registration.tournament
         team = tournament_registration.team
@@ -63,6 +73,10 @@ class TournamentService:
         ):
             raise Exception("Tournament has started or finished.")
 
+        # Tournament Provider API
+        if tournament.game.slug == Tournament.GameType.LEAGUE_OF_LEGENDS:
+            pass
+
         tournament_team = TournamentTeam.objects.create(
             team=team, tournament=tournament
         )
@@ -72,6 +86,17 @@ class TournamentService:
 
         tournament_registration.confirmed_at = timezone.now()
         tournament_registration.save()
+
+        try:
+            message = TournamentRegistrationConfirmed(
+                tournament_id=tournament.id,
+                tournament_team_id=tournament_team.id,
+                team_id=team.id,
+            )
+            produce_tournament_registration_confirmed_event(message)
+        except Exception as e:
+            print(e)
+            raise Exception("Could not confirm registration.") from e
 
     def cancel_registration(self, registration_id: int, user_id: int):
         user = User.objects.get(id=user_id)
@@ -106,3 +131,11 @@ class TournamentService:
 
         registration.cancelled_at = timezone.now()
         registration.save()
+
+
+def produce_tournament_registration_confirmed_event(
+    message: TournamentRegistrationConfirmed,
+):
+    """Controller for producing TournamentRegistrationConfirmed event."""
+    if message.game_type == Tournament.GameType.LEAGUE_OF_LEGENDS:
+        register_tournament_for_game.delay(message)

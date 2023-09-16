@@ -15,8 +15,12 @@ from tournaments.serializers import (
     TournamentSerializer,
     RegistrationSerializer,
 )
-from tournaments.services import TournamentService
+from tournaments.services import TournamentManagementService
 from tournaments.pagination import TournamentPagination
+
+from tournaments.leagueoflegends.usecases import RegisterTeam
+
+from lib.hornex.riot import TestApi
 
 game_qp = openapi.Parameter(
     "game",
@@ -77,7 +81,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # register team
-        svc = TournamentService()
+        svc = TournamentManagementService()
         try:
             svc.register(
                 team_id=str(params.validated_data["team"]),
@@ -100,7 +104,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
         methods=["delete"],
     )
     def cancel(self, request, id=None):
-        svc = TournamentService()
+        svc = TournamentManagementService()
         try:
             svc.cancel_registration(id, user_id=request.user.id)
         except ObjectDoesNotExist as e:
@@ -119,7 +123,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
         methods=["delete"],
     )
     def unregister(self, request, id=None):
-        svc = TournamentService()
+        svc = TournamentManagementService()
         try:
             svc.unregister(id, user_id=request.user.id)
         except ObjectDoesNotExist as e:
