@@ -12,7 +12,7 @@ from games.models import Game
 from teams.models import Team, TeamMember
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
 from tournaments.admin import TournamentRegistrationAdmin
-from tournaments.services import TournamentService
+from tournaments.services import TournamentManagementService
 
 
 class TournamentTests(APITestCase, URLPatternsTestCase):
@@ -260,7 +260,7 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team=self.team
         )
 
-        self.confirm_registration = TournamentService().confirm_registration
+        self.confirm_registration = TournamentManagementService().confirm_registration
 
         return super().setUp()
 

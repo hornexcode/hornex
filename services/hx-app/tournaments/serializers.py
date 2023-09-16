@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from tournaments.models import Tournament
-from teams.models import Team
 
 
 class TournamentListSerializer(serializers.Serializer):
