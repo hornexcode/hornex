@@ -79,3 +79,44 @@ class TournamentRegistration(models.Model):
 
 
 # TournamentEntry
+
+
+# League of Legends
+class LeagueOfLegendsTournamentProvider(models.Model):
+    class RegionType(models.TextChoices):
+        BR = "BR"
+        EUNE = "EUNE"
+        EUW = "EUW"
+        JP = "JP"
+        KR = "KR"
+        LAN = "LAN"
+        LAS = "LAS"
+        NA = "NA"
+        OCE = "OCE"
+        TR = "TR"
+        RU = "RU"
+
+    id = models.IntegerField(primary_key=True, editable=False)
+    region = models.CharField(
+        max_length=10, choices=RegionType.choices, default=RegionType.BR
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class LeagueOfLegendsTournamentMetadata(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    provider = models.ForeignKey(
+        LeagueOfLegendsTournamentProvider, on_delete=models.CASCADE
+    )
+    tournament_id = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+
+
+class LeagueOfLegendsTournamentCode(models.Model):
+    code = models.CharField(max_length=30, primary_key=True, editable=False)
+    tournament = models.ForeignKey(
+        LeagueOfLegendsTournamentMetadata, on_delete=models.CASCADE
+    )
+    users = models.ManyToManyField("users.User", related_name="tournament_codes")
+    created_at = models.DateTimeField(auto_now_add=True)

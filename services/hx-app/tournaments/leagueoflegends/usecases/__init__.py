@@ -1,1 +1,3 @@
-from .register_team import RegisterTeam
+from tournaments.leagueoflegends.usecases.register_tournament_provider import (
+    RegisterTournamentProviderUseCase,
+)

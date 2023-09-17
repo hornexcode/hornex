@@ -1,40 +1,28 @@
 from celery import shared_task
-from lib.hornex.riot import TestApi
-from tournaments.leagueoflegends.usecases import RegisterTeam
-from tournaments.events import TournamentRegistrationConfirmed
+from lib.hornex.riot import getApi
+from tournaments.leagueoflegends.usecases import RegisterTournamentProviderUseCase
+from tournaments.events import TournamentCreated
+
+client = getApi("keytest")
 
 
 @shared_task(
-    name="tournaments.leagueoflegends.tasks.register_tournament_for_game",
+    name="tournaments.leagueoflegends.tasks.register_tournament",
     bind=True,
     max_retries=3,
     default_retry_delay=30,
 )
-def register_tournament_for_game(self, event):
+def register_tournament(self, event):
     """
     Register a tournament for a game
     Will call the right game provider api to register the tournament
     :param tournament_id: ID of the tournament to register
     """
-    api = TestApi()
-    uc = RegisterTeam(api)
+    try:
+        uc = RegisterTournamentProviderUseCase(client)
 
-    # if error retry will run again
-    data = TournamentRegistrationConfirmed.from_message(event)
-    uc.execute()
-
-
-@shared_task(
-    name="tournaments.leagueoflegends.tasks.register_tournament_for_game",
-    bind=True,
-    max_retries=3,
-    default_retry_delay=30,
-)
-def register_team_for_tournament():
-    """
-    Register a team for a tournament
-    Will call the right game provider api to register the team into a tournament
-    :param team_id: ID of the team to register
-    :param tournament_id: ID of the tournament to register for
-    """
-    pass
+        # if error retry will run again
+        data = TournamentCreated.from_message(event)
+        uc.execute(name=data.name, region="BR")
+    except Exception:
+        raise self.retry()

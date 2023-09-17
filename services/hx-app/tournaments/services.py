@@ -4,8 +4,8 @@ from users.models import User
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from tournaments.leagueoflegends.tasks import register_tournament_for_game
-from tournaments.events import TournamentRegistrationConfirmed
+from tournaments.leagueoflegends.tasks import register_tournament
+from tournaments.events import TournamentCreated
 
 
 class TournamentManagementService:
@@ -73,10 +73,6 @@ class TournamentManagementService:
         ):
             raise Exception("Tournament has started or finished.")
 
-        # Tournament Provider API
-        if tournament.game.slug == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            pass
-
         tournament_team = TournamentTeam.objects.create(
             team=team, tournament=tournament
         )
@@ -88,12 +84,13 @@ class TournamentManagementService:
         tournament_registration.save()
 
         try:
-            message = TournamentRegistrationConfirmed(
+            message = TournamentCreated(
                 tournament_id=tournament.id,
                 tournament_team_id=tournament_team.id,
                 team_id=team.id,
+                game_slug=tournament.game.slug,
             )
-            produce_tournament_registration_confirmed_event(message)
+            tournament_created(message)
         except Exception as e:
             print(e)
             raise Exception("Could not confirm registration.") from e
@@ -133,9 +130,12 @@ class TournamentManagementService:
         registration.save()
 
 
-def produce_tournament_registration_confirmed_event(
-    message: TournamentRegistrationConfirmed,
+def tournament_created(
+    message: TournamentCreated,
 ):
     """Controller for producing TournamentRegistrationConfirmed event."""
-    if message.game_type == Tournament.GameType.LEAGUE_OF_LEGENDS:
-        register_tournament_for_game.delay(message)
+    # Ideally, this use case should not be called right after a tournament
+    # is created. Will be better calling after a tournament is about to start
+    # and has enough teams.
+    if message.game_slug == Tournament.GameType.LEAGUE_OF_LEGENDS:
+        register_tournament.delay(message)
