@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "django_filters",
     "drf_yasg",
+    "django_celery_results",
     # apps
     "users",
     "teams",
@@ -165,3 +166,4 @@ APPEND_SLASH = False
 CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
+CELERY_CACHE_BACKEND = "default"

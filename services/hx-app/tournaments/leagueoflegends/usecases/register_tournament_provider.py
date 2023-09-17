@@ -2,6 +2,7 @@
 from lib.hornex.riot import Clientable
 from enum import Enum
 from requests import RequestException
+from tournaments.models import LeagueOfLegendsTournamentProvider
 
 
 class Region(Enum):
@@ -18,17 +19,19 @@ class Region(Enum):
     RU = "RU"
 
 
-class RegisterTeam:
+class RegisterTournamentProviderUseCase:
     def __init__(self, api: Clientable):
         self.api = api
 
-    def execute(self, name: str, region: str) -> int:
+    def execute(self, region: str) -> LeagueOfLegendsTournamentProvider:
         try:
             provider_id = self.api.register_tournament_provider(
                 "https://example.com/callback", region
             )
-            tournament_id = self.api.create_tournament(provider_id, name, region)
-            return tournament_id
+            provider = LeagueOfLegendsTournamentProvider.objects.create(
+                id=provider_id, region=region
+            )
+            return provider
         except RequestException as e:
             print(e)  # Connection Error, 404, 500, etc
             return

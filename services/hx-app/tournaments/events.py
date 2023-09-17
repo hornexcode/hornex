@@ -23,7 +23,7 @@ class Event(ABC, Generic[T]):
 
 
 @dataclass
-class TournamentCreated(Event):
+class TournamentCreated(Event["TournamentCreated"]):
     id: str
     name: str
     game: str
@@ -34,4 +34,4 @@ class TournamentRegistrationConfirmed(Event["TournamentRegistrationConfirmed"]):
     team_id: str
     tournament_id: str
     user_id: str
-    game_type: str
+    game_slug: str
