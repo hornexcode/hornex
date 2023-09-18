@@ -9,6 +9,8 @@ class Clientable(metaclass=abc.ABCMeta):
         return (
             hasattr(__subclass, "get_a_summoner_by_summoner_name")
             and callable(__subclass.get_a_summoner_by_summoner_name)
+            and hasattr(__subclass, "get_league_by_summoner_id")
+            and callable(__subclass.get_league_by_summoner_id)
             or NotImplemented
         )
 
@@ -16,7 +18,7 @@ class Clientable(metaclass=abc.ABCMeta):
         """Gets a summoner by summoner name."""
         pass
 
-    def get_base_url(self, region: str) -> str:
+    def _get_base_url(self, region: str) -> str:
         regions = {
             "BR1": "br1.api.riotgames.com",
             "EUN1": "eun1.api.riotgames.com",
@@ -38,7 +40,11 @@ class Clientable(metaclass=abc.ABCMeta):
         if region not in regions:
             raise RiotApiError(f"Invalid region: {region}", 400)
 
-        return f"https://{regions[region]}/lol"
+        return f"https://{regions[region]}"
+
+    def get_league_by_summoner_id(self, summoner_id: str, region: str) -> dict:
+        # Get league by summoner id.
+        pass
 
 
 class Client(Clientable):
@@ -46,7 +52,20 @@ class Client(Clientable):
         self.api_key = api_key
 
     def get_a_summoner_by_summoner_name(self, name: str, region: str) -> dict:
-        url = f"{self.get_base_url(region)}/summoner/v4/summoners/by-name/{name}"
+        url = f"{self._get_base_url(region)}/lol/summoner/v4/summoners/by-name/{name}"
+        headers = {"X-Riot-Token": self.api_key}
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            if err.response.status_code == 401 or err.response.status_code == 403:
+                raise RiotApiError("Internal server error", 500)
+            raise
+
+        return response.json()
+
+    def get_league_by_summoner_id(self, summoner_id: str, region: str) -> dict:
+        url = f"{self._get_base_url(region)}/lol/league/v4/entries/by-summoner/{summoner_id}"
         headers = {"X-Riot-Token": self.api_key}
         try:
             response = requests.get(url, headers=headers)

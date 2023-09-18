@@ -6,6 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from requests import exceptions
+from services.riot.exceptions import RiotApiError
 
 
 from tournaments.models import Tournament, TournamentRegistration
@@ -90,6 +92,16 @@ class TournamentViewSet(viewsets.ModelViewSet):
             )
         except ObjectDoesNotExist as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except exceptions.HTTPError as err:
+            return Response(
+                {"error": f"Failed to get team member account"},
+                status=err.response.status_code,
+            )
+        except RiotApiError as err:
+            return Response(
+                {"error": str(err)},
+                status=err.status_code,
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

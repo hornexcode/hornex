@@ -173,9 +173,9 @@ class TestApi(Clientable):
             "id": str(uuid.uuid4()),
             "accountId": str(uuid.uuid4()),
             "puuid": str(uuid.uuid4()),
-            "name": summoner_name,
+            "name": name,
             "profileIconId": 1234,
-            "revisionDate": str(timezone.now()),
+            "revisionDate": int(timezone.now().timestamp()),
             "summonerLevel": 30,
         }
 
@@ -183,10 +183,10 @@ class TestApi(Clientable):
         return [
             {
                 "leagueId": str(uuid.uuid4()),
-                "summonerId": summoner_id,
+                "summonerId": id,
                 "summonerName": "TestSummoner",
                 "queueType": "RANKED_SOLO_5x5",
-                "tier": "DIAMOND",
+                "tier": "IRON",
                 "rank": "I",
                 "leaguePoints": 100,
                 "wins": 50,

@@ -5,10 +5,13 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+from mock import patch, Mock
+from lib.hornex.riot.client import TestApi
 
+from services.riot.client import Client
 from users.models import User
 from platforms.models import Platform
-from games.models import Game
+from games.models import Game, GameAccountRiot
 from teams.models import Team, TeamMember
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
 from tournaments.admin import TournamentRegistrationAdmin
@@ -27,6 +30,9 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         }
 
         self.user = User.objects.create_user(**self.credentials)
+        self.user.name = "tester"
+        self.user.save()
+        self.user.refresh_from_db()
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(self.user)
@@ -37,7 +43,7 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         )
 
         self.platform = Platform.objects.create(name="test platform")
-        self.game = Game.objects.create(name="test game")
+        self.game = Game.objects.create(name="League of Legends")
         self.game.platforms.set([self.platform])
         self.team = Team.objects.create(
             name="test team",
@@ -51,6 +57,8 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
             "game": Game.objects.first(),
             "platform": self.platform,
             "max_teams": 2,
+            "team_size": 1,
+            "tier": Tournament.TournamentTier.IRON,
             "entry_fee": 15.00,
             "start_time": timezone.now(),
             "end_time": (timedelta(days=7) + timezone.now()),
@@ -58,9 +66,22 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         }
 
         self.tournament = Tournament.objects.create(**self.tournament_data)
+        self.riot_account = GameAccountRiot.objects.create(
+            user=self.user,
+            game=self.game,
+            encrypted_summoner_id=str(uuid.uuid4()),
+            encrypted_account_id=str(uuid.uuid4()),
+            encrypted_puuid=str(uuid.uuid4()),
+            username="Summoner Name",
+            region=GameAccountRiot.RegionChoicesType.BR1,
+            summoner_name="Summoner Name",
+            summoner_level=79,
+            revision_date=int(timezone.now().timestamp()),
+        )
 
         return super().setUp()
 
+    @patch("services.riot.client.Client", TestApi)
     def test_tournament_registration_201(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
         resp = self.client.post(
@@ -70,6 +91,7 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
 
         self.assertEqual(resp.status_code, 201)
 
+    @patch("services.riot.client.Client", TestApi)
     def test_tournament_registration_400_already_registered_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
 
@@ -145,6 +167,89 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(
             resp.data["error"], "Only team admin can register for a tournament."
+        )
+
+    def test_tournament_registration_team_game_400(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        game = Game.objects.create(name="test game")
+        game.platforms.set([self.platform])
+        self.tournament.game = game
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.data["error"], "Team's game does not match tournament's game."
+        )
+
+    def test_tournament_registration_team_platform_400(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        platform = Platform.objects.create(name="test platform 2")
+        self.tournament.platform = platform
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.data["error"], "Team's platform does not match tournament's platform."
+        )
+
+    def test_tournament_registration_team_size_400(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        self.tournament.team_size = 2
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.data["error"], "Team's size does not match tournament requirements."
+        )
+
+    def test_tournament_registration_member_riot_account_404(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        self.riot_account.delete()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(
+            resp.data["error"], f"Could not find {self.user.name} riot account."
+        )
+
+    @patch("services.riot.client.Client", TestApi)
+    def test_tournament_registration_member_not_match_tier_400(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        self.tournament.tier = Tournament.TournamentTier.CHALLENGER
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.data["error"],
+            f"{self.user.name}'s tier does not match tournament tier.",
         )
 
     def test_tournament_registration_404(self):
@@ -248,6 +353,7 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             "game": Game.objects.first(),
             "platform": self.platform,
             "max_teams": 2,
+            "team_size": 1,
             "entry_fee": 15.00,
             "start_time": timezone.now(),
             "end_time": (timedelta(days=7) + timezone.now()),
@@ -446,6 +552,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
             "game": Game.objects.first(),
             "platform": self.platform,
             "max_teams": 2,
+            "team_size": 1,
             "entry_fee": 15.00,
             "start_time": timezone.now(),
             "end_time": (timedelta(days=7) + timezone.now()),

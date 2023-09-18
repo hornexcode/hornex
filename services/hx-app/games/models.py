@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 import uuid
 
@@ -40,6 +42,18 @@ class GameAccountRiot(GameAccount):
     https://developer.riotgames.com/apis#summoner-v4
     """
 
+    def renew_data(self, renewer):
+        if timezone.now() - self.updated_at > timedelta(days=1):
+            updated_account = renewer(self.summoner_name, self.region)
+            print("renew_data", updated_account)
+            self.encrypted_summoner_id = updated_account["id"]
+            self.encrypted_account_id = updated_account["accountId"]
+            self.encrypted_puuid = updated_account["puuid"]
+            self.username = updated_account["name"]
+            self.summoner_level = updated_account["summonerLevel"]
+            self.revision_date = updated_account["revisionDate"]
+            self.save()
+
     class RegionChoicesType(models.TextChoices):
         BR1 = "BR1"
         EUN1 = "EUN1"
@@ -58,11 +72,11 @@ class GameAccountRiot(GameAccount):
         TW2 = "TW2"
         VN2 = "VN2"
 
+    encrypted_summoner_id = models.CharField(max_length=63)
     encrypted_account_id = models.CharField(max_length=30)
     encrypted_puuid = models.CharField(max_length=78)
     username = models.CharField(max_length=30)
     region = models.CharField(max_length=4, choices=RegionChoicesType.choices)
-    encrypted_summoner_id = models.CharField(max_length=63)
     summoner_name = models.CharField(max_length=30)  # Summoner name.
     summoner_level = (
         models.IntegerField()

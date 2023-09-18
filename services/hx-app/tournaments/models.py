@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Tournament(models.Model):
@@ -11,6 +12,21 @@ class Tournament(models.Model):
         STARTED = "started"
         FINISHED = "finished"
         CANCELLED = "cancelled"
+
+    class TournamentTier(models.TextChoices):
+        IRON = "IRON"
+        BRONZE = "BRONZE"
+        SILVER = "SILVER"
+        GOLD = "GOLD"
+        PLATINUM = "PLATINUM"
+        DIAMOND = "DIAMOND"
+        MASTER = "MASTER"
+        GRANDMASTER = "GRANDMASTER"
+        CHALLENGER = "CHALLENGER"
+
+    def validate_team_size(value):
+        if value < 1:
+            raise ValidationError("Team size must be greater than zero.")
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30)
@@ -38,6 +54,13 @@ class Tournament(models.Model):
     entry_fee = models.IntegerField(default=0, null=True, blank=True)
 
     max_teams = models.IntegerField(default=0)
+    team_size = models.IntegerField(default=1, validators=[validate_team_size])
+    tier = models.CharField(
+        max_length=20,
+        choices=TournamentTier.choices,
+        default=TournamentTier.IRON,
+    )
+
     teams = models.ManyToManyField(
         "teams.Team", through="TournamentTeam", related_name="tournaments"
     )

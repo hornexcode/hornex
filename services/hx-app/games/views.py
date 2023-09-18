@@ -43,7 +43,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
 
 def summoner_by_name(name: str, region: str):
-    api_key = "RGAPI-5f97cf92-2c9e-41b0-8130-8a9678199ccc"
+    api_key = "RGAPI-eda91699-6860-4fde-9ef8-d6ea815a9201"
     # api_key = os.environ.get("RIOT_API_KEY")
     riot_client = new_riot_client(api_key)
 
@@ -109,11 +109,11 @@ def create_game_account(request, id):
         riot_account = GameAccountRiot.objects.create(
             user=user,
             game=game,
-            encrypted_account_id=data["id"],
+            encrypted_summoner_id=data["id"],
+            encrypted_account_id=data["accountId"],
             encrypted_puuid=data["puuid"],
             username=data["name"],
             region=data.get("region", GameAccountRiot.RegionChoicesType.BR1),
-            encrypted_summoner_id=data["accountId"],
             summoner_name=data["name"],
             summoner_level=data["summonerLevel"],
             revision_date=data["revisionDate"],
