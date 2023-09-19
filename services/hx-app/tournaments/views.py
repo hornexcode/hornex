@@ -18,7 +18,7 @@ from tournaments.serializers import (
 from tournaments.services import TournamentManagementService
 from tournaments.pagination import TournamentPagination
 
-from tournaments.leagueoflegends.usecases import RegisterTeam
+# from tournaments.leagueoflegends.usecases import RegisterTeam
 
 from lib.hornex.riot import TestApi
 
