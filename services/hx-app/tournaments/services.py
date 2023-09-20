@@ -1,10 +1,14 @@
 from django.conf import settings
-from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
+from tournaments.models import (
+    Tournament,
+    LeagueOfLegendsTournament,
+    TournamentRegistration,
+    TournamentTeam,
+)
 from teams.models import Team, TeamMember
 from users.models import User
 from games.models import GameAccountRiot
 from django.utils import timezone
-from datetime import timedelta
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import transaction
 from tournaments.leagueoflegends.tasks import register_tournament
@@ -42,7 +46,7 @@ class TournamentManagementService:
 
         # check if team is already registered
         if TournamentRegistration.objects.filter(
-            team=team, cancelled_at__isnull=True
+            tournament=tournament, team=team, cancelled_at__isnull=True
         ).exists():
             raise Exception("Team is already registered.")
 
@@ -63,6 +67,7 @@ class TournamentManagementService:
 
         for member in members:
             if tournament.game.slug == "league-of-legends":
+                lol_tournament = LeagueOfLegendsTournament.objects.get(id=tournament.id)
                 riot_client = get_riot_client()
 
                 try:
@@ -85,7 +90,7 @@ class TournamentManagementService:
                 )
 
                 for league in leagues:
-                    if league["tier"] != tournament.tier:
+                    if league["tier"] != lol_tournament.tier:
                         raise Exception(
                             f"{member.name}'s tier does not match tournament tier."
                         )

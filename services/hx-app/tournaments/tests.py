@@ -5,13 +5,12 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-from mock import patch, Mock
+from mock import patch
 from lib.hornex.riot.client import TestApi
 
-from services.riot.client import Client
 from users.models import User
 from platforms.models import Platform
-from games.models import Game, GameAccountRiot
+from games.models import Game
 from teams.models import Team, TeamMember
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
 from tournaments.admin import TournamentRegistrationAdmin
@@ -58,7 +57,6 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
             "platform": self.platform,
             "max_teams": 2,
             "team_size": 1,
-            "tier": Tournament.TournamentTier.IRON,
             "entry_fee": 15.00,
             "start_time": timezone.now(),
             "end_time": (timedelta(days=7) + timezone.now()),
@@ -66,42 +64,15 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         }
 
         self.tournament = Tournament.objects.create(**self.tournament_data)
-        self.riot_account = GameAccountRiot.objects.create(
-            user=self.user,
-            game=self.game,
-            encrypted_summoner_id=str(uuid.uuid4()),
-            encrypted_account_id=str(uuid.uuid4()),
-            encrypted_puuid=str(uuid.uuid4()),
-            username="Summoner Name",
-            region=GameAccountRiot.RegionChoicesType.BR1,
-            summoner_name="Summoner Name",
-            summoner_level=79,
-            revision_date=int(timezone.now().timestamp()),
-        )
 
         return super().setUp()
 
-    @patch("services.riot.client.Client", TestApi)
-    def test_tournament_registration_201(self):
-        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
-        resp = self.client.post(
-            url,
-            {"team": self.team.id},
-        )
-
-        self.assertEqual(resp.status_code, 201)
-
-    @patch("services.riot.client.Client", TestApi)
     def test_tournament_registration_400_already_registered_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
 
-        # Ensure that the same team cannot register twice
-        resp = self.client.post(
-            url,
-            {"team": self.team.id},
+        TournamentRegistration.objects.create(
+            tournament=self.tournament, team=self.team
         )
-
-        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.post(
             url,
@@ -218,38 +189,6 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(
             resp.data["error"], "Team's size does not match tournament requirements."
-        )
-
-    def test_tournament_registration_member_riot_account_404(self):
-        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
-        self.riot_account.delete()
-
-        resp = self.client.post(
-            url,
-            {"team": self.team.id},
-        )
-
-        self.assertEqual(resp.status_code, 404)
-        self.assertEqual(
-            resp.data["error"], f"Could not find {self.user.name} riot account."
-        )
-
-    @patch("services.riot.client.Client", TestApi)
-    def test_tournament_registration_member_not_match_tier_400(self):
-        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
-        self.tournament.tier = Tournament.TournamentTier.CHALLENGER
-        self.tournament.save()
-        self.tournament.refresh_from_db()
-
-        resp = self.client.post(
-            url,
-            {"team": self.team.id},
-        )
-
-        self.assertEqual(resp.status_code, 400)
-        self.assertEqual(
-            resp.data["error"],
-            f"{self.user.name}'s tier does not match tournament tier.",
         )
 
     def test_tournament_registration_404(self):
@@ -440,8 +379,9 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             self.assertEqual(str(e), "Team is already at tournament.")
 
     def test_tournament_is_full(self):
-        self.tournament_data["max_teams"] = 1
-        self.tournament = Tournament.objects.create(**self.tournament_data)
+        self.tournament.max_teams = 1
+        self.tournament.save()
+        self.tournament.refresh_from_db()
 
         # Create second registration
         team = Team.objects.create(

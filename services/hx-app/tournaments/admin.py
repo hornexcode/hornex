@@ -1,8 +1,14 @@
 from django.contrib import admin, messages
-from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
+from tournaments.models import (
+    TournamentRegistration,
+    TournamentTeam,
+    LeagueOfLegendsTournament,
+)
 from tournaments.services import TournamentManagementService
 
-admin.site.register(Tournament, list_display=["name", "game", "status", "prize_pool"])
+admin.site.register(
+    LeagueOfLegendsTournament, list_display=["name", "game", "status", "prize_pool"]
+)
 
 
 class TournamentRegistrationAdmin(admin.ModelAdmin):
