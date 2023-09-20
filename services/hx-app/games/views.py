@@ -1,4 +1,4 @@
-import os
+from django.conf import settings
 from requests import exceptions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets
@@ -35,7 +35,6 @@ class GameViewSet(viewsets.ModelViewSet):
     )
     @permission_classes([IsAuthenticated])
     def retrieve(self, request, *args, **kwargs):
-        print("VVV")
         return super().retrieve(request, *args, **kwargs)
 
 
@@ -43,9 +42,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
 
 def summoner_by_name(name: str, region: str):
-    api_key = "RGAPI-eda91699-6860-4fde-9ef8-d6ea815a9201"
-    # api_key = os.environ.get("RIOT_API_KEY")
-    riot_client = new_riot_client(api_key)
+    riot_client = new_riot_client(settings.RIOT_API_KEY)
 
     data = riot_client.get_a_summoner_by_summoner_name(name, region)
 

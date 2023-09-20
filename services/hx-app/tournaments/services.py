@@ -1,3 +1,4 @@
+from django.conf import settings
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
 from teams.models import Team, TeamMember
 from users.models import User
@@ -12,8 +13,7 @@ from services.riot.client import new_riot_client
 
 
 def get_riot_client():
-    api_key = "RGAPI-eda91699-6860-4fde-9ef8-d6ea815a9201"
-    return new_riot_client(api_key)
+    return new_riot_client(settings.RIOT_API_KEY)
 
 
 class TournamentManagementService:

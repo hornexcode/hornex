@@ -45,7 +45,6 @@ class GameAccountRiot(GameAccount):
     def renew_data(self, renewer):
         if timezone.now() - self.updated_at > timedelta(days=1):
             updated_account = renewer(self.summoner_name, self.region)
-            print("renew_data", updated_account)
             self.encrypted_summoner_id = updated_account["id"]
             self.encrypted_account_id = updated_account["accountId"]
             self.encrypted_puuid = updated_account["puuid"]
