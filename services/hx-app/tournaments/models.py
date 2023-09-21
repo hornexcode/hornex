@@ -85,6 +85,43 @@ class TournamentRegistration(models.Model):
         return f"{self.tournament.name} - {self.team.name} ({self.id})"
 
 
+class Bracket(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    team_a = models.ForeignKey(
+        "teams.Team",
+        on_delete=models.CASCADE,
+        related_name="team_a",
+        null=True,
+        blank=True,
+    )
+    team_b = models.ForeignKey(
+        "teams.Team",
+        on_delete=models.CASCADE,
+        related_name="team_b",
+        null=True,
+        blank=True,
+    )
+    winner = models.ForeignKey(
+        "teams.Team",
+        on_delete=models.CASCADE,
+        related_name="winner",
+        null=True,
+        blank=True,
+    )
+    loser = models.ForeignKey(
+        "teams.Team",
+        on_delete=models.CASCADE,
+        related_name="loser",
+        null=True,
+        blank=True,
+    )
+    round = models.IntegerField(null=False, editable=False)
+
+    def __str__(self) -> str:
+        return f"Bracket ({self.id}) | round: {self.round} | {self.tournament.name}"
+
+
 # TournamentEntry
 
 
@@ -107,8 +144,14 @@ class LeagueOfLegendsTournamentProvider(models.Model):
     region = models.CharField(
         max_length=10, choices=RegionType.choices, default=RegionType.BR
     )
-
+    url = models.URLField(
+        editable=True,
+        null=False,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"League of Legends Provider ({self.id})"
 
 
 class LeagueOfLegendsTournament(Tournament):
@@ -134,6 +177,9 @@ class LeagueOfLegendsTournament(Tournament):
         choices=Tier.choices,
         default=Tier.IRON,
     )
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.id})"
 
 
 class LeagueOfLegendsTournamentCode(models.Model):

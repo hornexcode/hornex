@@ -4,6 +4,7 @@ from tournaments.models import (
     LeagueOfLegendsTournament,
     TournamentRegistration,
     TournamentTeam,
+    Bracket,
 )
 from teams.models import Team, TeamMember
 from users.models import User
@@ -175,6 +176,47 @@ class TournamentManagementService:
 
         registration.cancelled_at = timezone.now()
         registration.save()
+
+    @transaction.atomic
+    def generate_brackets(self, tournament: Tournament) -> None:
+        # Validate if tournament has started
+        if tournament.status != Tournament.TournamentStatusType.NOT_STARTED:
+            raise Exception("This tournament has already started.")
+
+        participants = tournament.max_teams
+
+        # Validate tournament if participants are the power of 2
+        if not participants or participants & (participants - 1) != 0:
+            raise Exception("Participants should be a power of 2.")
+
+        tournament_teams = TournamentTeam.objects.filter(tournament=tournament)
+
+        # Validate if TournamentTeam is enough
+        if tournament_teams.count() != participants:
+            raise Exception("Tournament doesn't have enough registered teams.")
+
+        # Get rounds quantity
+        rounds = int(participants.bit_length()) - 1
+
+        # The remaining rounds will have empty brackets
+        for i in range(rounds):
+            for j in range(participants // 2):
+                # First round brackets will have teams
+                if i == 0:
+                    Bracket.objects.create(
+                        tournament=tournament,
+                        team_a=tournament_teams[j].team,
+                        team_b=tournament_teams[j + 1].team,
+                        round=i + 1,
+                    )
+                # Empty brackets for next rounds
+                else:
+                    Bracket.objects.create(tournament=tournament, round=i + 1)
+
+            participants //= 2
+
+        tournament.status = Tournament.TournamentStatusType.STARTED
+        tournament.save()
 
 
 def tournament_created(
