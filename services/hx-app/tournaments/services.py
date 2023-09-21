@@ -1,11 +1,23 @@
-from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
+from django.conf import settings
+from tournaments.models import (
+    Tournament,
+    LeagueOfLegendsTournament,
+    TournamentRegistration,
+    TournamentTeam,
+)
 from teams.models import Team, TeamMember
 from users.models import User
+from games.models import GameAccountRiot
 from django.utils import timezone
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import transaction
 from tournaments.leagueoflegends.tasks import register_tournament
 from tournaments.events import TournamentCreated
+from services.riot.client import new_riot_client
+
+
+def get_riot_client():
+    return new_riot_client(settings.RIOT_API_KEY)
 
 
 class TournamentManagementService:
@@ -34,7 +46,7 @@ class TournamentManagementService:
 
         # check if team is already registered
         if TournamentRegistration.objects.filter(
-            team=team, cancelled_at__isnull=True
+            tournament=tournament, team=team, cancelled_at__isnull=True
         ).exists():
             raise Exception("Team is already registered.")
 
@@ -47,6 +59,41 @@ class TournamentManagementService:
 
         if tournament.platform != team.platform:
             raise Exception("Team's platform does not match tournament's platform.")
+
+        if team.members.count() != tournament.team_size:
+            raise Exception("Team's size does not match tournament requirements.")
+
+        members = team.members.all()
+
+        for member in members:
+            if tournament.game.slug == "league-of-legends":
+                lol_tournament = LeagueOfLegendsTournament.objects.get(id=tournament.id)
+                riot_client = get_riot_client()
+
+                try:
+                    member_riot_account = GameAccountRiot.objects.get(
+                        user__id=member.id
+                    )
+                except ObjectDoesNotExist as e:
+                    raise ObjectDoesNotExist(
+                        f"Could not find {member.name} riot account."
+                    )
+
+                member_riot_account.renew_data(
+                    riot_client.get_a_summoner_by_summoner_name
+                )
+                member_riot_account.refresh_from_db()
+
+                leagues = riot_client.get_league_by_summoner_id(
+                    member_riot_account.encrypted_summoner_id,
+                    member_riot_account.region,
+                )
+
+                for league in leagues:
+                    if league["tier"] != lol_tournament.tier:
+                        raise Exception(
+                            f"{member.name}'s tier does not match tournament tier."
+                        )
 
         return TournamentRegistration.objects.create(team=team, tournament=tournament)
 
@@ -84,13 +131,13 @@ class TournamentManagementService:
         tournament_registration.save()
 
         try:
-            message = TournamentCreated(
+            event = TournamentCreated(
                 tournament_id=tournament.id,
                 tournament_team_id=tournament_team.id,
                 team_id=team.id,
                 game_slug=tournament.game.slug,
             )
-            tournament_created(message)
+            tournament_created(event)
         except Exception as e:
             print(e)
             raise Exception("Could not confirm registration.") from e
@@ -131,11 +178,11 @@ class TournamentManagementService:
 
 
 def tournament_created(
-    message: TournamentCreated,
+    event: TournamentCreated,
 ):
     """Controller for producing TournamentRegistrationConfirmed event."""
     # Ideally, this use case should not be called right after a tournament
     # is created. Will be better calling after a tournament is about to start
     # and has enough teams.
-    if message.game_slug == Tournament.GameType.LEAGUE_OF_LEGENDS:
-        register_tournament.delay(message)
+    if event.game_slug == Tournament.GameType.LEAGUE_OF_LEGENDS:
+        register_tournament.delay(event)

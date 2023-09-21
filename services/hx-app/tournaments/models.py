@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Tournament(models.Model):
@@ -11,6 +12,10 @@ class Tournament(models.Model):
         STARTED = "started"
         FINISHED = "finished"
         CANCELLED = "cancelled"
+
+    def validate_team_size(value):
+        if value < 1:
+            raise ValidationError("Team size must be greater than zero.")
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30)
@@ -38,6 +43,8 @@ class Tournament(models.Model):
     entry_fee = models.IntegerField(default=0, null=True, blank=True)
 
     max_teams = models.IntegerField(default=0)
+    team_size = models.IntegerField(default=1, validators=[validate_team_size])
+
     teams = models.ManyToManyField(
         "teams.Team", through="TournamentTeam", related_name="tournaments"
     )
@@ -104,19 +111,30 @@ class LeagueOfLegendsTournamentProvider(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class LeagueOfLegendsTournamentMetadata(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class LeagueOfLegendsTournament(Tournament):
+    class Tier(models.TextChoices):
+        IRON = "IRON"
+        BRONZE = "BRONZE"
+        SILVER = "SILVER"
+        GOLD = "GOLD"
+        PLATINUM = "PLATINUM"
+        DIAMOND = "DIAMOND"
+        MASTER = "MASTER"
+        GRANDMASTER = "GRANDMASTER"
+        CHALLENGER = "CHALLENGER"
+
     provider = models.ForeignKey(
         LeagueOfLegendsTournamentProvider, on_delete=models.CASCADE
     )
-    tournament_id = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    name = models.CharField(max_length=30)
+    tier = models.CharField(
+        max_length=20,
+        choices=Tier.choices,
+        default=Tier.IRON,
+    )
 
 
 class LeagueOfLegendsTournamentCode(models.Model):
     code = models.CharField(max_length=30, primary_key=True, editable=False)
-    tournament = models.ForeignKey(
-        LeagueOfLegendsTournamentMetadata, on_delete=models.CASCADE
-    )
+    tournament = models.ForeignKey(LeagueOfLegendsTournament, on_delete=models.CASCADE)
     users = models.ManyToManyField("users.User", related_name="tournament_codes")
     created_at = models.DateTimeField(auto_now_add=True)

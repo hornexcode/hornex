@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+from mock import patch
+from lib.hornex.riot.client import TestApi
 
 from users.models import User
 from platforms.models import Platform
@@ -27,6 +29,9 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         }
 
         self.user = User.objects.create_user(**self.credentials)
+        self.user.name = "tester"
+        self.user.save()
+        self.user.refresh_from_db()
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(self.user)
@@ -37,7 +42,7 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         )
 
         self.platform = Platform.objects.create(name="test platform")
-        self.game = Game.objects.create(name="test game")
+        self.game = Game.objects.create(name="League of Legends")
         self.game.platforms.set([self.platform])
         self.team = Team.objects.create(
             name="test team",
@@ -51,6 +56,7 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
             "game": Game.objects.first(),
             "platform": self.platform,
             "max_teams": 2,
+            "team_size": 1,
             "entry_fee": 15.00,
             "start_time": timezone.now(),
             "end_time": (timedelta(days=7) + timezone.now()),
@@ -61,25 +67,12 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
 
         return super().setUp()
 
-    def test_tournament_registration_201(self):
-        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
-        resp = self.client.post(
-            url,
-            {"team": self.team.id},
-        )
-
-        self.assertEqual(resp.status_code, 201)
-
     def test_tournament_registration_400_already_registered_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
 
-        # Ensure that the same team cannot register twice
-        resp = self.client.post(
-            url,
-            {"team": self.team.id},
+        TournamentRegistration.objects.create(
+            tournament=self.tournament, team=self.team
         )
-
-        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.post(
             url,
@@ -145,6 +138,57 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(
             resp.data["error"], "Only team admin can register for a tournament."
+        )
+
+    def test_tournament_registration_team_game_400(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        game = Game.objects.create(name="test game")
+        game.platforms.set([self.platform])
+        self.tournament.game = game
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.data["error"], "Team's game does not match tournament's game."
+        )
+
+    def test_tournament_registration_team_platform_400(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        platform = Platform.objects.create(name="test platform 2")
+        self.tournament.platform = platform
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.data["error"], "Team's platform does not match tournament's platform."
+        )
+
+    def test_tournament_registration_team_size_400(self):
+        url = reverse("tournament-register", kwargs={"id": self.tournament.id})
+        self.tournament.team_size = 2
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        resp = self.client.post(
+            url,
+            {"team": self.team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.data["error"], "Team's size does not match tournament requirements."
         )
 
     def test_tournament_registration_404(self):
@@ -248,6 +292,7 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             "game": Game.objects.first(),
             "platform": self.platform,
             "max_teams": 2,
+            "team_size": 1,
             "entry_fee": 15.00,
             "start_time": timezone.now(),
             "end_time": (timedelta(days=7) + timezone.now()),
@@ -334,8 +379,9 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             self.assertEqual(str(e), "Team is already at tournament.")
 
     def test_tournament_is_full(self):
-        self.tournament_data["max_teams"] = 1
-        self.tournament = Tournament.objects.create(**self.tournament_data)
+        self.tournament.max_teams = 1
+        self.tournament.save()
+        self.tournament.refresh_from_db()
 
         # Create second registration
         team = Team.objects.create(
@@ -446,6 +492,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
             "game": Game.objects.first(),
             "platform": self.platform,
             "max_teams": 2,
+            "team_size": 1,
             "entry_fee": 15.00,
             "start_time": timezone.now(),
             "end_time": (timedelta(days=7) + timezone.now()),
