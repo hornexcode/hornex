@@ -6,12 +6,11 @@ from django.utils import timezone
 from django.test import TestCase
 from tournaments.events import TournamentRegistrationConfirmed
 from tournaments.services import TournamentManagementService
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
-from teams.models import Team, TeamMember
+from teams.models import Team
 from tournaments.models import Tournament, TournamentTeam, Bracket
 
 
@@ -62,7 +61,7 @@ class TestTournamentManagementService(TestCase):
             user = User.objects.create_user(
                 name=f"user {i+1}",
                 email=f"email{i}@hornex.gg",
-                password=f"testpass",
+                password="testpass",
             )
             team = Team.objects.create(
                 name=f"test team {i+1}",

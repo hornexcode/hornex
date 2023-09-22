@@ -4,6 +4,9 @@ from django.core.exceptions import ValidationError
 
 
 class Tournament(models.Model):
+    class Meta:
+        ordering = ["-created_at"]
+
     class GameType(models.TextChoices):
         LEAGUE_OF_LEGENDS = "league-of-legends"
 

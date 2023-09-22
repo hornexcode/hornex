@@ -131,17 +131,19 @@ class TournamentManagementService:
         tournament_registration.confirmed_at = timezone.now()
         tournament_registration.save()
 
-        try:
-            event = TournamentCreated(
-                tournament_id=tournament.id,
-                tournament_team_id=tournament_team.id,
-                team_id=team.id,
-                game_slug=tournament.game.slug,
-            )
-            tournament_created(event)
-        except Exception as e:
-            print(e)
-            raise Exception("Could not confirm registration.") from e
+        return tournament_registration
+
+        # try:
+        #     event = TournamentCreated(
+        #         tournament_id=tournament.id,
+        #         tournament_team_id=tournament_team.id,
+        #         team_id=team.id,
+        #         game_slug=tournament.game.slug,
+        #     )
+        #     tournament_created(event)
+        # except Exception as e:
+        #     print(e)
+        #     raise Exception("Could not confirm registration.") from e
 
     def cancel_registration(self, registration_id: int, user_id: int):
         user = User.objects.get(id=user_id)

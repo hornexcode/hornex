@@ -7,6 +7,7 @@ from tournaments.models import (
     LeagueOfLegendsTournamentProvider,
 )
 from tournaments.services import TournamentManagementService
+from django.utils.translation import ngettext
 
 
 admin.site.register([TournamentTeam, LeagueOfLegendsTournamentProvider, Bracket])
@@ -22,9 +23,17 @@ class TournamentRegistrationAdmin(admin.ModelAdmin):
         for tournament_registration in queryset:
             try:
                 svc.confirm_registration(tournament_registration)
-                messages.success(request, "Registration(s) confirmed successfully!")
             except Exception as e:
                 return messages.error(request, str(e))
+
+        messages.success(
+            request,
+            ngettext(
+                "%d registration was confirmed successfully.",
+                "%d registrations were confirmed successfully",
+                queryset.count(),
+            ),
+        )
 
 
 admin.site.register(TournamentRegistration, TournamentRegistrationAdmin)
