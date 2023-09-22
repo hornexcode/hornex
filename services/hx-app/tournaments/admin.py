@@ -19,19 +19,22 @@ class TournamentRegistrationAdmin(admin.ModelAdmin):
     @admin.action(description="Accept registration", permissions=["change"])
     def accept_team_registration(modeladmin, request, queryset):
         svc = TournamentManagementService()
+        print("ENTERED THE ACCEPT")
 
+        success_count = 0
         for tournament_registration in queryset:
             try:
                 svc.confirm_registration(tournament_registration)
+                success_count += 1
             except Exception as e:
                 return messages.error(request, str(e))
 
-        messages.success(
+        return messages.success(
             request,
             ngettext(
                 "%d registration was confirmed successfully.",
                 "%d registrations were confirmed successfully",
-                queryset.count(),
+                success_count,
             ),
         )
 
@@ -47,12 +50,22 @@ class TournamentAdmin(admin.ModelAdmin):
     def generate_brackets(modeladmin, request, queryset):
         svc = TournamentManagementService()
 
+        success_count = 0
         for tournament in queryset:
             try:
                 svc.generate_brackets(tournament)
-                messages.success(request, "Brackets created successfully!")
+                success_count += 1
             except Exception as e:
                 return messages.error(request, str(e))
+
+        return messages.success(
+            request,
+            ngettext(
+                "%d tournament had its brackets created successfully!",
+                "%d tournaments had its brackets created successfully",
+                success_count,
+            ),
+        )
 
 
 admin.site.register(LeagueOfLegendsTournament, TournamentAdmin)
