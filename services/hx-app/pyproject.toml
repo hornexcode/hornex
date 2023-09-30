@@ -18,6 +18,7 @@ requests = "^2.31.0"
 coverage = "^7.3.0"
 celery = "^5.3.4"
 django-celery-results = "^2.5.1"
+django-cors-headers = "^4.2.0"
 
 
 [tool.poetry.group.dev.dependencies]

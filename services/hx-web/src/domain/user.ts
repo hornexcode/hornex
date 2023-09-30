@@ -1,6 +1,5 @@
-export type User = {
+export type LoggedUser = {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
 };

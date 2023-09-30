@@ -8,23 +8,22 @@ const API_ROOT = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export const dataLoadersV2 = <T, Data = unknown>(
   routeKey: keyof typeof routes,
-  schema?: z.Schema<T>,
+  schema?: z.Schema<T>
 ) => {
   const { path, method } = routes[routeKey];
 
-  const _fetch = async (url: string, options?: RequestInit) => {
+  const fetcher = async (url: string, options?: RequestInit) => {
     let data: T | undefined = undefined;
     let error: FetchError | undefined = undefined;
 
-    const cookie = isServer ? null : Cookie.get('hx-auth.token');
+    const token = isServer ? null : Cookie.get('hx-auth.token');
 
     const res = await fetch(url, {
       method,
-      credentials: 'include',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: cookie ? `Bearer ${cookie}` : '',
+        Authorization: token ? `Bearer ${token}` : '',
       },
       ...options,
     });
@@ -41,10 +40,9 @@ export const dataLoadersV2 = <T, Data = unknown>(
       } else {
         try {
           const errRes = await res.json();
-          console.log(errRes);
           error = {
             name: 'FetchError',
-            message: errRes?.error ?? 'Unable to fetch',
+            message: (errRes?.error || errRes?.detail) ?? 'Unable to fetch',
             validations: errRes?.validations,
             code: res.status,
             response: errRes,
@@ -68,20 +66,20 @@ export const dataLoadersV2 = <T, Data = unknown>(
   };
 
   const post = (payload?: Data): Promise<FetchResponse<T>> => {
-    return _fetch(`${API_ROOT}/${path}`, {
+    return fetcher(`${API_ROOT}/${path}`, {
       body: payload ? JSON.stringify(payload) : '',
     });
   };
 
   const get = (options?: RequestInit): Promise<FetchResponse<T>> => {
-    return _fetch(`${API_ROOT}/${path}`, options);
+    return fetcher(`${API_ROOT}/${path}`, options);
   };
 
   const patch = async (
     param: string,
-    payload?: Data,
+    payload?: Data
   ): Promise<FetchResponse<T>> => {
-    return _fetch(`${API_ROOT}/${path}/${param}`, {
+    return fetcher(`${API_ROOT}/${path}/${param}`, {
       body: payload ? JSON.stringify(payload) : '',
     });
   };
@@ -95,13 +93,12 @@ export const dataLoadersV2 = <T, Data = unknown>(
       fetch(`${API_ROOT}/${url}`, {
         ...options,
         method,
-        credentials: 'include',
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
           Authorization: cookie ? `Bearer ${cookie}` : '',
         },
-      }).then((res) => res.json()),
+      }).then((res) => res.json())
     );
   };
 

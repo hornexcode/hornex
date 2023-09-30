@@ -10,3 +10,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             "email",
             "is_staff",
         )
+
+
+class LoggedInUserSerializerReadOnly(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    email = serializers.EmailField(read_only=True)
+    name = serializers.CharField(read_only=True)

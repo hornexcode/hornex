@@ -5,28 +5,28 @@ import { Logo } from '@/components/ui/logo';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { set } from 'es-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const form = z.object({
   email: z.string().email({ message: 'Valid email required' }),
-  password: z
-    .string()
-    .min(8, { message: 'Password must contain at least 8 characters' }),
+  password: z.string(),
+  // .min(8, { message: 'Password must contain at least 8 characters' }),
 });
 
 type LoginForm = z.infer<typeof form>;
 
 export default function LoginPage() {
+  const [success, setSuccess] = useState(false);
+
   const router = useRouter();
   const {
     register,
     handleSubmit,
-    reset,
-    setError,
     setValue,
     formState: { errors },
   } = useForm<LoginForm>({
@@ -47,8 +47,13 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (state.isAuthenticated) {
+      setSuccess(true);
       router.push(routes.compete);
     }
+
+    return () => {
+      setSuccess(false);
+    };
   }, [state.isAuthenticated]);
 
   // TODO: remove in production
@@ -66,6 +71,11 @@ export default function LoginPage() {
         {error && (
           <div className="rounded bg-red-500 p-2 text-center text-sm text-white">
             {error}
+          </div>
+        )}
+        {success && (
+          <div className="rounded bg-green-500 p-2 text-center text-sm text-white">
+            Login successful!
           </div>
         )}
         <form

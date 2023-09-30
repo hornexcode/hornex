@@ -4,7 +4,7 @@ import z from 'zod';
 
 export const routes = {
   login: {
-    path: 'v1/auth/login',
+    path: 'v1/token',
     method: Method.POST,
   },
   register: {
@@ -15,8 +15,8 @@ export const routes = {
     path: 'v1/auth/logout',
     method: Method.POST,
   },
-  currentUser: {
-    path: 'v1/users/current',
+  getCurrentUser: {
+    path: 'v1/users/current-user',
     method: Method.GET,
   },
   createTeam: {

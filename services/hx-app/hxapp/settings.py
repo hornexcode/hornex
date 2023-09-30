@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-b=#p+ci^=crap5g$&1wos9*hk658@tqfli((9zyx$f4-15%@vo
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ALLOW_ALL_ORIGINS = True  # dev only
 
 # Application definition
 
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_yasg",
     "django_celery_results",
+    "corsheaders",  # dev only
     # apps
     "users",
     "teams",
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",  # dev only
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
