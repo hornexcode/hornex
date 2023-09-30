@@ -1,5 +1,6 @@
 import { parse as parseCookie } from 'es-cookie';
 import { IncomingMessage } from 'http';
+import { NextApiRequestCookies } from 'next/dist/server/api-utils';
 
 /**
  * getCookieFromRequest accepts a CookieNames enum to get the cookie from the request. If the value is present it is returned as a string.
@@ -12,7 +13,7 @@ import { IncomingMessage } from 'http';
  */
 export function getCookieFromRequest(
   req: IncomingMessage,
-  name: string = '',
+  name: string = ''
 ): string | undefined {
   if (req.headers.cookie) {
     const { [name]: cookie } = parseCookie(req.headers.cookie);

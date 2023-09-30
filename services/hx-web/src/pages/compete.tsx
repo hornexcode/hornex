@@ -2,7 +2,7 @@ import CSChar from '@/assets/images/cs-char.png';
 import DotaChar from '@/assets/images/dota-char.png';
 import LolChar from '@/assets/images/lol-bg-char.png';
 import RocketLeagueChar from '@/assets/images/rl-char.png';
-import { GameItemProps } from '@/components/compete';
+import { GameItemProps, PlatformPicker } from '@/components/compete';
 import {
   CounterStrikeLogoIcon,
   DotaLogoIcon,
@@ -12,10 +12,15 @@ import {
   XboxIcon,
 } from '@/components/ui/icons';
 import { AppLayout } from '@/layouts';
+import { requestFactory as requestFactory } from '@/lib/api';
+import { GetAvailableGamesResponse } from '@/lib/hx-app/types';
 import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
-import * as Cookies from 'es-cookie';
+import { PlusCircleIcon } from 'lucide-react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
+
+const { fetch: getAvailableGames } =
+  requestFactory<GetAvailableGamesResponse>('getAvailableGames');
 
 const CompetePage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -112,18 +117,18 @@ const CompetePage = ({}: InferGetServerSidePropsType<
   ];
   return (
     <div className="mx-auto space-y-8 p-8">
-      {/* <div className="flex items-end justify-between border-b border-slate-800 pb-2">
+      <div className="flex items-end justify-between border-b border-slate-800 pb-2">
         <h2 className="text-left text-xl font-bold leading-4 text-white lg:text-xl">
           Connected Games
         </h2>
 
         <PlatformPicker />
-      </div> */}
+      </div>
 
-      {/* <section id="connected-games" className="space-y-10">
+      <section id="connected-games" className="space-y-10">
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-light-dark p-4 transition-all hover:bg-slate-700">
+            <div className="bg-light-dark flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded p-4 transition-all hover:bg-slate-700">
               <PlusCircleIcon className="w-7" />
               <span className="text-sm font-medium text-slate-400">
                 Connect to new game
@@ -131,7 +136,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
       <section id="available-games">
         <div className="space-y-10">
@@ -139,18 +144,6 @@ const CompetePage = ({}: InferGetServerSidePropsType<
             <h2 className="text-left text-xl font-bold leading-4 text-white lg:text-xl">
               Available Games
             </h2>
-          </div>
-
-          <div className="flex">
-            <Link href="/compete/league-of-legends">
-              <div className="space-y-4 rounded-lg">
-                {/* <Image
-                  src={LeagueOfLegends}
-                  className="w-[250px] rounded-lg"
-                  alt="league of legends"
-                /> */}
-              </div>
-            </Link>
           </div>
         </div>
       </section>
@@ -162,16 +155,8 @@ CompetePage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const cookies = Cookies.parse(ctx.req.headers.cookie || '');
-  if (
-    cookies['hx-auth.token'] !== undefined &&
-    cookies['hx-auth.token'] !== ''
-  ) {
-    return {
-      props: {},
-    };
-  }
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const { data, error } = await getAvailableGames({}, req);
 
   return {
     props: {},

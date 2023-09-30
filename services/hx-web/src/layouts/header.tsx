@@ -2,7 +2,7 @@ import MenuItems from './menu/_default';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
-import { User } from '@/domain';
+import { LoggedUser } from '@/domain';
 import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { dataLoaders } from '@/lib/api/client';
 import { useAuthContext } from '@/lib/auth/auth-context';
@@ -14,10 +14,8 @@ import Link from 'next/link';
 import { FC } from 'react';
 
 interface HeaderRightAreaProps {
-  user: User;
+  user: LoggedUser;
 }
-
-const { get: currentUser } = dataLoaders<CurrentUser>('currentUser');
 
 const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
   return (
@@ -36,26 +34,8 @@ const Header = () => {
   const {
     state: { user, isAuthenticated },
   } = useAuthContext();
-  // const [user, setUser] = useState<User | null>(null);
-
-  // const { data, error, isLoading, mutate } = useSWR(
-  //   '/api/v1/users/current',
-  //   currentUser
-  // );
-
-  // useEffect(() => {
-  //   if (data?.user) {
-  //     setUser({
-  //       id: data.user.id,
-  //       firstName: data.user.first_name,
-  //       lastName: data.user.last_name,
-  //       email: data.user.email,
-  //     });
-  //   }
-  // }, [mutate, data]);
-
   return (
-    <header className="sticky left-0 top-0 z-40 h-16 w-full border-b border-slate-600 border-b-slate-700 bg-light-dark px-4">
+    <header className="bg-light-dark sticky left-0 top-0 z-40 h-16 w-full border-b border-slate-600 border-b-slate-700 px-4">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block font-extrabold text-white" href="/">
@@ -72,9 +52,8 @@ const Header = () => {
           <HeaderRightArea
             user={{
               id: user.id,
-              firstName: user.firstName,
-              lastName: user.lastName,
               email: user.email,
+              name: user.name,
             }}
           />
         )}

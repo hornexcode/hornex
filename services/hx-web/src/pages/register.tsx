@@ -2,7 +2,7 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { Logo } from '@/components/ui/logo';
-import { dataLoadersV2 } from '@/lib/api';
+import { requestFactory } from '@/lib/api';
 import {
   RegisterInput,
   RegisterOutput,
@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-const { post: registerRequest } = dataLoadersV2<RegisterOutput, RegisterInput>(
+const { post: registerRequest } = requestFactory<RegisterOutput, RegisterInput>(
   'register',
   schema
 );

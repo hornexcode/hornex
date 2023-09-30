@@ -1,4 +1,5 @@
-import { dataLoadersV2 as dataLoader } from '../api/fetch';
+import { requestFactory as requestFactory } from '../api/fetch';
+import { makeClientReqObj } from '../api/util';
 import { reducer } from './auth-context.reducer';
 import {
   AuthContextState,
@@ -10,8 +11,9 @@ import { saveTokenWithCookies } from './utils';
 import { get, set } from 'es-cookie';
 import React, { createContext, useEffect, useReducer, useState } from 'react';
 
-const { post: authenticateUser } = dataLoader<Token, LoginRequest>('login');
-const { get: getCurrentUser } = dataLoader<LoggedInUser>('getCurrentUser');
+const { post: authenticateUser } = requestFactory<Token, LoginRequest>('login');
+const { fetch: getCurrentUser } =
+  requestFactory<LoggedInUser>('getCurrentUser');
 
 const initialState: AuthContextState = {
   isAuthenticated: false,
@@ -41,11 +43,11 @@ export const AuthContextProvider = ({
   const [error, setError] = useState<string | undefined>(undefined);
 
   async function loadCurrentUser() {
-    const { data: user, error } = await getCurrentUser();
+    const { data: user, error } = await getCurrentUser({}, makeClientReqObj());
     if (error || !user) {
       setError(error?.message || 'Error fetching user');
       dispatch({ type: 'LOGIN_FAILED' });
-      saveTokenWithCookies();
+      // saveTokenWithCookies();
       setFetching(false);
       return;
     }
@@ -56,7 +58,7 @@ export const AuthContextProvider = ({
   }
 
   useEffect(() => {
-    const token = get('hx-auth.token');
+    const token = get('hx');
 
     if (!state.isAuthenticated && token) {
       setFetching(true);

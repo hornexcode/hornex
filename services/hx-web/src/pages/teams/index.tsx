@@ -1,7 +1,7 @@
 import { TeamList } from '@/components/teams/team-list';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
-import { dataLoadersV2 } from '@/lib/api';
+import { requestFactory } from '@/lib/api';
 import {
   GetTeamsOutput,
   getTeamsSchemaOutput as schema,
@@ -12,7 +12,10 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import useSWR from 'swr';
 
-const { useData: getTeams } = dataLoadersV2<GetTeamsOutput>('getTeams', schema);
+const { useData: getTeams } = requestFactory<GetTeamsOutput>(
+  'getTeams',
+  schema
+);
 
 const TeamsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps

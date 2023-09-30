@@ -1,3 +1,4 @@
+import { getAvailableGamesResponse } from '../hx-app/types';
 import { Method } from '../routes/routes';
 import z from 'zod';
 // const routes: APIRouteMap = {} as APIRouteMap;
@@ -6,45 +7,61 @@ export const routes = {
   login: {
     path: 'v1/token',
     method: Method.POST,
+    schema: null,
   },
   register: {
     path: 'v1/auth/register',
     method: Method.POST,
+    schema: null,
   },
   logout: {
     path: 'v1/auth/logout',
     method: Method.POST,
+    schema: null,
   },
   getCurrentUser: {
     path: 'v1/users/current-user',
     method: Method.GET,
+    schema: null,
   },
   createTeam: {
     path: 'v1/teams',
     method: Method.POST,
+    schema: null,
   },
   findTeam: {
     path: 'v1/teams',
     method: Method.GET,
+    schema: null,
   },
   getTeams: {
     path: 'v1/teams',
     method: Method.GET,
+    schema: null,
   },
   updateTeam: {
     path: 'v1/teams',
     method: Method.PATCH,
+    schema: null,
   },
   getEmailConfirmationCode: {
     path: 'v1/auth/register-confirm',
     method: Method.GET,
+    schema: null,
   },
   confirmRegister: {
     path: 'v1/auth/register-confirm',
     method: Method.POST,
+    schema: null,
   },
   getGames: {
     path: 'v1/games',
     method: Method.GET,
+    schema: null,
+  },
+  getAvailableGames: {
+    path: 'v1/games',
+    method: Method.GET,
+    schema: getAvailableGamesResponse,
   },
 };

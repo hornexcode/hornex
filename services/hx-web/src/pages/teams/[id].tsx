@@ -7,7 +7,7 @@ import { Member } from '@/domain';
 import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { TeamFind } from '@/infra/hx-core/responses/team-find';
 import { AppLayout } from '@/layouts';
-import { dataLoaders, dataLoadersV2 } from '@/lib/api';
+import { dataLoaders, requestFactory } from '@/lib/api';
 import { getCookieFromRequest } from '@/lib/api/cookie';
 import { useAuthContext } from '@/lib/auth';
 import {
@@ -33,10 +33,6 @@ type MemberForm = z.infer<typeof inviteForm>;
 const updateTeamForm = z.object({
   team: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
 });
-
-const { patch: updateTeam } = dataLoadersV2<UpdateTeamOutput, UpdateTeamInput>(
-  'updateTeam'
-);
 
 const TeamDetail = ({
   team,
@@ -219,7 +215,7 @@ TeamDetail.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-const { get: current } = dataLoaders<CurrentUser>('currentUser');
+const { get: current } = dataLoaders<CurrentUser>('getCurrentUser');
 const { find: findTeam } = dataLoaders<TeamFind>('findTeam');
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {

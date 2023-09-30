@@ -5,7 +5,7 @@ import Listbox from '@/components/ui/list-box';
 import { CurrentUser } from '@/infra/hx-core/responses/current-user';
 import { TeamCreated } from '@/infra/hx-core/responses/team-created';
 import { AppLayout } from '@/layouts';
-import { dataLoaders, dataLoadersV2 } from '@/lib/api';
+import { requestFactory, dataLoaders } from '@/lib/api';
 import { getCookieFromRequest } from '@/lib/api/cookie';
 import {
   GetGamesOutput,
@@ -27,7 +27,7 @@ const createTeamFormSchema = z.object({
 
 type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
 
-const { post: createTeam } = dataLoadersV2<TeamCreated, CreateTeamForm>(
+const { post: createTeam } = requestFactory<TeamCreated, CreateTeamForm>(
   'createTeam'
 );
 
@@ -124,7 +124,7 @@ TeamCreate.getLayout = (page: React.ReactElement) => {
 };
 
 const { get: current } = dataLoaders<CurrentUser>('currentUser');
-const { get: getGames } = dataLoadersV2<GetGamesOutput>('getGames', schema);
+const { get: getGames } = requestFactory<GetGamesOutput>('getGames', schema);
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const cookie = getCookieFromRequest(ctx.req, 'hx-auth.token');
