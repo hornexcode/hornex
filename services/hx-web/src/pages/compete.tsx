@@ -11,110 +11,23 @@ import {
   RocketLeagueLogoIcon,
   XboxIcon,
 } from '@/components/ui/icons';
+import { LeagueOfLegendsLogo } from '@/components/ui/icons/league-of-legends-icon';
+import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 import { requestFactory as requestFactory } from '@/lib/api';
-import { GetAvailableGamesResponse } from '@/lib/hx-app/types';
+import { Game, GetAvailableGamesResponse } from '@/lib/hx-app/types';
 import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
 import { PlusCircleIcon } from 'lucide-react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const { fetch: getAvailableGames } =
   requestFactory<GetAvailableGamesResponse>('getAvailableGames');
 
-const CompetePage = ({}: InferGetServerSidePropsType<
-  typeof getServerSideProps
->) => {
-  const games: GameItemProps[] = [
-    {
-      bgImage: '/images/card-background-lol.png',
-      LogoComponentIcon: LolLogoIcon,
-      hoverImage: LolChar,
-      bgColor: 'sky',
-      platforms: [
-        {
-          Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
-          ) => JSX.Element,
-          bgColor: 'bg-sky-500',
-        },
-      ],
-      matchFormat: '5v5',
-      name: 'League of Legends',
-      registeredPlayers: 12.29,
-      tournaments: 23,
-    },
-    {
-      bgImage: '/images/bg-cs-go.png',
-      LogoComponentIcon: CounterStrikeLogoIcon,
-      hoverImage: CSChar,
-      bgColor: 'yellow',
-      platforms: [
-        {
-          Icon: XboxIcon,
-          bgColor: 'bg-green-500',
-        },
-        {
-          Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
-          ) => JSX.Element,
-          bgColor: 'bg-sky-500',
-        },
-        {
-          Icon: PlayStationIcon,
-          bgColor: 'bg-blue-900',
-        },
-      ],
-      matchFormat: '5v5',
-      name: 'CS:GO',
-      registeredPlayers: 30,
-      tournaments: 57,
-    },
-    {
-      bgImage: '/images/bg-dota.webp',
-      LogoComponentIcon: DotaLogoIcon,
-      hoverImage: DotaChar,
-      bgColor: 'red',
-      platforms: [
-        {
-          Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
-          ) => JSX.Element,
-          bgColor: 'bg-sky-500',
-        },
-      ],
-      matchFormat: '5v5',
-      name: 'Dota 2',
-      registeredPlayers: 21.3,
-      tournaments: 15,
-    },
-    {
-      bgImage: '/images/bg-rocket-league.webp',
-      LogoComponentIcon: RocketLeagueLogoIcon,
-      hoverImage: RocketLeagueChar,
-      bgColor: 'purple',
-      platforms: [
-        {
-          Icon: XboxIcon,
-          bgColor: 'bg-green-500',
-        },
-        {
-          Icon: ComputerDesktopIcon as (
-            props: React.SVGAttributes<{}>
-          ) => JSX.Element,
-          bgColor: 'bg-sky-500',
-        },
-        {
-          Icon: PlayStationIcon,
-          bgColor: 'bg-blue-900',
-        },
-      ],
-      matchFormat: '5v5',
-      name: 'Rocket League',
-      registeredPlayers: 51,
-      tournaments: 33,
-    },
-  ];
+const CompetePage = ({
+  games,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <div className="mx-auto space-y-8 p-8">
       <div className="flex items-end justify-between border-b border-slate-800 pb-2">
@@ -128,7 +41,7 @@ const CompetePage = ({}: InferGetServerSidePropsType<
       <section id="connected-games" className="space-y-10">
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div className="bg-light-dark flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded p-4 transition-all hover:bg-slate-700">
+            <div className="bg-light-dark flex min-h-[300px] cursor-pointer flex-col items-center justify-center gap-4 rounded p-4 transition-all hover:bg-slate-700">
               <PlusCircleIcon className="w-7" />
               <span className="text-sm font-medium text-slate-400">
                 Connect to new game
@@ -145,6 +58,21 @@ const CompetePage = ({}: InferGetServerSidePropsType<
               Available Games
             </h2>
           </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {games.map((game: Game) => (
+              <Link key={game.id} href={routes.compete} className="group">
+                <div className="shadow-main relative h-[300px] w-full rounded-lg bg-[url('/images/jinks.jpg')] bg-cover bg-center bg-no-repeat">
+                  <div className="absolute inset-0 rounded-md bg-sky-600/60"></div>
+                  <div className="relative top-0 flex w-full  justify-center p-4">
+                    <LeagueOfLegendsLogo className="fill-white" />
+                  </div>
+                  <div className="absolute bottom-0 mx-auto w-full rounded-b bg-sky-600/70 p-4 text-center">
+                    <h4 className="text-xl font-bold text-white">Jogar</h4>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </div>
@@ -156,10 +84,12 @@ CompetePage.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { data, error } = await getAvailableGames({}, req);
+  const { data: games, error } = await getAvailableGames({}, req);
 
   return {
-    props: {},
+    props: {
+      games,
+    },
   };
 };
 
