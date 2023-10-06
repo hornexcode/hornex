@@ -3,6 +3,7 @@ from tournaments.views import (
     TournamentReadOnlyViewSet,
     TournamentViewSet,
     TournamentRegistrationViewSet,
+    LeagueOfLegendsTournamentReadOnlyViewSet,
 )
 
 
@@ -29,5 +30,10 @@ urlpatterns = [
         "/<str:id>/unregister",
         TournamentViewSet.as_view({"delete": "unregister"}),
         name="tournament-unregister",
+    ),
+    path(
+        "/lol/search",
+        LeagueOfLegendsTournamentReadOnlyViewSet.as_view({"get": "list"}),
+        name="list-tournaments-by-game",
     ),
 ]

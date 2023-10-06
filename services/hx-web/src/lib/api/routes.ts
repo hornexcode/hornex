@@ -64,4 +64,9 @@ export const routes = {
     method: Method.GET,
     schema: getAvailableGamesResponse,
   },
+  getLOLTournaments: {
+    path: 'v1/tournaments/lol/search',
+    method: Method.GET,
+    schema: null,
+  },
 };

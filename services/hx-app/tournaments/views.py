@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
@@ -10,19 +10,22 @@ from requests import exceptions
 from services.riot.exceptions import RiotApiError
 
 
-from tournaments.models import Tournament, TournamentRegistration
+from tournaments.models import (
+    Tournament,
+    TournamentRegistration,
+    LeagueOfLegendsTournament,
+)
 from tournaments.filters import TournamentListFilter, TournamentListOrdering
 from tournaments.serializers import (
-    TournamentListSerializer,
     TournamentSerializer,
     RegistrationSerializer,
+    LeagueOfLegendsTournamentSerializer,
 )
 from tournaments.services import TournamentManagementService
 from tournaments.pagination import TournamentPagination
 
-# from tournaments.leagueoflegends.usecases import RegisterTeam
 
-from lib.hornex.riot import TestApi
+# from tournaments.leagueoflegends.usecases import RegisterTeam
 
 game_qp = openapi.Parameter(
     "game",
@@ -40,7 +43,7 @@ platform_qp = openapi.Parameter(
 
 class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tournament.objects.all()
-    serializer_class = TournamentListSerializer
+    serializer_class = TournamentSerializer
     lookup_field = "id"
     filter_backends = (
         DjangoFilterBackend,
@@ -153,3 +156,23 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     serializer_class = RegistrationSerializer
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
+
+
+class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = LeagueOfLegendsTournament.objects.all()
+    serializer_class = LeagueOfLegendsTournamentSerializer
+    lookup_field = "id"
+    filter_backends = (
+        DjangoFilterBackend,
+        TournamentListFilter,
+        TournamentListOrdering,
+    )
+    pagination_class = TournamentPagination
+
+    @swagger_auto_schema(
+        operation_description="GET /api/v1/tournaments/lol/search",
+        operation_summary="List and filter paginated a lol tournaments",
+        manual_parameters=[game_qp, platform_qp],
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

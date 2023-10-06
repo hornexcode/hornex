@@ -3,7 +3,7 @@ import { routes } from './routes';
 import * as Cookie from 'es-cookie';
 import { IncomingMessage } from 'http';
 import { NextApiRequestCookies } from 'next/dist/server/api-utils';
-import useSWR from 'swr';
+import useSWR, { SWRConfiguration } from 'swr';
 
 const isServer = typeof window === 'undefined';
 const API_ROOT = isServer
@@ -102,18 +102,22 @@ export const requestFactory = <T, Data = unknown>(
       return fetcher(`${API_ROOT}/${path}`, options).then(getResponseObject);
     },
 
-    useData: () => {
-      const cookie = isServer ? null : Cookie.get(HX_COOKIE);
-      return useSWR<T>(path, (url: string, options?: RequestInit) =>
-        fetch(`${API_ROOT}/${url}`, {
-          ...options,
-          method,
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: cookie ? `Bearer ${cookie}` : '',
-          },
-        }).then((res) => res.json())
+    useData: <UDT = T>(
+      params: ParamMap = {},
+      config?: SWRConfiguration,
+      headers: Record<string, string> = {}
+    ) => {
+      return useSWR<UDT>(
+        path,
+        (url: string, options: RequestInit = {}) =>
+          fetcher(`${API_ROOT}/${url}`, {
+            ...options,
+            headers: { ...options.headers, ...headers },
+          }).then((r) => r.json()),
+        {
+          revalidateOnFocus: false,
+          ...config,
+        }
       );
     },
   };

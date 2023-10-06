@@ -124,7 +124,10 @@ class LeagueOfLegendsTournament(Tournament):
         CHALLENGER = "CHALLENGER"
 
     provider = models.ForeignKey(
-        LeagueOfLegendsTournamentProvider, on_delete=models.CASCADE
+        LeagueOfLegendsTournamentProvider,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
     )
     tier = models.CharField(
         max_length=20,
