@@ -1,4 +1,4 @@
-import TournamentsTemplate from '@/components/templates/tournaments-template/tournaments-template';
+import TournamentsPageTemplate from '@/components/templates/tournaments-page-template/tournaments-page-template';
 import { AppLayout } from '@/layouts';
 import { requestFactory } from '@/lib/api';
 import { GetLOLTournamentsResponse } from '@/lib/hx-app/types/rest/get-tournaments';
@@ -21,7 +21,7 @@ const Tournaments = ({
     <div className="">
       {error && <div className="text-red-500">{error.message}</div>}
       {/* TODO: add switch to render different types of tournament template */}
-      <TournamentsTemplate
+      <TournamentsPageTemplate
         isLoading={isLoading}
         tournaments={
           tournaments || { count: 0, next: null, previous: null, results: [] }

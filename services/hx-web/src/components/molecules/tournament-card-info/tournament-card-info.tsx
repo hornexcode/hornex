@@ -16,7 +16,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
         </div>
         <Link
           href="/nft-details"
-          className="text-sm font-medium text-black dark:text-white"
+          className="text-lg font-medium text-black dark:text-white"
         >
           {tournament.name}
         </Link>
@@ -48,17 +48,20 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
             </div>
           </div>
         </div>
+
         <div className="col-span-2">
-          <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-            <div
-              className={classnames(
-                'h-1.5 rounded-full bg-white',
-                `w-[${(
-                  (tournament.teams.length / tournament.max_teams) *
-                  100
-                ).toFixed(2)}%]`
-              )}
-            ></div>
+          <div className={classnames('flex w-full')}>
+            {Array.from({ length: 16 }).map((_, index) => (
+              <div
+                key={index}
+                className={classnames(
+                  'flex-basis mr-1 h-2 flex-grow rounded-md  bg-green-400',
+                  {
+                    'bg-gray-700': index > 4,
+                  }
+                )}
+              ></div>
+            ))}
           </div>
         </div>
       </div>

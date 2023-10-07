@@ -20,7 +20,7 @@ type ColorNames =
 type SizeNames = 'large' | 'medium' | 'small' | 'mini';
 
 const shapes: Record<ShapeNames, string[]> = {
-  rounded: ['rounded-md'],
+  rounded: ['rounded-lg'],
   pill: ['rounded-full'],
   circle: ['rounded-full'],
 };
@@ -77,7 +77,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onClick,
       ...buttonProps
     },
-    ref: React.Ref<HTMLButtonElement | null>,
+    ref: React.Ref<HTMLButtonElement | null>
   ) => {
     let [dripShow, setDripShow] = useState<boolean>(false);
     let [dripX, setDripX] = useState<number>(0);
@@ -135,7 +135,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             : 'cursor-not-allowed bg-slate-700 !text-red-500',
           disabled || isLoading || variant === 'transparent'
             ? ''
-            : 'hover:-translate-y-0.5 hover:shadow-large focus:-translate-y-0.5 focus:shadow-large focus:outline-none',
+            : 'hover:shadow-large focus:shadow-large hover:-translate-y-0.5 focus:-translate-y-0.5 focus:outline-none',
           isLoading && 'pointer-events-auto cursor-default focus:outline-none',
           fullWidth && 'w-full',
           color === 'white' || color === 'gray'
@@ -143,7 +143,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             : variants[variant],
           shapes[shape],
           shape === 'circle' ? `${sizeClassNames[1]}` : `${sizeClassNames[0]}`,
-          className,
+          className
         )}
         disabled={disabled}
         {...buttonProps}
@@ -171,7 +171,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  },
+  }
 );
 
 Button.displayName = 'Button';

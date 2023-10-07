@@ -1,6 +1,6 @@
 import face from '@/assets/images/face.jpg';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
-import TournamentDetailsTemplate from '@/components/templates/tournament-details-template';
+import TournamentDetailsTemplate from '@/components/templates/tournament-page-template';
 import { TournamentStatus } from '@/components/tournaments/tournament';
 import TournamentCardAttr from '@/components/tournaments/tournament-list-item/tournament-card-attr';
 import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
