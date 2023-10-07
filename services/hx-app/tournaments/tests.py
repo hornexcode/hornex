@@ -1,3 +1,4 @@
+# Test cases for the tournaments app from client side
 import uuid
 
 from datetime import timedelta
@@ -5,16 +6,11 @@ from django.utils import timezone
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-from mock import patch
-from lib.hornex.riot.client import TestApi
-
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
 from teams.models import Team, TeamMember
 from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
-from tournaments.admin import TournamentRegistrationAdmin
-from tournaments.services import TournamentManagementService
 
 
 class TournamentTests(APITestCase, URLPatternsTestCase):
@@ -305,121 +301,7 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team=self.team
         )
 
-        self.confirm_registration = TournamentManagementService().confirm_registration
-
         return super().setUp()
-
-    def test_accept_tournament_registration(self):
-        TournamentRegistrationAdmin.accept_team_registration(
-            self,
-            request=None,
-            queryset=TournamentRegistration.objects.filter(
-                id=self.tournament_registration.id
-            ),
-        )
-
-        self.tournament_registration.refresh_from_db()
-
-        self.assertIsNotNone(
-            TournamentTeam.objects.filter(
-                tournament=self.tournament_registration.tournament,
-                team=self.tournament_registration.team,
-            ).first()
-        )
-        self.assertIsNotNone(self.tournament_registration.confirmed_at)
-
-    def test_accept_multiple_tournament_registrations(self):
-        # Create second registration
-        team = Team.objects.create(
-            name="test team second",
-            created_by=self.user,
-            game=self.game,
-            platform=self.platform,
-        )
-
-        tournament_registration = TournamentRegistration.objects.create(
-            tournament=self.tournament, team=team
-        )
-
-        TournamentRegistrationAdmin.accept_team_registration(
-            self,
-            request=None,
-            queryset=TournamentRegistration.objects.filter(
-                id__in=[self.tournament_registration.id, tournament_registration.id]
-            ),
-        )
-
-        # Refresh registrations after accepting
-        self.tournament_registration.refresh_from_db()
-        tournament_registration.refresh_from_db()
-
-        tournament_teams = TournamentTeam.objects.filter(
-            tournament=self.tournament_registration.tournament,
-        ).all()
-
-        self.assertEqual(len(tournament_teams), 2)
-        self.assertIsNotNone(self.tournament_registration.confirmed_at)
-        self.assertIsNotNone(tournament_registration.confirmed_at)
-
-    def test_tournament_registration_already_at_tournament(self):
-        TournamentTeam.objects.create(
-            tournament=self.tournament,
-            team=self.team,
-        )
-
-        tournament_registration = TournamentRegistration.objects.create(
-            tournament=self.tournament, team=self.team
-        )
-
-        try:
-            self.confirm_registration(tournament_registration)
-
-        except Exception as e:
-            self.assertRaises(Exception, e)
-            self.assertEqual(str(e), "Team is already at tournament.")
-
-    def test_tournament_is_full(self):
-        self.tournament.max_teams = 1
-        self.tournament.save()
-        self.tournament.refresh_from_db()
-
-        # Create second registration
-        team = Team.objects.create(
-            name="test team second",
-            created_by=self.user,
-            game=self.game,
-            platform=self.platform,
-        )
-
-        first_regis = TournamentRegistration.objects.create(
-            tournament=self.tournament, team=self.team
-        )
-        sec_regis = TournamentRegistration.objects.create(
-            tournament=self.tournament, team=team
-        )
-
-        try:
-            self.confirm_registration(first_regis)
-            self.confirm_registration(sec_regis)
-        except Exception as e:
-            self.assertRaises(Exception, e)
-            self.assertEqual(str(e), "Tournament is full.")
-
-    def test_tournament_registration_tournament_not_open(self):
-        self.tournament.status = Tournament.TournamentStatusType.CANCELLED
-        self.tournament.save()
-        self.tournament.refresh_from_db()
-
-        tournament_registration = TournamentRegistration.objects.create(
-            tournament=self.tournament, team=self.team
-        )
-
-        try:
-            self.confirm_registration(tournament_registration)
-
-        except Exception as e:
-            self.assertRaises(Exception, e)
-            self.assertEqual(str(e), "Tournament has started or finished.")
 
     def test_cancel_registration_204(self):
         url = reverse(
