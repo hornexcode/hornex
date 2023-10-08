@@ -1,4 +1,4 @@
-import { requestFactory as requestFactory } from '../api/fetch';
+import { requestFactory as requestFactory } from '../api/request';
 import { makeClientReqObj } from '../api/util';
 import { reducer } from './auth-context.reducer';
 import {

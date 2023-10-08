@@ -16,12 +16,14 @@ export const game = z.object({
 });
 export type Game = z.infer<typeof game>;
 
-export const lolTournament = z.object({
+export const tournament = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
   is_public: z.boolean(),
   status: z.string(),
+  start_date: z.string(),
+  end_date: z.string(),
   start_time: z.string(),
   end_time: z.string(),
   is_entry_free: z.boolean(),
@@ -36,6 +38,6 @@ export const lolTournament = z.object({
   game: z.string(),
   platform: z.string(),
   teams: z.array(z.string()),
-  tier: z.string(),
+  classification: z.string(),
 });
-export type LOLTournament = z.infer<typeof lolTournament>;
+export type Tournament = z.infer<typeof tournament>;

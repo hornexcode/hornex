@@ -1,5 +1,5 @@
 import TournamentCardInfo from '@/components/molecules/tournament-card-info/tournament-card-info';
-import { LOLTournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/hx-app/types';
 import { FC } from 'react';
 
 export type TournamentsPageTemplateProps = {
@@ -7,7 +7,7 @@ export type TournamentsPageTemplateProps = {
     count: number;
     next: string | null;
     previous: string | null;
-    results: LOLTournament[];
+    results: Tournament[];
   };
   isLoading: boolean;
 };
@@ -19,7 +19,7 @@ const TournamentsPageTemplate: FC<TournamentsPageTemplateProps> = ({
   return (
     <section className="mx-auto flex flex-grow p-8">
       <div className="flex w-full flex-grow flex-col justify-between ltr:md:ml-auto ltr:md:pl-8 rtl:md:mr-auto rtl:md:pr-8 lg:min-h-[calc(100vh-96px)] lg:w-[280px] ltr:lg:pl-12 rtl:lg:pr-12 xl:w-[320px] ltr:xl:pl-20 rtl:xl:pr-20">
-        <div className="block border">
+        <div className="block">
           <div className="block">
             <h2 className="text-left text-xl font-bold leading-4 text-white lg:text-xl">
               Filter
@@ -34,18 +34,6 @@ const TournamentsPageTemplate: FC<TournamentsPageTemplateProps> = ({
           </h2>
         </div>
         <div className="grid grid-cols-4 gap-5">
-          {!isLoading &&
-            tournaments.results.map((tournament) => (
-              <TournamentCardInfo key={tournament.id} tournament={tournament} />
-            ))}
-          {!isLoading &&
-            tournaments.results.map((tournament) => (
-              <TournamentCardInfo key={tournament.id} tournament={tournament} />
-            ))}
-          {!isLoading &&
-            tournaments.results.map((tournament) => (
-              <TournamentCardInfo key={tournament.id} tournament={tournament} />
-            ))}
           {!isLoading &&
             tournaments.results.map((tournament) => (
               <TournamentCardInfo key={tournament.id} tournament={tournament} />

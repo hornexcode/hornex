@@ -1,7 +1,7 @@
 import Button from '@/components/ui/button/button';
 import { SwordsIcon } from '@/components/ui/icons';
 import { DiscordIcon } from '@/components/ui/icons/discord-icon';
-import { LOLTournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/hx-app/types';
 import { CalendarIcon, TrophyIcon } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
 import { ArrowBigRight, LampIcon, UsersIcon } from 'lucide-react';
@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { FC } from 'react';
 
 type TournamentPageTemplateProps = {
-  tournament?: LOLTournament;
+  tournament?: Tournament;
 };
 
 const imageLoader = ({ src }: any) => {
@@ -19,7 +19,7 @@ const imageLoader = ({ src }: any) => {
 const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({}) => {
   return (
     <div className="grid grid-cols-12 gap-5 p-4">
-      <div className="col-span-9">
+      <div className="col-span-8">
         <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden rounded-t-md sm:h-44 md:h-64 xl:h-72 2xl:h-96">
           <Image
             loader={imageLoader}
@@ -34,7 +34,7 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({}) => {
         </div>
         <div className="bg-light-dark flex rounded-b-md p-4">
           <div className="flex w-full justify-between">
-            <div className="block space-y-3">
+            <div className="block space-y-6">
               <div className="flex items-center space-x-2">
                 <div className="rounded-md bg-slate-600 px-4 py-1 text-white">
                   league of legends
@@ -47,13 +47,14 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({}) => {
                   32 times
                 </div>
               </div>
+
               <div className="block">
                 {/* headline */}
                 <div className="flex items-center">
                   <CalendarIcon className="w-4" />
-                  <div className="ml-2 text-base">15 Jun, 2023 9:00h</div>
+                  <div className="ml-2 text-sm">15 Jun, 2023 9:00h</div>
                 </div>
-                <h4 className="text-2xl font-bold -tracking-wide text-white">
+                <h4 className="text-xl font-extrabold leading-5 -tracking-wide text-gray-200">
                   #1 summer tournament
                 </h4>
                 {/* classification */}
@@ -63,7 +64,7 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({}) => {
                 {/*  */}
                 <div className="flex items-center space-x-4 border-r-2 border-dotted border-slate-700 pr-8">
                   <div>
-                    <TrophyIcon className="w-8 fill-white" />
+                    <TrophyIcon className="w-7 fill-gray-400" />
                   </div>
                   <div>
                     <div className="text-md">Prize Pool</div>
@@ -73,21 +74,10 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({}) => {
                 {/*  */}
                 <div className="flex items-center space-x-4 border-r-2 border-dotted border-slate-700 px-8">
                   <div>
-                    <SwordsIcon className="w-7 fill-white" />
+                    <SwordsIcon className="w-6 fill-gray-400" />
                   </div>
                   <div>
                     <div className="text-md">Classification</div>
-                    <div className="text-lg text-white">
-                      Silver I II III, Gold
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4 px-8">
-                  <div>
-                    <SwordsIcon className="w-6 fill-white" />
-                  </div>
-                  <div>
-                    <div className="text-sm">Classification</div>
                     <div className="text-lg text-white">
                       Silver I II III, Gold
                     </div>
@@ -171,7 +161,7 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({}) => {
                       >
                         <path
                           stroke="currentColor"
-                          stroke-linecap="round"
+                          strokeLinecap="round"
                           stroke-linejoin="round"
                           stroke-width="2"
                           d="M1 5h12m0 0L9 1m4 4L9 9"

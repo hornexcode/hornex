@@ -1,9 +1,10 @@
 import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
-import * as Cookie from 'es-cookie';
+import { Route } from '@/lib/routes';
 import { IncomingMessage } from 'http';
-import { NextApiRequestCookies } from 'next/dist/server/api-utils';
 import useSWR, { SWRConfiguration } from 'swr';
+
+// type APIRouteMap = { [key in APIRouteName]: Route };
 
 const isServer = typeof window === 'undefined';
 const API_ROOT = isServer
@@ -11,8 +12,9 @@ const API_ROOT = isServer
   : `${process.env.NEXT_PUBLIC_API_URL}`;
 const HX_COOKIE = 'hx';
 
-type Scalar = bigint | boolean | number | string;
-type ParamMap = { [key: string]: Scalar | Scalar[] };
+export type ParamMap = {
+  [key: string]: string[] | string | number | undefined;
+};
 
 const fetcher = async (url: string, options: RequestInit = {}) => {
   return await fetch(url, options);
@@ -22,6 +24,8 @@ export const requestFactory = <T, Data = unknown>(
   routeKey: keyof typeof routes
 ) => {
   const { path, method, schema } = routes[routeKey];
+
+  const route = new Route(path);
 
   const getResponseObject = async <UDT = T>(
     res: Response
@@ -73,7 +77,8 @@ export const requestFactory = <T, Data = unknown>(
       headers: Record<string, string> = {}
     ): Promise<FetchResponse<T>> => {
       // Server side request
-      const url = `${API_ROOT}/${path}`;
+
+      const url = route.href(params);
       const token = getCookieFromRequest(req, HX_COOKIE);
       // Make sure we pass along the session cookie when we make our request.
       const options: RequestInit = {};

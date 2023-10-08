@@ -1,21 +1,16 @@
 import TournamentsPageTemplate from '@/components/templates/tournaments-page-template/tournaments-page-template';
 import { AppLayout } from '@/layouts';
 import { requestFactory } from '@/lib/api';
-import { GetLOLTournamentsResponse } from '@/lib/hx-app/types/rest/get-tournaments';
+import { GetTournamentsResponse } from '@/lib/hx-app/types/rest/get-tournaments';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-const { useData: getLOLTournaments } =
-  requestFactory<GetLOLTournamentsResponse>('getLOLTournaments');
-
-type TournamentsPageProps = {
-  game: string;
-  slug: string;
-};
+const { useData: getTournaments } =
+  requestFactory<GetTournamentsResponse>('getTournaments');
 
 const Tournaments = ({
   props,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { data: tournaments, error, isLoading } = getLOLTournaments();
+  const { data: tournaments, error, isLoading } = getTournaments();
 
   return (
     <div className="">

@@ -64,8 +64,13 @@ export const routes = {
     method: Method.GET,
     schema: getAvailableGamesResponse,
   },
-  getLOLTournaments: {
-    path: 'v1/tournaments/lol/search',
+  getTournaments: {
+    path: 'v1/tournaments?game=league-of-legends',
+    method: Method.GET,
+    schema: null,
+  },
+  getTournament: {
+    path: 'v1/tournaments/[platform/[game]/[tournamentId]',
     method: Method.GET,
     schema: null,
   },
