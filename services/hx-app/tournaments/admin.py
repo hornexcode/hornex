@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from tournaments.models import (
     Registration,
-    TournamentTeam,
+    Subscription,
     Tournament,
     Bracket,
 )
@@ -14,7 +14,7 @@ from tournaments.leagueoflegends.models import (
 )
 
 
-admin.site.register([TournamentTeam, Bracket])
+admin.site.register([Subscription, Bracket])
 admin.site.register(
     [LeagueOfLegendsTournamentProvider, LeagueOfLegendsTournament, Tier]
 )
@@ -25,13 +25,11 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     @admin.action(description="Accept registration", permissions=["change"])
     def accept_team_registration(modeladmin, request, queryset):
-        svc = TournamentManagementService()
-        print("ENTERED THE ACCEPT")
-
         success_count = 0
-        for tournament_registration in queryset:
+
+        for registration in queryset:
             try:
-                svc.confirm_registration(tournament_registration)
+                registration.accept()
                 success_count += 1
             except Exception as e:
                 return messages.error(request, str(e))

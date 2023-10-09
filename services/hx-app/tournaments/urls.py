@@ -10,6 +10,11 @@ urlpatterns = [
         TournamentViewSet.as_view({"get": "retrieve"}),
         name="tournament-details",
     ),
+    path(
+        "/<str:id>/register",
+        TournamentViewSet.as_view({"post": "register"}),
+        name="tournament-register",
+    ),
     # path(
     #     "/registrations",
     #     TournamentRegistrationViewSet.as_view({"get": "list"}),

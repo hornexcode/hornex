@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase, URLPatternsTestCase
 from django.urls import include, path, reverse
 
 from tournaments.admin import TournamentRegistrationAdmin
-from tournaments.models import Registration, TournamentTeam, Tournament
+from tournaments.models import Registration, Subscription, Tournament
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
@@ -91,7 +91,7 @@ class TestTournamentAdmin(APITestCase, URLPatternsTestCase):
         # self.tournament_registration.refresh_from_db()
 
         self.assertIsNotNone(
-            TournamentTeam.objects.filter(
+            Subscription.objects.filter(
                 tournament=self.tournament_registration.tournament,
                 team=self.tournament_registration.team,
             ).first()
@@ -123,7 +123,7 @@ class TestTournamentAdmin(APITestCase, URLPatternsTestCase):
         self.tournament_registration.refresh_from_db()
         tournament_registration.refresh_from_db()
 
-        tournament_teams = TournamentTeam.objects.filter(
+        tournament_teams = Subscription.objects.filter(
             tournament=self.tournament_registration.tournament,
         ).all()
 

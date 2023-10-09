@@ -1,9 +1,15 @@
 import uuid
+import datetime
+
 from django.db import models
 from django.utils import timezone
 from abc import abstractmethod
 
 from tournaments.validators import validate_team_size
+
+
+class RegistrationError(Exception):
+    pass
 
 
 class Tournament(models.Model):
@@ -58,9 +64,7 @@ class Tournament(models.Model):
     max_teams = models.IntegerField(default=0)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    teams = models.ManyToManyField(
-        "teams.Team", through="TournamentTeam", related_name="tournaments"
-    )
+    teams = models.ManyToManyField("teams.Team")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -69,10 +73,21 @@ class Tournament(models.Model):
         return f"{self.name} ({self.id})"
 
     def register(self, team):
-        if Registration.objects.count() >= self.max_teams:
-            raise Exception("Max teams reached")
-        Registration.objects.create(tournament=self, team=team)
-        return
+        if (
+            Registration.objects.filter(tournament__id=self.id).count()
+            >= self.max_teams
+        ):
+            raise RegistrationError("Max teams reached")
+
+        if Registration.objects.filter(tournament__id=self.id, team=team).exists():
+            raise RegistrationError(f"Team: {team.name} already registered")
+
+        if team.members.count() != self.team_size:
+            raise RegistrationError(
+                f"Team: {team.name} must have {self.team_size} members"
+            )
+
+        return Registration.objects.create(tournament=self, team=team)
 
     def cancel_registration(self, team):
         registration = Registration.objects.get(tournament=self, team=team)
@@ -80,16 +95,53 @@ class Tournament(models.Model):
         registration.save()
         return
 
+    def subscribe(self, team, payment_date: datetime):
+        Subscription.objects.create(
+            tournament=self,
+            entry_fee=self.entry_fee,
+            team=team,
+            payment_date=payment_date,
+        )
+
+        self.teams.add(team)
+        self.save()
+
     @abstractmethod
     def get_classification(self):
         raise NotImplementedError
 
+    def generate_brackets(self):
+        pass
 
-class TournamentTeam(models.Model):
+    def start(self):
+        self.validate()
+        self.validate_participants()
+        # Migh be async
+        self.notifiy_participants()
+        # Migh be async
+        self.generate_brackets()
+
+    def validate(self):
+        pass
+
+    @abstractmethod
+    def validate_participants(self):
+        raise NotImplementedError
+
+    def notifiy_participants(self):
+        raise NotImplementedError
+
+
+class Subscription(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
+    entry_fee = models.IntegerField(default=0, null=True, blank=True)
+    payment_date = models.DateTimeField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.tournament.name} - {self.team.name} ({self.id})"
@@ -106,12 +158,20 @@ class Registration(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
+
     confirmed_at = models.DateTimeField(null=True, blank=True)
     cancelled_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.tournament.name} - {self.team.name} ({self.id})"
+        return f"{self.tournament.name} \
+            | team: {self.team.name} ({self.id}) \
+            | entry fee: ${self.tournament.entry_fee}"
+
+    def accept(self):
+        self.confirmed_at = timezone.now()
+        self.tournament.subscribe(team=self.team, payment_date=self.confirmed_at)
+        self.save()
 
 
 class Bracket(models.Model):

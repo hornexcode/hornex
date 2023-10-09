@@ -33,7 +33,6 @@ class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def to_representation(self, instance):
-        print(instance)
         return super().to_representation(instance)
 
 

@@ -30,7 +30,7 @@ class TeamMember(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.user.name} ({self.team.name})"
+        return f"{self.user.email} :: ({self.team.name})"
 
 
 class TeamInvite(models.Model):

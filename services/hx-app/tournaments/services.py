@@ -2,7 +2,7 @@ from django.conf import settings
 from tournaments.models import (
     Tournament,
     Registration,
-    TournamentTeam,
+    Subscription,
     Bracket,
 )
 from tournaments.leagueoflegends.models import (
@@ -41,7 +41,7 @@ class TournamentManagementService:
         # check if tournament is full
         if (
             tournament.max_teams
-            <= TournamentTeam.objects.filter(tournament=tournament).count()
+            <= Subscription.objects.filter(tournament=tournament).count()
         ):
             raise Exception("Tournament is full.")
 
@@ -104,13 +104,13 @@ class TournamentManagementService:
         team = tournament_registration.team
 
         # check if team is already at tournament
-        if TournamentTeam.objects.filter(team=team, tournament=tournament).exists():
+        if Subscription.objects.filter(team=team, tournament=tournament).exists():
             raise Exception("Team is already at tournament.")
 
         # check if tournament is full
         if (
             tournament.max_teams
-            <= TournamentTeam.objects.filter(tournament=tournament).count()
+            <= Subscription.objects.filter(tournament=tournament).count()
         ):
             raise Exception("Tournament is full.")
 
@@ -121,9 +121,7 @@ class TournamentManagementService:
         ):
             raise Exception("Tournament has started or finished.")
 
-        tournament_team = TournamentTeam.objects.create(
-            team=team, tournament=tournament
-        )
+        tournament_team = Subscription.objects.create(team=team, tournament=tournament)
 
         if not tournament_team:
             raise Exception("Could not confirm registration.")
@@ -171,8 +169,8 @@ class TournamentManagementService:
         if not registration.confirmed_at:
             raise Exception("The team is not confirmed at tournament")
 
-        # We've confirmed_at, but TournamentTeam is null, "Internal error" will be 404
-        TournamentTeam.objects.get(
+        # We've confirmed_at, but Subscription is null, "Internal error" will be 404
+        Subscription.objects.get(
             team=registration.team, tournament=registration.tournament
         )
 
@@ -191,9 +189,9 @@ class TournamentManagementService:
         if not participants or participants & (participants - 1) != 0:
             raise Exception("Participants should be a power of 2.")
 
-        tournament_teams = TournamentTeam.objects.filter(tournament=tournament)
+        tournament_teams = Subscription.objects.filter(tournament=tournament)
 
-        # Validate if TournamentTeam is enough
+        # Validate if Subscription is enough
         if tournament_teams.count() != participants:
             raise Exception("Tournament doesn't have enough registered teams.")
 

@@ -10,7 +10,7 @@ from users.models import User
 from platforms.models import Platform
 from games.models import Game
 from teams.models import Team, TeamMember
-from tournaments.models import Tournament, Registration, TournamentTeam
+from tournaments.models import Tournament, Registration, Subscription
 
 
 class TournamentTests(APITestCase, URLPatternsTestCase):
@@ -385,7 +385,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team=self.team, confirmed_at=timezone.now()
         )
 
-        self.tournament_team = TournamentTeam.objects.create(
+        self.tournament_team = Subscription.objects.create(
             tournament=self.tournament, team=self.team
         )
 

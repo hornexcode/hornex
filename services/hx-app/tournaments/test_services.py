@@ -13,7 +13,7 @@ from games.models import Game
 from teams.models import Team
 from tournaments.models import (
     Tournament,
-    TournamentTeam,
+    Subscription,
     Bracket,
     Registration,
 )
@@ -78,7 +78,7 @@ class TestTournamentManagementServiceConfirmRegistration(TestCase):
         return super().setUp()
 
     def test_tournament_registration_already_at_tournament(self):
-        TournamentTeam.objects.create(
+        Subscription.objects.create(
             tournament=self.tournament,
             team=self.team,
         )
@@ -167,7 +167,7 @@ class TestTournamentManagementServiceGenerateBrackets(TestCase):
                 game=self.game,
                 platform=self.platform,
             )
-            TournamentTeam.objects.create(tournament=self.tournament, team=team)
+            Subscription.objects.create(tournament=self.tournament, team=team)
 
         self.svc = TournamentManagementService()
 
