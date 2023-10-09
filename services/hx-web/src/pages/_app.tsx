@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
 import classnames from 'classnames';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Cabin, Kanit, Nunito, Oswald } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
@@ -41,6 +42,9 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         )}
       >
         <AuthContextProvider>
+          <Head>
+            <title>Hornex</title>
+          </Head>
           {getLayout(<Component {...pageProps} />)}
         </AuthContextProvider>
         <ToastContainer
