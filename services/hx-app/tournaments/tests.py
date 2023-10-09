@@ -10,7 +10,7 @@ from users.models import User
 from platforms.models import Platform
 from games.models import Game
 from teams.models import Team, TeamMember
-from tournaments.models import Tournament, TournamentRegistration, TournamentTeam
+from tournaments.models import Tournament, Registration, TournamentTeam
 
 
 class TournamentTests(APITestCase, URLPatternsTestCase):
@@ -66,9 +66,7 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
     def test_tournament_registration_400_already_registered_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
 
-        TournamentRegistration.objects.create(
-            tournament=self.tournament, team=self.team
-        )
+        Registration.objects.create(tournament=self.tournament, team=self.team)
 
         resp = self.client.post(
             url,
@@ -297,7 +295,7 @@ class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
 
         self.tournament = Tournament.objects.create(**self.tournament_data)
 
-        self.tournament_registration = TournamentRegistration.objects.create(
+        self.tournament_registration = Registration.objects.create(
             tournament=self.tournament, team=self.team
         )
 
@@ -383,7 +381,7 @@ class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
 
         self.tournament = Tournament.objects.create(**self.tournament_data)
 
-        self.tournament_registration = TournamentRegistration.objects.create(
+        self.tournament_registration = Registration.objects.create(
             tournament=self.tournament, team=self.team, confirmed_at=timezone.now()
         )
 

@@ -70,7 +70,7 @@ export const routes = {
     schema: null,
   },
   getTournament: {
-    path: 'v1/tournaments/[platform/[game]/[tournamentId]',
+    path: 'v1/tournaments/[platform]/[game]/[tournamentId]',
     method: Method.GET,
     schema: null,
   },

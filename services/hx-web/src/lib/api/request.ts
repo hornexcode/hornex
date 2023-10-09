@@ -25,7 +25,7 @@ export const requestFactory = <T, Data = unknown>(
 ) => {
   const { path, method, schema } = routes[routeKey];
 
-  const route = new Route(path);
+  const route = new Route(`${API_ROOT}/${path}`);
 
   const getResponseObject = async <UDT = T>(
     res: Response

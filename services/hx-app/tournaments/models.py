@@ -1,6 +1,9 @@
 import uuid
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.utils import timezone
+from abc import abstractmethod
+
+from tournaments.validators import validate_team_size
 
 
 class Tournament(models.Model):
@@ -10,34 +13,41 @@ class Tournament(models.Model):
     class GameType(models.TextChoices):
         LEAGUE_OF_LEGENDS = "league-of-legends"
 
+    class PlatformType(models.TextChoices):
+        PC = "pc"
+        PS4 = "ps4"
+        XBOX = "xbox"
+        MOBILE = "mobile"
+
     class TournamentStatusType(models.TextChoices):
         NOT_STARTED = "not_started"
         STARTED = "started"
         FINISHED = "finished"
         CANCELLED = "cancelled"
 
-    def validate_team_size(value):
-        if value < 1:
-            raise ValidationError("Team size must be greater than zero.")
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=255)
     description = models.CharField(max_length=100, null=True, blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
-    game = models.ForeignKey("games.Game", on_delete=models.RESTRICT)
-    platform = models.ForeignKey("platforms.Platform", on_delete=models.RESTRICT)
+    game = models.CharField(
+        choices=GameType.choices, max_length=50, default=GameType.LEAGUE_OF_LEGENDS
+    )
+    platform = models.CharField(
+        choices=PlatformType.choices, max_length=50, default=PlatformType.PC
+    )
     is_public = models.BooleanField(default=False)
     status = models.CharField(
         max_length=50,
         choices=TournamentStatusType.choices,
         default=TournamentStatusType.NOT_STARTED,
     )
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+
+    start_date = models.DateField()
+    end_date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
-
-    # If not fixed, we can set custom prize amount
     is_prize_pool_fixed = models.BooleanField(
         default=True, help_text="Fixed prize pool"
     )
@@ -46,7 +56,7 @@ class Tournament(models.Model):
     entry_fee = models.IntegerField(default=0, null=True, blank=True)
 
     max_teams = models.IntegerField(default=0)
-    team_size = models.IntegerField(default=1, validators=[validate_team_size])
+    team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
     teams = models.ManyToManyField(
         "teams.Team", through="TournamentTeam", related_name="tournaments"
@@ -57,6 +67,22 @@ class Tournament(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
+
+    def register(self, team):
+        if Registration.objects.count() >= self.max_teams:
+            raise Exception("Max teams reached")
+        Registration.objects.create(tournament=self, team=team)
+        return
+
+    def cancel_registration(self, team):
+        registration = Registration.objects.get(tournament=self, team=team)
+        registration.cancelled_at = timezone.now()
+        registration.save()
+        return
+
+    @abstractmethod
+    def get_classification(self):
+        raise NotImplementedError
 
 
 class TournamentTeam(models.Model):
@@ -69,20 +95,20 @@ class TournamentTeam(models.Model):
         return f"{self.tournament.name} - {self.team.name} ({self.id})"
 
 
-class TournamentRegistrationManager(models.Manager):
+class RegistrationManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(cancelled_at__isnull=True)
 
 
-class TournamentRegistration(models.Model):
-    objects = TournamentRegistrationManager()
+class Registration(models.Model):
+    objects = RegistrationManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
     confirmed_at = models.DateTimeField(null=True, blank=True)
     cancelled_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f"{self.tournament.name} - {self.team.name} ({self.id})"
@@ -123,70 +149,3 @@ class Bracket(models.Model):
 
     def __str__(self) -> str:
         return f"Bracket ({self.id}) | round: {self.round} | {self.tournament.name}"
-
-
-# TournamentEntry
-
-
-# League of Legends
-class LeagueOfLegendsTournamentProvider(models.Model):
-    class RegionType(models.TextChoices):
-        BR = "BR"
-        EUNE = "EUNE"
-        EUW = "EUW"
-        JP = "JP"
-        KR = "KR"
-        LAN = "LAN"
-        LAS = "LAS"
-        NA = "NA"
-        OCE = "OCE"
-        TR = "TR"
-        RU = "RU"
-
-    id = models.IntegerField(primary_key=True, editable=False)
-    region = models.CharField(
-        max_length=10, choices=RegionType.choices, default=RegionType.BR
-    )
-    url = models.URLField(
-        editable=True,
-        null=False,
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self) -> str:
-        return f"League of Legends Provider ({self.id})"
-
-
-class LeagueOfLegendsTournament(Tournament):
-    class Tier(models.TextChoices):
-        IRON = "IRON"
-        BRONZE = "BRONZE"
-        SILVER = "SILVER"
-        GOLD = "GOLD"
-        PLATINUM = "PLATINUM"
-        DIAMOND = "DIAMOND"
-        MASTER = "MASTER"
-        GRANDMASTER = "GRANDMASTER"
-        CHALLENGER = "CHALLENGER"
-
-    provider = models.ForeignKey(
-        LeagueOfLegendsTournamentProvider,
-        on_delete=models.DO_NOTHING,
-        null=True,
-        blank=True,
-    )
-    tier = models.CharField(
-        max_length=20,
-        choices=Tier.choices,
-        default=Tier.IRON,
-    )
-
-    def __str__(self) -> str:
-        return f"{self.name} ({self.id})"
-
-
-class LeagueOfLegendsTournamentCode(models.Model):
-    code = models.CharField(max_length=30, primary_key=True, editable=False)
-    tournament = models.ForeignKey(LeagueOfLegendsTournament, on_delete=models.CASCADE)
-    users = models.ManyToManyField("users.User", related_name="tournament_codes")
-    created_at = models.DateTimeField(auto_now_add=True)

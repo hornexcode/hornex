@@ -1,10 +1,12 @@
 from django.conf import settings
 from tournaments.models import (
     Tournament,
-    LeagueOfLegendsTournament,
-    TournamentRegistration,
+    Registration,
     TournamentTeam,
     Bracket,
+)
+from tournaments.leagueoflegends.models import (
+    LeagueOfLegendsTournament,
 )
 from teams.models import Team, TeamMember
 from users.models import User
@@ -22,9 +24,7 @@ def get_riot_client():
 
 
 class TournamentManagementService:
-    def register(
-        self, team_id: str, tournament_id: str, user_id: str
-    ) -> TournamentRegistration:
+    def register(self, team_id: str, tournament_id: str, user_id: str) -> Registration:
         team, tournament, user = None, None, None
 
         team = Team.objects.get(id=team_id)
@@ -46,7 +46,7 @@ class TournamentManagementService:
             raise Exception("Tournament is full.")
 
         # check if team is already registered
-        if TournamentRegistration.objects.filter(
+        if Registration.objects.filter(
             tournament=tournament, team=team, cancelled_at__isnull=True
         ).exists():
             raise Exception("Team is already registered.")
@@ -67,7 +67,7 @@ class TournamentManagementService:
         members = team.members.all()
 
         for member in members:
-            if tournament.game.slug == "league-of-legends":
+            if tournament.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
                 lol_tournament = LeagueOfLegendsTournament.objects.get(id=tournament.id)
                 riot_client = get_riot_client()
 
@@ -75,7 +75,7 @@ class TournamentManagementService:
                     member_riot_account = GameAccountRiot.objects.get(
                         user__id=member.id
                     )
-                except ObjectDoesNotExist as e:
+                except ObjectDoesNotExist:
                     raise ObjectDoesNotExist(
                         f"Could not find {member.name} riot account."
                     )
@@ -96,10 +96,10 @@ class TournamentManagementService:
                             f"{member.name}'s tier does not match tournament tier."
                         )
 
-        return TournamentRegistration.objects.create(team=team, tournament=tournament)
+        return Registration.objects.create(team=team, tournament=tournament)
 
     @transaction.atomic
-    def confirm_registration(self, tournament_registration: TournamentRegistration):
+    def confirm_registration(self, tournament_registration: Registration):
         tournament = tournament_registration.tournament
         team = tournament_registration.team
 
@@ -147,7 +147,7 @@ class TournamentManagementService:
 
     def cancel_registration(self, registration_id: int, user_id: int):
         user = User.objects.get(id=user_id)
-        registration = TournamentRegistration.objects.get(id=registration_id)
+        registration = Registration.objects.get(id=registration_id)
 
         if not TeamMember.objects.filter(
             team=registration.team, user=user, is_admin=True
@@ -159,7 +159,7 @@ class TournamentManagementService:
 
     def unregister(self, registration_id: int, user_id: int):
         user = User.objects.get(id=user_id)
-        registration = TournamentRegistration.objects.get(id=registration_id)
+        registration = Registration.objects.get(id=registration_id)
 
         # check if team member is
         if not TeamMember.objects.filter(
@@ -224,7 +224,7 @@ class TournamentManagementService:
 def tournament_created(
     event: TournamentCreated,
 ):
-    """Controller for producing TournamentRegistrationConfirmed event."""
+    """Controller for producing RegistrationConfirmed event."""
     # Ideally, this use case should not be called right after a tournament
     # is created. Will be better calling after a tournament is about to start
     # and has enough teams.

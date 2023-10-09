@@ -1,19 +1,26 @@
 from django.contrib import admin, messages
 from tournaments.models import (
-    TournamentRegistration,
+    Registration,
     TournamentTeam,
+    Tournament,
     Bracket,
-    LeagueOfLegendsTournament,
-    LeagueOfLegendsTournamentProvider,
 )
 from tournaments.services import TournamentManagementService
 from django.utils.translation import ngettext
+from tournaments.leagueoflegends.models import (
+    LeagueOfLegendsTournament,
+    LeagueOfLegendsTournamentProvider,
+    Tier,
+)
 
 
-admin.site.register([TournamentTeam, LeagueOfLegendsTournamentProvider, Bracket])
+admin.site.register([TournamentTeam, Bracket])
+admin.site.register(
+    [LeagueOfLegendsTournamentProvider, LeagueOfLegendsTournament, Tier]
+)
 
 
-class TournamentRegistrationAdmin(admin.ModelAdmin):
+class RegistrationAdmin(admin.ModelAdmin):
     actions = ["accept_team_registration"]
 
     @admin.action(description="Accept registration", permissions=["change"])
@@ -39,7 +46,7 @@ class TournamentRegistrationAdmin(admin.ModelAdmin):
         )
 
 
-admin.site.register(TournamentRegistration, TournamentRegistrationAdmin)
+admin.site.register(Registration, RegistrationAdmin)
 
 
 class TournamentAdmin(admin.ModelAdmin):
@@ -68,4 +75,4 @@ class TournamentAdmin(admin.ModelAdmin):
         )
 
 
-admin.site.register(LeagueOfLegendsTournament, TournamentAdmin)
+admin.site.register(Tournament, TournamentAdmin)

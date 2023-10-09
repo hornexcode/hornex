@@ -1,6 +1,6 @@
 import TournamentDetailsTemplate from '@/components/templates/tournament-page-template';
 import { AppLayout } from '@/layouts';
-import { requestFactory } from '@/lib/api';
+import { FetchError, requestFactory } from '@/lib/api';
 import { Tournament } from '@/lib/hx-app/types';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
@@ -34,23 +34,24 @@ Tournament.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // const search = new URLSearchParams();
-
-  // Object.entries(ctx.query).forEach(([key, value]) => {
-  //   search.append(key, `${value}`); // maybe you want to do `Array.isArray(value)` checks, etc
-  //   // basically, serialize it as you wish based on its type
-  // });
-  // console.log('dhina', id, platform, game);
   const { data: tournament, error } = await getTournament(
     {
-      id: ctx.query.id || '',
+      tournamentId: ctx.query.id || '',
       platform: ctx.query.platform || '',
       game: ctx.query.game || '',
     },
     ctx.req
   );
 
-  if (error) {
+  if (error as FetchError) {
+    if (error?.code === 401) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
     return {
       notFound: true,
     };
@@ -59,6 +60,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       params: ctx.params,
+      tournament,
     },
   };
 };

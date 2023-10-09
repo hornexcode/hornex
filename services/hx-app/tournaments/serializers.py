@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from tournaments.models import Tournament, LeagueOfLegendsTournament
+from tournaments.models import Tournament
+from tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 
 
 class TournamentListSerializer(serializers.Serializer):
@@ -16,9 +17,14 @@ class TournamentListSerializer(serializers.Serializer):
 
 
 class TournamentSerializer(serializers.ModelSerializer):
+    classification = serializers.SerializerMethodField()
+
     class Meta:
         model = Tournament
         fields = "__all__"
+
+    def get_classification(self, obj):
+        return obj.get_classification()
 
 
 class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):

@@ -2,7 +2,7 @@
 from lib.hornex.riot import Clientable
 from enum import Enum
 from requests import RequestException
-from tournaments.models import LeagueOfLegendsTournamentProvider
+from tournaments.leagueoflegends.models import LeagueOfLegendsTournamentProvider
 
 
 class Region(Enum):

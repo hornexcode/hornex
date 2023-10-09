@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase, URLPatternsTestCase
 from django.urls import include, path, reverse
 
 from tournaments.admin import TournamentRegistrationAdmin
-from tournaments.models import TournamentRegistration, TournamentTeam, Tournament
+from tournaments.models import Registration, TournamentTeam, Tournament
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
@@ -54,7 +54,7 @@ class TestTournamentAdmin(APITestCase, URLPatternsTestCase):
 
         self.tournament = Tournament.objects.create(**self.tournament_data)
 
-        self.tournament_registration = TournamentRegistration.objects.create(
+        self.tournament_registration = Registration.objects.create(
             tournament=self.tournament, team=self.team
         )
 
@@ -83,7 +83,7 @@ class TestTournamentAdmin(APITestCase, URLPatternsTestCase):
         # TournamentRegistrationAdmin.accept_team_registration(
         #     self,
         #     request=None,
-        #     queryset=TournamentRegistration.objects.filter(
+        #     queryset=Registration.objects.filter(
         #         id=self.tournament_registration.id
         #     ),
         # )
@@ -107,14 +107,14 @@ class TestTournamentAdmin(APITestCase, URLPatternsTestCase):
             platform=self.platform,
         )
 
-        tournament_registration = TournamentRegistration.objects.create(
+        tournament_registration = Registration.objects.create(
             tournament=self.tournament, team=team
         )
 
         TournamentRegistrationAdmin.accept_team_registration(
             self,
             request=None,
-            queryset=TournamentRegistration.objects.filter(
+            queryset=Registration.objects.filter(
                 id__in=[self.tournament_registration.id, tournament_registration.id]
             ),
         )

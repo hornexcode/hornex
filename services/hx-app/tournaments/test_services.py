@@ -15,7 +15,7 @@ from tournaments.models import (
     Tournament,
     TournamentTeam,
     Bracket,
-    TournamentRegistration,
+    Registration,
 )
 
 
@@ -69,7 +69,7 @@ class TestTournamentManagementServiceConfirmRegistration(TestCase):
 
         self.tournament = Tournament.objects.create(**self.tournament_data)
 
-        self.tournament_registration = TournamentRegistration.objects.create(
+        self.tournament_registration = Registration.objects.create(
             tournament=self.tournament, team=self.team
         )
 
@@ -103,12 +103,10 @@ class TestTournamentManagementServiceConfirmRegistration(TestCase):
             platform=self.platform,
         )
 
-        first_regis = TournamentRegistration.objects.create(
+        first_regis = Registration.objects.create(
             tournament=self.tournament, team=self.team
         )
-        sec_regis = TournamentRegistration.objects.create(
-            tournament=self.tournament, team=team
-        )
+        sec_regis = Registration.objects.create(tournament=self.tournament, team=team)
 
         try:
             self.confirm_registration(first_regis)
@@ -122,7 +120,7 @@ class TestTournamentManagementServiceConfirmRegistration(TestCase):
         self.tournament.save()
         self.tournament.refresh_from_db()
 
-        tournament_registration = TournamentRegistration.objects.create(
+        tournament_registration = Registration.objects.create(
             tournament=self.tournament, team=self.team
         )
 
