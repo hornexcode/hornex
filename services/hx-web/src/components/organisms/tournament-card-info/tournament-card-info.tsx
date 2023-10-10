@@ -59,9 +59,9 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
               <div
                 key={index}
                 className={classnames(
-                  'flex-basis mr-1 h-2 flex-grow rounded-md  bg-gray-400',
+                  'flex-basis mr-1 h-2 flex-grow rounded-[2px] bg-gray-400',
                   {
-                    '!bg-green-500': index < tournament.teams.length,
+                    '!bg-amber-500': index < tournament.teams.length,
                   }
                 )}
               ></div>

@@ -37,8 +37,8 @@ class RegistrationAdmin(admin.ModelAdmin):
         return messages.success(
             request,
             ngettext(
-                "%d registration was confirmed successfully.",
-                "%d registrations were confirmed successfully",
+                "%s registration was confirmed successfully.",
+                "%s registrations were confirmed successfully",
                 success_count,
             ),
         )

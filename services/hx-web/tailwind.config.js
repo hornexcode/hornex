@@ -20,7 +20,7 @@ module.exports = {
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui'],
         body: ['kanit', 'sans-serif'],
-        display: ['Fira Sans', 'sans-serif'],
+        display: ['Fira Code', 'sans-serif'],
       },
       boxShadow: {
         main: '0px 6px 18px rgba(0, 0, 0, 0.04)',

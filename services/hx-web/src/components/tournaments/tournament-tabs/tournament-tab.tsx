@@ -22,18 +22,18 @@ export function TournamentTabs() {
   });
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex w-full flex-col gap-4">
       <Tab.Group>
-        <Tab.List className="flex justify-center gap-4 overflow-auto border-b border-slate-800 py-1 no-scrollbar sm:overflow-visible md:gap-10">
+        <Tab.List className="no-scrollbar flex gap-4 overflow-auto border-b border-slate-800 py-1 sm:overflow-visible md:gap-10">
           {Object.keys(tabs).map((tab) => (
             <Tab
               key={tab}
               className={({ selected }) =>
                 classNames(
-                  'text-md -mb-1.5 whitespace-nowrap px-4 py-4 font-semibold text-slate-400 outline-none transition-colors hover:text-sky-400',
+                  'font-display -mb-1.5 whitespace-nowrap py-4 text-sm uppercase tracking-wider text-slate-400 outline-none transition-colors hover:text-white',
                   selected
-                    ? 'border-b-2 border-sky-400 !text-white'
-                    : 'text-slate-400',
+                    ? 'border-b-2 border-white font-semibold !text-white'
+                    : 'text-slate-400'
                 )
               }
             >

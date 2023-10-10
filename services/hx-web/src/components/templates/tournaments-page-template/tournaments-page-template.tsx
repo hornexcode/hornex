@@ -1,4 +1,4 @@
-import TournamentCardInfo from '@/components/molecules/tournament-card-info/tournament-card-info';
+import TournamentCardInfo from '@/components/organisms/tournament-card-info/tournament-card-info';
 import { Tournament } from '@/lib/hx-app/types';
 import { FC } from 'react';
 

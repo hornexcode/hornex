@@ -64,7 +64,7 @@ class Tournament(models.Model):
     max_teams = models.IntegerField(default=0)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    teams = models.ManyToManyField("teams.Team")
+    teams = models.ManyToManyField("teams.Team", blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -133,18 +133,30 @@ class Tournament(models.Model):
 
 
 class Subscription(models.Model):
+    class StatusOptions(models.TextChoices):
+        ACTIVE = "active"
+        PENDING = "pending"
+        UNPAID = "unpaid"
+        REFUNDED = "refunded"
+        CANCELLED = "cancelled"
+        PAST_DUE = "past_due"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     entry_fee = models.IntegerField(default=0, null=True, blank=True)
-    payment_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(
+        max_length=50,
+        choices=StatusOptions.choices,
+        default=StatusOptions.PENDING,
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.tournament.name} - {self.team.name} ({self.id})"
+        return f"{self.tournament.name} :: {self.team.name} ({self.id})"
 
 
 class RegistrationManager(models.Manager):
@@ -170,7 +182,9 @@ class Registration(models.Model):
 
     def accept(self):
         self.confirmed_at = timezone.now()
-        self.tournament.subscribe(team=self.team, payment_date=self.confirmed_at)
+        self.tournament.subscribe(
+            team=self.team, status=Subscription.StatusOptions.ACTIVE
+        )
         self.save()
 
 

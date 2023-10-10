@@ -104,15 +104,13 @@ class TournamentViewSet(viewsets.ModelViewSet):
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
         tmt: Tournament = self.get_object()
-        if tmt is None:
-            return Response(
-                {"error": "Tournament not found"}, status=status.HTTP_404_NOT_FOUND
-            )
 
-        tm = Team.objects.get(id=params.data["team"])
-        if tm is None:
+        try:
+            tm = Team.objects.get(id=params.data["team"])
+        except Team.DoesNotExist:
             return Response(
-                {"error": "Team not found"}, status=status.HTTP_404_NOT_FOUND
+                {"error": f"Invalid team: {params.data['team']}"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         u = TeamMember.objects.filter(user__id=request.user.id, is_admin=True).first()
