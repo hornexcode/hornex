@@ -43,20 +43,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     ctx.req
   );
 
-  if (error as FetchError) {
-    if (error?.code === 401) {
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-    return {
-      notFound: true,
-    };
-  }
-
   return {
     props: {
       params: ctx.params,

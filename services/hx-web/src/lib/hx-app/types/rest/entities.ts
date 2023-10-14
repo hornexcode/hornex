@@ -39,5 +39,6 @@ export const tournament = z.object({
   platform: z.string(),
   teams: z.array(z.string()),
   classification: z.string(),
+  feature_image: z.string(),
 });
 export type Tournament = z.infer<typeof tournament>;

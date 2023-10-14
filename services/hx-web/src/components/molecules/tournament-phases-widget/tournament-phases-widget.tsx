@@ -14,7 +14,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   tournament,
 }) => {
   return (
-    <div className="bg-light-dark space-y-8 rounded-md p-4">
+    <div className="bg-light-dark shadow-light space-y-8 rounded-md p-4">
       <div className="block">
         <h4 className="text-lg font-bold -tracking-wide text-white">Info</h4>
       </div>

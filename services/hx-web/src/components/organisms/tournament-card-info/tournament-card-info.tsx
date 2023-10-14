@@ -4,6 +4,7 @@ import { ArrowLongRightIcon, UsersIcon } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
 import { DollarSign } from 'lucide-react';
 import moment from 'moment';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
@@ -11,30 +12,36 @@ import { FC } from 'react';
 const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
   const router = useRouter();
   return (
-    <div className="shadow-light bg-light-dark rounded-md p-5">
-      <div className="block">
-        <div>
-          {moment(tournament.start_time).format('MMMM Do YYYY, h:mm:ss a')}
+    <div className="shadow-light bg-light-dark rounded-lg">
+      <div className="block p-5">
+        <div className="mb-1">
+          {moment(tournament.start_date).format('MMMM Do YYYY')}
         </div>
         <Link
           href="/nft-details"
-          className="text-lg font-medium text-black dark:text-white"
+          className="text-sm font-extrabold leading-3 text-black dark:text-white"
         >
           {/* trim name */}
-          {tournament.name.slice(0, 20)}
-          {tournament.name.length > 20 && '...'}
+          {tournament.name}
         </Link>
       </div>
 
-      {/* League of Legends Metadata */}
-      <div className="mt-4 block">
-        <div>Classification</div>
-        <div className="text-sm font-semibold text-slate-200">
-          {tournament.classification}
-        </div>
+      <div className="block">
+        <Image
+          src={`/images/tournaments/${tournament.feature_image}`}
+          width={1920}
+          height={1080}
+          alt="Cover Image"
+        />
       </div>
 
-      <div className="mt-5 grid grid-cols-2 space-y-2">
+      {/* League of Legends Metadata */}
+      <div className="block px-5 pt-5">
+        <div className="text-xs uppercase text-white">Classification</div>
+        <div className="text-sm text-gray-400">{tournament.classification}</div>
+      </div>
+
+      <div className="grid grid-cols-2 space-y-2 p-5">
         <div className="col-span-2">
           <div className="flex justify-between">
             <div className="flex items-center">
@@ -52,7 +59,6 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
             </div>
           </div>
         </div>
-
         <div className="col-span-2">
           <div className={classnames('flex w-full')}>
             {Array.from({ length: tournament.max_teams }).map((_, index) => (
@@ -70,7 +76,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
         </div>
       </div>
 
-      <div className="mt-5 flex items-end rounded-b-lg border-t border-slate-700 pt-5">
+      <div className="flex items-end rounded-b-lg border-t border-dotted border-slate-700 p-5">
         <div className="block">
           <span className="text-xs text-slate-400">Prize Pool</span>
           <div className="flex items-center space-x-1">

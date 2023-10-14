@@ -34,7 +34,7 @@ const TournamentHeadline: FC<TournamentHeadlineProps> = ({ tournament }) => {
         <div className="flex w-full justify-between">
           <div className="block space-y-6">
             <div className="block">
-              <h4 className="text-lg font-semibold text-gray-200">
+              <h4 className="text-sm font-semibold text-gray-200">
                 {tournament.name}
               </h4>
               {/* headline */}
@@ -58,7 +58,7 @@ const TournamentHeadline: FC<TournamentHeadlineProps> = ({ tournament }) => {
                   <TrophyIcon className="w-6 fill-gray-400" />
                 </div>
                 <div>
-                  <div className="text-md">Prize Pool</div>
+                  <div className="text-md text-gray-400">Prize Pool</div>
 
                   {!tournament.is_entry_free && (
                     <div className="text-sm text-white">
@@ -78,7 +78,7 @@ const TournamentHeadline: FC<TournamentHeadlineProps> = ({ tournament }) => {
                   <SwordsIcon className="w-6 fill-gray-400" />
                 </div>
                 <div>
-                  <div className="text-md">Classification</div>
+                  <div className="text-md text-gray-400">Classification</div>
                   <div className="text-sm text-white">
                     {tournament.classification}
                   </div>
@@ -90,7 +90,7 @@ const TournamentHeadline: FC<TournamentHeadlineProps> = ({ tournament }) => {
                     <CurrencyDollarIcon className="w-6 fill-gray-400" />
                   </div>
                   <div>
-                    <div className="text-md">Entry fee</div>
+                    <div className="text-md text-gray-400">Entry fee</div>
                     <div className="text-sm text-white">
                       {toCurrency(tournament.entry_fee)}
                     </div>
@@ -99,11 +99,7 @@ const TournamentHeadline: FC<TournamentHeadlineProps> = ({ tournament }) => {
               )}
             </div>
             <div className="block">
-              <Button
-                shape="rounded"
-                className="!flex items-center border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                color="primary"
-              >
+              <Button shape="rounded" color="secondary">
                 Registrar time
               </Button>
             </div>

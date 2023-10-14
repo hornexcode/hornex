@@ -191,3 +191,7 @@ input.spin-button-hidden::-webkit-inner-spin-button {
   -webkit-backdrop-filter: blur(5px); */
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+.text-heading-style {
+  @apply text-sm font-medium tracking-wider;
+}

@@ -28,12 +28,7 @@ const TournamentsPageTemplate: FC<TournamentsPageTemplateProps> = ({
         </div>
       </div>
       <div className="4xl:max-w-[1760px] mx-auto flex w-full flex-grow flex-col space-y-8 transition-all xl:max-w-[1280px]">
-        <div className="flex items-end justify-between border-b border-slate-800 pb-2">
-          <h2 className="text-left text-xl font-bold leading-4 text-white lg:text-xl">
-            Tournaments
-          </h2>
-        </div>
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-3 gap-5">
           {!isLoading &&
             tournaments.results.map((tournament) => (
               <TournamentCardInfo key={tournament.id} tournament={tournament} />

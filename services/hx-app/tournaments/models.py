@@ -33,7 +33,7 @@ class Tournament(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    description = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     game = models.CharField(
         choices=GameType.choices, max_length=50, default=GameType.LEAGUE_OF_LEGENDS
@@ -52,6 +52,8 @@ class Tournament(models.Model):
     end_date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+    feature_image = models.CharField(max_length=255, null=True, blank=True)
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
     is_prize_pool_fixed = models.BooleanField(

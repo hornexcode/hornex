@@ -6,7 +6,7 @@ import { AuthContextProvider } from '@/lib/auth/auth-context';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { Cabin, Kanit, Nunito, Oswald } from 'next/font/google';
+import { Fira_Code, JetBrains_Mono, Kanit } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -24,9 +24,10 @@ const kanit = Kanit({
   weight: ['300', '400', '500', '600', '700'],
 });
 
-const cabin = Cabin({
-  subsets: ['latin'],
+const jetBrains_Mono = JetBrains_Mono({
   weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
@@ -37,7 +38,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       <div
         className={classnames(
           'bg-dark text-xs text-slate-500 antialiased',
-          kanit.className
+          jetBrains_Mono.className
         )}
       >
         <AuthContextProvider>
