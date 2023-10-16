@@ -2,7 +2,7 @@ from celery import Celery
 import django
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hxapp.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()
 app = Celery("store_app", broker="pyamqp://guest@localhost//")
 
