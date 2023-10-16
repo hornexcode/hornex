@@ -54,7 +54,6 @@ class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         if request.query_params.get("game") == "league-of-legends":
             self.queryset = LeagueOfLegendsTournament.objects.all()
-            print("queryset", self.queryset)
 
         return super().list(request, *args, **kwargs)
 

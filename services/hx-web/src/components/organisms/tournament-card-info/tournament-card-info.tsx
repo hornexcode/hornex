@@ -37,8 +37,10 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
 
       {/* League of Legends Metadata */}
       <div className="block px-5 pt-5">
-        <div className="text-xs uppercase text-white">Classification</div>
-        <div className="text-sm text-gray-400">{tournament.classification}</div>
+        <div className="text-xs font-medium uppercase text-white">
+          Classification
+        </div>
+        <div className="text-xs text-gray-400">{tournament.classification}</div>
       </div>
 
       <div className="grid grid-cols-2 space-y-2 p-5">

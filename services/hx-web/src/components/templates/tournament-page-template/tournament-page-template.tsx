@@ -1,21 +1,10 @@
 import TournamentPhasesWidget from '@/components/molecules/tournament-phases-widget';
-import TournamentHeadline from '@/components/organisms/tournament-headline';
-import { TournamentTabs } from '@/components/tournaments/tournament-tabs';
-import Button from '@/components/ui/button/button';
-import { SwordsIcon } from '@/components/ui/icons';
+import TournamentDetailsHeadline from '@/components/organisms/tournament-details-headline';
+import TournamentOverviewTabPanel from '@/components/organisms/tournament-overview-tab-panel/tournament-overview-tab-panel';
+import TournamentStandingTabPanel from '@/components/organisms/tournament-standing-tab-panel';
 import { Tournament } from '@/lib/hx-app/types';
-import { calcPrizePool, toCurrency } from '@/lib/utils';
 import { Tab } from '@headlessui/react';
-import {
-  CalendarIcon,
-  CurrencyDollarIcon,
-  SwatchIcon,
-  TrophyIcon,
-} from '@heroicons/react/20/solid';
 import classnames from 'classnames';
-import { UserIcon } from 'lucide-react';
-import moment from 'moment';
-import Image from 'next/image';
 import { FC, useState } from 'react';
 
 type TournamentPageTemplateProps = {
@@ -27,15 +16,15 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({
 }) => {
   let [tabs] = useState({
     Overview: '',
-    Prizes: '',
-    'How it works': '',
-    Teams: '',
+    Standings: '',
+    'Prize Pool': '',
+    Scoring: '',
     Rules: '',
   });
   return (
     <div className="p-6">
       <div className="mb-4 block lg:mb-10">
-        <TournamentHeadline tournament={tournament} />
+        <TournamentDetailsHeadline tournament={tournament} />
       </div>
       <Tab.Group>
         <div className="grid grid-cols-12 gap-6">
@@ -60,70 +49,11 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({
           <div className="col-span-9">
             <Tab.Panels>
               <Tab.Panel>
-                <div className="box">
-                  <div className="block space-y-8">
-                    <div className="block">
-                      <div className="text-heading-style mb-2 uppercase text-white">
-                        Informações Gerais
-                      </div>
-                      <p className="text-sm">{tournament.description}</p>
-                    </div>
-                    <div className="block">
-                      <div className="text-heading-style mb-2 uppercase text-white">
-                        Format
-                      </div>
-                      <span className="bg-light-dark rounded-full px-4 py-2 text-sm font-semibold">
-                        Single elimination
-                      </span>
-                    </div>
-                    <div className="block">
-                      <div className="text-heading-style mb-2 uppercase text-white">
-                        Potential Prize Pool
-                      </div>
-                      <div className="text-base text-white">
-                        R$
-                        {calcPrizePool(
-                          tournament.entry_fee,
-                          tournament.team_size * tournament.max_teams,
-                          0.7
-                        )}
-                      </div>
-                    </div>
-                    <div className="block">
-                      <div className="text-xs font-semibold">Team Size</div>
-                      <div className="text-base text-white">
-                        {tournament.team_size}
-                      </div>
-                    </div>
-                    <div className="block">
-                      <div className="text-xs font-semibold">Max Teams</div>
-                      <div className="text-base text-white">
-                        {tournament.max_teams}
-                      </div>
-                    </div>
-                    <div className="block">
-                      <div className="text-xs font-semibold">Game</div>
-                      <div className="text-base text-white">
-                        {tournament.game}
-                      </div>
-                    </div>
-                    <div className="block">
-                      <div className="text-xs font-semibold">Platform</div>
-                      <div className="text-base text-white">
-                        {tournament.platform}
-                      </div>
-                    </div>
-                    <div className="block">
-                      <div className="text-xs font-semibold">Organizer</div>
-                      <div className="text-base text-white">
-                        <UserIcon className="w-4" />
-                        {tournament.organizer}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <TournamentOverviewTabPanel tournament={tournament} />
               </Tab.Panel>
-              <Tab.Panel>Prizes</Tab.Panel>
+              <Tab.Panel>
+                <TournamentStandingTabPanel tournament={tournament} />
+              </Tab.Panel>
               <Tab.Panel>How it works</Tab.Panel>
               <Tab.Panel>Teams</Tab.Panel>
             </Tab.Panels>

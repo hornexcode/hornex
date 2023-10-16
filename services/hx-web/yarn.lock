@@ -4958,6 +4958,16 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
+overlayscrollbars-react@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/overlayscrollbars-react/-/overlayscrollbars-react-0.5.2.tgz#b8a6294279a1d0984392586b56a03df78d6c1e34"
+  integrity sha512-y3xIPY3to7hneF30MQ/tK9nI6UOcflgenAYktgyfi0GuwnsYEuAqgLfs2qDGiNhFA30Xcz3gaMxvqD7+hTvFRA==
+
+overlayscrollbars@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/overlayscrollbars/-/overlayscrollbars-2.3.2.tgz#1f31daa0b808f5d4710a59c73eb579397745dd72"
+  integrity sha512-K3Sau7NpFruKfXBauvchAQshAW+un1qD8EYNcozrPAB2kbif8C2rqa+1EWvMMWPKl88wgf2rX2QDMLgAfR0hHA==
+
 p-limit@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.3.0.tgz#3dd33c647a214fdfffd835933eb086da0dc21db1"

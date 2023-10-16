@@ -14,12 +14,13 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   tournament,
 }) => {
   return (
-    <div className="bg-light-dark shadow-light space-y-8 rounded-md p-4">
-      <div className="block">
-        <h4 className="text-lg font-bold -tracking-wide text-white">Info</h4>
+    <div className="bg-light-dark shadow-light space-y-2 rounded-md ">
+      <div className="border-b-2 border-gray-800 p-5">
+        <h4 className="leading-2 text-sm font-medium uppercase text-gray-200">
+          Tournament Phases
+        </h4>
       </div>
-
-      <div className="block">
+      <div className="block p-5">
         <ol className="relative border-l border-gray-200 dark:border-gray-700">
           <li className="mb-10 border-l pl-4 dark:border-amber-400">
             <div className="dark:border-light-dark absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-white bg-gray-200 dark:bg-amber-400"></div>
@@ -89,7 +90,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
         </ol>
       </div>
 
-      <div className="block border-t-2 border-slate-800 py-6">
+      <div className="block border-t-2 border-slate-800 p-5">
         <Button color="secondary" fullWidth shape="rounded">
           Registrar
         </Button>

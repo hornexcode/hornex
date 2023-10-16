@@ -3,8 +3,6 @@ import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
 import { LoggedUser } from '@/domain';
-import { CurrentUser } from '@/infra/hx-core/responses/current-user';
-import { dataLoaders } from '@/lib/api/client';
 import { useAuthContext } from '@/lib/auth/auth-context';
 import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
 import { useIsMounted } from '@/lib/hooks/use-is-mounted';
@@ -35,7 +33,7 @@ const Header = () => {
     state: { user, isAuthenticated },
   } = useAuthContext();
   return (
-    <header className="bg-light-dark sticky left-0 top-0 z-40 h-16 w-full border-b border-slate-600 border-b-slate-700 px-4">
+    <header className="bg-light-dark sticky left-0 top-0 z-40 h-16 w-full border-b border-gray-800 px-4">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block font-extrabold text-white" href="/">

@@ -1,11 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { User } from '@/domain';
+import { LoggedUser } from '@/domain';
 import { useAuthContext } from '@/lib/auth';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
 
-export default function ProfileMenuItem({ user }: { user: User }) {
+export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
   const { logout } = useAuthContext();
   const handleLogout = async () => {
     await logout();
@@ -34,9 +34,7 @@ export default function ProfileMenuItem({ user }: { user: User }) {
           <div className="py-2">
             <Menu.Item>
               <div className="px-4 py-2 text-sm ">
-                <div className="text-semibold text-slate-200">
-                  {user.firstName} {user.lastName}
-                </div>
+                <div className="text-semibold text-slate-200">{user.name}</div>
                 <div className="text-slate-400">{user.email}</div>
               </div>
             </Menu.Item>
@@ -61,6 +59,17 @@ export default function ProfileMenuItem({ user }: { user: User }) {
                   } group flex w-full items-center px-4 py-2 text-sm`}
                 >
                   Settings
+                </button>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  className={`${
+                    active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
+                  } group flex w-full items-center px-4 py-2 text-sm`}
+                >
+                  Payments
                 </button>
               )}
             </Menu.Item>

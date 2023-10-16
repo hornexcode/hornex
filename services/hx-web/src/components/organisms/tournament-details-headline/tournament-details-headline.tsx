@@ -15,13 +15,16 @@ const imageLoader = ({ src }: any) => {
 type TournamentHeadlineProps = {
   tournament: Tournament;
 };
-const TournamentHeadline: FC<TournamentHeadlineProps> = ({ tournament }) => {
+const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
+  tournament,
+}) => {
   return (
     <>
-      <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden rounded-t-md sm:h-44 md:h-64 xl:h-52 2xl:h-96">
+      <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52 2xl:h-96">
         <Image
-          loader={imageLoader}
-          src="1920x1080/232f48/jpg"
+          // loader={imageLoader}
+          // src="1920x1080/232f48/jpg"
+          src={`/images/tournaments/${tournament.feature_image}`}
           // placeholder="blur"
           quality={100}
           width={1920}
@@ -110,4 +113,4 @@ const TournamentHeadline: FC<TournamentHeadlineProps> = ({ tournament }) => {
   );
 };
 
-export default TournamentHeadline;
+export default TournamentDetailsHeadline;
