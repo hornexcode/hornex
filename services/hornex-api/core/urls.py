@@ -23,6 +23,7 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+prefix = "api/v1/<str:platform>/<str:game>"
 
 urlpatterns = [
     # swagger
@@ -44,9 +45,10 @@ urlpatterns = [
     path("api/v1/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     # api/v1
     path("api/v1/users", include("users.urls")),
-    path("api/v1/teams", include("teams.urls")),
     path("api/v1/invites", include("invites.urls")),
-    path("api/v1/tournaments", include("tournaments.urls")),
     path("api/v1/platforms", include("platforms.urls")),
     path("api/v1/games", include("games.urls")),
+    # api/v1/<platform>/<game>
+    path(f"{prefix}/teams", include("teams.urls")),
+    path(f"{prefix}/tournaments", include("tournaments.urls")),
 ]

@@ -5,9 +5,10 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 
 from teams.filters import TeamFilter
-from teams.errors import slugs_required
 from teams.models import Team, TeamInvite
 from teams.serializers import TeamSerializer, TeamInviteSerializer
+from core.route import extract_game_and_platform
+
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
@@ -17,15 +18,12 @@ class TeamViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="GET /api/v1/teams",
+        operation_description="GET /api/v1/<platform>/<game>/teams",
         operation_summary="List all teams for a game and platform",
     )
     def list(self, request, *args, **kwargs):
-        gslug = request.query_params.get("game")
-        pslug = request.query_params.get("platform")
-
-        if not (gslug and pslug):
-            return slugs_required
+        game, platform = extract_game_and_platform(kwargs)
+        self.queryset = Team.objects.filter(game__slug=game, platform__slug=platform)
 
         return super().list(request, *args, **kwargs)
 

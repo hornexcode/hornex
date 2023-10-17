@@ -35,12 +35,12 @@ export const routes = {
     schema: null,
   },
   getTeams: {
-    path: 'v1/teams',
+    path: 'v1/[platform]/[game]/teams',
     method: Method.GET,
     schema: null,
   },
   updateTeam: {
-    path: 'v1/teams',
+    path: 'v1/[platform]/[game]/teams',
     method: Method.PATCH,
     schema: null,
   },

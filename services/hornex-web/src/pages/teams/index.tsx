@@ -7,15 +7,10 @@ import {
   getTeamsSchemaOutput as schema,
 } from '@/services/hx-core/get-teams';
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import * as Cookies from 'es-cookie';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
-import useSWR from 'swr';
 
-const { useData: getTeams } = requestFactory<GetTeamsOutput>(
-  'getTeams',
-  schema
-);
+const { useData: getTeams } = requestFactory<GetTeamsOutput>('getTeams');
 
 const TeamsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -55,16 +50,6 @@ TeamsPage.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const cookies = Cookies.parse(ctx.req.headers.cookie || '');
-  if (
-    cookies['hx-auth.token'] !== undefined &&
-    cookies['hx-auth.token'] !== ''
-  ) {
-    return {
-      props: {},
-    };
-  }
-
   return {
     props: {},
   };
