@@ -1,15 +1,41 @@
 from rest_framework import serializers
 from users.models import User
+from rest_framework.validators import UniqueValidator
 
 
-# Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    first_name = serializers.CharField(write_only=True, required=True)
+    last_name = serializers.CharField(write_only=True, required=True)
+    password2 = serializers.CharField(write_only=True, required=True)
+
     class Meta:
         model = User
-        fields = (
-            "email",
-            "is_staff",
-        )
+        fields = ["name", "email", "password", "first_name", "last_name", "password2"]
+        extra_kwargs = {"password": {"write_only": True, "required": True}}
+
+    def validate(self, attrs):
+        if attrs["password"] != attrs["password2"]:
+            raise serializers.ValidationError(
+                {"password": "Password fields didn't match."}
+            )
+
+        return attrs
+
+    def create(self, validated_data):
+        # remove write_only parameters
+        password = validated_data.pop("password")
+        password2 = validated_data.pop("password2", None)
+
+        # Mount `name` and remove write_only parameters
+        first_name = validated_data.pop("first_name", None)
+        last_name = validated_data.pop("last_name", None)
+        validated_data["name"] = f"{first_name} {last_name}"
+
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+
+        return user
 
 
 class LoggedInUserSerializerReadOnly(serializers.Serializer):
