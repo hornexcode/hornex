@@ -3,11 +3,24 @@ import uuid
 
 
 class Team(models.Model):
+    class GameType(models.TextChoices):
+        LEAGUE_OF_LEGENDS = "league-of-legends"
+
+    class PlatformType(models.TextChoices):
+        PC = "pc"
+        PS4 = "ps4"
+        XBOX = "xbox"
+        MOBILE = "mobile"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100, null=True, blank=True)
-    game = models.ForeignKey("games.Game", on_delete=models.RESTRICT)
-    platform = models.ForeignKey("platforms.Platform", on_delete=models.RESTRICT)
+    game = models.CharField(
+        choices=GameType.choices, max_length=50, default=GameType.LEAGUE_OF_LEGENDS
+    )
+    platform = models.CharField(
+        choices=PlatformType.choices, max_length=50, default=PlatformType.PC
+    )
     created_by = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     members = models.ManyToManyField(
         "users.User", through="TeamMember", related_name="teams"

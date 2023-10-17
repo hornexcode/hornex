@@ -7,6 +7,9 @@ from teams.errors import (
 )
 from datetime import datetime
 from users.models import User
+from games.models import Game
+from platforms.models import Platform
+from django.shortcuts import get_object_or_404
 
 
 def check_is_owner(user, team):
@@ -36,10 +39,8 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context["request"]
-        validated_data["created_by"] = request.user.id
-        u = User.objects.get(id=request.user.id)
-        validated_data = {**validated_data, **{"created_by": u}}
-        
+        validated_data = {**validated_data, **{"created_by": request.user}}
+
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
@@ -53,8 +54,8 @@ class TeamSerializer(serializers.ModelSerializer):
         if self.context["view"].action == "retrieve":
             data = super().to_representation(instance)
 
-            data["game"] = instance.game.name
-            data["platform"] = instance.platform.name
+            data["game"] = instance.game
+            data["platform"] = instance.platform
 
             del data["description"]
             del data["created_at"]
