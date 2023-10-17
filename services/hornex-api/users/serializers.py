@@ -24,7 +24,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         # remove write_only parameters
         password = validated_data.pop("password")
-        password2 = validated_data.pop("password2", None)
+        validated_data.pop("password2", None)
 
         # Mount `name` and remove write_only parameters
         first_name = validated_data.pop("first_name", None)
