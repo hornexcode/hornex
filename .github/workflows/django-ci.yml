@@ -36,7 +36,7 @@ jobs:
           poetry install
 
       - name: Set up Django settings for tests
-        run: echo "DJANGO_SETTINGS_MODULE=hxapp.settings" >> $GITHUB_ENV # Adjust to your test settings module
+        run: echo "DJANGO_SETTINGS_MODULE=core.settings" >> $GITHUB_ENV # Adjust to your test settings module
 
       - name: Run migrations
         run: poetry run python manage.py migrate
