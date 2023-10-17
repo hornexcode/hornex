@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from users.models import User
-from rest_framework.validators import UniqueValidator
+from django.contrib.auth import password_validation
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -20,6 +20,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             )
 
         return attrs
+
+    def validate_password(self, value):
+        password_validation.validate_password(value)
+        return value
 
     def create(self, validated_data):
         # remove write_only parameters
