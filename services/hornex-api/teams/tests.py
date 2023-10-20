@@ -8,10 +8,12 @@ from platforms.models import Platform
 from games.models import Game
 from teams.models import Team
 
+prefix = "api/v1/<str:platform>/<str:game>"
+
 
 class TeamTests(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path("api/v1/teams", include("teams.urls")),
+        path(f"{prefix}/teams", include("teams.urls")),
     ]
 
     def setUp(self):
@@ -30,23 +32,29 @@ class TeamTests(APITestCase, URLPatternsTestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
         )
 
-        self.platform = Platform.objects.create(name="test platform")
-        self.game = Game.objects.create(name="test game")
-        self.game.platforms.set([self.platform])
+        self.platform = Team.PlatformType.PC
+        self.game = Team.GameType.LEAGUE_OF_LEGENDS
 
     def test_create_team_201(self):
         """
         Ensure we can create a new team object.
         """
 
-        url = reverse("team-list")
+        url = reverse(
+            "team-list",
+            kwargs={
+                "game": self.game,
+                "platform": self.platform,
+            },
+        )
+
         resp = self.client.post(
             url,
-            {"name": "test team", "game": self.game.id, "platform": self.platform.id},
+            {"name": "Test team", "description": "Just a test description"},
         )
 
         self.assertEqual(resp.status_code, 201)
-        self.assertEqual(resp.data["name"], "test team")
+        self.assertEqual(resp.data["name"], "Test team")
         self.assertEqual(Team.objects.count(), 1)
 
     def test_create_team_401(self):
@@ -55,10 +63,16 @@ class TeamTests(APITestCase, URLPatternsTestCase):
         """
 
         self.client.credentials()
-        url = reverse("team-list")
+        url = reverse(
+            "team-list",
+            kwargs={
+                "game": self.game,
+                "platform": self.platform,
+            },
+        )
         resp = self.client.post(
             url,
-            {"name": "test team", "game": self.game.id, "platform": self.platform.id},
+            {"name": "test team", "game": self.game, "platform": self.platform},
         )
 
         self.assertEqual(resp.status_code, 401)
@@ -68,10 +82,16 @@ class TeamTests(APITestCase, URLPatternsTestCase):
         Ensure we can't create a new team object with a missing field.
         """
 
-        url = reverse("team-list")
+        url = reverse(
+            "team-list",
+            kwargs={
+                "game": self.game,
+                "platform": self.platform,
+            },
+        )
         resp = self.client.post(
             url,
-            {"name": "test team", "game": self.game.id},
+            {"name": "test team", "game": self.game},
         )
 
         self.assertEqual(resp.status_code, 400)
@@ -90,8 +110,8 @@ class TeamTests(APITestCase, URLPatternsTestCase):
 
         url = "%s?game=%s&platform=%s" % (
             reverse("team-list"),
-            self.game.slug,
-            self.platform.slug,
+            self.game,
+            self.platform,
         )
         resp = self.client.get(url)
 

@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 import uuid
 from django.contrib.auth.models import (
     AbstractBaseUser,
