@@ -1,15 +1,14 @@
 from rest_framework import viewsets, status
 from django_filters import rest_framework as filters
+from django.db.models import Count
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 
 from teams.models import Team, TeamInvite
-from games.models import Game
-from platforms.models import Platform
 from teams.serializers import TeamSerializer, TeamInviteSerializer
 from core.route import extract_game_and_platform
-from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class TeamViewSet(viewsets.ModelViewSet):
@@ -18,43 +17,35 @@ class TeamViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
     filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
-    @swagger_auto_schema(
-        operation_description="GET /api/v1/<platform>/<game>/teams",
-        operation_summary="List all teams for a game and platform",
-    )
+    def get_queryset(self):
+        game, platform = extract_game_and_platform(self.request.query_params)
+        queryset = Team.objects.annotate(num_members=Count("members"))
+        if game is not None:
+            queryset = queryset.filter(game=game)
+        if platform is not None:
+            queryset = queryset.filter(platform=platform)
+        return queryset
+
     def list(self, request, *args, **kwargs):
-        game, platform = extract_game_and_platform(kwargs)
-        self.queryset = Team.objects.filter(
-            platform=platform, game=game, members=request.user
+        return Response(
+            {"teams": TeamSerializer(self.get_queryset(), many=True).data},
+            status=status.HTTP_200_OK,
         )
 
-        return super().list(request, *args, **kwargs)
-
     @swagger_auto_schema(
-        operation_description="GET /api/v1/<platform>/<game>/teams/<id>",
-        operation_summary="Retrieve a team",
-    )
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @swagger_auto_schema(
-        operation_description="POST /api/v1/<platform>/<game>/teams",
+        operation_description="POST /api/v1/teams",
         operation_summary="Create a team",
     )
     def create(self, request, *args, **kwargs):
-        game, platform = extract_game_and_platform(kwargs)
-
-        payload = request.data
-        payload["game"] = game
-        payload["platform"] = platform
-
-        serializer = TeamSerializer(data=payload, context={"request": request})
-
+        serializer = TeamSerializer(data=request.data, context={"request": request})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                {"team": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
 
     @swagger_auto_schema(
         operation_description="PUT /api/v1/<platform>/<game>/teams/<id>",

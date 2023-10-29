@@ -2,7 +2,7 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import { Logo } from '@/components/ui/logo';
-import { requestFactory } from '@/lib/api';
+import { dataLoader } from '@/lib/api';
 import {
   RegisterInput,
   RegisterOutput,
@@ -18,9 +18,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-const { post: registerRequest } = requestFactory<RegisterOutput, RegisterInput>(
-  'register',
-  schema
+const { post: registerRequest } = dataLoader<RegisterOutput, RegisterInput>(
+  'register'
 );
 
 export default function RegisterPage() {
@@ -105,16 +104,6 @@ export default function RegisterPage() {
           <div>
             <InputLabel title="Email" important />
             <Input {...register('email')} placeholder="Your real email here" />
-          </div>
-
-          {/* Password */}
-          <div>
-            <InputLabel title="Password" important />
-            <Input
-              {...register('password')}
-              type="password"
-              placeholder="Type a secure password"
-            />
           </div>
 
           <div className="mb-6 flex items-start">

@@ -20,10 +20,10 @@ const fetcher = async (url: string, options: RequestInit = {}) => {
   return await fetch(url, options);
 };
 
-export const requestFactory = <T, Data = unknown>(
+export const dataLoader = <T, Data = unknown>(
   routeKey: keyof typeof routes
 ) => {
-  const { path, method, schema } = routes[routeKey];
+  const { path, method } = routes[routeKey];
 
   const route = new Route(`${API_ROOT}/${path}`);
 
@@ -94,10 +94,19 @@ export const requestFactory = <T, Data = unknown>(
     },
 
     post: async (payload?: Data): Promise<FetchResponse<T>> => {
+      // Client side request
+
+      // get cookie from client
+      const cookie = document.cookie;
+
+      // TODO: this is a hack, we need to find a better way to get the cookie
+      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
       return fetcher(`${API_ROOT}/${path}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.split('=')[1]}`,
         },
         body: payload ? JSON.stringify(payload) : '',
       }).then(getResponseObject);
@@ -112,10 +121,23 @@ export const requestFactory = <T, Data = unknown>(
       config?: SWRConfiguration,
       headers: Record<string, string> = {}
     ) => {
+      if (!isServer) {
+        // get cookie from client
+        const cookie = document.cookie;
+
+        // TODO: this is a hack, we need to find a better way to get the cookie
+        const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
+        headers = {
+          ...headers,
+          Authorization: `Bearer ${token?.split('=')[1]}`,
+        };
+      }
+
       return useSWR<UDT>(
         path,
         (url: string, options: RequestInit = {}) =>
-          fetcher(`${API_ROOT}/${url}`, {
+          fetcher(route.href(params), {
             ...options,
             headers: { ...options.headers, ...headers },
           }).then((r) => r.json()),

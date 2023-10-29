@@ -7,17 +7,32 @@
 
 import z from 'zod';
 
-/* Get /api/v1/auth/teams */
+/* Get /api/v1/teams */
 
-export const getTeamsSchemaOutput = z.array(
-  z.object({
-    id: z.string(),
-    name: z.string(),
-    created_by: z.string().uuid(),
-    game_id: z.string().uuid(),
-  }),
-);
+export const getTeamsSchemaOutput = z.object({
+  teams: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      platform: z.string(),
+      game: z.string(),
+      num_members: z.number(),
+      created_by: z.string().uuid(),
+    })
+  ),
+});
 
 export type GetTeamsOutput = z.infer<typeof getTeamsSchemaOutput>;
+
+export const getTeamSchemaOutput = z.object({
+  id: z.string(),
+  name: z.string(),
+  platform: z.string(),
+  game: z.string(),
+  num_members: z.number(),
+  created_by: z.string().uuid(),
+});
+
+export type GetTeamOutput = z.infer<typeof getTeamSchemaOutput>;
 
 /* -- */

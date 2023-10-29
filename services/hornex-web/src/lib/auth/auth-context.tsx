@@ -1,4 +1,4 @@
-import { requestFactory as requestFactory } from '../api/request';
+import { dataLoader as dataLoader } from '../api/request';
 import { makeClientReqObj } from '../api/util';
 import { reducer } from './auth-context.reducer';
 import {
@@ -11,9 +11,8 @@ import { saveTokenWithCookies } from './utils';
 import { get, set } from 'es-cookie';
 import React, { createContext, useEffect, useReducer, useState } from 'react';
 
-const { post: authenticateUser } = requestFactory<Token, LoginRequest>('login');
-const { fetch: getCurrentUser } =
-  requestFactory<LoggedInUser>('getCurrentUser');
+const { post: authenticateUser } = dataLoader<Token, LoginRequest>('login');
+const { fetch: getCurrentUser } = dataLoader<LoggedInUser>('getCurrentUser');
 
 const initialState: AuthContextState = {
   isAuthenticated: false,

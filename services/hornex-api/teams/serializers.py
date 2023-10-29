@@ -6,10 +6,6 @@ from teams.errors import (
     team_invite_already_exists,
 )
 from datetime import datetime
-from users.models import User
-from games.models import Game
-from platforms.models import Platform
-from django.shortcuts import get_object_or_404
 
 
 def check_is_owner(user, team):
@@ -17,6 +13,8 @@ def check_is_owner(user, team):
 
 
 class TeamSerializer(serializers.ModelSerializer):
+    num_members = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Team
         fields = [
@@ -25,6 +23,7 @@ class TeamSerializer(serializers.ModelSerializer):
             "description",
             "game",
             "platform",
+            "num_members",
             "created_by",
             "created_at",
             "updated_at",
@@ -49,31 +48,6 @@ class TeamSerializer(serializers.ModelSerializer):
             raise unauthorized_error
 
         return super().update(instance, validated_data)
-
-    def to_representation(self, instance):
-        if self.context["view"].action == "retrieve":
-            data = super().to_representation(instance)
-
-            data["game"] = instance.game
-            data["platform"] = instance.platform
-
-            del data["description"]
-            del data["created_at"]
-            del data["updated_at"]
-            del data["deactivated_at"]
-            del data["created_by"]
-
-            members = TeamMember.objects.filter(team=instance)
-            member_data = [
-                {"user": member.user, "is_admin": member.is_admin} for member in members
-            ]
-            data["members"] = member_data
-
-            return data
-
-        return super().to_representation(instance)
-
-    # TODO deactivate method
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):

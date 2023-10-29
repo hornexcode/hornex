@@ -176,9 +176,6 @@ input.spin-button-hidden::-webkit-inner-spin-button {
   * {
     @apply border-border;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
 
 .bg-glass {

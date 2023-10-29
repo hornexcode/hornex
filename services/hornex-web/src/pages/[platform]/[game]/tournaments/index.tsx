@@ -1,16 +1,48 @@
-import TournamentsPageTemplate from '@/components/templates/tournaments-page-template/tournaments-page-template';
+import TournamentsPageTemplate from '@/components/system-design/templates/tournaments-page-template/tournaments-page-template';
 import { AppLayout } from '@/layouts';
-import { requestFactory } from '@/lib/api';
+import { dataLoader } from '@/lib/api';
 import { GetTournamentsResponse } from '@/lib/hx-app/types/rest/get-tournaments';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { FC } from 'react';
 
 const { useData: getTournaments } =
-  requestFactory<GetTournamentsResponse>('getTournaments');
+  dataLoader<GetTournamentsResponse>('getTournaments');
+
+type TournamentsProps = {
+  game: string;
+  platform: string;
+};
+
+export const getServerSideProps = (async ({ query: { game, platform } }) => {
+  if (typeof game !== 'string' || typeof platform !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      pageProps: {
+        game,
+        platform,
+      },
+    },
+  };
+}) satisfies GetServerSideProps<{
+  pageProps: TournamentsProps;
+}>;
 
 const Tournaments = ({
-  props,
+  pageProps: { game, platform },
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { data: tournaments, error, isLoading } = getTournaments();
+  const {
+    data: tournaments,
+    error,
+    isLoading,
+  } = getTournaments({
+    game,
+    platform,
+  });
 
   return (
     <div className="">
@@ -28,15 +60,6 @@ const Tournaments = ({
 
 Tournaments.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
-};
-
-export const getServerSideProps: GetServerSideProps = async ({
-  query: { game, platform },
-}) => {
-  // TODO: add ssr for tournaments based on game slug
-  return {
-    props: { game, platform },
-  };
 };
 
 export default Tournaments;

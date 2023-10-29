@@ -17,7 +17,7 @@ from tournaments.pagination import TournamentPagination
 from tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 
 from teams.models import Team, TeamMember
-
+from core.route import extract_game_and_platform
 
 # from tournaments.leagueoflegends.usecases import RegisterTeam
 
@@ -52,7 +52,9 @@ class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
         manual_parameters=[game_qp, platform_qp],
     )
     def list(self, request, *args, **kwargs):
-        if request.query_params.get("game") == "league-of-legends":
+        game, _ = extract_game_and_platform(kwargs)
+
+        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
             self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().list(request, *args, **kwargs)
@@ -64,7 +66,9 @@ class TournamentViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
 
     def retrieve(self, request, *args, **kwargs):
-        if kwargs.get("game") == "league-of-legends":
+        game, _ = extract_game_and_platform(kwargs)
+
+        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
             self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().retrieve(request, *args, **kwargs)

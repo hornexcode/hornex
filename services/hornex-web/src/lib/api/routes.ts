@@ -29,18 +29,17 @@ export const routes = {
     method: Method.POST,
     schema: null,
   },
-  findTeam: {
+  getTeam: {
+    path: 'v1/teams/[teamId]',
+    method: Method.GET,
+  },
+  getTeams: {
     path: 'v1/teams',
     method: Method.GET,
     schema: null,
   },
-  getTeams: {
-    path: 'v1/[platform]/[game]/teams',
-    method: Method.GET,
-    schema: null,
-  },
   updateTeam: {
-    path: 'v1/[platform]/[game]/teams',
+    path: 'v1/teams',
     method: Method.PATCH,
     schema: null,
   },
@@ -65,12 +64,12 @@ export const routes = {
     schema: getAvailableGamesResponse,
   },
   getTournaments: {
-    path: 'v1/tournaments?game=league-of-legends',
+    path: 'v1/[platform]/[game]/tournaments',
     method: Method.GET,
     schema: null,
   },
   getTournament: {
-    path: 'v1/tournaments/[platform]/[game]/[tournamentId]',
+    path: 'v1/[platform]/[game]/tournaments/[tournamentId]/details',
     method: Method.GET,
     schema: null,
   },

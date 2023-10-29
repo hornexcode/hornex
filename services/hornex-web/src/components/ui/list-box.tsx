@@ -12,11 +12,13 @@ export type ListboxOption = {
 interface ListboxTypes {
   options: ListboxOption[];
   selectedOption: ListboxOption;
+  // onChange: any;
   onChange: React.Dispatch<React.SetStateAction<ListboxOption>>;
   children?: React.ReactNode;
   onSelect?: (value: string) => void;
   variant?: 'ghost' | 'solid' | 'transparent';
   className?: string;
+  // value: string | number;
 }
 
 const listboxVariantClasses = {
@@ -41,8 +43,8 @@ export default function Listbox({
       <HeadlessListbox value={selectedOption} onChange={onChange}>
         <HeadlessListbox.Button
           className={cn(
-            'text-case-inherit letter-space-inherit flex h-8 w-full items-center justify-between rounded-lg px-4 text-sm font-medium outline-none duration-200 sm:h-10 sm:px-5',
-            listboxVariantClasses[variant],
+            'text-case-inherit letter-space-inherit flex h-8 w-full items-center justify-between rounded-lg px-4 text-sm font-medium outline-none duration-200 sm:h-12 sm:px-5',
+            listboxVariantClasses[variant]
           )}
         >
           <div className="flex items-center">{selectedOption?.name}</div>

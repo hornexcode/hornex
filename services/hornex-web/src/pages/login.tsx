@@ -118,7 +118,6 @@ export default function LoginPage() {
             className="w-full"
             color="warning"
             shape="rounded"
-            size="small"
           >
             Login
           </Button>

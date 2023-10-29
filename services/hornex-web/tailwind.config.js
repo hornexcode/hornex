@@ -33,6 +33,7 @@ module.exports = {
           '0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1)',
       },
       colors: {
+        brand: 'rgb(var(--color-brand) / <alpha-value>)',
         body: '#fcfcfc',
         primary: '#0D1321',
         dark: '#0D1321',
@@ -40,8 +41,8 @@ module.exports = {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        // background: 'hsl(var(--background))',
+        // foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',

@@ -1,209 +1,113 @@
-import { MemberList } from '@/components/teams';
-import { TeamTab } from '@/components/teams/team-tab';
+import TeamMemberListItem from '@/components/system-design/organisms/team-member-list-item';
+import TeamSearchList from '@/components/teams/team-search-list';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
-import { Member } from '@/domain';
-import { CurrentUser } from '@/infra/hx-core/responses/current-user';
-import { TeamFind } from '@/infra/hx-core/responses/team-find';
+import { Team } from '@/domain';
 import { AppLayout } from '@/layouts';
-import { dataLoaders, requestFactory } from '@/lib/api';
-import { getCookieFromRequest } from '@/lib/api/cookie';
-import { useAuthContext } from '@/lib/auth';
-import {
-  UpdateTeamInput,
-  UpdateTeamOutput,
-  updateTeamSchemaInput,
-} from '@/services/hx-core/updateTeam';
+import { dataLoader } from '@/lib/api';
+import { GetTeamOutput } from '@/services/hx-core/get-teams';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import { useRouter } from 'next/router';
-import { FC, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import React from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const inviteForm = z.object({
-  username: z.string().min(1, { message: 'Username is required' }),
+// load members
+// load invites
+
+type Member = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
+
+const Member: React.FC<Member> = (member) => {
+  return (
+    <div className="bg-light-dark shadow-light space-y-4 rounded-lg transition-all hover:cursor-pointer hover:outline sm:p-6"></div>
+  );
+};
+
+const { fetch: getTeam } = dataLoader<GetTeamOutput>('getTeam');
+
+type TeamPageProps = {
+  team: Team;
+};
+
+const editTeamFormSchema = z.object({
+  name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
 });
 
-type MemberForm = z.infer<typeof inviteForm>;
+type EditTeamForm = z.infer<typeof editTeamFormSchema>;
 
-const updateTeamForm = z.object({
-  team: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
-});
-
-const TeamDetail = ({
+const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   team,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const router = useRouter();
-
-  const { state } = useAuthContext();
-
-  console.log(state);
-  useEffect(() => {
-    if (!state.isAuthenticated) {
-      router.push('/login');
-    }
-  }, [router, state.isAuthenticated]);
-
-  const [members, setMembers] = useState<Member[]>([]);
-  const [fetching, setFetching] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isLimitReached, setIsLimitReached] = useState(false);
-
-  const removeHandler = (id: number) => {
-    setMembers((prev) => prev.filter((member) => member.id !== id));
-    setIsLimitReached(false);
-  };
+}: TeamPageProps) => {
+  const submitHandler: SubmitHandler<EditTeamForm> = async (form) => {};
 
   const {
     register,
     handleSubmit,
-    reset,
-    setError,
+    setValue,
     formState: { errors },
-  } = useForm<MemberForm>({
-    resolver: zodResolver(inviteForm),
+  } = useForm<EditTeamForm>({
+    resolver: zodResolver(editTeamFormSchema),
   });
 
-  const addMember = async (data: MemberForm) => {
-    if (members.find((member) => member.username === data.username)) {
-      setError('username', { message: 'User already belongs to the team' });
-      setFetching(false);
-      return;
-    }
-
-    setFetching(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    if (members.length === 4) {
-      setIsLimitReached(true);
-    }
-
-    setMembers((prev) => {
-      return [
-        ...prev,
-        {
-          id: Math.random() + members.length,
-          username: data.username.toLowerCase(),
-        },
-      ];
-    });
-
-    reset();
-    setFetching(false);
-  };
-
-  const {
-    register: teamRegister,
-    handleSubmit: teamSubmit,
-    formState: { errors: teamErro },
-  } = useForm<UpdateTeamInput>({
-    resolver: zodResolver(updateTeamSchemaInput),
-  });
-
-  const teamSubmitHandler = async (data: UpdateTeamInput) => {
-    try {
-      setIsUpdating(true);
-      toast.success('Team updated successfully');
-
-      router.push(`${team.id}`);
-    } catch (err) {
-      const { error } = err as { error: string };
-      toast.error(error);
-      console.log(error);
-    } finally {
-      setIsUpdating(false);
-    }
-  };
+  React.useEffect(() => {
+    setValue('name', team.name);
+  }, [team]);
 
   return (
-    <div className="mx-auto space-y-8 p-8">
-      <div className="flex items-end justify-between pb-2">
-        <h2 className="font-display text-left text-xl font-bold leading-4 -tracking-wider text-white lg:text-xl">
-          {team.name}
+    <div className="mx-auto h-full p-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
+          Editar
         </h2>
       </div>
 
-      <div className="space-y-4">
-        <form onSubmit={teamSubmit(teamSubmitHandler)}>
-          <div>
-            <InputLabel title="Change team name" important />
-            <Input
-              defaultValue={team.name}
-              inputClassName={classnames({
-                'border-red-500': teamErro.name,
-              })}
-              error={teamErro.name?.message}
-              {...teamRegister('name', { required: true })}
-              placeholder="Enter team name"
-            />
+      <div className="mt-10 sm:w-80 lg:w-2/3">
+        <h3 className="pb-4 text-xl font-semibold uppercase text-gray-200">
+          Informações
+        </h3>
+        <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
+          <InputLabel title="Nome do time" important />
+          <div className="flex w-full items-center ">
+            <div className="w-full">
+              <Input
+                inputClassName={classnames(
+                  errors.name?.message ? 'focus:ring-red-500' : ''
+                )}
+                placeholder="Nome do time"
+                error={errors.name?.message}
+                {...register('name', { required: true })}
+              />
+            </div>
+            <div className="ml-5 mt-1">
+              <Button disabled type="submit" color="secondary" shape="rounded">
+                Alterar{' '}
+              </Button>
+            </div>
           </div>
-          <Button
-            isLoading={fetching}
-            loaderSize="small"
-            type="submit"
-            color="info"
-            size="small"
-            shape="rounded"
-            className="mt-4"
-          >
-            Change
-          </Button>
         </form>
       </div>
 
-      <div className="grow pb-9 pt-6">
-        <TeamTab />
-      </div>
-
-      <div className="space-y-4">
-        {/* TODO: Implement user search */}
-        {/*
-          <div className="block">
-            <InputLabel title="Add user" important />
-            <UserSearchList onSelect={() => console.log('')} />
-          </div>
-        */}
-
-        <div className="block">
-          <form onSubmit={handleSubmit(addMember)}>
-            <div>
-              <InputLabel title="Add team member" important />
-              <Input
-                disabled={fetching || isLimitReached}
-                inputClassName={classnames({
-                  'border-red-500': errors.username,
-                  'placeholder-red-500 hover:cursor-not-allowed':
-                    isLimitReached,
-                })}
-                error={errors.username?.message}
-                {...register('username', { required: true })}
-                placeholder={
-                  isLimitReached
-                    ? 'Limit of members reached'
-                    : 'Enter member username'
-                }
-              />
-            </div>
-            <Button
-              disabled={isLimitReached}
-              isLoading={fetching}
-              loaderSize="small"
-              type="submit"
-              color="info"
-              size="small"
-              shape="rounded"
-              className="mt-4"
-            >
-              Invite
+      <div className="mt-10 w-full sm:w-80 lg:w-2/3">
+        <div className="flex items-center justify-between pb-5">
+          <h3 className="text-xl font-semibold uppercase text-gray-200">
+            Membros
+          </h3>
+          <div>
+            <Button color="secondary" shape="rounded" size="mini">
+              Add membro
             </Button>
-          </form>
-
-          <div className="py-10">
-            <MemberList members={members} onRemoveMember={removeHandler} />
+          </div>
+        </div>
+        <div id="members" className="">
+          <div className="flex flex-col">
+            <TeamMemberListItem isReadOnly />
           </div>
         </div>
       </div>
@@ -211,45 +115,28 @@ const TeamDetail = ({
   );
 };
 
-TeamDetail.getLayout = (page: React.ReactElement) => {
+TeamPage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-const { get: current } = dataLoaders<CurrentUser>('getCurrentUser');
-const { find: findTeam } = dataLoaders<TeamFind>('findTeam');
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { data: team, error } = await getTeam(
+    {
+      teamId: ctx.query.id || '',
+    },
+    ctx.req
+  );
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const cookie = getCookieFromRequest(ctx.req, 'hx-auth.token');
+  console.log(team);
 
-  // Check token existence
-  if (!cookie) {
+  if (!team) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/teams',
         permanent: false,
       },
     };
   }
-
-  const currentUser = await current({
-    Authorization: cookie ? `Bearer ${cookie}` : '',
-  });
-
-  // Check token validity
-  if (!currentUser) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  const params = ctx.params;
-
-  const { team } = await findTeam(params?.id as string, {
-    Authorization: cookie ? `Bearer ${cookie}` : '',
-  });
 
   return {
     props: {
@@ -258,4 +145,4 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   };
 };
 
-export default TeamDetail;
+export default TeamPage;

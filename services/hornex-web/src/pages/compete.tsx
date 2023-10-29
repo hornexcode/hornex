@@ -14,7 +14,7 @@ import {
 import { LeagueOfLegendsLogo } from '@/components/ui/icons/league-of-legends-icon';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
-import { requestFactory as requestFactory } from '@/lib/api';
+import { dataLoader as dataLoader } from '@/lib/api';
 import { Game, GetAvailableGamesResponse } from '@/lib/hx-app/types';
 import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
 import { PlusCircleIcon } from 'lucide-react';
@@ -23,7 +23,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const { fetch: getAvailableGames } =
-  requestFactory<GetAvailableGamesResponse>('getAvailableGames');
+  dataLoader<GetAvailableGamesResponse>('getAvailableGames');
 
 const CompetePage = ({
   games,

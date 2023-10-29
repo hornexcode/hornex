@@ -1,4 +1,3 @@
-import { Badge } from '../ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,22 +13,30 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Team } from '@/domain/team';
-import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
+import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
 import {
   Cloud,
   CreditCard,
+  Edit2Icon,
+  Edit3Icon,
+  EditIcon,
+  Gamepad2Icon,
   Github,
   Keyboard,
   LifeBuoy,
   LogOut,
   Mail,
+  MenuIcon,
   MessageSquare,
+  MouseIcon,
   Plus,
   PlusCircle,
   Settings,
   UserPlus,
   Users,
+  UsersIcon,
 } from 'lucide-react';
+import Link from 'next/link';
 import { FC } from 'react';
 
 type TeamProps = Team;
@@ -38,7 +45,7 @@ export function DropdownMenuDemo() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <EllipsisHorizontalIcon className="w-4" />
+        <MenuIcon className="w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>My Team</DropdownMenuLabel>
@@ -121,24 +128,67 @@ export function DropdownMenuDemo() {
 
 const Team: FC<TeamProps> = (team) => {
   return (
-    <div className="space-y-4 rounded-lg border border-slate-800 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h4 className="text-lg font-semibold text-slate-200">{team.name}</h4>
-          <span className="text-xs">created by: @{team.created_by}</span>
+    <Link href={`/teams/${team.id}`}>
+      <div className="bg-light-dark shadow-light space-y-4 rounded-lg transition-all hover:cursor-pointer hover:outline sm:p-6">
+        <div className="flex items-center justify-between border-b border-dashed border-gray-700 pb-4">
+          <div className="block">
+            <h4 className="text-sm font-semibold text-slate-200">
+              {team.name}
+            </h4>
+          </div>
+          <div className="actions">
+            {/* <DropdownMenuDemo /> */}
+            <EditIcon className="w-4 text-slate-200" />
+          </div>
         </div>
-        <div className="actions">
-          <DropdownMenuDemo />
-        </div>
-      </div>
+        <div className="grid grid-cols-6">
+          {/* platform */}
+          <div className="block">
+            <div className="flex items-center">
+              <div className="flex h-8 w-8 shrink-0 rounded-full bg-gray-700 text-gray-400">
+                <ComputerDesktopIcon className="m-auto h-4 w-4" />
+              </div>
+              <div className="ml-4 flex flex-col justify-between">
+                <div className="text-gray-400">platform</div>
+                <div className="text-sm font-medium text-white">
+                  {team.platform}
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <div className="">
-        <Badge className="mb-2 mr-2">League of Legends</Badge>
-        <Badge className="mb-2 mr-2">0 Victories</Badge>
-        <Badge className="mb-2 mr-2">0 Defeats</Badge>
-        <Badge>999 Points</Badge>
+          {/* game */}
+          <div className="block">
+            <div className="flex items-center">
+              <div className="flex h-8 w-8 shrink-0 rounded-full bg-gray-700 text-gray-400">
+                <Gamepad2Icon className="m-auto h-4 w-4" />
+              </div>
+              <div className="ml-4 flex flex-col justify-between">
+                <div className="text-gray-400">game</div>
+                <div className="text-sm font-medium text-white">
+                  {team.game}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* members */}
+          <div className="block">
+            <div className="flex items-center">
+              <div className="flex h-8 w-8 shrink-0 rounded-full bg-gray-700 text-gray-400">
+                <UsersIcon className="m-auto h-4 w-4" />
+              </div>
+              <div className="ml-4 flex flex-col justify-between">
+                <div className="text-gray-400">members</div>
+                <div className="text-sm font-medium text-white">
+                  {team.num_members}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

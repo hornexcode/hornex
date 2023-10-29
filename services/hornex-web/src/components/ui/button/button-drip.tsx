@@ -37,7 +37,7 @@ export default function ButtonDrip({
         viewBox="0 0 20 20"
         className={cn(
           'absolute h-4 w-4',
-          fullWidth ? 'animate-drip-expand-large' : 'animate-drip-expand',
+          fullWidth ? 'animate-drip-expand-large' : 'animate-drip-expand'
         )}
         style={{ top, left }}
       >

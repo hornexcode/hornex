@@ -48,7 +48,7 @@ urlpatterns = [
     path("api/v1/invites", include("invites.urls")),
     path("api/v1/platforms", include("platforms.urls")),
     path("api/v1/games", include("games.urls")),
+    path("api/v1/teams", include("teams.urls")),
     # api/v1/<platform>/<game>
-    path(f"{prefix}/teams", include("teams.urls")),
     path(f"{prefix}/tournaments", include("tournaments.urls")),
 ]

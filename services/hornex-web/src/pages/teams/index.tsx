@@ -1,7 +1,7 @@
 import { TeamList } from '@/components/teams/team-list';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
-import { requestFactory } from '@/lib/api';
+import { dataLoader } from '@/lib/api';
 import {
   GetTeamsOutput,
   getTeamsSchemaOutput as schema,
@@ -9,38 +9,38 @@ import {
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-const { useData: getTeams } = requestFactory<GetTeamsOutput>('getTeams');
+const { useData: getTeams } = dataLoader<GetTeamsOutput>('getTeams');
 
 const TeamsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) => {
-  const { data: teams, error, isLoading } = getTeams();
+  const route = useRouter();
+  const { data: { teams } = {} } = getTeams({
+    game: 'league-of-legends',
+    platform: 'pc',
+  });
+
+  if (!teams) {
+    return <>loading</>;
+  }
 
   return (
-    <div className="mx-auto space-y-8 p-8">
-      <div className="flex items-end justify-between border-b border-slate-800 pb-2">
-        <h2 className="text-left text-xl font-bold leading-4 tracking-tight text-white lg:text-xl">
-          My Teams
+    <div className="mx-auto h-full space-y-8 p-8">
+      <div className="flex items-end justify-between">
+        <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
+          Meus times
         </h2>
       </div>
 
-      <section id="teams" className="space-y-10">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            <Link
-              href={routes.createTeam}
-              className="flex min-h-[14rem] cursor-pointer flex-col items-center justify-center gap-4 rounded bg-slate-800 p-4 transition-all hover:bg-slate-700"
-            >
-              <PlusCircleIcon className="w-7" />
-              <span className="text-sm font-medium text-slate-400">
-                Create new team
-              </span>
-            </Link>
+      <div className="h-[100vh]">
+        <div id="teams" className="">
+          <div className="grid gap-5">
             {teams && <TeamList teams={teams} />}
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

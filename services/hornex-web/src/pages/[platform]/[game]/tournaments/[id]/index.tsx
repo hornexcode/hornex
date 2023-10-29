@@ -1,10 +1,10 @@
-import TournamentDetailsTemplate from '@/components/templates/tournament-page-template';
+import TournamentDetailsTemplate from '@/components/system-design/templates/tournament-page-template';
 import { AppLayout } from '@/layouts';
-import { FetchError, requestFactory } from '@/lib/api';
+import { dataLoader } from '@/lib/api';
 import { Tournament } from '@/lib/hx-app/types';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-const { fetch: getTournament } = requestFactory<Tournament>('getTournament');
+const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
 
 type TournamentProps = {
   params: {

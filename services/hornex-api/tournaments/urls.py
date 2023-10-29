@@ -6,7 +6,7 @@ urlpatterns = [
         "", TournamentReadOnlyViewSet.as_view({"get": "list"}), name="tournament-list"
     ),
     path(
-        "/<str:platform>/<str:game>/<str:id>",
+        "/<str:id>/details",
         TournamentViewSet.as_view({"get": "retrieve"}),
         name="tournament-details",
     ),
