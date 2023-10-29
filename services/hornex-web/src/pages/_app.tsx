@@ -43,6 +43,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       >
         <AuthContextProvider>
           {getLayout(<Component {...pageProps} />)}
+          <ModalsContainer />
           {/* <SettingsDrawer /> */}
         </AuthContextProvider>
         <ToastContainer

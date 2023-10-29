@@ -8,11 +8,11 @@ import { Tab } from '@headlessui/react';
 import classnames from 'classnames';
 import { FC, useState } from 'react';
 
-type TournamentPageTemplateProps = {
+type TournamentDetailsPageProps = {
   tournament: Tournament;
 };
 
-const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({
+const TournamentDetailsPage: FC<TournamentDetailsPageProps> = ({
   tournament,
 }) => {
   let [tabs] = useState({
@@ -80,4 +80,4 @@ const TournamentPageTemplate: FC<TournamentPageTemplateProps> = ({
   );
 };
 
-export default TournamentPageTemplate;
+export default TournamentDetailsPage;

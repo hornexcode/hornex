@@ -3,38 +3,18 @@ import Button from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Close } from '@/components/ui/icons/close';
 import { Transition } from '@/components/ui/transition';
-import { LAYOUT_OPTIONS } from '@/lib/constants';
-import { useLayout } from '@/lib/hooks/use-layout';
 import cn from 'classnames';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect } from 'react';
 // dynamic imports
 const SearchView = dynamic(() => import('@/components/search/view'));
-const ShareView = dynamic(() => import('@/components/nft/share-view'));
-const PlaceBidView = dynamic(() => import('@/components/room/place-bid-view'));
-const SelectWallet = dynamic(() => import('@/components/nft/select-wallet'));
-const ProfileInfo = dynamic(
-  () => import('@/components/profile/profile-info-view')
-);
-const PreviewContent = dynamic(
-  () => import('@/components/create-nft/nft-preview-content')
-);
 
 function renderModalContent(view: MODAL_VIEW | string) {
   switch (view) {
     case 'SEARCH_VIEW':
       return <SearchView />;
-    case 'SHARE_VIEW':
-      return <ShareView />;
-    case 'WALLET_CONNECT_VIEW':
-      return <SelectWallet />;
-    case 'PROFILE_INFO_VIEW':
-      return <ProfileInfo />;
-    case 'NFT_PREVIEW':
-      return <PreviewContent />;
-    case 'PLACE_BID_VIEW':
-      return <PlaceBidView />;
+
     default:
       return null;
   }
@@ -43,7 +23,6 @@ function renderModalContent(view: MODAL_VIEW | string) {
 export default function ModalContainer() {
   const router = useRouter();
   const { view, isOpen, closeModal } = useModal();
-  const { layout } = useLayout();
 
   useEffect(() => {
     // close search modal when route change
@@ -103,8 +82,7 @@ export default function ModalContainer() {
         >
           <div
             className={cn(
-              'relative z-50 inline-block w-full text-left align-middle',
-              layout === LAYOUT_OPTIONS.RETRO ? 'sm:w-auto' : 'xs:w-auto'
+              'xs:w-auto relative z-50 inline-block w-full text-left align-middle'
             )}
           >
             {view && renderModalContent(view)}

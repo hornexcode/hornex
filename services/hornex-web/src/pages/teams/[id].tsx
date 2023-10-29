@@ -1,5 +1,4 @@
 import TeamMemberListItem from '@/components/system-design/organisms/team-member-list-item';
-import TeamSearchList from '@/components/teams/team-search-list';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
@@ -86,7 +85,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               />
             </div>
             <div className="ml-5 mt-1">
-              <Button disabled type="submit" color="secondary" shape="rounded">
+              <Button disabled type="submit" color="info" shape="rounded">
                 Alterar{' '}
               </Button>
             </div>
@@ -100,7 +99,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             Membros
           </h3>
           <div>
-            <Button color="secondary" shape="rounded" size="mini">
+            <Button color="success" shape="rounded" size="mini">
               Add membro
             </Button>
           </div>
@@ -126,8 +125,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
     ctx.req
   );
-
-  console.log(team);
 
   if (!team) {
     return {
