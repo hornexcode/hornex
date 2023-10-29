@@ -1,26 +1,50 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ['class'],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-    './src/layouts/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
+    './src/layouts/**/*.{js,ts,jsx,tsx}',
   ],
+  darkMode: 'class',
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
+    screens: {
+      xs: '500px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1440px',
+      '3xl': '1780px',
+      '4xl': '2160px', // only need to control product grid mode in ultra 4k device
     },
     extend: {
+      colors: {
+        brand: 'rgb(var(--color-brand) / <alpha-value>)',
+        body: '#fcfcfc',
+        dark: '#0D1321',
+        'light-dark': '#171e2e',
+        'sidebar-body': '#F8FAFC',
+      },
+      spacing: {
+        13: '3.375rem',
+      },
+      margin: {
+        '1/2': '50%',
+      },
+      padding: {
+        full: '100%',
+      },
+      width: {
+        'calc-320': 'calc(100% - 320px)',
+        'calc-358': 'calc(100% - 358px)',
+      },
       fontFamily: {
-        sans: ['ui-sans-serif', 'system-ui'],
-        body: ['kanit', 'sans-serif'],
-        display: ['Fira Code', 'sans-serif'],
+        body: ['JetBrains mono', 'monospace'],
+      },
+      fontSize: {
+        '13px': ['13px', '18px'],
+      },
+      borderWidth: {
+        3: '3px',
       },
       boxShadow: {
         main: '0px 6px 18px rgba(0, 0, 0, 0.04)',
@@ -32,52 +56,20 @@ module.exports = {
         button:
           '0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1)',
       },
-      colors: {
-        brand: 'rgb(var(--color-brand) / <alpha-value>)',
-        body: '#fcfcfc',
-        primary: '#0D1321',
-        dark: '#0D1321',
-        'light-dark': '#171e2e',
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        // background: 'hsl(var(--background))',
-        // foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
+      dropShadow: {
+        main: '0px 4px 8px rgba(0, 0, 0, 0.08)',
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
-
+      animation: {
+        blink: 'blink 1.4s infinite both;',
+        'move-up': 'moveUp 500ms infinite alternate',
+        'scale-up': 'scaleUp 500ms infinite alternate',
+        'drip-expand': 'expand 500ms ease-in forwards',
+        'drip-expand-large': 'expand-large 600ms ease-in forwards',
+        'move-up-small': 'moveUpSmall 500ms infinite alternate',
+      },
       keyframes: {
         blink: {
           '0%': { opacity: 0.2 },
@@ -128,18 +120,76 @@ module.exports = {
           '0%': { transform: 'scale(0)' },
           '100%': { transform: 'scale(1)' },
         },
-        'accordion-down': {
-          from: { height: 0 },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: 0 },
-        },
+      },
+    },
+  },
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
+};
+module.exports = {
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
+    './src/layouts/**/*.{js,ts,jsx,tsx}',
+  ],
+  darkMode: 'class',
+  theme: {
+    screens: {
+      xs: '500px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1440px',
+      '3xl': '1780px',
+      '4xl': '2160px', // only need to control product grid mode in ultra 4k device
+    },
+    extend: {
+      colors: {
+        brand: 'rgb(var(--color-brand) / <alpha-value>)',
+        body: '#fcfcfc',
+        dark: '#0D1321',
+        'light-dark': '#171e2e',
+        'sidebar-body': '#F8FAFC',
+      },
+      spacing: {
+        13: '3.375rem',
+      },
+      margin: {
+        '1/2': '50%',
+      },
+      padding: {
+        full: '100%',
+      },
+      width: {
+        'calc-320': 'calc(100% - 320px)',
+        'calc-358': 'calc(100% - 358px)',
+      },
+      fontFamily: {
+        body: ['JetBrains mono', 'monospace'],
+      },
+      fontSize: {
+        '13px': ['13px', '18px'],
+      },
+      borderWidth: {
+        3: '3px',
+      },
+      boxShadow: {
+        main: '0px 6px 18px rgba(0, 0, 0, 0.04)',
+        light: '0px 4px 4px rgba(0, 0, 0, 0.08)',
+        large: '0px 8px 16px rgba(17, 24, 39, 0.1)',
+        card: '0px 2px 6px rgba(0, 0, 0, 0.06)',
+        transaction: '0px 8px 16px rgba(17, 24, 39, 0.06)',
+        expand: '0px 0px 50px rgba(17, 24, 39, 0.2)',
+        button:
+          '0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1)',
+      },
+      dropShadow: {
+        main: '0px 4px 8px rgba(0, 0, 0, 0.08)',
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
         blink: 'blink 1.4s infinite both;',
         'move-up': 'moveUp 500ms infinite alternate',
         'scale-up': 'scaleUp 500ms infinite alternate',
@@ -147,7 +197,58 @@ module.exports = {
         'drip-expand-large': 'expand-large 600ms ease-in forwards',
         'move-up-small': 'moveUpSmall 500ms infinite alternate',
       },
+      keyframes: {
+        blink: {
+          '0%': { opacity: 0.2 },
+          '20%': { opacity: 1 },
+          '100%': { opacity: 0.2 },
+        },
+        expand: {
+          '0%': {
+            opacity: 0,
+            transform: 'scale(1)',
+          },
+          '30%': {
+            opacity: 1,
+          },
+          '80%': {
+            opacity: 0.5,
+          },
+          '100%': {
+            transform: 'scale(30)',
+            opacity: 0,
+          },
+        },
+        'expand-large': {
+          '0%': {
+            opacity: 0,
+            transform: 'scale(1)',
+          },
+          '30%': {
+            opacity: 1,
+          },
+          '80%': {
+            opacity: 0.5,
+          },
+          '100%': {
+            transform: 'scale(96)',
+            opacity: 0,
+          },
+        },
+        moveUp: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-20px)' },
+        },
+        moveUpSmall: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-10px)' },
+        },
+        scaleUp: {
+          '0%': { transform: 'scale(0)' },
+          '100%': { transform: 'scale(1)' },
+        },
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
 };

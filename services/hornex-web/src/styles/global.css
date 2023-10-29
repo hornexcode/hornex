@@ -172,12 +172,6 @@ input.spin-button-hidden::-webkit-inner-spin-button {
   background: rgb(var(--color-brand));
 } */
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-}
-
 .bg-glass {
   /* From https://css.glass */
   /* background: rgba(255, 255, 255, 0.13); */

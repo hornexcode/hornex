@@ -45,9 +45,7 @@ const Tournaments = ({
   });
 
   return (
-    <div className="">
-      {error && <div className="text-red-500">{error.message}</div>}
-      {/* TODO: add switch to render different types of tournament template */}
+    <div className="px-8 py-4">
       <TournamentsPageTemplate
         isLoading={isLoading}
         tournaments={
