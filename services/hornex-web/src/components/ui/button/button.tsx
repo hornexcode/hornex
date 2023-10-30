@@ -8,7 +8,6 @@ type ShapeNames = 'rounded' | 'pill' | 'circle';
 type VariantNames = 'ghost' | 'solid' | 'transparent';
 type ColorNames =
   | 'primary'
-  | 'secondary'
   | 'white'
   | 'gray'
   | 'success'
@@ -29,7 +28,6 @@ const variants: Record<VariantNames, string[]> = {
 };
 const colors: Record<ColorNames, string[]> = {
   primary: ['text-brand', 'bg-brand', 'border-brand'],
-  secondary: ['text-secondary', 'bg-secondary', 'border-secondary'],
   white: ['text-gray-900', 'bg-white', 'border-white'],
   gray: ['text-gray-900', 'bg-gray-100', 'border-gray-100'],
   success: ['text-green-500', 'bg-green-500', 'border-green-500'],
@@ -117,7 +115,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         break;
 
       default:
-        buttonColorClassNames = `${colorClassNames[0]}`;
+        buttonColorClassNames = `${colorClassNames[1]} ${colorClassNames[2]}`;
         buttonDripColor = 'rgba(255, 255, 255, 0.3)';
         break;
     }
@@ -130,14 +128,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm',
           !disabled
             ? buttonColorClassNames
-            : 'cursor-not-allowed bg-gray-400 !text-gray-200',
+            : 'cursor-not-allowed bg-gray-100 text-gray-400',
           disabled || isLoading || variant === 'transparent'
             ? ''
             : 'hover:shadow-large focus:shadow-large hover:-translate-y-0.5 focus:-translate-y-0.5 focus:outline-none',
           isLoading && 'pointer-events-auto cursor-default focus:outline-none',
           fullWidth && 'w-full',
           color === 'white' || color === 'gray'
-            ? 'text-white'
+            ? 'text-gray-900 dark:text-white'
             : variants[variant],
           shapes[shape],
           shape === 'circle' ? `${sizeClassNames[1]}` : `${sizeClassNames[0]}`,
