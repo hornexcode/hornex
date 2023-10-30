@@ -6,6 +6,7 @@ from teams.errors import (
     team_invite_already_exists,
 )
 from datetime import datetime
+from users.serializers import UserSerializer
 
 
 def check_is_owner(user, team):
@@ -51,6 +52,8 @@ class TeamSerializer(serializers.ModelSerializer):
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
     class Meta:
         model = TeamMember
         fields = "__all__"

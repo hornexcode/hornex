@@ -1,5 +1,5 @@
 from django.urls import path
-from teams.views import TeamViewSet, TeamInviteViewSet
+from teams.views import TeamViewSet, TeamInviteViewSet, TeamMemberViewSet
 
 
 urlpatterns = [
@@ -24,4 +24,11 @@ urlpatterns = [
         TeamInviteViewSet.as_view({"get": "list", "post": "create"}),
         name="team-invite-list",
     ),
+    path(
+        "/<str:id>/members",
+        TeamMemberViewSet.as_view({"get": "list"}),
+        name="team-members",
+    ),
 ]
+
+# return all members of a team, including the owner /GET /api/v1/teams/:id/members

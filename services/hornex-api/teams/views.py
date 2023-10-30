@@ -1,12 +1,14 @@
 from rest_framework import viewsets, status
 from django_filters import rest_framework as filters
 from django.db.models import Count
+from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
+import uuid
 
-from teams.models import Team, TeamInvite
-from teams.serializers import TeamSerializer, TeamInviteSerializer
+from teams.models import Team, TeamInvite, TeamMember
+from teams.serializers import TeamSerializer, TeamInviteSerializer, TeamMemberSerializer
 from core.route import extract_game_and_platform
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -84,6 +86,30 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         operation_description="GET /api/v1/<platform>/<game>/teams/<id>/invites/<id>",
         operation_summary="Retrieve an invite for a team",
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+
+class TeamMemberViewSet(viewsets.ModelViewSet):
+    queryset = TeamMember.objects.all()
+    serializer_class = TeamMemberSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        id = self.kwargs.get("id")
+        return TeamMember.objects.filter(team__id=id)
+
+    @swagger_auto_schema(
+        operation_description="GET /api/v1/teams/<id>/members",
+        operation_summary="List all members for a team",
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="GET /api/v1/teams/<team_id>/members/<member_id>",
+        operation_summary="Retrieve a member for a team",
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
