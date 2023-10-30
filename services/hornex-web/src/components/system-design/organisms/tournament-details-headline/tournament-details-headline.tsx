@@ -20,7 +20,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 }) => {
   return (
     <>
-      <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52 2xl:h-96">
+      <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52">
         <Image
           // loader={imageLoader}
           // src="1920x1080/232f48/jpg"

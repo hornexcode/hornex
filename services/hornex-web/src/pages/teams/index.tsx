@@ -17,10 +17,12 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) => {
   const route = useRouter();
-  const { data: { teams } = {} } = getTeams({
+  const { data: { teams } = {}, error } = getTeams({
     game: 'league-of-legends',
     platform: 'pc',
   });
+
+  console.log(teams, error);
 
   if (!teams) {
     return <>loading</>;

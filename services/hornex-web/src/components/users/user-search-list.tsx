@@ -51,7 +51,7 @@ export default function UserSearchList({ onSelect }: CollectionSelectTypes) {
     setSearchKeyword('');
   }
   return (
-    <div className="relative w-full rounded-lg  text-sm shadow-large">
+    <div className="shadow-large relative w-full  rounded-lg text-sm">
       <div className="relative">
         <SearchIcon className="absolute left-6 h-full text-gray-700 dark:text-white" />
         <Input
@@ -64,10 +64,10 @@ export default function UserSearchList({ onSelect }: CollectionSelectTypes) {
       <ul
         role="listbox"
         className={cn(
-          'absolute top-12 z-30 mt-1 w-full rounded bg-gray-800 py-3 transition-all',
+          'mt-1 w-full rounded-lg bg-gray-800 py-3 transition-all',
           {
             hidden: searchKeyword.length === 0,
-          },
+          }
         )}
       >
         {coinListData.length > 0 ? (

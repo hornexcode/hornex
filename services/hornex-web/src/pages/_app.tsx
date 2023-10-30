@@ -2,11 +2,12 @@ import '@/styles/global.css';
 import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import ModalsContainer from '@/components/modal-views/container';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { Fira_Code, JetBrains_Mono, Kanit } from 'next/font/google';
+import { JetBrains_Mono, Kanit } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';

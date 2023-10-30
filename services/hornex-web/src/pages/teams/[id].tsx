@@ -1,7 +1,9 @@
+import { useModal } from '@/components/modal-views/context';
 import TeamMemberListItem from '@/components/system-design/organisms/team-member-list-item';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import UserSearchList from '@/components/users/user-search-list';
 import { Team } from '@/domain';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
@@ -59,6 +61,8 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     setValue('name', team.name);
   }, [team]);
 
+  const { openModal } = useModal();
+
   return (
     <div className="mx-auto h-full p-8">
       <div className="flex items-center justify-between">
@@ -68,13 +72,13 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       </div>
 
       <div className="mt-10 sm:w-80 lg:w-2/3">
-        <h3 className="pb-4 text-xl font-semibold uppercase text-gray-200">
+        <h3 className="pb-4 text-lg font-semibold uppercase text-gray-200">
           Informações
         </h3>
         <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
-          <InputLabel title="Nome do time" important />
-          <div className="flex w-full items-center ">
+          <div className="flex w-full items-end">
             <div className="w-full">
+              <InputLabel title="Nome do time" important />
               <Input
                 inputClassName={classnames(
                   errors.name?.message ? 'focus:ring-red-500' : ''
@@ -93,18 +97,27 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         </form>
       </div>
 
-      <div className="mt-10 w-full sm:w-80 lg:w-2/3">
+      <div className="mt-20 w-full sm:w-80 lg:w-2/3">
         <div className="flex items-center justify-between pb-5">
-          <h3 className="text-xl font-semibold uppercase text-gray-200">
+          <h3 className="text-lg font-semibold uppercase text-gray-200">
             Membros
           </h3>
           <div>
-            <Button color="success" shape="rounded" size="mini">
+            <Button
+              onClick={() => openModal('SEARCH_VIEW')}
+              color="success"
+              shape="rounded"
+              variant="solid"
+              size="mini"
+            >
               Add membro
             </Button>
           </div>
         </div>
         <div id="members" className="">
+          <div className="p-5">
+            <UserSearchList onSelect={() => {}} />
+          </div>
           <div className="flex flex-col">
             <TeamMemberListItem isReadOnly />
           </div>
