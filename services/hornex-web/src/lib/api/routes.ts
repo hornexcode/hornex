@@ -73,4 +73,9 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  getTeamMembers: {
+    path: 'v1/teams/[id]/members',
+    method: Method.GET,
+    schema: null,
+  },
 };

@@ -1,5 +1,5 @@
 import { useModal } from '@/components/modal-views/context';
-import TeamMemberListItem from '@/components/system-design/organisms/team-member-list-item';
+import { TeamMemberList } from '@/components/system-design/organisms/team-member-list-item';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
@@ -7,6 +7,7 @@ import UserSearchList from '@/components/users/user-search-list';
 import { Team } from '@/domain';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
+import { GetTeamMembersResponse } from '@/lib/hx-app/types/rest/get-team-members';
 import { GetTeamOutput } from '@/services/hx-core/get-teams';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
@@ -16,6 +17,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 // load members
+const { useData: useGetTeamMembers } =
+  dataLoader<GetTeamMembersResponse>('getTeamMembers');
+
 // load invites
 
 type Member = {
@@ -60,6 +64,8 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   React.useEffect(() => {
     setValue('name', team.name);
   }, [team]);
+
+  const { data: teamMembers } = useGetTeamMembers({ id: team.id });
 
   const { openModal } = useModal();
 
@@ -119,7 +125,10 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             <UserSearchList onSelect={() => {}} />
           </div>
           <div className="flex flex-col">
-            <TeamMemberListItem isReadOnly />
+            <TeamMemberList
+              members={teamMembers}
+              onRemove={() => console.log()}
+            />
           </div>
         </div>
       </div>

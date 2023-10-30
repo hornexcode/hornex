@@ -1,5 +1,12 @@
 import z from 'zod';
 
+export const user = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string().email(),
+});
+export type User = z.infer<typeof user>;
+
 export const game = z.object({
   id: z.string(),
   name: z.string(),
@@ -42,3 +49,12 @@ export const tournament = z.object({
   feature_image: z.string(),
 });
 export type Tournament = z.infer<typeof tournament>;
+
+export const teamMember = z.object({
+  id: z.string().uuid(),
+  is_admin: z.boolean(),
+  joined_at: z.string(),
+  team: z.string().uuid(),
+  user,
+});
+export type TeamMember = z.infer<typeof teamMember>;

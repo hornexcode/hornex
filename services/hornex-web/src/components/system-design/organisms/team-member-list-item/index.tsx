@@ -1,1 +1,1 @@
-export { default } from './team-member-list-item';
+export { TeamMemberList, TeamMemberListItem } from './team-member-list-item';
