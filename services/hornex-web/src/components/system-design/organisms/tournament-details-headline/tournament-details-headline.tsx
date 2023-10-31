@@ -102,7 +102,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               )}
             </div>
             <div className="block">
-              <Button shape="rounded" color="secondary">
+              <Button shape="rounded" color="warning">
                 Registrar time
               </Button>
             </div>

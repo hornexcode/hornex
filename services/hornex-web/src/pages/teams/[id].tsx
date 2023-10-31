@@ -82,7 +82,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           Informações
         </h3>
         <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
-          <div className="flex w-full items-end">
+          <div className="flex w-full">
             <div className="w-full">
               <InputLabel title="Nome do time" important />
               <Input
@@ -94,11 +94,11 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 {...register('name', { required: true })}
               />
             </div>
-            <div className="ml-5 mt-1">
-              <Button disabled type="submit" color="info" shape="rounded">
-                Alterar{' '}
-              </Button>
-            </div>
+          </div>
+          <div className="mt-1">
+            <Button disabled type="submit" color="info" shape="rounded">
+              Alterar{' '}
+            </Button>
           </div>
         </form>
       </div>
@@ -111,19 +111,18 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <div>
             <Button
               onClick={() => openModal('SEARCH_VIEW')}
-              color="success"
               shape="rounded"
               variant="solid"
-              size="mini"
+              size="small"
             >
               Add membro
             </Button>
           </div>
         </div>
         <div id="members" className="">
-          <div className="p-5">
+          {/* <div className="p-5">
             <UserSearchList onSelect={() => {}} />
-          </div>
+          </div> */}
           <div className="flex flex-col">
             <TeamMemberList
               members={teamMembers}

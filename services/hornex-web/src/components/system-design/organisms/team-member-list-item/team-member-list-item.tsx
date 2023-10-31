@@ -1,9 +1,10 @@
 import Button from '@/components/ui/button';
+import { ProfileIcon } from '@/components/ui/icons';
 import { TeamMember } from '@/lib/hx-app/types';
 
 export type TeamMemberListItemProps = {
   isReadOnly?: boolean;
-  member?: {
+  member: {
     id: string;
     name: string;
     email: string;
@@ -16,13 +17,15 @@ export const TeamMemberListItem = ({
   member,
 }: TeamMemberListItemProps) => {
   return (
-    <div className="dark:bg-light-dark flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
+    <div className="dark:bg-light-dark mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
       <div className="flex items-center">
-        <div className="h-8 w-8 rounded-full sm:h-10 sm:w-10"></div>
-        <div className="ltr:ml-2 rtl:mr-2">
-          {member?.name}
-          <span className="block pt-0.5 text-xs font-normal capitalize text-gray-600 dark:text-gray-400">
-            {member?.email}
+        <div className="relative h-8 w-8 overflow-hidden rounded-full bg-gray-600">
+          <ProfileIcon className="absolute -left-1 h-10 w-10 text-gray-400" />
+        </div>
+        <div className="ml-2 rtl:mr-2">
+          {member.name}
+          <span className="block pt-0.5 text-xs font-normal text-gray-600 dark:text-gray-400">
+            {member.email}
           </span>
         </div>
       </div>
