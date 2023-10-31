@@ -58,3 +58,15 @@ export const teamMember = z.object({
   user,
 });
 export type TeamMember = z.infer<typeof teamMember>;
+
+export const teamInvite = z.object({
+  id: z.string().uuid(),
+  user,
+  created_at: z.string(),
+  updated_at: z.string(),
+  accepted_at: z.string(),
+  declined_at: z.string(),
+  expired_at: z.string(),
+  team: z.string().uuid(),
+});
+export type TeamInvite = z.infer<typeof teamInvite>;

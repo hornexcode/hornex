@@ -53,13 +53,15 @@ class TeamSerializer(serializers.ModelSerializer):
 
 class TeamMemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    
+
     class Meta:
         model = TeamMember
         fields = "__all__"
 
 
 class TeamInviteSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = TeamInvite
         fields = "__all__"

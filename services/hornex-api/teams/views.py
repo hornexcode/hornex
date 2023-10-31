@@ -70,21 +70,21 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
 
     @swagger_auto_schema(
-        operation_description="GET /api/v1/<platform>/<game>/teams/<id>/invites",
+        operation_description="GET /api/v1/teams/<id>/invites",
         operation_summary="List all invites for a team",
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="POST /api/v1/<platform>/<game>/teams/<id>/invites",
+        operation_description="POST /api/v1/teams/<id>/invites",
         operation_summary="Create an invite for a team",
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="GET /api/v1/<platform>/<game>/teams/<id>/invites/<id>",
+        operation_description="GET /api/v1/teams/<id>/invites/<id>",
         operation_summary="Retrieve an invite for a team",
     )
     def retrieve(self, request, *args, **kwargs):

@@ -1,4 +1,5 @@
 import { useModal } from '@/components/modal-views/context';
+import { TeamInviteList } from '@/components/system-design/organisms/team-invite-list';
 import { TeamMemberList } from '@/components/system-design/organisms/team-member-list-item';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
@@ -7,6 +8,7 @@ import UserSearchList from '@/components/users/user-search-list';
 import { Team } from '@/domain';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
+import { GetInvitesResponse } from '@/lib/hx-app/types/rest/get-team-invites';
 import { GetTeamMembersResponse } from '@/lib/hx-app/types/rest/get-team-members';
 import { GetTeamOutput } from '@/services/hx-core/get-teams';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,8 +21,11 @@ import { z } from 'zod';
 // load members
 const { useData: useGetTeamMembers } =
   dataLoader<GetTeamMembersResponse>('getTeamMembers');
-
 // load invites
+const { useData: useGetTeamInvites } =
+  dataLoader<GetInvitesResponse>('getTeamInvites');
+// load team
+const { fetch: getTeam } = dataLoader<GetTeamOutput>('getTeam');
 
 type Member = {
   id: string;
@@ -34,8 +39,6 @@ const Member: React.FC<Member> = (member) => {
     <div className="bg-light-dark shadow-light space-y-4 rounded-lg transition-all hover:cursor-pointer hover:outline sm:p-6"></div>
   );
 };
-
-const { fetch: getTeam } = dataLoader<GetTeamOutput>('getTeam');
 
 type TeamPageProps = {
   team: Team;
@@ -66,6 +69,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   }, [team]);
 
   const { data: teamMembers } = useGetTeamMembers({ id: team.id });
+  const { data: teamInvites } = useGetTeamInvites({ id: team.id });
 
   const { openModal } = useModal();
 
@@ -108,6 +112,22 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <h3 className="text-lg font-semibold uppercase text-gray-200">
             Membros
           </h3>
+        </div>
+        <div id="members" className="">
+          <div className="flex flex-col">
+            <TeamMemberList
+              members={teamMembers}
+              onRemove={() => 'Implementar função'}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-20 w-full sm:w-80 lg:w-2/3">
+        <div className="flex items-center justify-between pb-5">
+          <h3 className="text-lg font-semibold uppercase text-gray-200">
+            Invites
+          </h3>
           <div>
             <Button
               onClick={() => openModal('USER_SEARCH_VIEW')}
@@ -121,8 +141,8 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         </div>
         <div id="members" className="">
           <div className="flex flex-col">
-            <TeamMemberList
-              members={teamMembers}
+            <TeamInviteList
+              invites={teamInvites}
               onRemove={() => 'Implementar função'}
             />
           </div>

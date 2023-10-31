@@ -1,4 +1,8 @@
-import { MODAL_VIEW, useModal } from '@/components/modal-views/context';
+import {
+  Callback,
+  MODAL_VIEW,
+  useModal,
+} from '@/components/modal-views/context';
 import Button from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Close } from '@/components/ui/icons/close';
@@ -13,12 +17,12 @@ const UserSearchView = dynamic(
   () => import('@/components/users/user-search-list')
 );
 
-function renderModalContent(view: MODAL_VIEW) {
+function renderModalContent(view: MODAL_VIEW, callback: Callback | undefined) {
   switch (view) {
     case 'SEARCH_VIEW':
       return <SearchView />;
     case 'USER_SEARCH_VIEW':
-      return <UserSearchView />;
+      return <UserSearchView onSelect={callback} />;
 
     default:
       return null;
@@ -27,7 +31,7 @@ function renderModalContent(view: MODAL_VIEW) {
 
 export default function ModalContainer() {
   const router = useRouter();
-  const { view, isOpen, closeModal } = useModal();
+  const { view, isOpen, closeModal, callback } = useModal();
 
   useEffect(() => {
     // close search modal when route change
@@ -90,7 +94,7 @@ export default function ModalContainer() {
               'xs:w-auto relative z-50 inline-block w-full text-left align-middle'
             )}
           >
-            {view && renderModalContent(view)}
+            {view && renderModalContent(view, callback)}
           </div>
         </Transition.Child>
       </Dialog>

@@ -83,4 +83,14 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  getTeamInvites: {
+    path: 'v1/teams/[id]/invites',
+    method: Method.GET,
+    schema: null,
+  },
+  inviteUser: {
+    path: 'v1/teams/[id]/invites',
+    method: Method.POST,
+    schema: null,
+  },
 };

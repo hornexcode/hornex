@@ -13,9 +13,19 @@ import cn from 'classnames';
 import { useEffect, useState } from 'react';
 
 const { get: getUsers } = dataLoader<GetUsersResponse>('getUsers');
+
+// TODO Type return if needed
+// TODO Receive a callback here to invite user passing user id
+// TODO Create invite is not working well: user in request is Anonymous
+const { post: inviteUser } = dataLoader<{}>('inviteUser');
+
 const SEARCH_DELAY = 1000 * 1.5; // 3 secs
 
-export default function UserSearchList() {
+type UserSearchListProps = {
+  onSelect: (id?: string) => Promise<void>;
+};
+
+export default function UserSearchList({ onSelect }: UserSearchListProps) {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [users, setUsers] = useState<User[] | null>();
   const [selectedUser, setSelectedUser] = useState<User | null>();
@@ -120,7 +130,7 @@ export default function UserSearchList() {
       </div>
 
       <Button
-        onClick={() => 'implemente invite'}
+        onClick={() => onSelect(selectedUser?.id)}
         size="small"
         variant="solid"
         shape="rounded"
