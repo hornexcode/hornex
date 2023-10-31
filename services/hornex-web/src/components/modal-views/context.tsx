@@ -1,6 +1,6 @@
 import { atom, useAtom } from 'jotai';
 
-export type MODAL_VIEW = 'SEARCH_VIEW' | 'SHARE_VIEW';
+export type MODAL_VIEW = 'SEARCH_VIEW' | 'USER_SEARCH_VIEW';
 
 interface ModalTypes {
   isOpen: boolean;

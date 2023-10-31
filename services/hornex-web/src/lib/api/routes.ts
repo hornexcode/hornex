@@ -24,6 +24,11 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  getUsers: {
+    path: 'v1/users',
+    method: Method.GET,
+    schema: null,
+  },
   createTeam: {
     path: 'v1/teams',
     method: Method.POST,

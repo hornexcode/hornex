@@ -112,8 +112,25 @@ export const dataLoader = <T, Data = unknown>(
       }).then(getResponseObject);
     },
 
-    get: async (options: RequestInit): Promise<FetchResponse<T>> => {
-      return fetcher(`${API_ROOT}/${path}`, options).then(getResponseObject);
+    get: async (
+      params: ParamMap = {},
+      options: RequestInit = {},
+      headers: Record<string, string> = {}
+    ): Promise<FetchResponse<T>> => {
+      if (!isServer) {
+        const cookie = document.cookie;
+        const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
+        headers = {
+          ...headers,
+          Authorization: `Bearer ${token?.split('=')[1]}`,
+        };
+      }
+
+      return fetcher(route.href(params), {
+        ...options,
+        headers: { ...options.headers, ...headers },
+      }).then(getResponseObject);
     },
 
     useData: <UDT = T>(

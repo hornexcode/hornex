@@ -97,7 +97,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           </div>
           <div className="mt-1">
             <Button disabled type="submit" color="info" shape="rounded">
-              Alterar{' '}
+              Alterar
             </Button>
           </div>
         </form>
@@ -110,7 +110,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           </h3>
           <div>
             <Button
-              onClick={() => openModal('SEARCH_VIEW')}
+              onClick={() => openModal('USER_SEARCH_VIEW')}
               shape="rounded"
               variant="solid"
               size="small"
@@ -120,13 +120,10 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           </div>
         </div>
         <div id="members" className="">
-          {/* <div className="p-5">
-            <UserSearchList onSelect={() => {}} />
-          </div> */}
           <div className="flex flex-col">
             <TeamMemberList
               members={teamMembers}
-              onRemove={() => console.log()}
+              onRemove={() => 'Implementar função'}
             />
           </div>
         </div>

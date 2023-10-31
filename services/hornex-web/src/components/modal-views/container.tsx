@@ -9,11 +9,16 @@ import { useRouter } from 'next/router';
 import { Fragment, useEffect } from 'react';
 // dynamic imports
 const SearchView = dynamic(() => import('@/components/search/view'));
+const UserSearchView = dynamic(
+  () => import('@/components/users/user-search-list')
+);
 
-function renderModalContent(view: MODAL_VIEW | string) {
+function renderModalContent(view: MODAL_VIEW) {
   switch (view) {
     case 'SEARCH_VIEW':
       return <SearchView />;
+    case 'USER_SEARCH_VIEW':
+      return <UserSearchView />;
 
     default:
       return null;
