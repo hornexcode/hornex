@@ -56,18 +56,20 @@ export const TeamMemberList = ({
   onRemove,
 }: TeamMemberListProps) => {
   return (
-    members &&
-    members.map((member) => (
-      <TeamMemberListItem
-        key={member.id}
-        member={{
-          email: member.user.email,
-          id: member.user.id,
-          name: member.user.name,
-        }}
-        isReadOnly={isReadOnly}
-        onRemove={onRemove}
-      />
-    ))
+    <div className="space-y-4">
+      {members &&
+        members.map((member) => (
+          <TeamMemberListItem
+            key={member.id}
+            member={{
+              email: member.user.email,
+              id: member.user.id,
+              name: member.user.name,
+            }}
+            isReadOnly={isReadOnly}
+            onRemove={onRemove}
+          />
+        ))}
+    </div>
   );
 };
