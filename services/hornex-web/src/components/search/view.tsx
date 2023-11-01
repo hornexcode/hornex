@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { useModal } from '../modal-views/context';
 import Button from '../ui/button/button';
 import Loader from '../ui/loader';
@@ -32,10 +33,18 @@ export default function SearchView({ ...props }) {
   const [isLoading, setIsLoading] = useState(false);
 
   async function sendMemberInvite() {
-    await sendInvite({
+    const { data, error, headers, status } = await sendInvite({
       team: query.id,
       user: userId,
     });
+    console.log(data, error, headers, status);
+
+    if (error) {
+      toast.error(error.response.message);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(false);
     closeModal();
   }

@@ -10,14 +10,14 @@ import { GetUsersResponse } from '@/lib/hx-app/types/rest/get-users';
 import cn from 'classnames';
 import { useMemo, useState } from 'react';
 
-const { useData: useGetUsers } = dataLoader<GetUsersResponse>('getUsers');
+const { useData: useSearchUsers } = dataLoader<GetUsersResponse>('searchUsers');
 
 interface UserSearchListProps {
   onSelect: (value: string) => void;
 }
 
 export default function UserSearchList({ onSelect }: UserSearchListProps) {
-  const { data } = useGetUsers();
+  const { data } = useSearchUsers();
   const userList = useMemo(() => data, [data]);
 
   const [selectedUser, setSelectedUser] = useState<User | null>();

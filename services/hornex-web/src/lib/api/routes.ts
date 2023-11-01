@@ -24,8 +24,8 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
-  getUsers: {
-    path: 'v1/users',
+  searchUsers: {
+    path: 'v1/users/search',
     method: Method.GET,
     schema: null,
   },
