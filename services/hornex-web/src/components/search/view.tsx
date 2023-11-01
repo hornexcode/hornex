@@ -1,12 +1,14 @@
-import { toast } from 'react-toastify';
 import { useModal } from '../modal-views/context';
 import Button from '../ui/button/button';
 import Loader from '../ui/loader';
 import UserSearchList from '../users/user-search-list';
 import AnchorLink from '@/components/ui/links/anchor-link';
 import { dataLoader } from '@/lib/api';
+import { routes } from '@/lib/api/routes';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { useSWRConfig } from 'swr';
 
 type TagProps = {
   label: string;
@@ -27,6 +29,7 @@ export function Tag({ label, link }: TagProps) {
 const { post: sendInvite } = dataLoader<{}>('inviteUser');
 
 export default function SearchView({ ...props }) {
+  const { mutate } = useSWRConfig();
   const { query } = useRouter();
   const { closeModal } = useModal();
   const [userId, setUserId] = useState('');
@@ -37,7 +40,6 @@ export default function SearchView({ ...props }) {
       team: query.id,
       user: userId,
     });
-    console.log(data, error, headers, status);
 
     if (error) {
       toast.error(error.response.message);
@@ -46,6 +48,8 @@ export default function SearchView({ ...props }) {
     }
 
     setIsLoading(false);
+    toast.success('User successfully invited');
+    mutate(routes.getTeamInvites.path);
     closeModal();
   }
 
