@@ -1,8 +1,4 @@
-import {
-  Callback,
-  MODAL_VIEW,
-  useModal,
-} from '@/components/modal-views/context';
+import { MODAL_VIEW, useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Close } from '@/components/ui/icons/close';
@@ -13,11 +9,8 @@ import { useRouter } from 'next/router';
 import { Fragment, useEffect } from 'react';
 // dynamic imports
 const SearchView = dynamic(() => import('@/components/search/view'));
-const UserSearchView = dynamic(
-  () => import('@/components/users/user-search-list')
-);
 
-function renderModalContent(view: MODAL_VIEW, callback: Callback | undefined) {
+function renderModalContent(view: MODAL_VIEW) {
   switch (view) {
     case 'SEARCH_VIEW':
       return <SearchView />;
@@ -29,7 +22,7 @@ function renderModalContent(view: MODAL_VIEW, callback: Callback | undefined) {
 
 export default function ModalContainer() {
   const router = useRouter();
-  const { view, isOpen, closeModal, callback } = useModal();
+  const { view, isOpen, closeModal } = useModal();
 
   useEffect(() => {
     // close search modal when route change
@@ -92,7 +85,7 @@ export default function ModalContainer() {
               'xs:w-auto relative z-50 inline-block w-full text-left align-middle'
             )}
           >
-            {view && renderModalContent(view, callback)}
+            {view && renderModalContent(view)}
           </div>
         </Transition.Child>
       </Dialog>

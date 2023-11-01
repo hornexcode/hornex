@@ -1,21 +1,19 @@
 import Button from '@/components/ui/button';
 import { ProfileIcon } from '@/components/ui/icons';
-import { TeamMember } from '@/lib/hx-app/types';
+import { TeamInvite, User } from '@/lib/hx-app/types';
 
-export type TeamMemberListItemProps = {
+export type TeamInviteListItemProps = {
   isReadOnly?: boolean;
-  member: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  onRemove?: (member: TeamMember) => void;
+  invite: Partial<TeamInvite>;
+  user: User;
+  onRemove?: (invite: TeamInvite) => void;
 };
 
-export const TeamMemberListItem = ({
+export const TeamInviteListItem = ({
   isReadOnly = false,
-  member,
-}: TeamMemberListItemProps) => {
+  invite,
+  user,
+}: TeamInviteListItemProps) => {
   return (
     <div className="dark:bg-light-dark mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
       <div className="flex items-center">
@@ -23,9 +21,9 @@ export const TeamMemberListItem = ({
           <ProfileIcon className="absolute -left-1 h-10 w-10 text-gray-400" />
         </div>
         <div className="ml-2 rtl:mr-2">
-          {member.name}
+          {user.name}
           <span className="block pt-0.5 text-xs font-normal text-gray-600 dark:text-gray-400">
-            {member.email}
+            {user.email}
           </span>
         </div>
       </div>
@@ -37,7 +35,7 @@ export const TeamMemberListItem = ({
           shape="rounded"
           variant="transparent"
         >
-          Remover
+          Cancelar
         </Button>
       )}
     </div>

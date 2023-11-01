@@ -1,13 +1,11 @@
+import { useModal } from '../modal-views/context';
 import Button from '../ui/button/button';
+import Loader from '../ui/loader';
 import UserSearchList from '../users/user-search-list';
-import { useModal } from '@/components/modal-views/context';
-import { Close } from '@/components/ui/icons/close';
-import { SearchIcon } from '@/components/ui/icons/search';
 import AnchorLink from '@/components/ui/links/anchor-link';
-import { Transition } from '@/components/ui/transition';
-import { useClickAway } from '@/lib/hooks/use-click-away';
-import { Router, useRouter } from 'next/router';
-import { useRef, useState } from 'react';
+import { dataLoader } from '@/lib/api';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 type TagProps = {
   label: string;
@@ -25,127 +23,21 @@ export function Tag({ label, link }: TagProps) {
   );
 }
 
-type SearchFromProps = {
-  placeholder?: string;
-};
-
-const tags = [
-  {
-    label: 'illustration',
-    link: '#',
-  },
-  {
-    label: '3d',
-    link: '#',
-  },
-  {
-    label: 'animation',
-    link: '#',
-  },
-  {
-    label: 'digital',
-    link: '#',
-  },
-  {
-    label: 'fanart',
-    link: '#',
-  },
-  {
-    label: 'concept',
-    link: '#',
-  },
-  {
-    label: 'sports',
-    link: '#',
-  },
-  {
-    label: 'fantasy',
-    link: '#',
-  },
-  {
-    label: 'abstract',
-    link: '#',
-  },
-  {
-    label: 'colorful',
-    link: '#',
-  },
-  {
-    label: 'modern',
-    link: '#',
-  },
-];
-
-// export function SearchFrom({ placeholder = 'Search...' }: SearchFromProps) {
-//   const { closeModal } = useModal();
-//   let [showSuggestion, setShowSuggestion] = useState(false);
-//   const ref = useRef<HTMLDivElement>(null);
-//   useClickAway(ref, () => {
-//     setShowSuggestion(false);
-//   });
-
-//   return (
-//     <div className="relative" ref={ref} onFocus={() => setShowSuggestion(true)}>
-//       <form
-//         className="relative flex w-full rounded-full"
-//         noValidate
-//         role="search"
-//       >
-//         <label className="flex w-full items-center">
-//           <input
-//             className="dark:bg-light-dark h-12 w-full appearance-none rounded-full border-2 border-gray-200 py-1 text-sm tracking-tighter text-gray-900 outline-none transition-all placeholder:text-gray-600 focus:border-gray-900 ltr:pl-11 ltr:pr-5 rtl:pl-5 rtl:pr-11 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-500 sm:ltr:pl-14 sm:rtl:pr-14 xl:ltr:pl-16 xl:rtl:pr-16"
-//             placeholder={placeholder}
-//             autoComplete="off"
-//           />
-//           <span className="pointer-events-none absolute flex h-full w-10 cursor-pointer items-center justify-center text-gray-600 hover:text-gray-900 ltr:left-0 ltr:pl-2 rtl:right-0 rtl:pr-2 dark:text-white sm:w-14 sm:ltr:pl-3 sm:rtl:pr-3 xl:w-16">
-//             <SearchIcon className="h-4 w-4" />
-//           </span>
-//         </label>
-//         <div
-//           className="dark:bg-light-dark flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white ltr:ml-3.5 rtl:ml-3.5 xl:hidden"
-//           onClick={() => closeModal()}
-//         >
-//           <Close className="h-auto w-3 text-gray-600 dark:text-white" />
-//         </div>
-//       </form>
-
-//       <Transition
-//         show={showSuggestion}
-//         enter="ease-out duration-300"
-//         enterFrom="opacity-0 translate-y-4"
-//         enterTo="opacity-100 translate-y-0"
-//         leave="ease-in duration-300"
-//         leaveFrom="opacity-100 translate-y-0"
-//         leaveTo="opacity-0 translate-y-4"
-//       >
-//         <div className="shadow-large dark:bg-light-dark xs:mt-4 xs:p-6 absolute left-0 top-full mt-3.5 w-full rounded-lg bg-white p-5">
-//           <h3 className="xs:mb-2.5 xs:text-base mb-2 text-sm font-medium tracking-tighter text-gray-900 dark:text-white">
-//             Tags
-//           </h3>
-
-//           {tags.map((tag, index) => (
-//             <Tag key={index} label={tag.label} link={tag.link} />
-//           ))}
-//         </div>
-//       </Transition>
-//     </div>
-//   );
-// }
+const { post: sendInvite } = dataLoader<{}>('inviteUser');
 
 export default function SearchView({ ...props }) {
-  const router = useRouter();
-  console.log(router.query.id);
-
-  const [email, setEmail] = useState('');
+  const { query } = useRouter();
+  const { closeModal } = useModal();
+  const [userId, setUserId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   async function sendMemberInvite() {
-    // await createTeamMemberInvite({
-    //   id: team.id,
-    //   email: email,
-    // });
-    // await queryClient.invalidateQueries('team-members');
-    // await queryClient.invalidateQueries('team-invites');
-    // closeModal();
+    await sendInvite({
+      team: query.id,
+      user: userId,
+    });
+    setIsLoading(false);
+    closeModal();
   }
 
   return (
@@ -154,10 +46,15 @@ export default function SearchView({ ...props }) {
       {...props}
     >
       <div className="bg-light-dark rounded-lg p-5">
-        <UserSearchList onSelect={() => {}} />
-        <Button fullWidth size="small" color="gray" shape="rounded">
-          {' '}
-          Add member{' '}
+        <UserSearchList onSelect={(id: string) => setUserId(id)} />
+        <Button
+          onClick={sendMemberInvite}
+          fullWidth
+          size="small"
+          color="gray"
+          shape="rounded"
+        >
+          {isLoading ? <Loader /> : 'Invite'}
         </Button>
       </div>
     </div>

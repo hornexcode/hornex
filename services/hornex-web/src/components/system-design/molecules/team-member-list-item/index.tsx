@@ -1,1 +1,1 @@
-export { TeamMemberList, TeamMemberListItem } from './team-member-list-item';
+export { TeamMemberListItem } from './team-member-list-item';

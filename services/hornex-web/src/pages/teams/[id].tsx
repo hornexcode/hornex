@@ -1,6 +1,6 @@
 import { useModal } from '@/components/modal-views/context';
-import { TeamMemberList } from '@/components/system-design/molecules/team-member-list-item';
 import { TeamInviteList } from '@/components/system-design/organisms/team-invite-list';
+import { TeamMemberList } from '@/components/system-design/organisms/team-member-list';
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
@@ -112,6 +112,16 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <h3 className="text-lg font-semibold uppercase text-gray-200">
             Membros
           </h3>
+          <div>
+            <Button
+              onClick={() => openModal('SEARCH_VIEW')}
+              shape="rounded"
+              variant="solid"
+              size="small"
+            >
+              Add membro
+            </Button>
+          </div>
         </div>
         <div id="members" className="">
           <div className="flex flex-col">
@@ -128,16 +138,6 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <h3 className="text-lg font-semibold uppercase text-gray-200">
             Invites
           </h3>
-          <div>
-            <Button
-              onClick={() => openModal('SEARCH_VIEW')}
-              shape="rounded"
-              variant="solid"
-              size="small"
-            >
-              Add membro
-            </Button>
-          </div>
         </div>
         <div id="members" className="">
           <div className="flex flex-col">

@@ -1,1 +1,1 @@
-export { TeamInviteList, TeamInviteListItem } from './team-invite-list';
+export { TeamInviteList } from './team-invite-list';

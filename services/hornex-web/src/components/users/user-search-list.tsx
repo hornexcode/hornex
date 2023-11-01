@@ -4,63 +4,54 @@ import Input from '@/components/ui/form/input';
 import { ProfileIcon } from '@/components/ui/icons/profile-icon';
 import { SearchIcon } from '@/components/ui/icons/search';
 import { XMarkIcon } from '@/components/ui/icons/x-mark-icon';
+import { dataLoader } from '@/lib/api';
+import { User } from '@/lib/hx-app/types';
+import { GetUsersResponse } from '@/lib/hx-app/types/rest/get-users';
 import cn from 'classnames';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-export const collectionList = [
-  {
-    name: 'Iron flower',
-    value: 'iron-flower',
-  },
-  {
-    name: 'Creative web',
-    value: 'creative-web',
-  },
-  {
-    name: 'Art in binary',
-    value: 'art-in-binary',
-  },
-  {
-    name: 'Sound of wave',
-    value: 'sound-of-wave',
-  },
-  {
-    name: 'Pixel art',
-    value: 'pixel-art',
-  },
-];
+const { useData: useGetUsers } = dataLoader<GetUsersResponse>('getUsers');
 
-interface CollectionSelectTypes {
+interface UserSearchListProps {
   onSelect: (value: string) => void;
 }
 
-export default function UserSearchList({ onSelect }: CollectionSelectTypes) {
-  let [searchKeyword, setSearchKeyword] = useState('');
-  let coinListData = collectionList;
+export default function UserSearchList({ onSelect }: UserSearchListProps) {
+  const { data } = useGetUsers();
+  const userList = useMemo(() => data, [data]);
+
+  const [selectedUser, setSelectedUser] = useState<User | null>();
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  let users = userList;
   if (searchKeyword.length > 0) {
-    coinListData = collectionList.filter(function (item) {
-      const name = item.name;
+    users = users?.filter(function ({ email }) {
       return (
-        name.match(searchKeyword) ||
-        (name.toLowerCase().match(searchKeyword) && name)
+        email.match(searchKeyword) ||
+        (email.toLowerCase().match(searchKeyword) && email)
       );
     });
   }
-  function handleSelectedCoin(value: string) {
-    onSelect(value);
+
+  function handleSelectedUser(user: User) {
+    onSelect(user.id);
+    setSelectedUser(user);
     setSearchKeyword('');
   }
+
   return (
     <div className="shadow-large relative w-full  rounded-lg text-sm">
-      <div className="relative">
-        <SearchIcon className="absolute left-6 h-full text-gray-700 dark:text-white" />
-        <Input
-          inputClassName="pl-14"
-          type="search"
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-        />
-      </div>
+      {!selectedUser && (
+        <div className="relative">
+          <SearchIcon className="absolute left-6 h-full text-gray-700 dark:text-white" />
+          <Input
+            inputClassName="pl-14"
+            type="search"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+          />
+        </div>
+      )}
       <ul
         role="listbox"
         className={cn(
@@ -70,21 +61,21 @@ export default function UserSearchList({ onSelect }: CollectionSelectTypes) {
           }
         )}
       >
-        {coinListData.length > 0 ? (
-          coinListData.map((item, index) => (
+        {users && users?.length > 0 ? (
+          users?.map((user, index) => (
             <li
-              key={index}
+              key={user.id}
               role="listitem"
               tabIndex={index}
-              onClick={() => handleSelectedCoin(item.value)}
+              onClick={() => handleSelectedUser(user)}
               className="mb-1 flex cursor-pointer items-center gap-3 px-6 py-1.5 outline-none  hover:bg-gray-700 focus:bg-gray-600"
             >
               <div className="flex flex-col">
                 <span className="text-sm tracking-tight text-white">
-                  {item.name}
+                  {user.name}
                 </span>
                 <span className="text-xs font-medium tracking-tight text-gray-400">
-                  email@example.com
+                  {user.email}
                 </span>
               </div>
             </li>
@@ -99,7 +90,13 @@ export default function UserSearchList({ onSelect }: CollectionSelectTypes) {
         )}
       </ul>
       <div className="flex flex-wrap py-3">
-        {/* <SelectedPlayer name="jonh" email="doe" onRemove={() => {}} /> */}
+        {selectedUser && (
+          <SelectedPlayer
+            name={selectedUser.name}
+            email={selectedUser.email}
+            onRemove={() => setSelectedUser(null)}
+          />
+        )}
       </div>
     </div>
   );
@@ -119,10 +116,10 @@ const SelectedPlayer = ({ name, email, onRemove }: SelectedPlayerProps) => (
       </div>
       <div className="mx-3 flex flex-col justify-center">
         <h4 className=" text-xs font-bold leading-[10px] tracking-tight text-sky-200">
-          Pedro Henrique
+          {name}
         </h4>
         <span className="text-xs font-medium leading-tight text-sky-100">
-          pedro@email.com
+          {email}
         </span>
       </div>
       <div className="block h-6 w-6 self-center">
