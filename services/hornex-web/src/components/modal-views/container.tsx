@@ -21,8 +21,6 @@ function renderModalContent(view: MODAL_VIEW, callback: Callback | undefined) {
   switch (view) {
     case 'SEARCH_VIEW':
       return <SearchView />;
-    case 'USER_SEARCH_VIEW':
-      return <UserSearchView onSelect={callback} />;
 
     default:
       return null;
