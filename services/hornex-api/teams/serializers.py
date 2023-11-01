@@ -2,8 +2,8 @@ from rest_framework import serializers
 from teams.models import Team, TeamInvite, TeamMember
 from teams.errors import (
     unauthorized_error,
-    member_not_found,
     team_invite_already_exists,
+    already_team_member,
 )
 from datetime import datetime
 from users.serializers import UserSerializer
@@ -59,9 +59,23 @@ class TeamMemberSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TeamInviteSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+class TeamInviteListSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
 
+    class Meta:
+        model = TeamInvite
+        fields = "__all__"
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            "accepted_at",
+            "declined_at",
+            "expired_at",
+        ]
+
+
+class TeamInviteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamInvite
         fields = "__all__"
@@ -76,19 +90,21 @@ class TeamInviteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         admin = self.context["request"].user
-
         user = validated_data["user"]
         team = validated_data["team"]
+
+        member = TeamMember.objects.filter(team=team, user__id=admin.id).first()
+
+        if not member or not member.is_admin:
+            raise unauthorized_error
+
+        it = TeamMember.objects.filter(team=team, user=user)
+        if it.exists():
+            raise already_team_member
+
         it = TeamInvite.objects.filter(team=team, user=user)
         if it.exists():
             raise team_invite_already_exists
-
-        member = TeamMember.objects.filter(team=team, user__id=admin.id).first()
-        if member is None:
-            raise member_not_found
-
-        if not member.is_admin:
-            raise unauthorized_error
 
         return super().create(validated_data)
 

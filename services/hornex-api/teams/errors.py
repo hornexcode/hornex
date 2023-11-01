@@ -15,5 +15,6 @@ slugs_required = Response(
 unauthorized_error = serializers.ValidationError(
     {"message": "You do not have permission."},
 )
-
-member_not_found = serializers.ValidationError({"message": "Member not found"})
+already_team_member = serializers.ValidationError(
+    {"message": "User is already a team member."}
+)

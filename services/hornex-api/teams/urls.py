@@ -30,5 +30,3 @@ urlpatterns = [
         name="team-members",
     ),
 ]
-
-# return all members of a team, including the owner /GET /api/v1/teams/:id/members

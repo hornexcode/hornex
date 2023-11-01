@@ -8,7 +8,12 @@ from rest_framework.permissions import IsAuthenticated
 import uuid
 
 from teams.models import Team, TeamInvite, TeamMember
-from teams.serializers import TeamSerializer, TeamInviteSerializer, TeamMemberSerializer
+from teams.serializers import (
+    TeamSerializer,
+    TeamInviteSerializer,
+    TeamMemberSerializer,
+    TeamInviteListSerializer,
+)
 from core.route import extract_game_and_platform
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -68,13 +73,22 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
     queryset = TeamInvite.objects.all()
     serializer_class = TeamInviteSerializer
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        queryset = TeamInvite.objects.all()
+        return queryset
 
     @swagger_auto_schema(
         operation_description="GET /api/v1/teams/<id>/invites",
         operation_summary="List all invites for a team",
     )
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        return Response(
+            TeamInviteListSerializer(self.get_queryset(), many=True).data,
+            status=status.HTTP_200_OK,
+        )
 
     @swagger_auto_schema(
         operation_description="POST /api/v1/teams/<id>/invites",
