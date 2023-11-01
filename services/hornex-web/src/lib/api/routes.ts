@@ -37,6 +37,7 @@ export const routes = {
   getTeam: {
     path: 'v1/teams/[teamId]',
     method: Method.GET,
+    schema: null,
   },
   getTeams: {
     path: 'v1/teams',
@@ -91,6 +92,11 @@ export const routes = {
   inviteUser: {
     path: 'v1/teams/[id]/invites',
     method: Method.POST,
+    schema: null,
+  },
+  getUserInvites: {
+    path: 'v1/invites',
+    method: Method.GET,
     schema: null,
   },
 };

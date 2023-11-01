@@ -70,3 +70,25 @@ export const teamInvite = z.object({
   team: z.string().uuid(),
 });
 export type TeamInvite = z.infer<typeof teamInvite>;
+
+export const team = z.object({
+  id: z.string(),
+  name: z.string(),
+  created_by: z.string(),
+  game: z.string(),
+  platform: z.string(),
+  num_members: z.number(),
+});
+export type Team = z.infer<typeof team>;
+
+export const invite = z.object({
+  id: z.string().uuid(),
+  team: z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    description: z.string(),
+  }),
+  accepted: z.string(),
+  declined: z.string(),
+});
+export type Invite = z.infer<typeof invite>;

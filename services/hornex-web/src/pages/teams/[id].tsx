@@ -8,7 +8,7 @@ import UserSearchList from '@/components/users/user-search-list';
 import { Team } from '@/domain';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
-import { GetInvitesResponse } from '@/lib/hx-app/types/rest/get-team-invites';
+import { GetTeamInvitesResponse } from '@/lib/hx-app/types/rest';
 import { GetTeamMembersResponse } from '@/lib/hx-app/types/rest/get-team-members';
 import { GetTeamOutput } from '@/services/hx-core/get-teams';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,7 +23,7 @@ const { useData: useGetTeamMembers } =
   dataLoader<GetTeamMembersResponse>('getTeamMembers');
 // load invites
 const { useData: useGetTeamInvites } =
-  dataLoader<GetInvitesResponse>('getTeamInvites');
+  dataLoader<GetTeamInvitesResponse>('getTeamInvites');
 // load team
 const { fetch: getTeam } = dataLoader<GetTeamOutput>('getTeam');
 

@@ -126,7 +126,7 @@ export function DropdownMenuDemo() {
   );
 }
 
-const Team: FC<TeamProps> = (team) => {
+export const TeamListItem: FC<TeamProps> = (team) => {
   return (
     <Link href={`/teams/${team.id}`}>
       <div className="bg-light-dark shadow-light space-y-4 rounded-lg transition-all hover:cursor-pointer hover:outline sm:p-6">
@@ -190,12 +190,4 @@ const Team: FC<TeamProps> = (team) => {
       </div>
     </Link>
   );
-};
-
-type TeamsListProps = {
-  teams: Team[];
-};
-
-export const TeamList: FC<TeamsListProps> = ({ teams }) => {
-  return teams.map((team) => <Team key={team.id} {...team} />);
 };
