@@ -109,7 +109,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def accept(self):
-        if self.context["request"].user.id != str(self.instance.user.id):
+        if self.context["request"].user.id != self.instance.user.id:
             raise serializers.ValidationError(
                 {"message": "You do not have permission to accept this invite."}
             )
@@ -129,9 +129,9 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         TeamMember.objects.create(team=self.instance.team, user=self.instance.user)
 
     def decline(self):
-        if self.context["request"].user.id != str(self.instance.user.id):
+        if self.context["request"].user.id != self.instance.user.id:
             raise serializers.ValidationError(
-                {"message": "You do not have permission to accept this invite."}
+                {"message": "You do not have permission to decline this invite."}
             )
 
         if self.instance.declined_at is not None:

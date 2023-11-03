@@ -131,7 +131,7 @@ export function DropdownMenuDemo() {
 
 const { delete: deleteTeam } = dataLoader<undefined, undefined>('deleteTeam');
 
-export const TeamListItem: FC<TeamProps> = (team) => {
+export const TeamsListItem: FC<TeamProps> = (team) => {
   return (
     <Link href={`/teams/${team.id}`}>
       <div className="bg-light-dark shadow-light space-y-4 rounded-lg transition-all hover:cursor-pointer hover:outline sm:p-6">

@@ -114,4 +114,14 @@ export const routes = {
     method: Method.DELETE,
     schema: null,
   },
+  acceptInvite: {
+    path: 'v1/invites/accept',
+    method: Method.POST,
+    schema: null,
+  },
+  declineInvite: {
+    path: 'v1/invites/decline',
+    method: Method.POST,
+    schema: null,
+  },
 };

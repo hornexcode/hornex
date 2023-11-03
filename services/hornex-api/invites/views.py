@@ -52,6 +52,7 @@ def get_invites(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 def accept_invite(request):
     """Accepts a team invite."""
     invite_id = request.data.get("invite_id", None)
@@ -69,6 +70,7 @@ def accept_invite(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 def decline_invite(request):
     invite_id = request.data.get("invite_id", None)
 

@@ -1,5 +1,5 @@
-import { TeamInvitesTabPanel } from '@/components/system-design/organisms/team-invites-tab-panel';
-import { TeamsListTabPanel } from '@/components/system-design/organisms/team-overview-tab-panel';
+import { InvitesListTabPanel } from '@/components/system-design/organisms/invites-list-tab-panel';
+import { TeamsListTabPanel } from '@/components/system-design/organisms/teams-list-tab-panel';
 import { Invite, Team } from '@/lib/hx-app/types';
 import { Tab } from '@headlessui/react';
 import classnames from 'classnames';
@@ -46,7 +46,7 @@ export const TeamDetailsPage: FC<TeamDetailsPageProps> = ({
                 <TeamsListTabPanel teams={teams} />
               </Tab.Panel>
               <Tab.Panel>
-                <TeamInvitesTabPanel invites={invites} />
+                <InvitesListTabPanel invites={invites} />
               </Tab.Panel>
             </Tab.Panels>
           </div>

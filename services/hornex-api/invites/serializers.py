@@ -16,6 +16,8 @@ class InviteSerializer(serializers.Serializer):
                 "id": instance.team.id,
                 "name": instance.team.name,
                 "description": instance.team.description,
+                "platform": instance.team.platform,
+                "game": instance.team.game,
             },
             "accepted": instance.accepted_at is not None,
             "declined": instance.declined_at is not None,

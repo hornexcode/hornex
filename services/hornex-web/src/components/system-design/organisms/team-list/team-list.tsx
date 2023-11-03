@@ -1,4 +1,4 @@
-import { TeamListItem } from '../../molecules/team-list-item';
+import { TeamsListItem } from '../../molecules/teams-list-item';
 import { Team } from '@/domain';
 import { FC } from 'react';
 
@@ -7,5 +7,5 @@ type TeamsListProps = {
 };
 
 export const TeamsList: FC<TeamsListProps> = ({ teams }) => {
-  return teams.map((team) => <TeamListItem key={team.id} {...team} />);
+  return teams.map((team) => <TeamsListItem key={team.id} {...team} />);
 };

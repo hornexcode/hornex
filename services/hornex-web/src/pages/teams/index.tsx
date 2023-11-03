@@ -28,7 +28,12 @@ TeamsPage.getLayout = (page: React.ReactElement) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data: teams, error: teamsError } = await getTeams({}, ctx.req);
-  const { data: invites, error: invitesError } = await getInvites({}, ctx.req);
+  const { data: invites, error: invitesError } = await getInvites(
+    // Just want to see invites that weren't accepted or declined
+    // { status: 'pending' },
+    {},
+    ctx.req
+  );
   return {
     props: { ...teams, invites },
   };

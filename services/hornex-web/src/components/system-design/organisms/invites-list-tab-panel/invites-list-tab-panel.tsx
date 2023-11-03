@@ -1,12 +1,12 @@
-import { TeamInvitesList } from '../team-invites-list';
+import { InvitesList } from '../invites-list';
 import { Invite } from '@/lib/hx-app/types';
 import { FC } from 'react';
 
-type TeamInvitesTabPanelProps = {
+type InvitesListTabPanelProps = {
   invites: Invite[];
 };
 
-export const TeamInvitesTabPanel: FC<TeamInvitesTabPanelProps> = ({
+export const InvitesListTabPanel: FC<InvitesListTabPanelProps> = ({
   invites,
 }) => {
   return (
@@ -20,7 +20,7 @@ export const TeamInvitesTabPanel: FC<TeamInvitesTabPanelProps> = ({
       <div className="h-[100vh]">
         <div id="teams" className="">
           <div className="grid gap-5">
-            {invites && <TeamInvitesList invites={invites} />}
+            {invites && <InvitesList invites={invites} />}
           </div>
         </div>
       </div>
