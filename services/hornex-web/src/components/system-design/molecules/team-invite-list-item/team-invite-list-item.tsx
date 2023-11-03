@@ -4,15 +4,16 @@ import { TeamInvite, User } from '@/lib/hx-app/types';
 
 export type TeamInviteListItemProps = {
   isReadOnly?: boolean;
-  invite: Partial<TeamInvite>;
+  invite: TeamInvite;
   user: User;
-  onRemove?: (invite: TeamInvite) => void;
+  onRemove: (id: string) => void;
 };
 
 export const TeamInviteListItem = ({
   isReadOnly = false,
   invite,
   user,
+  onRemove,
 }: TeamInviteListItemProps) => {
   return (
     <div className="dark:bg-light-dark mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
@@ -34,6 +35,7 @@ export const TeamInviteListItem = ({
           color="danger"
           shape="rounded"
           variant="transparent"
+          onClick={() => onRemove(invite.id)}
         >
           Cancelar
         </Button>

@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from django_filters import rest_framework as filters
 from django.db.models import Count
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
@@ -105,11 +105,37 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        operation_description="DELETE /api/v1/teams/<id>/invites/<id>",
+        operation_summary="Destroy a invite",
+    )
+    def destroy(self, request, *args, **kwargs):
+        team_id = kwargs.get("team_id")
+        id = kwargs.get("id")
+        try:
+            invite = TeamInvite.objects.get(team__id=team_id, id=id)
+
+            admin = TeamMember.objects.filter(
+                team__id=team_id, user=request.user, is_admin=True
+            )
+            if not admin.exists():
+                return Response(
+                    {"message": "You are not a team admin."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            invite.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist as err:
+            return Response({"message": str(err)}, status=status.HTTP_404_NOT_FOUND)
+
 
 class TeamMemberViewSet(viewsets.ModelViewSet):
     queryset = TeamMember.objects.all()
     serializer_class = TeamMemberSerializer
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         id = self.kwargs.get("id")
@@ -131,15 +157,23 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
 
     @swagger_auto_schema(
         operation_description="DELETE /api/v1/teams/<id>/members",
-        operation_summary="Destroy a team",
+        operation_summary="Destroy a member",
     )
     def destroy(self, request, *args, **kwargs):
         team_id = kwargs.get("team_id")
         id = kwargs.get("id")
-        print(kwargs)
         try:
             team_member = TeamMember.objects.get(team__id=team_id, id=id)
             team = Team.objects.get(id=team_id)
+
+            admin = TeamMember.objects.filter(
+                team__id=team_id, user=request.user, is_admin=True
+            )
+            if not admin.exists():
+                return Response(
+                    {"message": "You are not a team admin."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             if team_member.user == team.created_by:
                 return Response(
                     {"message": "The team owner can not be removed."},
@@ -148,5 +182,5 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
 
             team_member.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except TeamMember.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        except ObjectDoesNotExist as err:
+            return Response({"message": str(err)}, status=status.HTTP_404_NOT_FOUND)

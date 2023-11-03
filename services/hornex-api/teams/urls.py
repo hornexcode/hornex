@@ -25,6 +25,11 @@ urlpatterns = [
         name="team-invite-list",
     ),
     path(
+        "/<str:team_id>/invites/<str:id>",
+        TeamInviteViewSet.as_view({"delete": "destroy"}),
+        name="team-invite-details",
+    ),
+    path(
         "/<str:id>/members",
         TeamMemberViewSet.as_view({"get": "list"}),
         name="team-members",

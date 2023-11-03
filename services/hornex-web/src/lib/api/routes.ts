@@ -104,4 +104,9 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  deleteTeamInvite: {
+    path: 'v1/teams/[teamId]/invites/[id]',
+    method: Method.DELETE,
+    schema: null,
+  },
 };

@@ -4,7 +4,7 @@ import { TeamInvite } from '@/lib/hx-app/types';
 export type TeamInviteListProps = {
   isReadOnly?: boolean;
   invites?: TeamInvite[];
-  onRemove?: (invite: TeamInvite) => void;
+  onRemove: (id: string) => void;
 };
 
 export const TeamInviteList = ({
@@ -15,11 +15,11 @@ export const TeamInviteList = ({
   return (
     <div className="space-y-4">
       {invites &&
-        invites.map(({ id, user, accepted_at, declined_at, expired_at }) => (
+        invites.map((invite) => (
           <TeamInviteListItem
-            key={id}
-            invite={{ accepted_at, declined_at, expired_at }}
-            user={user}
+            key={invite.id}
+            invite={invite}
+            user={invite.user}
             isReadOnly={isReadOnly}
             onRemove={onRemove}
           />

@@ -35,6 +35,11 @@ const { delete: deleteTeamMember } = dataLoader<undefined, undefined>(
   'deleteTeamMember'
 );
 
+// delete invite
+const { delete: deleteTeamInvite } = dataLoader<undefined, undefined>(
+  'deleteTeamInvite'
+);
+
 type Member = {
   id: string;
   name: string;
@@ -88,8 +93,12 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     setValue('name', team.name);
   }, [team]);
 
-  const { data: teamMembers, mutate } = useGetTeamMembers({ id: team.id });
-  const { data: teamInvites } = useGetTeamInvites({ id: team.id });
+  const { data: teamMembers, mutate: mutateMembers } = useGetTeamMembers({
+    id: team.id,
+  });
+  const { data: teamInvites, mutate: mutateInvites } = useGetTeamInvites({
+    id: team.id,
+  });
 
   const { openModal } = useModal();
 
@@ -149,7 +158,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               members={teamMembers}
               onRemove={(id) => {
                 deleteTeamMember({ teamId: query.id, id });
-                mutate();
+                mutateMembers();
               }}
               team={team}
             />
@@ -167,7 +176,10 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <div className="flex flex-col">
             <TeamInviteList
               invites={teamInvites}
-              onRemove={() => 'Implementar função'}
+              onRemove={(id) => {
+                deleteTeamInvite({ teamId: query.id, id });
+                mutateInvites();
+              }}
             />
           </div>
         </div>
