@@ -29,4 +29,13 @@ urlpatterns = [
         TeamMemberViewSet.as_view({"get": "list"}),
         name="team-members",
     ),
+    path(
+        "/<str:team_id>/members/<str:id>",
+        TeamMemberViewSet.as_view(
+            {
+                "delete": "destroy",
+            }
+        ),
+        name="team-members-details",
+    ),
 ]

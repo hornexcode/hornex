@@ -84,6 +84,11 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  deleteTeamMember: {
+    path: 'v1/teams/[teamId]/members/[id]',
+    method: Method.DELETE,
+    schema: null,
+  },
   getTeamInvites: {
     path: 'v1/teams/[id]/invites',
     method: Method.GET,

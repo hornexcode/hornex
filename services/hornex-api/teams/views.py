@@ -128,3 +128,25 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="DELETE /api/v1/teams/<id>/members",
+        operation_summary="Destroy a team",
+    )
+    def destroy(self, request, *args, **kwargs):
+        team_id = kwargs.get("team_id")
+        id = kwargs.get("id")
+        print(kwargs)
+        try:
+            team_member = TeamMember.objects.get(team__id=team_id, id=id)
+            team = Team.objects.get(id=team_id)
+            if team_member.user == team.created_by:
+                return Response(
+                    {"message": "The team owner can not be removed."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            team_member.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except TeamMember.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

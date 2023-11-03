@@ -9,12 +9,13 @@ export type TeamMemberListItemProps = {
     name: string;
     email: string;
   };
-  onRemove?: (member: TeamMember) => void;
+  onRemove: (id: string) => void;
 };
 
 export const TeamMemberListItem = ({
   isReadOnly = false,
   member,
+  onRemove,
 }: TeamMemberListItemProps) => {
   return (
     <div className="dark:bg-light-dark mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
@@ -36,6 +37,7 @@ export const TeamMemberListItem = ({
           color="danger"
           shape="rounded"
           variant="transparent"
+          onClick={() => onRemove(member.id)}
         >
           Remover
         </Button>

@@ -130,6 +130,24 @@ export const dataLoader = <T, Data = unknown>(
       }).then(getResponseObject);
     },
 
+    delete: async (
+      params: ParamMap = {},
+      payload?: Data
+    ): Promise<FetchResponse<T>> => {
+      const cookie = document.cookie;
+
+      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
+      return fetcher(route.href(params), {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.split('=')[1]}`,
+        },
+        body: payload ? JSON.stringify(payload) : '',
+      }).then(getResponseObject);
+    },
+
     get: async (
       params: ParamMap = {},
       options: RequestInit = {},

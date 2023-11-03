@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from invites.serializers import InviteSerializer
-from teams.models import TeamInvite, TeamMember
+from teams.models import TeamInvite
 from teams.serializers import TeamInviteSerializer
 from .errors import not_found
 from drf_yasg.utils import swagger_auto_schema
