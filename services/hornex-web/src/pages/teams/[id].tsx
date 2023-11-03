@@ -4,6 +4,7 @@ import { TeamMemberList } from '@/components/system-design/organisms/team-member
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import Loader from '@/components/ui/loader';
 import UserSearchList from '@/components/users/user-search-list';
 import { Team } from '@/domain';
 import { AppLayout } from '@/layouts';
@@ -14,8 +15,10 @@ import { GetTeamOutput } from '@/services/hx-core/get-teams';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 // load members
@@ -50,10 +53,13 @@ const editTeamFormSchema = z.object({
 
 type EditTeamForm = z.infer<typeof editTeamFormSchema>;
 
+const { put: updateTeam } = dataLoader<undefined, EditTeamForm>('updateTeam');
+
 const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   team,
 }: TeamPageProps) => {
-  const submitHandler: SubmitHandler<EditTeamForm> = async (form) => {};
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { query } = useRouter();
 
   const {
     register,
@@ -63,6 +69,15 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   } = useForm<EditTeamForm>({
     resolver: zodResolver(editTeamFormSchema),
   });
+
+  const submitHandler: SubmitHandler<EditTeamForm> = async (form) => {
+    setIsSubmitting(true);
+    const { error } = await updateTeam({ id: query.id }, form);
+    if (!error) {
+      toast.success('Team created successfully');
+    }
+    setIsSubmitting(false);
+  };
 
   React.useEffect(() => {
     setValue('name', team.name);
@@ -100,8 +115,8 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             </div>
           </div>
           <div className="mt-1">
-            <Button disabled type="submit" color="info" shape="rounded">
-              Alterar
+            <Button type="submit" shape="rounded" className="bg-light-dark">
+              {isSubmitting ? <Loader /> : 'Alterar'}
             </Button>
           </div>
         </form>

@@ -19,8 +19,6 @@ const TeamsPage = ({
     return <div>loading</div>;
   }
 
-  console.log(invites);
-
   return <TeamDetailsPage teams={teams} invites={invites} />;
 };
 

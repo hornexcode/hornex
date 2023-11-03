@@ -77,7 +77,8 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
-        queryset = TeamInvite.objects.all()
+        team_id = self.kwargs.get("id")
+        queryset = TeamInvite.objects.filter(team__id=team_id)
         return queryset
 
     @swagger_auto_schema(

@@ -45,8 +45,8 @@ export const routes = {
     schema: null,
   },
   updateTeam: {
-    path: 'v1/teams',
-    method: Method.PATCH,
+    path: 'v1/teams/[id]',
+    method: Method.PUT,
     schema: null,
   },
   getEmailConfirmationCode: {
