@@ -49,6 +49,11 @@ export const routes = {
     method: Method.PUT,
     schema: null,
   },
+  deleteTeam: {
+    path: 'v1/teams/[id]',
+    method: Method.DELETE,
+    schema: null,
+  },
   getEmailConfirmationCode: {
     path: 'v1/auth/register-confirm',
     method: Method.GET,

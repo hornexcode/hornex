@@ -1,3 +1,4 @@
+import Button from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Team } from '@/domain/team';
+import { dataLoader } from '@/lib/api';
 import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
 import {
   Cloud,
@@ -32,6 +34,7 @@ import {
   Plus,
   PlusCircle,
   Settings,
+  TrashIcon,
   UserPlus,
   Users,
   UsersIcon,
@@ -126,6 +129,8 @@ export function DropdownMenuDemo() {
   );
 }
 
+const { delete: deleteTeam } = dataLoader<undefined, undefined>('deleteTeam');
+
 export const TeamListItem: FC<TeamProps> = (team) => {
   return (
     <Link href={`/teams/${team.id}`}>
@@ -136,9 +141,19 @@ export const TeamListItem: FC<TeamProps> = (team) => {
               {team.name}
             </h4>
           </div>
-          <div className="actions">
+          <div className="actions flex gap-3">
             {/* <DropdownMenuDemo /> */}
-            <EditIcon className="w-4 text-slate-200" />
+            <Button
+              variant="transparent"
+              size="mini"
+              shape="circle"
+              onClick={() => deleteTeam({ id: team.id })}
+            >
+              <TrashIcon className="w-4 text-red-500" />
+            </Button>
+            <Button variant="transparent" size="mini" shape="circle">
+              <EditIcon className="w-4 text-slate-200" />
+            </Button>
           </div>
         </div>
         <div className="grid grid-cols-6">

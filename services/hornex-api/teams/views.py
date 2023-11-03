@@ -62,7 +62,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="DELETE /api/v1/<platform>/<game>/teams/<id>",
+        operation_description="DELETE /api/v1/teams/<id>",
         operation_summary="Destroy a team",
     )
     def destroy(self, request, *args, **kwargs):
