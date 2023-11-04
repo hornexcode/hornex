@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import ModalsContainer from '@/components/modal-views/container';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
+import { NotificationContextProvider } from '@/lib/notification';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -48,8 +49,10 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         )}
       >
         <AuthContextProvider>
-          {getLayout(<Component {...pageProps} />)}
-          <ModalsContainer />
+          <NotificationContextProvider>
+            {getLayout(<Component {...pageProps} />)}
+            <ModalsContainer />
+          </NotificationContextProvider>
           {/* <SettingsDrawer /> */}
         </AuthContextProvider>
         <ToastContainer

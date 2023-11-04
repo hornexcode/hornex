@@ -4,6 +4,7 @@ import {
   SwordsIcon,
 } from '@/components/ui/atoms/icons';
 import routes from '@/config/routes';
+import { useNotification } from '@/lib/notification';
 import {
   HomeIcon,
   PlusIcon,
@@ -12,8 +13,15 @@ import {
 } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import Link from 'next/link';
+import React from 'react';
 
 export const Sidebar = ({ className }: { className?: string }) => {
+  const { notifications: generalNotifications } = useNotification();
+  const notifications = React.useMemo(
+    () => generalNotifications.filter((n) => n.type === 'invite'),
+    [generalNotifications]
+  );
+
   return (
     <div
       className={classNames(
@@ -38,13 +46,21 @@ export const Sidebar = ({ className }: { className?: string }) => {
             <TrophyIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
         </li>
-        <li title="Teams">
+        <li title="Teams" className="relative">
           <Link
             href={`/${routes.teams}`}
-            className="group flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group  flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all  hover:bg-slate-700"
           >
             <UserGroupIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
+          {!!notifications.filter((n) => n.type === 'invite').length && (
+            <div>
+              <span className="sr-only">Notifications</span>
+              <div className="absolute -right-2 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red-500 font-bold text-[11x] text-white dark:border-gray-900">
+                {notifications.length}
+              </div>
+            </div>
+          )}
         </li>
 
         <li>
