@@ -193,11 +193,16 @@ export const dataLoader = <T, Data = unknown>(
           fetcher(route.href(params), {
             ...options,
             headers: { ...options.headers, ...headers },
-          }).then((r) => r.json()),
-        {
-          revalidateOnFocus: false,
-          ...config,
-        }
+          }).then((r) => {
+            if (r.ok) {
+              return r.json();
+            }
+            throw new Error(r.statusText);
+          })
+        // {
+        //   revalidateOnFocus: false,
+        //   ...config,
+        // }
       );
     },
   };

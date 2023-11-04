@@ -24,10 +24,10 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 // load members
-const { useData: useGetTeamMembers } =
+const { useData: getMembers } =
   dataLoader<GetTeamMembersResponse>('getTeamMembers');
 // load invites
-const { useData: useGetTeamInvites } =
+const { useData: getInvites } =
   dataLoader<GetTeamInvitesResponse>('getTeamInvites');
 // load team
 const { fetch: getTeam } = dataLoader<GetTeamOutput>('getTeam');
@@ -38,7 +38,7 @@ const { delete: deleteTeamMember } = dataLoader<undefined, undefined>(
 );
 
 // delete invite
-const { delete: deleteTeamInvite } = dataLoader<undefined, undefined>(
+const { delete: cancelInvite } = dataLoader<undefined, undefined>(
   'deleteTeamInvite'
 );
 
@@ -95,17 +95,23 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     setValue('name', team.name);
   }, [team]);
 
-  const { data: teamMembers, mutate: mutateMembers } = useGetTeamMembers({
+  const { data: teamMembers, mutate: mutateMembers } = getMembers({
     id: team.id,
   });
-  const { data: teamInvites, mutate: mutateInvites } = useGetTeamInvites({
+  const { data: teamInvites, mutate: mutateInvites } = getInvites({
     id: team.id,
+    status: 'pending',
   });
 
   const { openModal } = useModal();
 
+  const cancelInviteHandler = async (id: string) => {
+    cancelInvite({ teamId: query.id, id });
+    mutateInvites();
+  };
+
   return (
-    <div className="mx-auto lg:container">
+    <div className="mx-auto w-full max-w-[1160px]">
       <div className="flex h-full flex-col items-center p-6">
         <div className="mb-4 self-start">
           {/* link with icon to back */}
@@ -178,24 +184,9 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 }}
                 team={team}
               />
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-20 w-full">
-          <div className="flex items-center justify-between pb-5">
-            <h3 className="text-lg font-semibold uppercase text-gray-200">
-              Invites
-            </h3>
-          </div>
-          <div id="members" className="">
-            <div className="flex flex-col">
               <TeamInviteList
                 invites={teamInvites}
-                onRemove={(id) => {
-                  deleteTeamInvite({ teamId: query.id, id });
-                  mutateInvites();
-                }}
+                onCancel={cancelInviteHandler}
               />
             </div>
           </div>

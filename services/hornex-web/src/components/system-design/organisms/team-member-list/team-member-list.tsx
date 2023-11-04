@@ -1,5 +1,6 @@
 import { TeamMemberListItem } from '../../molecules/team-member-list-item';
 import { Team, TeamMember } from '@/lib/hx-app/types';
+import classnames from 'classnames';
 
 export type TeamMemberListProps = {
   isReadOnly?: boolean;
@@ -19,6 +20,9 @@ export const TeamMemberList = ({
       {members &&
         members.map((member) => (
           <TeamMemberListItem
+            className={classnames({
+              'dark:bg-light-dark/50 ': member.user.id === team.created_by,
+            })}
             key={member.id}
             member={{
               // To operate the remove we need `member id` instead of `user id`
@@ -28,6 +32,7 @@ export const TeamMemberList = ({
             }}
             // Team owner can't remove himself from the team
             isReadOnly={member.user.id === team.created_by || isReadOnly}
+            isOwner={member.user.id === team.created_by}
             onRemove={onRemove}
           />
         ))}

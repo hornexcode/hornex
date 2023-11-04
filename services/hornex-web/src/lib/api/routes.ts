@@ -42,12 +42,10 @@ export const routes = {
   getTeams: {
     path: 'v1/teams',
     method: Method.GET,
-    schema: null,
   },
   updateTeam: {
     path: 'v1/teams/[id]',
     method: Method.PUT,
-    schema: null,
   },
   deleteTeam: {
     path: 'v1/teams/[id]',

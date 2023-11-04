@@ -35,12 +35,6 @@ class TeamViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(platform=platform)
         return queryset
 
-    def list(self, request, *args, **kwargs):
-        return Response(
-            {"teams": TeamSerializer(self.get_queryset(), many=True).data},
-            status=status.HTTP_200_OK,
-        )
-
     @swagger_auto_schema(
         operation_description="POST /api/v1/teams",
         operation_summary="Create a team",
@@ -75,21 +69,32 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+    filter_backends = (filters.DjangoFilterBackend,)
 
     def get_queryset(self):
+        self.serializer_class = TeamInviteListSerializer
         team_id = self.kwargs.get("id")
         queryset = TeamInvite.objects.filter(team__id=team_id)
+        if "status" in self.request.GET:
+            if self.request.GET["status"] == "pending":
+                queryset = queryset.filter(
+                    expired_at__isnull=True,
+                    accepted_at__isnull=True,
+                    declined_at__isnull=True,
+                )
+            if self.request.GET["status"] == "accepted":
+                queryset = queryset.filter(
+                    expired_at__isnull=True,
+                    accepted_at__isnull=False,
+                    declined_at__isnull=True,
+                )
+            if self.request.GET["status"] == "declined":
+                queryset = queryset.filter(
+                    expired_at__isnull=True,
+                    accepted_at__isnull=True,
+                    declined_at__isnull=False,
+                )
         return queryset
-
-    @swagger_auto_schema(
-        operation_description="GET /api/v1/teams/<id>/invites",
-        operation_summary="List all invites for a team",
-    )
-    def list(self, request, *args, **kwargs):
-        return Response(
-            TeamInviteListSerializer(self.get_queryset(), many=True).data,
-            status=status.HTTP_200_OK,
-        )
 
     @swagger_auto_schema(
         operation_description="POST /api/v1/teams/<id>/invites",

@@ -1,9 +1,13 @@
 import Button from '@/components/ui/button';
 import { ProfileIcon } from '@/components/ui/icons';
 import { TeamMember } from '@/lib/hx-app/types';
+import classnames from 'classnames';
+import { Crown, CrownIcon, LucideCrown } from 'lucide-react';
 
 export type TeamMemberListItemProps = {
+  className?: string;
   isReadOnly?: boolean;
+  isOwner?: boolean;
   member: {
     id: string;
     name: string;
@@ -13,12 +17,19 @@ export type TeamMemberListItemProps = {
 };
 
 export const TeamMemberListItem = ({
-  isReadOnly = false,
   member,
   onRemove,
+  isReadOnly = false,
+  isOwner = false,
+  className,
 }: TeamMemberListItemProps) => {
   return (
-    <div className="dark:bg-light-dark mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
+    <div
+      className={classnames(
+        'dark:bg-light-dark mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4',
+        className
+      )}
+    >
       <div className="flex items-center">
         <div className="relative h-8 w-8 overflow-hidden rounded-full bg-gray-600">
           <ProfileIcon className="absolute -left-1 h-10 w-10 text-gray-400" />
@@ -30,6 +41,15 @@ export const TeamMemberListItem = ({
           </span>
         </div>
       </div>
+
+      {isOwner && (
+        <div className="flex">
+          <CrownIcon className="mr-2 h-5 w-5 text-yellow-500" />
+          <span className="mr-2 text-sm font-normal text-gray-600 dark:text-gray-400">
+            Owner
+          </span>
+        </div>
+      )}
 
       {!isReadOnly && (
         <Button

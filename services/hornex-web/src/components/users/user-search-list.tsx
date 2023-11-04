@@ -1,5 +1,6 @@
 'use client';
 
+import { TeamMemberListItem } from '../system-design/molecules/team-member-list-item';
 import Input from '@/components/ui/form/input';
 import { ProfileIcon } from '@/components/ui/icons/profile-icon';
 import { SearchIcon } from '@/components/ui/icons/search';
@@ -108,25 +109,11 @@ type SelectedPlayerProps = {
   onRemove: () => void;
 };
 const SelectedPlayer = ({ name, email, onRemove }: SelectedPlayerProps) => (
-  <div className="mb-2 mr-2 flex h-12 items-center rounded-full border border-sky-800 bg-sky-900 p-2 text-white">
-    <div className="flex justify-items-stretch">
-      {/* Atom: ProfileComponent */}
-      <div className="relative h-7 w-7 overflow-hidden rounded-full bg-gray-600">
-        <ProfileIcon className="absolute -left-1 h-9 w-9 text-gray-400" />
-      </div>
-      <div className="mx-3 flex flex-col justify-center">
-        <h4 className=" text-xs font-bold leading-[10px] tracking-tight text-sky-200">
-          {name}
-        </h4>
-        <span className="text-xs font-medium leading-tight text-sky-100">
-          {email}
-        </span>
-      </div>
-      <div className="block h-6 w-6 self-center">
-        <button onClick={onRemove}>
-          <XMarkIcon className="h-6 w-6" />
-        </button>
-      </div>
-    </div>
+  <div className="w-full">
+    <TeamMemberListItem
+      className="dark:bg-slate-800"
+      member={{ id: '', name, email }}
+      onRemove={onRemove}
+    />
   </div>
 );

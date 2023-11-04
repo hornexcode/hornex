@@ -6,17 +6,17 @@ export type TeamInviteListItemProps = {
   isReadOnly?: boolean;
   invite: TeamInvite;
   user: User;
-  onRemove: (id: string) => void;
+  cancelInvite: (id: string) => void;
 };
 
 export const TeamInviteListItem = ({
   isReadOnly = false,
   invite,
   user,
-  onRemove,
+  cancelInvite,
 }: TeamInviteListItemProps) => {
   return (
-    <div className="dark:bg-light-dark mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
+    <div className="dark:bg-light-dark/50 mb-4 flex items-center justify-between rounded-lg bg-white p-3 text-sm font-medium tracking-wider shadow-sm sm:p-4">
       <div className="flex items-center">
         <div className="relative h-8 w-8 overflow-hidden rounded-full bg-gray-600">
           <ProfileIcon className="absolute -left-1 h-10 w-10 text-gray-400" />
@@ -29,17 +29,21 @@ export const TeamInviteListItem = ({
         </div>
       </div>
 
-      {!isReadOnly && (
-        <Button
-          size="mini"
-          color="danger"
-          shape="rounded"
-          variant="transparent"
-          onClick={() => onRemove(invite.id)}
-        >
-          Cancelar
-        </Button>
-      )}
+      <div className="self-end">
+        <span className="mr-2 italic text-gray-400">Pending</span>
+
+        {!isReadOnly && (
+          <Button
+            size="mini"
+            color="danger"
+            shape="rounded"
+            variant="transparent"
+            onClick={() => cancelInvite(invite.id)}
+          >
+            Cancelar
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

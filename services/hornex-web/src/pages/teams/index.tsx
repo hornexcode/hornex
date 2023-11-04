@@ -8,22 +8,25 @@ import {
 } from '@/services/hx-core/get-teams';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-const { fetch: getTeams } = dataLoader<GetTeamsOutput>('getTeams');
+const { useData: getTeams } = dataLoader<GetTeamsOutput>('getTeams');
 const { fetch: getInvites } = dataLoader<GetInvitesResponse>('getUserInvites');
 
 const TeamsPage = ({
-  teams,
   invites,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  if (!teams) {
-    return <div>loading</div>;
+  const { data: teams, error, isLoading } = getTeams({});
+
+  if (error) {
+    return <div>{error.message}</div>;
   }
 
-  return (
-    <div className="mx-auto lg:container">
-      <TeamsListPage teams={teams} invites={invites} />
-    </div>
-  );
+  if (teams && !isLoading) {
+    return (
+      <div className="mx-auto w-full max-w-[1160px]">
+        <TeamsListPage teams={teams} invites={invites} />
+      </div>
+    );
+  }
 };
 
 TeamsPage.getLayout = (page: React.ReactElement) => {
@@ -31,15 +34,14 @@ TeamsPage.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data: teams, error: teamsError } = await getTeams({}, ctx.req);
-  const { data: invites, error: invitesError } = await getInvites(
-    // Just want to see invites that weren't accepted or declined
-    // { status: 'pending' },
-    {},
+  const { data: invites } = await getInvites(
+    {
+      status: 'pending',
+    },
     ctx.req
   );
   return {
-    props: { ...teams, invites },
+    props: { invites },
   };
 };
 

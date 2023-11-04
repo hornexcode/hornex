@@ -9,18 +9,16 @@ import z from 'zod';
 
 /* Get /api/v1/teams */
 
-export const getTeamsSchemaOutput = z.object({
-  teams: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      platform: z.string(),
-      game: z.string(),
-      num_members: z.number(),
-      created_by: z.string().uuid(),
-    })
-  ),
-});
+export const getTeamsSchemaOutput = z.array(
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    platform: z.string(),
+    game: z.string(),
+    num_members: z.number(),
+    created_by: z.string().uuid(),
+  })
+);
 
 export type GetTeamsOutput = z.infer<typeof getTeamsSchemaOutput>;
 
