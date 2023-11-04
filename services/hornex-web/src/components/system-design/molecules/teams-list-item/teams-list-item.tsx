@@ -134,7 +134,7 @@ const { delete: deleteTeam } = dataLoader<undefined, undefined>('deleteTeam');
 export const TeamsListItem: FC<TeamProps> = (team) => {
   return (
     <Link href={`/teams/${team.id}`}>
-      <div className="bg-light-dark shadow-light space-y-4 rounded-lg transition-all hover:cursor-pointer hover:outline sm:p-6">
+      <div className="bg-light-dark shadow-light space-y-4 rounded-lg transition-all hover:cursor-pointer hover:bg-slate-800 sm:p-6">
         <div className="flex items-center justify-between border-b border-dashed border-gray-700 pb-4">
           <div className="block">
             <h4 className="text-sm font-semibold text-slate-200">
@@ -156,7 +156,7 @@ export const TeamsListItem: FC<TeamProps> = (team) => {
             </Button>
           </div>
         </div>
-        <div className="grid grid-cols-6">
+        <div className="grid grid-cols-4">
           {/* platform */}
           <div className="block">
             <div className="flex items-center">

@@ -14,12 +14,8 @@ export const TeamsListTabPanel: FC<TeamsListTabPanelProps> = ({ teams }) => {
 
   return (
     <div className="mx-auto h-full space-y-8">
-      <div className="flex items-end justify-between">
-        <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
-          Meus times
-        </h2>
-
-        <div>
+      <div className="flex">
+        <div className="ml-auto mt-4">
           <Button
             onClick={() => router.push(routes.createTeam)}
             className="bg-light-dark"

@@ -1,4 +1,4 @@
-import { TeamDetailsPage } from '@/components/system-design/templates/team-detail-page';
+import TeamsListPage from '@/components/system-design/templates/teams-list-page';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { GetInvitesResponse } from '@/lib/hx-app/types';
@@ -19,7 +19,11 @@ const TeamsPage = ({
     return <div>loading</div>;
   }
 
-  return <TeamDetailsPage teams={teams} invites={invites} />;
+  return (
+    <div className="mx-auto lg:container">
+      <TeamsListPage teams={teams} invites={invites} />
+    </div>
+  );
 };
 
 TeamsPage.getLayout = (page: React.ReactElement) => {
