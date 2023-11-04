@@ -4,6 +4,7 @@ import { TeamMemberList } from '@/components/system-design/organisms/team-member
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
+import { LongArrowLeft } from '@/components/ui/icons/long-arrow-left';
 import Loader from '@/components/ui/loader';
 import UserSearchList from '@/components/users/user-search-list';
 import { Team } from '@/domain';
@@ -15,6 +16,7 @@ import { GetTeamOutput } from '@/services/hx-core/get-teams';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -103,84 +105,99 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const { openModal } = useModal();
 
   return (
-    <div className="mx-auto h-full p-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
-          Editar
-        </h2>
-      </div>
+    <div className="mx-auto lg:container">
+      <div className="flex h-full flex-col items-center p-6">
+        <div className="mb-4 self-start">
+          {/* link with icon to back */}
+          <Link
+            href="/teams"
+            className="flex items-center text-gray-900 dark:text-gray-200"
+          >
+            <LongArrowLeft className="h-6 w-6 " />
+            <span className="ml-2 text-sm">Voltar</span>
+          </Link>
+        </div>
+        <div className="flex w-full items-start justify-start">
+          {/* button to back */}
+          <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
+            Editar
+          </h2>
+        </div>
 
-      <div className="mt-10 sm:w-80 lg:w-2/3">
-        <h3 className="pb-4 text-lg font-semibold uppercase text-gray-200">
-          Informações
-        </h3>
-        <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
-          <div className="flex w-full">
-            <div className="w-full">
-              <InputLabel title="Nome do time" important />
-              <Input
-                inputClassName={classnames(
-                  errors.name?.message ? 'focus:ring-red-500' : ''
-                )}
-                placeholder="Nome do time"
-                error={errors.name?.message}
-                {...register('name', { required: true })}
+        <div className="mt-10 w-full">
+          <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
+            <div className="flex w-full">
+              <div className="w-full">
+                <InputLabel title="Nome do time" important />
+                <Input
+                  inputClassName={classnames(
+                    errors.name?.message ? 'focus:ring-red-500' : ''
+                  )}
+                  placeholder="Nome do time"
+                  error={errors.name?.message}
+                  {...register('name', { required: true })}
+                />
+              </div>
+            </div>
+            <div className="mt-1">
+              <Button
+                type="submit"
+                shape="rounded"
+                size="small"
+                className="bg-light-dark"
+              >
+                {isSubmitting ? <Loader /> : 'Alterar'}
+              </Button>
+            </div>
+          </form>
+        </div>
+
+        <div className="3 mt-20 w-full">
+          <div className="flex items-center justify-between pb-5">
+            <h3 className="text-lg font-semibold uppercase text-gray-200">
+              Membros
+            </h3>
+            <div>
+              <Button
+                onClick={() => openModal('SEARCH_VIEW')}
+                shape="rounded"
+                variant="solid"
+                size="small"
+              >
+                Add membro
+              </Button>
+            </div>
+          </div>
+          <div id="members" className="">
+            <div className="flex flex-col">
+              <TeamMemberList
+                members={teamMembers}
+                onRemove={(id) => {
+                  deleteTeamMember({ teamId: query.id, id });
+                  mutateMembers();
+                }}
+                team={team}
               />
             </div>
           </div>
-          <div className="mt-1">
-            <Button type="submit" shape="rounded" className="bg-light-dark">
-              {isSubmitting ? <Loader /> : 'Alterar'}
-            </Button>
-          </div>
-        </form>
-      </div>
+        </div>
 
-      <div className="mt-20 w-full sm:w-80 lg:w-2/3">
-        <div className="flex items-center justify-between pb-5">
-          <h3 className="text-lg font-semibold uppercase text-gray-200">
-            Membros
-          </h3>
-          <div>
-            <Button
-              onClick={() => openModal('SEARCH_VIEW')}
-              shape="rounded"
-              variant="solid"
-              size="small"
-            >
-              Add membro
-            </Button>
+        <div className="mt-20 w-full">
+          <div className="flex items-center justify-between pb-5">
+            <h3 className="text-lg font-semibold uppercase text-gray-200">
+              Invites
+            </h3>
           </div>
-        </div>
-        <div id="members" className="">
-          <div className="flex flex-col">
-            <TeamMemberList
-              members={teamMembers}
-              onRemove={(id) => {
-                deleteTeamMember({ teamId: query.id, id });
-                mutateMembers();
-              }}
-              team={team}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-20 w-full sm:w-80 lg:w-2/3">
-        <div className="flex items-center justify-between pb-5">
-          <h3 className="text-lg font-semibold uppercase text-gray-200">
-            Invites
-          </h3>
-        </div>
-        <div id="members" className="">
-          <div className="flex flex-col">
-            <TeamInviteList
-              invites={teamInvites}
-              onRemove={(id) => {
-                deleteTeamInvite({ teamId: query.id, id });
-                mutateInvites();
-              }}
-            />
+          <div id="members" className="">
+            <div className="flex flex-col">
+              <TeamInviteList
+                invites={teamInvites}
+                onRemove={(id) => {
+                  deleteTeamInvite({ teamId: query.id, id });
+                  mutateInvites();
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
