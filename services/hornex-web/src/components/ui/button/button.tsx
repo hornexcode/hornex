@@ -8,7 +8,6 @@ type ShapeNames = 'rounded' | 'pill' | 'circle';
 type VariantNames = 'ghost' | 'solid' | 'transparent';
 type ColorNames =
   | 'primary'
-  | 'secondary'
   | 'white'
   | 'gray'
   | 'success'
@@ -18,7 +17,7 @@ type ColorNames =
 type SizeNames = 'large' | 'medium' | 'small' | 'mini';
 
 const shapes: Record<ShapeNames, string[]> = {
-  rounded: ['rounded-lg'],
+  rounded: ['rounded-md sm:rounded-lg'],
   pill: ['rounded-full'],
   circle: ['rounded-full'],
 };
@@ -29,7 +28,6 @@ const variants: Record<VariantNames, string[]> = {
 };
 const colors: Record<ColorNames, string[]> = {
   primary: ['text-brand', 'bg-brand', 'border-brand'],
-  secondary: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
   white: ['text-gray-900', 'bg-white', 'border-white'],
   gray: ['text-gray-900', 'bg-gray-100', 'border-gray-100'],
   success: ['text-green-500', 'bg-green-500', 'border-green-500'],
@@ -127,17 +125,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={buttonRef}
         onClick={clickHandler}
         className={cn(
-          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-sm font-medium outline-none transition-all',
+          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium outline-none transition-all sm:text-sm',
           !disabled
             ? buttonColorClassNames
-            : 'cursor-not-allowed bg-slate-700 !text-red-500',
+            : 'cursor-not-allowed bg-gray-400 text-gray-400',
           disabled || isLoading || variant === 'transparent'
             ? ''
             : 'hover:shadow-large focus:shadow-large hover:-translate-y-0.5 focus:-translate-y-0.5 focus:outline-none',
           isLoading && 'pointer-events-auto cursor-default focus:outline-none',
           fullWidth && 'w-full',
           color === 'white' || color === 'gray'
-            ? 'text-gray-900 dark:text-white'
+            ? 'text-gray-600'
             : variants[variant],
           shapes[shape],
           shape === 'circle' ? `${sizeClassNames[1]}` : `${sizeClassNames[0]}`,

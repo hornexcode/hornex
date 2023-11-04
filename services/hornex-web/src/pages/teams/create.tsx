@@ -2,6 +2,7 @@ import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/form/input';
 import InputLabel from '@/components/ui/form/input-label';
 import Listbox, { ListboxOption } from '@/components/ui/list-box';
+import Loader from '@/components/ui/loader';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,14 +22,15 @@ const gameOptions: ListboxOption[] = [
 ];
 
 const platformOptions: ListboxOption[] = [
-  {
-    name: 'PC',
-    value: 'pc',
-  },
+  { name: 'PC', value: 'pc' },
+  { name: 'PS4', value: 'ps4' },
+  { name: 'XBOX', value: 'xbox' },
+  { name: 'MOBILE', value: 'mobile' },
 ];
 
 const createTeamFormSchema = z.object({
   name: z.string().min(2, { message: 'Minimum 2 characters for team name' }),
+  description: z.string(),
   game: z.string(),
   platform: z.string(),
 });
@@ -65,7 +67,7 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
     if (!error) {
       toast.success('Team created successfully');
     }
-    setIsSubmitting(true);
+    setIsSubmitting(false);
     route.push('/teams');
   };
 
@@ -92,6 +94,17 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
             placeholder="Nome do time"
             error={errors.name?.message}
             {...register('name', { required: true })}
+          />
+        </div>
+        <div className="mt-5 w-full sm:w-80 lg:w-2/3">
+          <InputLabel title="Descrição do time" />
+          <Input
+            inputClassName={classnames(
+              errors.description?.message ? 'focus:ring-red-500' : ''
+            )}
+            placeholder="Descrição do time"
+            error={errors.description?.message}
+            {...register('description')}
           />
         </div>
         <div className="mt-5 w-full sm:w-80 lg:w-2/3">
@@ -138,7 +151,7 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
         </div>
         <div className="mt-10">
           <Button shape="rounded" type="submit">
-            CREATE
+            {isSubmitting ? <Loader /> : 'CREATE'}
           </Button>
         </div>
       </form>

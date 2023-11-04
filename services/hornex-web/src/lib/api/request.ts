@@ -112,8 +112,61 @@ export const dataLoader = <T, Data = unknown>(
       }).then(getResponseObject);
     },
 
-    get: async (options: RequestInit): Promise<FetchResponse<T>> => {
-      return fetcher(`${API_ROOT}/${path}`, options).then(getResponseObject);
+    put: async (
+      params: ParamMap = {},
+      payload?: Data
+    ): Promise<FetchResponse<T>> => {
+      const cookie = document.cookie;
+
+      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
+      return fetcher(route.href(params), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.split('=')[1]}`,
+        },
+        body: payload ? JSON.stringify(payload) : '',
+      }).then(getResponseObject);
+    },
+
+    delete: async (
+      params: ParamMap = {},
+      payload?: Data
+    ): Promise<FetchResponse<T>> => {
+      const cookie = document.cookie;
+
+      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
+      return fetcher(route.href(params), {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.split('=')[1]}`,
+        },
+        body: payload ? JSON.stringify(payload) : '',
+      }).then(getResponseObject);
+    },
+
+    get: async (
+      params: ParamMap = {},
+      options: RequestInit = {},
+      headers: Record<string, string> = {}
+    ): Promise<FetchResponse<T>> => {
+      if (!isServer) {
+        const cookie = document.cookie;
+        const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
+        headers = {
+          ...headers,
+          Authorization: `Bearer ${token?.split('=')[1]}`,
+        };
+      }
+
+      return fetcher(route.href(params), {
+        ...options,
+        headers: { ...options.headers, ...headers },
+      }).then(getResponseObject);
     },
 
     useData: <UDT = T>(
@@ -140,11 +193,16 @@ export const dataLoader = <T, Data = unknown>(
           fetcher(route.href(params), {
             ...options,
             headers: { ...options.headers, ...headers },
-          }).then((r) => r.json()),
-        {
-          revalidateOnFocus: false,
-          ...config,
-        }
+          }).then((r) => {
+            if (r.ok) {
+              return r.json();
+            }
+            throw new Error(r.statusText);
+          })
+        // {
+        //   revalidateOnFocus: false,
+        //   ...config,
+        // }
       );
     },
   };

@@ -1,17 +1,8 @@
-import { useDrawer } from '@/components/drawer-views/context';
-import { ChevronDown } from '@/components/icons/chevron-down';
-import { Close } from '@/components/icons/close';
-import { CompactGridIcon } from '@/components/icons/compact-grid';
-import { NormalGridIcon } from '@/components/icons/normal-grid';
-import Button from '@/components/ui/button';
 import Collapse from '@/components/ui/collapse';
-import CollectionSelect from '@/components/ui/collection-select-list';
+import { ChevronDown } from '@/components/ui/icons/chevron-down';
 import { Listbox } from '@/components/ui/listbox';
 import { RadioGroup } from '@/components/ui/radio-group';
-import Scrollbar from '@/components/ui/scrollbar';
-import { useGridSwitcher } from '@/lib/hooks/use-grid-switcher';
 import { Transition } from '@headlessui/react';
-import { motion } from 'framer-motion';
 import Slider from 'rc-slider';
 import { useState } from 'react';
 
@@ -186,40 +177,6 @@ export function Filters() {
       <Collapse label="Price Range" initialOpen>
         <PriceRange />
       </Collapse>
-      <Collapse label="Collection" initialOpen>
-        <CollectionSelect onSelect={(value) => console.log(value)} />
-      </Collapse>
     </>
-  );
-}
-
-export default function DrawerFilters() {
-  const { closeDrawer } = useDrawer();
-  return (
-    <div className="dark:bg-dark xs:w-80 relative w-full max-w-full bg-white">
-      <div className="flex h-20 items-center justify-between overflow-hidden px-6 py-4">
-        <h2 className="text-xl font-medium uppercase tracking-wider text-gray-900 dark:text-white">
-          Filters
-        </h2>
-        <Button
-          shape="circle"
-          color="white"
-          onClick={closeDrawer}
-          className="dark:bg-light-dark"
-        >
-          <Close className="h-auto w-3" />
-        </Button>
-      </div>
-      <Scrollbar style={{ height: 'calc(100% - 96px)' }}>
-        <div className="px-6 pb-20 pt-1">
-          <Filters />
-        </div>
-      </Scrollbar>
-      <div className="absolute bottom-4 left-0 z-10 w-full px-6">
-        <Button fullWidth onClick={closeDrawer}>
-          DONE
-        </Button>
-      </div>
-    </div>
   );
 }

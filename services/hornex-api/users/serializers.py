@@ -10,7 +10,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ["name", "email", "password", "first_name", "last_name", "password2"]
+        fields = [
+            "id",
+            "name",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "password2",
+        ]
         extra_kwargs = {"password": {"write_only": True, "required": True}}
 
     def validate(self, attrs):
@@ -46,3 +54,7 @@ class LoggedInUserSerializerReadOnly(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     email = serializers.EmailField(read_only=True)
     name = serializers.CharField(read_only=True)
+
+
+def serialize_user(user: User) -> dict[str, any]:
+    return {"id": user.id, "name": user.name, "email": user.email}

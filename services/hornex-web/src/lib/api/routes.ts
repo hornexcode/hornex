@@ -24,6 +24,11 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  searchUsers: {
+    path: 'v1/users/search',
+    method: Method.GET,
+    schema: null,
+  },
   createTeam: {
     path: 'v1/teams',
     method: Method.POST,
@@ -32,15 +37,19 @@ export const routes = {
   getTeam: {
     path: 'v1/teams/[teamId]',
     method: Method.GET,
+    schema: null,
   },
   getTeams: {
     path: 'v1/teams',
     method: Method.GET,
-    schema: null,
   },
   updateTeam: {
-    path: 'v1/teams',
-    method: Method.PATCH,
+    path: 'v1/teams/[id]',
+    method: Method.PUT,
+  },
+  deleteTeam: {
+    path: 'v1/teams/[id]',
+    method: Method.DELETE,
     schema: null,
   },
   getEmailConfirmationCode: {
@@ -71,6 +80,46 @@ export const routes = {
   getTournament: {
     path: 'v1/[platform]/[game]/tournaments/[tournamentId]/details',
     method: Method.GET,
+    schema: null,
+  },
+  getTeamMembers: {
+    path: 'v1/teams/[id]/members',
+    method: Method.GET,
+    schema: null,
+  },
+  deleteTeamMember: {
+    path: 'v1/teams/[teamId]/members/[id]',
+    method: Method.DELETE,
+    schema: null,
+  },
+  getTeamInvites: {
+    path: 'v1/teams/[id]/invites',
+    method: Method.GET,
+    schema: null,
+  },
+  inviteUser: {
+    path: 'v1/teams/[id]/invites',
+    method: Method.POST,
+    schema: null,
+  },
+  getUserInvites: {
+    path: 'v1/invites',
+    method: Method.GET,
+    schema: null,
+  },
+  deleteTeamInvite: {
+    path: 'v1/teams/[teamId]/invites/[id]',
+    method: Method.DELETE,
+    schema: null,
+  },
+  acceptInvite: {
+    path: 'v1/invites/accept',
+    method: Method.POST,
+    schema: null,
+  },
+  declineInvite: {
+    path: 'v1/invites/decline',
+    method: Method.POST,
     schema: null,
   },
 };

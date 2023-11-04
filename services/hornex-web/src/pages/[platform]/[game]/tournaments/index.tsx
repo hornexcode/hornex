@@ -1,4 +1,4 @@
-import TournamentsPageTemplate from '@/components/system-design/templates/tournaments-page-template/tournaments-page-template';
+import TournamentsFeedPage from '@/components/system-design/templates/tournaments-feed-page/tournaments-feed-page';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { GetTournamentsResponse } from '@/lib/hx-app/types/rest/get-tournaments';
@@ -45,10 +45,8 @@ const Tournaments = ({
   });
 
   return (
-    <div className="">
-      {error && <div className="text-red-500">{error.message}</div>}
-      {/* TODO: add switch to render different types of tournament template */}
-      <TournamentsPageTemplate
+    <div className="px-8 py-4">
+      <TournamentsFeedPage
         isLoading={isLoading}
         tournaments={
           tournaments || { count: 0, next: null, previous: null, results: [] }

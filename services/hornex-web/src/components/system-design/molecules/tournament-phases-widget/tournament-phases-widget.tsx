@@ -1,9 +1,7 @@
 import Button from '@/components/ui/button/button';
-import ButtonDrip from '@/components/ui/button/button-drip';
 import { Tournament } from '@/lib/hx-app/types';
 import classnames from 'classnames';
 import { UsersIcon } from 'lucide-react';
-import moment from 'moment';
 import { FC } from 'react';
 
 type TournamentPhasesWidgetProps = {
@@ -91,7 +89,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
       </div>
 
       <div className="block border-t-2 border-slate-800 p-5">
-        <Button color="secondary" fullWidth shape="rounded">
+        <Button color="warning" fullWidth shape="rounded">
           Registrar
         </Button>
       </div>

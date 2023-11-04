@@ -1,4 +1,4 @@
-import TournamentDetailsTemplate from '@/components/system-design/templates/tournament-page-template';
+import TournamentDetailsPage from '@/components/system-design/templates/tournament-details-page';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { Tournament } from '@/lib/hx-app/types';
@@ -26,7 +26,7 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   //   default:
   //     break;
   // }
-  return <TournamentDetailsTemplate tournament={tournament} />;
+  return <TournamentDetailsPage tournament={tournament} />;
 };
 
 Tournament.getLayout = (page: React.ReactElement) => {

@@ -1,5 +1,12 @@
 import z from 'zod';
 
+export const user = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string().email(),
+});
+export type User = z.infer<typeof user>;
+
 export const game = z.object({
   id: z.string(),
   name: z.string(),
@@ -42,3 +49,48 @@ export const tournament = z.object({
   feature_image: z.string(),
 });
 export type Tournament = z.infer<typeof tournament>;
+
+export const teamMember = z.object({
+  id: z.string().uuid(),
+  is_admin: z.boolean(),
+  joined_at: z.string(),
+  team: z.string().uuid(),
+  user,
+});
+export type TeamMember = z.infer<typeof teamMember>;
+
+export const teamInvite = z.object({
+  id: z.string().uuid(),
+  user,
+  created_at: z.string(),
+  updated_at: z.string(),
+  accepted_at: z.string(),
+  declined_at: z.string(),
+  expired_at: z.string(),
+  team: z.string().uuid(),
+});
+export type TeamInvite = z.infer<typeof teamInvite>;
+
+export const team = z.object({
+  id: z.string(),
+  name: z.string(),
+  created_by: z.string(),
+  game: z.string(),
+  platform: z.string(),
+  num_members: z.number(),
+});
+export type Team = z.infer<typeof team>;
+
+export const invite = z.object({
+  id: z.string().uuid(),
+  team: z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    description: z.string(),
+    platform: z.string(),
+    game: z.string(),
+  }),
+  accepted: z.string(),
+  declined: z.string(),
+});
+export type Invite = z.infer<typeof invite>;
