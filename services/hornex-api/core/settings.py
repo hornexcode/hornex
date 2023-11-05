@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "django_filters",
     "drf_yasg",
+    "channels",  # websockets
     "django_celery_results",
     "corsheaders",  # dev only
     # apps
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     "tournaments",
     "platforms",
     "games",
+    "notifications",
 ]
 
 MIDDLEWARE = [
@@ -176,3 +178,12 @@ CELERY_CACHE_BACKEND = "default"
 
 # THIRD PARTY KEYS
 RIOT_API_KEY = "RGAPI-eda91699-6860-4fde-9ef8-d6ea815a9201"
+
+CHANNEL_LAYER = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    }
+}

@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from notifications.consumers import NotificationConsumer
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -52,4 +53,9 @@ urlpatterns = [
     path("api/v1/payments", include("payments.urls")),
     # api/v1/<platform>/<game>
     path(f"{prefix}/tournaments", include("tournaments.urls")),
+]
+
+
+websocket_urlpatterns = [
+    path("ws/notifications", NotificationConsumer.as_asgi()),
 ]
