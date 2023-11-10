@@ -1,6 +1,7 @@
 import '@/styles/global.css';
 import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
+import '@/websocket/app'; // websocket
 
 import ModalsContainer from '@/components/modal-views/container';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
