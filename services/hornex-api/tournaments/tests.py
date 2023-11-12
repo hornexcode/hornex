@@ -9,11 +9,163 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import User
 from platforms.models import Platform
 from games.models import Game
-from teams.models import Team, TeamMember
-from tournaments.models import Tournament, Registration, Subscription
+from teams.models import Team, Membership
+from tournaments.models import Tournament, Registration
+from tournaments import errors
+
+from test.factories import UserFactory, TeamFactory, TournamentFactory
+from lib.logging import logger
 
 
-class TournamentTests(APITestCase, URLPatternsTestCase):
+class TournamentRegistrationTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory.new()
+
+        # Generating a JWT token for the test user
+        self.refresh = RefreshToken.for_user(self.user)
+
+        # Authenticate the client with the token
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+    def test_tournament_registration_201_success(self):
+        team = TeamFactory.new(created_by=self.user)
+        Membership.objects.create(team=team, user=self.user)
+        for _ in range(0, 4):
+            Membership.objects.create(team=team, user=UserFactory.new())
+
+        self.tournament = TournamentFactory.new(organizer=self.user)
+
+        url = reverse(
+            "tournament-register",
+            kwargs={
+                "platform": "pc",
+                "game": "league-of-legends",
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {"team": team.id},
+        )
+
+        # response checks
+        self.assertEqual(resp.status_code, 201)
+
+        # database checks
+        self.assertEqual(Registration.objects.count(), 1)
+
+    def test_tournament_registration_400_max_teams(self):
+        team = TeamFactory.new(created_by=self.user)
+        tournament = TournamentFactory.new(organizer=self.user)
+
+        url = reverse(
+            "tournament-register",
+            kwargs={
+                "platform": "pc",
+                "game": "league-of-legends",
+                "id": tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {"team": team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.data["error"], errors.EnoughMembersError)
+
+    def test_tournament_registration_400_team_size(self):
+        team = TeamFactory.new(created_by=self.user)
+        Membership.objects.create(team=team, user=self.user)
+
+        self.tournament = TournamentFactory.new(
+            organizer=self.user, team_size=1, max_teams=1
+        )
+
+        url = reverse(
+            "tournament-register",
+            kwargs={
+                "platform": "pc",
+                "game": "league-of-legends",
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {"team": team.id},
+        )
+
+        self.assertEqual(resp.status_code, 201)
+
+        # -
+        user_b = UserFactory.new()
+        team_b = TeamFactory.new(created_by=user_b)
+        Membership.objects.create(team=team_b, user=user_b)
+        for _ in range(0, 4):
+            Membership.objects.create(team=team, user=UserFactory.new())
+
+        # Generating a JWT token for the test user
+        self.refresh = RefreshToken.for_user(user_b)
+
+        # Authenticate the client with the token
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+        url = reverse(
+            "tournament-register",
+            kwargs={
+                "platform": "pc",
+                "game": "league-of-legends",
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {"team": team_b.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.data["error"], errors.TournamentFullError)
+
+    def test_tournament_registration_400_team_already_registered(self):
+        team = TeamFactory.new(created_by=self.user)
+        Membership.objects.create(team=team, user=self.user)
+
+        self.tournament = TournamentFactory.new(organizer=self.user, team_size=1)
+
+        url = reverse(
+            "tournament-register",
+            kwargs={
+                "platform": "pc",
+                "game": "league-of-legends",
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {"team": team.id},
+        )
+
+        self.assertEqual(resp.status_code, 201)
+
+        resp = self.client.post(
+            url,
+            {"team": team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.data["error"], errors.TeamAlreadyRegisteredError)
+
+
+class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
     urlpatterns = [
         path("api/v1/tournaments", include("tournaments.urls")),
     ]
@@ -248,202 +400,3 @@ class TournamentTests(APITestCase, URLPatternsTestCase):
         resp = self.client.get(f"{url}?ordering=-start_time")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data["results"][0]["name"], "second")
-
-
-class TournamentRegistrationTests(APITestCase, URLPatternsTestCase):
-    urlpatterns = [
-        path("api/v1/tournaments", include("tournaments.urls")),
-    ]
-
-    def setUp(self) -> None:
-        self.credentials = {
-            "email": "admin",
-            "password": "admin",
-        }
-
-        self.user = User.objects.create_superuser(**self.credentials)
-
-        # Generating a JWT token for the test user
-        self.refresh = RefreshToken.for_user(self.user)
-
-        # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
-
-        self.platform = Platform.objects.create(name="test platform")
-        self.game = Game.objects.create(name="test game")
-        self.game.platforms.set([self.platform])
-        self.team = Team.objects.create(
-            name="test team",
-            created_by=self.user,
-            game=self.game,
-            platform=self.platform,
-        )
-
-        self.tournament_data = {
-            "name": "test tournament",
-            "game": Game.objects.first(),
-            "platform": self.platform,
-            "max_teams": 2,
-            "team_size": 1,
-            "entry_fee": 15.00,
-            "start_time": timezone.now(),
-            "end_time": (timedelta(days=7) + timezone.now()),
-            "organizer": self.user,
-        }
-
-        self.tournament = Tournament.objects.create(**self.tournament_data)
-
-        self.tournament_registration = Registration.objects.create(
-            tournament=self.tournament, team=self.team
-        )
-
-        return super().setUp()
-
-    def test_cancel_registration_204(self):
-        url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
-        )
-        resp = self.client.delete(url)
-        self.tournament_registration.refresh_from_db()
-
-        self.assertIsNotNone(self.tournament_registration.cancelled_at)
-        self.assertEqual(resp.status_code, 204)
-
-    def test_cancel_registration_404(self):
-        url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
-        )
-        self.tournament_registration.delete()
-
-        resp = self.client.delete(url)
-
-        self.assertEqual(resp.status_code, 404)
-
-    def test_cancel_registration_403(self):
-        url = reverse(
-            "tournament-register", kwargs={"id": self.tournament_registration.id}
-        )
-        team_member = TeamMember.objects.get(user=self.user, team=self.team)
-        team_member.is_admin = False
-        team_member.save()
-        team_member.refresh_from_db()
-
-        resp = self.client.delete(url)
-
-        self.assertIsNone(self.tournament_registration.cancelled_at)
-        self.assertEqual(resp.status_code, 403)
-
-
-class TournamentUnregisterTests(APITestCase, URLPatternsTestCase):
-    urlpatterns = [
-        path("tournament-unregister", include("tournaments.urls")),
-    ]
-
-    def setUp(self) -> None:
-        self.credentials = {
-            "email": "test",
-            "password": "testpass",
-        }
-
-        self.user = User.objects.create_user(**self.credentials)
-
-        # Generating a JWT token for the test user
-        self.refresh = RefreshToken.for_user(self.user)
-
-        # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
-
-        self.platform = Platform.objects.create(name="test platform")
-        self.game = Game.objects.create(name="test game")
-        self.game.platforms.set([self.platform])
-        self.team = Team.objects.create(
-            name="test team",
-            created_by=self.user,
-            game=self.game,
-            platform=self.platform,
-        )
-
-        self.tournament_data = {
-            "name": "test tournament",
-            "game": Game.objects.first(),
-            "platform": self.platform,
-            "max_teams": 2,
-            "team_size": 1,
-            "entry_fee": 15.00,
-            "start_time": timezone.now(),
-            "end_time": (timedelta(days=7) + timezone.now()),
-            "organizer": self.user,
-        }
-
-        self.tournament = Tournament.objects.create(**self.tournament_data)
-
-        self.tournament_registration = Registration.objects.create(
-            tournament=self.tournament, team=self.team, confirmed_at=timezone.now()
-        )
-
-        self.tournament_team = Subscription.objects.create(
-            tournament=self.tournament, team=self.team
-        )
-
-        return super().setUp()
-
-    def test_unregister_team_204(self):
-        url = reverse(
-            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
-        )
-
-        resp = self.client.delete(url)
-        self.tournament_registration.refresh_from_db()
-        self.assertIsNotNone(self.tournament_registration.cancelled_at)
-        self.assertEqual(resp.status_code, 204)
-
-    def test_can_not_list_canceled_registration(self):
-        url = reverse(
-            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
-        )
-        resp = self.client.delete(url)
-        self.assertEqual(resp.status_code, 204)
-
-        url = reverse("tournament-registration")
-        resp = self.client.get(url)
-
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(len(resp.data), 0)
-
-    def test_only_admin_can_unregister_team(self):
-        url = reverse(
-            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
-        )
-        team_member = TeamMember.objects.get(user=self.user, team=self.team)
-        team_member.is_admin = False
-        team_member.save()
-        team_member.refresh_from_db()
-
-        resp = self.client.delete(url)
-        self.assertEqual(resp.status_code, 403)
-
-    def test_team_is_not_confirmed_at_tournament(self):
-        url = reverse(
-            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
-        )
-
-        self.tournament_registration.confirmed_at = None
-        self.tournament_registration.save()
-        self.tournament_registration.refresh_from_db()
-
-        resp = self.client.delete(url)
-        self.assertEqual(resp.status_code, 400)
-
-    def test_tournament_team_not_found_404(self):
-        url = reverse(
-            "tournament-unregister", kwargs={"id": self.tournament_registration.id}
-        )
-
-        self.tournament_team.delete()
-
-        resp = self.client.delete(url)
-        self.assertEqual(resp.status_code, 404)

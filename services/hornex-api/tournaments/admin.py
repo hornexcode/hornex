@@ -73,4 +73,4 @@ class TournamentAdmin(admin.ModelAdmin):
         )
 
 
-admin.site.register(Tournament, TournamentAdmin)
+# admin.site.register(Tournament, TournamentAdmin)

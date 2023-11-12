@@ -6,6 +6,7 @@ from django.utils import timezone
 from abc import abstractmethod
 
 from tournaments.validators import validate_team_size
+from tournaments import errors
 
 
 class RegistrationError(Exception):
@@ -79,15 +80,13 @@ class Tournament(models.Model):
             Registration.objects.filter(tournament__id=self.id).count()
             >= self.max_teams
         ):
-            raise RegistrationError("Max teams reached")
+            raise RegistrationError(errors.TournamentFullError)
 
         if Registration.objects.filter(tournament__id=self.id, team=team).exists():
-            raise RegistrationError(f"Team: {team.name} already registered")
+            raise RegistrationError(errors.TeamAlreadyRegisteredError)
 
-        if team.members.count() != self.team_size:
-            raise RegistrationError(
-                f"Team: {team.name} must have {self.team_size} members"
-            )
+        if team.members.count() < self.team_size:
+            raise RegistrationError(errors.EnoughMembersError)
 
         return Registration.objects.create(tournament=self, team=team)
 

@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/atoms/avatar';
 import { LoggedUser } from '@/domain';
 import { useAuthContext } from '@/lib/auth';
 import { Menu, Transition } from '@headlessui/react';

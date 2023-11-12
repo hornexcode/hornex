@@ -5,6 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.db import transaction
 
 from tournaments.models import Registration, Tournament, RegistrationError
 from tournaments.filters import TournamentListFilter, TournamentListOrdering
@@ -16,7 +18,7 @@ from tournaments.serializers import (
 from tournaments.pagination import TournamentPagination
 from tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 
-from teams.models import Team, TeamMember
+from teams.models import Team
 from core.route import extract_game_and_platform
 
 # from tournaments.leagueoflegends.usecases import RegisterTeam
@@ -64,6 +66,8 @@ class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
         game, _ = extract_game_and_platform(kwargs)
@@ -97,15 +101,18 @@ class TournamentViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=["post"],
     )
-    def register(self, request, id):
+    @transaction.atomic
+    def register(self, request, *args, **kwargs):
         # validate request
         params = RegistrationSerializer(
-            data={**request.data, "tournament": id},
+            data={**request.data, "tournament": kwargs["id"]},
             context={"request": request},
         )
         if not params.is_valid():
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        # locking rows for update
+        self.queryset = Tournament.objects.select_for_update().filter(id=kwargs["id"])
         tmt: Tournament = self.get_object()
 
         try:
@@ -116,8 +123,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        u = TeamMember.objects.filter(user__id=request.user.id, is_admin=True).first()
-        if u is None:
+        if tm.created_by != request.user:
             return Response(
                 {"error": "You are not a allowed to register a team"},
                 status=status.HTTP_403_FORBIDDEN,

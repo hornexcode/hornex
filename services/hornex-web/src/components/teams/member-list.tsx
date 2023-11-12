@@ -1,4 +1,4 @@
-import Button from '@/components/ui/button/button';
+import Button from '@/components/ui/atoms/button/button';
 import { Member } from '@/domain';
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { FC } from 'react';
@@ -17,7 +17,7 @@ const MemberListItem: FC<MemberListItemProps> = ({
   member,
   onRemoveMember,
 }) => (
-  <li className="flex items-center rounded bg-light-dark p-4">
+  <li className="bg-light-dark flex items-center rounded p-4">
     <span className="text-white">{member.username}</span>
     <div className="ml-auto">
       <Button

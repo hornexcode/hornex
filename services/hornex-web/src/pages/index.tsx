@@ -4,7 +4,7 @@ import CsGoLogo from '@/assets/images/hero/csgo-logo.png';
 import RocketLeagueLogo from '@/assets/images/hero/rl-logo.png';
 import BullHorn from '@/assets/images/hornex/hornex-logo.png';
 import Tournament from '@/assets/images/tournaments/tournament.png';
-import Button from '@/components/ui/button/button';
+import Button from '@/components/ui/atoms/button/button';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth-context';
 import {

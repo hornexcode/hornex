@@ -1,5 +1,5 @@
 import Header from './header';
-import { Sidebar } from '@/components/ui/sidebar';
+import { Sidebar } from '@/components/ui/atoms/sidebar';
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (

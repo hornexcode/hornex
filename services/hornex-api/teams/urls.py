@@ -1,5 +1,5 @@
 from django.urls import path
-from teams.views import TeamViewSet, TeamInviteViewSet, TeamMemberViewSet
+from teams.views import TeamViewSet, InviteViewSet, MembershipViewSet
 
 
 urlpatterns = [
@@ -21,27 +21,27 @@ urlpatterns = [
     ),
     path(
         "/<str:id>/invites",
-        TeamInviteViewSet.as_view({"get": "list", "post": "create"}),
+        InviteViewSet.as_view({"get": "list", "post": "create"}),
         name="team-invite-list",
     ),
     path(
         "/<str:id>/invites",
-        TeamInviteViewSet.as_view({"get": "list", "post": "create"}),
+        InviteViewSet.as_view({"get": "list", "post": "create"}),
         name="team-invite-list",
     ),
     path(
         "/<str:team_id>/invites/<str:id>",
-        TeamInviteViewSet.as_view({"delete": "destroy"}),
+        InviteViewSet.as_view({"delete": "destroy"}),
         name="team-invite-details",
     ),
     path(
         "/<str:id>/members",
-        TeamMemberViewSet.as_view({"get": "list"}),
+        MembershipViewSet.as_view({"get": "list"}),
         name="team-members",
     ),
     path(
         "/<str:team_id>/members/<str:id>",
-        TeamMemberViewSet.as_view(
+        MembershipViewSet.as_view(
             {
                 "delete": "destroy",
             }

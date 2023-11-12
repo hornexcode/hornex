@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from teams.models import Team, TeamInvite, TeamMember
+from teams.models import Team, Invite, Membership
 from teams.errors import (
     unauthorized_error,
     team_invite_already_exists,
@@ -51,19 +51,19 @@ class TeamSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class TeamMemberSerializer(serializers.ModelSerializer):
+class MembershipSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
     class Meta:
-        model = TeamMember
+        model = Membership
         fields = "__all__"
 
 
-class TeamInviteListSerializer(serializers.ModelSerializer):
+class InviteListSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
     class Meta:
-        model = TeamInvite
+        model = Invite
         fields = "__all__"
         read_only_fields = [
             "id",
@@ -75,9 +75,9 @@ class TeamInviteListSerializer(serializers.ModelSerializer):
         ]
 
 
-class TeamInviteSerializer(serializers.ModelSerializer):
+class InviteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TeamInvite
+        model = Invite
         fields = "__all__"
         read_only_fields = [
             "id",
@@ -93,16 +93,16 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         user = validated_data["user"]
         team = validated_data["team"]
 
-        member = TeamMember.objects.filter(team=team, user__id=admin.id).first()
+        member = Membership.objects.filter(team=team, user__id=admin.id).first()
 
         if not member or not member.is_admin:
             raise unauthorized_error
 
-        it = TeamMember.objects.filter(team=team, user=user)
+        it = Membership.objects.filter(team=team, user=user)
         if it.exists():
             raise already_team_member
 
-        it = TeamInvite.objects.filter(team=team, user=user)
+        it = Invite.objects.filter(team=team, user=user)
         if it.exists():
             raise team_invite_already_exists
 
@@ -126,7 +126,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
 
         self.instance.accepted_at = datetime.utcnow()
         self.instance.save()
-        TeamMember.objects.create(team=self.instance.team, user=self.instance.user)
+        Membership.objects.create(team=self.instance.team, user=self.instance.user)
 
     def decline(self):
         if self.context["request"].user.id != self.instance.user.id:

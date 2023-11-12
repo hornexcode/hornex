@@ -8,8 +8,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from invites.serializers import InviteSerializer
-from teams.models import TeamInvite
-from teams.serializers import TeamInviteSerializer
+from teams.models import Invite
+from teams.serializers import InviteSerializer
 from .errors import not_found
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -32,19 +32,19 @@ def get_invites(request):
 
     filtering = {"status": request.query_params.get("status", None)}
     if filtering["status"] is not None and filtering["status"] == "accepted":
-        il = TeamInvite.objects.filter(
+        il = Invite.objects.filter(
             user__id=u.id, accepted_at__isnull=False, declined_at__isnull=True
         )
     elif filtering["status"] is not None and filtering["status"] == "declined":
-        il = TeamInvite.objects.filter(
+        il = Invite.objects.filter(
             user__id=u.id, declined_at__isnull=True, accepted_at__isnull=False
         )
     elif filtering["status"] is not None and filtering["status"] == "pending":
-        il = TeamInvite.objects.filter(
+        il = Invite.objects.filter(
             user__id=u.id, accepted_at__isnull=True, declined_at__isnull=True
         )
     else:
-        il = TeamInvite.objects.filter(user__id=u.id)
+        il = Invite.objects.filter(user__id=u.id)
 
     ils = InviteSerializer(il, many=True)
     return Response(ils.data, status=status.HTTP_200_OK)
@@ -58,11 +58,11 @@ def accept_invite(request):
     invite_id = request.data.get("invite_id", None)
 
     try:
-        invite = TeamInvite.objects.get(id=invite_id)
-    except TeamInvite.DoesNotExist:
+        invite = Invite.objects.get(id=invite_id)
+    except Invite.DoesNotExist:
         return not_found
 
-    ies = TeamInviteSerializer(invite, context={"request": request})
+    ies = InviteSerializer(invite, context={"request": request})
     ies.accept()
 
     return Response(status=status.HTTP_200_OK)
@@ -75,14 +75,14 @@ def decline_invite(request):
     invite_id = request.data.get("invite_id", None)
 
     try:
-        invite = TeamInvite.objects.get(id=invite_id)
-    except TeamInvite.DoesNotExist:
+        invite = Invite.objects.get(id=invite_id)
+    except Invite.DoesNotExist:
         return Response(
             {"error": "Invite not found."},
             status=status.HTTP_404_NOT_FOUND,
         )
 
-    ies = TeamInviteSerializer(invite, context={"request": request})
+    ies = InviteSerializer(invite, context={"request": request})
     ies.decline()
 
     return Response(status=status.HTTP_200_OK)

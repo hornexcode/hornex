@@ -8,7 +8,7 @@ from tournaments.models import (
 from tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
 )
-from teams.models import Team, TeamMember
+from teams.models import Team, Membership
 from users.models import User
 from games.models import GameAccountRiot
 from django.utils import timezone
@@ -52,7 +52,7 @@ class TournamentManagementService:
             raise Exception("Team is already registered.")
 
         # check if user is the team admin
-        if not TeamMember.objects.filter(team=team, user=user, is_admin=True).exists():
+        if not Membership.objects.filter(team=team, user=user, is_admin=True).exists():
             raise Exception("Only team admin can register for a tournament.")
 
         if tournament.game != team.game:
@@ -147,7 +147,7 @@ class TournamentManagementService:
         user = User.objects.get(id=user_id)
         registration = Registration.objects.get(id=registration_id)
 
-        if not TeamMember.objects.filter(
+        if not Membership.objects.filter(
             team=registration.team, user=user, is_admin=True
         ).exists():
             raise PermissionDenied("Only team admin can cancel registration.")
@@ -160,7 +160,7 @@ class TournamentManagementService:
         registration = Registration.objects.get(id=registration_id)
 
         # check if team member is
-        if not TeamMember.objects.filter(
+        if not Membership.objects.filter(
             team=registration.team, user=user, is_admin=True
         ).exists():
             raise PermissionDenied("Only team admin can unregister from a tournament.")

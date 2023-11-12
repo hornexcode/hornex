@@ -1,8 +1,8 @@
 import { useModal } from '../modal-views/context';
-import Button from '../ui/button/button';
-import Loader from '../ui/loader';
+import Button from '../ui/atoms/button/button';
+import Loader from '../ui/atoms/loader';
 import UserSearchList from '../users/user-search-list';
-import AnchorLink from '@/components/ui/links/anchor-link';
+import AnchorLink from '@/components/ui/atoms/links/anchor-link';
 import { dataLoader } from '@/lib/api';
 import { routes } from '@/lib/api/routes';
 import { useRouter } from 'next/router';

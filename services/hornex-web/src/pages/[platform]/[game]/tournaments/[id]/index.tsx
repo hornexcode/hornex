@@ -1,7 +1,8 @@
-import TournamentDetailsPage from '@/components/system-design/templates/tournament-details-page';
+import TournamentPage from '@/components/ui/templates/tournament';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { Tournament } from '@/lib/hx-app/types';
+import { Team } from '@/lib/proto/team';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
@@ -26,7 +27,7 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   //   default:
   //     break;
   // }
-  return <TournamentDetailsPage tournament={tournament} />;
+  return <TournamentPage tournament={tournament} />;
 };
 
 Tournament.getLayout = (page: React.ReactElement) => {
@@ -34,7 +35,7 @@ Tournament.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data: tournament, error } = await getTournament(
+  const { data: tournament, error: tournamentError } = await getTournament(
     {
       tournamentId: ctx.query.id || '',
       platform: ctx.query.platform || '',
@@ -42,6 +43,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
     ctx.req
   );
+
+  if (!tournament || tournamentError) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {

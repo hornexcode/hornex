@@ -1,9 +1,9 @@
 'use client';
 
-import Input from '@/components/ui/form/input';
-import { ProfileIcon } from '@/components/ui/icons/profile-icon';
-import { SearchIcon } from '@/components/ui/icons/search';
-import { XMarkIcon } from '@/components/ui/icons/x-mark-icon';
+import Input from '@/components/ui/atoms/form/input';
+import { ProfileIcon } from '@/components/ui/atoms/icons/profile-icon';
+import { SearchIcon } from '@/components/ui/atoms/icons/search';
+import { XMarkIcon } from '@/components/ui/atoms/icons/x-mark-icon';
 import cn from 'classnames';
 import { useState } from 'react';
 
@@ -67,7 +67,7 @@ export default function TeamSearchList({ onSelect }: CollectionSelectTypes) {
           'absolute top-12 z-30 mt-1 w-full rounded bg-gray-800 py-3 transition-all',
           {
             hidden: searchKeyword.length === 0,
-          },
+          }
         )}
       >
         {coinListData.length > 0 ? (

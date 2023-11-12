@@ -1,7 +1,7 @@
-import Collapse from '@/components/ui/collapse';
-import { ChevronDown } from '@/components/ui/icons/chevron-down';
-import { Listbox } from '@/components/ui/listbox';
-import { RadioGroup } from '@/components/ui/radio-group';
+import Collapse from '@/components/ui/atoms/collapse';
+import { ChevronDown } from '@/components/ui/atoms/icons/chevron-down';
+import { Listbox } from '@/components/ui/atoms/listbox';
+import { RadioGroup } from '@/components/ui/atoms/radio-group';
 import { Transition } from '@headlessui/react';
 import Slider from 'rc-slider';
 import { useState } from 'react';

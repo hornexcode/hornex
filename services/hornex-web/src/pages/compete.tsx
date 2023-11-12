@@ -10,8 +10,8 @@ import {
   PlayStationIcon,
   RocketLeagueLogoIcon,
   XboxIcon,
-} from '@/components/ui/icons';
-import { LeagueOfLegendsLogo } from '@/components/ui/icons/league-of-legends-icon';
+} from '@/components/ui/atoms/icons';
+import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 import { dataLoader as dataLoader } from '@/lib/api';
