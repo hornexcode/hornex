@@ -32,45 +32,15 @@ def invite_created(sender, instance, created, **kwargs):
         )
 
         timestamp_in_milliseconds = int(notification.created_at.timestamp() * 1000)
-        channel_layer = channels.layers.get_channel_layer("notifications")
+        channel_layer = channels.layers.get_channel_layer()
 
-        async_to_sync(channel_layer.send)(
-            json.dumps(
-                {
-                    "id": notification.id.__str__(),
-                    "type": notification.activity,
-                    "message": "You have been invited to join a team",
-                    "data": notification.data,
-                    "created_at": timestamp_in_milliseconds,
-                }
-            )
+        async_to_sync(channel_layer.group_send)(
+            "notifications",
+            message={
+                "id": notification.id.__str__(),
+                "type": notification.activity,
+                "message": "You have been invited to join a team",
+                "data": json.loads(notification.data),
+                "created_at": timestamp_in_milliseconds,
+            },
         )
-
-        print("success")
-
-    # if created:
-    #     notification = Notification.objects.create(
-    #         {"type": Notification.ActivityType.TEAM_INVITATION}
-    #     )
-
-    #     # notification
-    #     invite = json.dumps(
-    #         {
-    #             "id": notification.id,
-    #             "type": notification.activity,
-    #             "message": "You have been invited to join a team",
-    #             "team": {
-    #                 "id": instance.team.id,
-    #                 "name": instance.team.name,
-    #                 "slug": instance.team.slug,
-    #                 "description": instance.team.description,
-    #                 "created_by": {
-    #                     "id": instance.team.created_by.id,
-    #                     "username": instance.team.created_by.username,
-    #                     "email": instance.team.created_by.email,
-    #                 },
-    #             },
-    #         }
-    #     )
-
-    #     async_to_sync(NotificationConsumer.send_invitation_notification(invite))

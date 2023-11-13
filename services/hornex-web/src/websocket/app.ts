@@ -5,7 +5,7 @@ const ws = new WebSocket(
 ws.onopen = () => {
   console.log('WebSocket connected');
   ws.onmessage = (messageEvent) => {
-    console.log('MSG DATA:', messageEvent.data);
+    console.log('MSG DATA:', JSON.parse(messageEvent.data));
   };
 };
 
