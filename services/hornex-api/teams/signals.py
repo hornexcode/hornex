@@ -1,19 +1,76 @@
+import json
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from teams.models import Team, TeamMember, TeamInvite
+from notifications.models import Notification
 from asgiref.sync import async_to_sync
+import channels.layers
 
 
 @receiver(post_save, sender=Team)
-def create_team_member(sender, instance, created, **kwargs):
+def team_created(sender, instance, created, **kwargs):
     if created:
         user = instance.created_by
-        team_member = TeamMember.objects.create(team=instance, user=user, is_admin=True)
+        TeamMember.objects.create(team=instance, user=user, is_admin=True)
 
 
 @receiver(post_save, sender=TeamInvite)
-def invitation_created(sender, instance, created, **kwargs):
+def invite_created(sender, instance, created, **kwargs):
     if created:
-        from notifications.consumers import NotificationConsumer
+        notification = Notification.objects.create(
+            name=instance.__str__(),
+            data=json.dumps(
+                {
+                    "team": {
+                        "id": instance.team.id.__str__(),
+                        "name": instance.team.name,
+                    }
+                }
+            ),
+            activity=Notification.ActivityType.TEAM_INVITATION,
+            recipient_id=instance.user.id,
+        )
 
-        async_to_sync(NotificationConsumer.send_invitation_notification(instance))
+        timestamp_in_milliseconds = int(notification.created_at.timestamp() * 1000)
+        channel_layer = channels.layers.get_channel_layer("notifications")
+
+        async_to_sync(channel_layer.send)(
+            json.dumps(
+                {
+                    "id": notification.id.__str__(),
+                    "type": notification.activity,
+                    "message": "You have been invited to join a team",
+                    "data": notification.data,
+                    "created_at": timestamp_in_milliseconds,
+                }
+            )
+        )
+
+        print("success")
+
+    # if created:
+    #     notification = Notification.objects.create(
+    #         {"type": Notification.ActivityType.TEAM_INVITATION}
+    #     )
+
+    #     # notification
+    #     invite = json.dumps(
+    #         {
+    #             "id": notification.id,
+    #             "type": notification.activity,
+    #             "message": "You have been invited to join a team",
+    #             "team": {
+    #                 "id": instance.team.id,
+    #                 "name": instance.team.name,
+    #                 "slug": instance.team.slug,
+    #                 "description": instance.team.description,
+    #                 "created_by": {
+    #                     "id": instance.team.created_by.id,
+    #                     "username": instance.team.created_by.username,
+    #                     "email": instance.team.created_by.email,
+    #                 },
+    #             },
+    #         }
+    #     )
+
+    #     async_to_sync(NotificationConsumer.send_invitation_notification(invite))

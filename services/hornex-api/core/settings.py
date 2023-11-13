@@ -179,11 +179,12 @@ CELERY_CACHE_BACKEND = "default"
 # THIRD PARTY KEYS
 RIOT_API_KEY = "RGAPI-eda91699-6860-4fde-9ef8-d6ea815a9201"
 
-CHANNEL_LAYER = {
+ASGI_APPLICATION = "core.asgi.application"
+CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("127.0.0.1", 6379)],
         },
     }
 }

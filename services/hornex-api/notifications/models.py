@@ -13,7 +13,7 @@ class Notification(models.Model):
     )
 
     data = models.JSONField()
-    user_id = models.UUIDField()
+    recipient_id = models.UUIDField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     read_at = models.DateTimeField(null=True, blank=True)
