@@ -50,6 +50,29 @@ def get_invites(request):
     return Response(ils.data, status=status.HTTP_200_OK)
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def get_invites_count(request):
+    u = request.user
+
+    filtering = {"status": request.query_params.get("status", None)}
+    inviteStatus = {}
+
+    print("filtering", filtering)
+    if filtering["status"] is not None and filtering["status"] == "accepted":
+        inviteStatus = {"accepted_at__isnull": False, "declined_at__isnull": True}
+    elif filtering["status"] is not None and filtering["status"] == "declined":
+        inviteStatus = {"declined_at__isnull": True, "accepted_at__isnull": False}
+    elif filtering["status"] is not None and filtering["status"] == "pending":
+        inviteStatus = {"accepted_at__isnull": True, "declined_at__isnull": True}
+
+    return Response(
+        TeamInvite.objects.filter(user__id=u.id, **inviteStatus).count(),
+        status=status.HTTP_200_OK,
+    )
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
