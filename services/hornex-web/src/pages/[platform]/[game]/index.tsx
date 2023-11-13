@@ -124,8 +124,8 @@ Game.getLayout = (page: React.ReactElement) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const cookies = Cookies.parse(ctx.req.headers.cookie || '');
   if (
-    cookies['hx-auth.token'] !== undefined &&
-    cookies['hx-auth.token'] !== ''
+    cookies['hx.auth.token'] !== undefined &&
+    cookies['hx.auth.token'] !== ''
   ) {
     return {
       props: {},

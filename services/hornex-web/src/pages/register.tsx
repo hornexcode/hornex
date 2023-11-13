@@ -36,7 +36,7 @@ export default function RegisterPage() {
   const onRegister = async (payload: RegisterInput) => {
     const { data, error } = await registerRequest(payload);
     if (!error && data) {
-      set('hx-auth.token', data.access_token);
+      set('hx.auth.token', data.access_token);
       router.push('/signup-confirm');
     }
     if (error) {

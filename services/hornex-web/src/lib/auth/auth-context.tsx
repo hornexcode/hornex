@@ -57,7 +57,7 @@ export const AuthContextProvider = ({
   }
 
   useEffect(() => {
-    const token = get('hx');
+    const token = get('hx.auth.token');
 
     if (!state.isAuthenticated && token) {
       setFetching(true);
@@ -90,7 +90,7 @@ export const AuthContextProvider = ({
   };
 
   const logout = async () => {
-    set('hx-auth.token', '');
+    set('hx.auth.token', '');
     dispatch({ type: 'LOGOUT' });
   };
 

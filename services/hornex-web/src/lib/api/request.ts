@@ -10,7 +10,7 @@ const isServer = typeof window === 'undefined';
 const API_ROOT = isServer
   ? `${process.env.API_URL}`
   : `${process.env.NEXT_PUBLIC_API_URL}`;
-const HX_COOKIE = 'hx';
+const HX_COOKIE = 'hx.auth.token';
 
 export type ParamMap = {
   [key: string]: string[] | string | number | undefined;
