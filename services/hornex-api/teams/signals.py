@@ -35,7 +35,7 @@ def invite_created(sender, instance, created, **kwargs):
         channel_layer = channels.layers.get_channel_layer()
 
         async_to_sync(channel_layer.group_send)(
-            "notifications",
+            f"notifications_{instance.user.id}",
             message={
                 "id": notification.id.__str__(),
                 "type": notification.activity,

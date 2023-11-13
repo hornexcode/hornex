@@ -1,14 +1,29 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from core import settings
+import jwt
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):
+    user_channel_name = ""
+
     async def connect(self):
         await self.accept()
-        await self.channel_layer.group_add("notifications", self.channel_name)
+
+        token = self.scope.get("cookies").get("hx.auth.token")
+        decoded_token = jwt.decode(
+            str(token), settings.SECRET_KEY, algorithms=["HS256"]
+        )
+
+        user_id = decoded_token.get("user_id")
+        self.user_channel_name = f"notifications_{user_id}"
+
+        await self.channel_layer.group_add(self.user_channel_name, self.channel_name)
 
     async def disconnect(self, code):
-        # await self.channel_layer.group_discard("notifications", self.channel_name)
+        await self.channel_layer.group_discard(
+            self.user_channel_name, self.channel_name
+        )
         return await super().disconnect(code)
 
     async def send_notification(self):
