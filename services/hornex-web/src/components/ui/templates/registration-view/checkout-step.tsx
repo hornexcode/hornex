@@ -4,6 +4,7 @@ import InputLabel from '../../atoms/form/input-label';
 import { LongArrowLeft } from '../../atoms/icons/long-arrow-left';
 import { LongArrowRight } from '../../atoms/icons/long-arrow-right';
 import Listbox, { ListboxOption } from '../../atoms/list-box';
+import PaymentOptions from '../../molecules/payment-options';
 import { useStepContext } from './registration-view';
 import { dataLoader } from '@/lib/api';
 import { Team, Tournament } from '@/lib/proto';
@@ -42,7 +43,12 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
         className="space-y-8"
         // onSubmit={handleSubmit(submitHandler)}
       >
-        <div className="space-y-2 border-y border-dashed border-gray-400 py-4">
+        <div className="space-y-2 border-t border-dashed border-gray-600 pt-4">
+          <h4 className="mb-4 uppercase tracking-wider text-gray-400">
+            Payment
+          </h4>
+        </div>
+        <div className="space-y-2 border-t border-dashed border-gray-600 pt-4">
           <h4 className="mb-4 uppercase tracking-wider text-gray-400">
             Details
           </h4>
@@ -58,35 +64,15 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
             <div className="font-semibold">Number of members:</div>
             <div className="font-semibold">x{tournament.team_size}</div>
           </div>
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between border-t border-dashed border-gray-600 pt-4 text-sm">
             <div className="font-semibold">Total</div>
-            <div className="font-semibold">$100</div>
+            <div className="text-2xl font-semibold">
+              ${tournament.entry_fee * tournament.team_size}
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2 border-b border-dashed border-gray-400 pb-4">
-          <h4 className="mb-4 uppercase tracking-wider text-gray-400">
-            Payment
-          </h4>
-          <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Team:</div>
-            <div className="font-semibold">{team?.name}</div>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Entry fee:</div>
-            <div className="font-semibold">${tournament.entry_fee}</div>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Number of members:</div>
-            <div className="font-semibold">x{tournament.team_size}</div>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Total</div>
-            <div className="font-semibold">$100</div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-end ">
+        <div className="flex items-center justify-end border-t border-dashed border-gray-600 pt-4">
           <Button
             color="gray"
             shape="rounded"

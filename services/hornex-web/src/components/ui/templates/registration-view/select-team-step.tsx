@@ -2,6 +2,7 @@ import Button from '../../atoms/button';
 import InputLabel from '../../atoms/form/input-label';
 import { LongArrowRight } from '../../atoms/icons/long-arrow-right';
 import Listbox, { ListboxOption } from '../../atoms/list-box';
+import PaymentOptions from '../../molecules/payment-options';
 import { useStepContext } from './registration-view';
 import { dataLoader } from '@/lib/api';
 import { Team, Tournament } from '@/lib/proto';
@@ -35,6 +36,7 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
   });
 
   const [isFetching, setIsFetching] = useState(false);
+  let [paymentMethod, setPaymentMethod] = useState('pix');
   const [teamOption, setTeamOption] = useState({
     name: 'Please select a team',
     value: '',
@@ -97,26 +99,10 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
             )}
           />
         </div>
-        {/* <div className="space-y-2 border-y border-dashed border-gray-400 py-4">
-        <h4 className="mb-4 uppercase tracking-wider">Checkout</h4>
-        <div className="flex items-center justify-between text-sm">
-          <div className="">Entry fee:</div>
-          <div className="">${tournament.entry_fee}</div>
+        <div className="w-full">
+          <InputLabel title="Payment method" important />
+          <PaymentOptions onChange={setPaymentMethod} value={paymentMethod} />
         </div>
-        <div className="flex items-center justify-between text-sm">
-          <div className="">Number of members:</div>
-          <div className="">x{tournament.team_size}</div>
-        </div>
-        <div className="flex items-center justify-between text-xl">
-          <div className="font-semibold">Total=</div>
-          <div className="font-semibold">$100</div>
-        </div>
-      </div> */}
-        {/* <div className="rounded bg-blue-400 p-4 text-left text-sm text-white">
-      <InfoIcon className="mr-2 inline-block w-4" />
-      After clicking in registrate you will be redirect to the payment so we
-      can fconfirm your registration
-    </div> */}
         <div className="flex items-center justify-end ">
           <Button
             color="gray"

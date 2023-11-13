@@ -8,15 +8,19 @@ type MenuItem = {
 
 export const menuItems: MenuItem[] = [
   {
-    name: 'Terms of use',
+    name: 'Termos de uso',
     href: routes.termsAndConditions,
   },
   {
-    name: 'About',
+    name: 'Sobre nós',
     href: routes.about,
   },
   {
-    name: 'Contact',
+    name: 'Contato',
+    href: routes.contactUs,
+  },
+  {
+    name: 'Fale conosco',
     href: routes.contactUs,
   },
   // {

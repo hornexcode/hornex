@@ -65,7 +65,7 @@ const RegistrationView = () => {
   }
 
   return (
-    <div className="bg-light-dark rounded-md p-8 sm:w-[500px]">
+    <div className="bg-dark rounded-lg p-8 sm:w-[500px]">
       {/* {isFetching && (
         <div className="flex flex-col p-8 text-center">
           <p>Aguarde enquanto conferimos sua inscrição no torneio.</p>
