@@ -4,7 +4,10 @@ import {
   SwordsIcon,
 } from '@/components/ui/atoms/icons';
 import routes from '@/config/routes';
+import { dataLoader } from '@/lib/api';
+import { GetInvitesResponse } from '@/lib/hx-app/types';
 import { useNotification } from '@/lib/notification';
+import { useWebSocketContext } from '@/websocket/context';
 import {
   HomeIcon,
   PlusIcon,
@@ -13,7 +16,10 @@ import {
 } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
+
+const { useData: useGetUserInvites } =
+  dataLoader<GetInvitesResponse>('getUserInvites');
 
 export const Sidebar = ({ className }: { className?: string }) => {
   const { notifications: generalNotifications } = useNotification();
@@ -21,6 +27,16 @@ export const Sidebar = ({ className }: { className?: string }) => {
     () => generalNotifications.filter((n) => n.type === 'invite'),
     [generalNotifications]
   );
+
+  const { data, mutate } = useGetUserInvites({ status: 'pending' });
+
+  const { addListener } = useWebSocketContext();
+
+  useEffect(() => {
+    addListener('team_invitation', (_) => {
+      mutate();
+    });
+  }, []);
 
   return (
     <div
@@ -53,7 +69,8 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <UserGroupIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
-          {!!notifications.filter((n) => n.type === 'invite').length && (
+          {/* {!!notifications.filter((n) => n.type === 'invite').length && ( */}
+          {!!data?.length && (
             <div>
               <span className="sr-only">Notifications</span>
               <div className="absolute -right-2 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red-500 font-bold text-[11x] text-white dark:border-gray-900">
