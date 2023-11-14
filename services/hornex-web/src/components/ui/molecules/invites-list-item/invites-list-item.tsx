@@ -18,12 +18,19 @@ const { post: declineInvite } = dataLoader<
   DeclineInviteRequestParams
 >('declineInvite');
 
+const { useData: useCountUserInvites } = dataLoader<number>('countUserInvites');
+
 export const InvitesListItem: FC<InviteProps> = ({ invite }) => {
+  const { mutate } = useCountUserInvites({
+    status: 'pending',
+  });
+
   const acceptInviteHandler = async () => {
     const { error } = await acceptInvite({ invite_id: invite.id });
     if (error?.response) {
       return toast.error(error.response.message);
     }
+    mutate();
     toast.success('Invite accept successfully');
   };
 
@@ -32,6 +39,7 @@ export const InvitesListItem: FC<InviteProps> = ({ invite }) => {
     if (error?.response) {
       return toast.error(error.response.message);
     }
+    mutate();
     toast.success('Invite declined successfully');
   };
 
