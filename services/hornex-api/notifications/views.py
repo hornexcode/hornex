@@ -61,10 +61,10 @@ class NotificationViewSet(viewsets.ModelViewSet):
         notifications_ids = request.data
 
         try:
-            Notification.objects.filter(
+            notifications = Notification.objects.filter(
                 id__in=notifications_ids, recipient_id=recipient_id
             ).update(read_at=timezone.now())
         except ValidationError as e:
             return Response(e, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(notifications, status=status.HTTP_200_OK)

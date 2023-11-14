@@ -132,4 +132,14 @@ export const routes = {
     method: Method.POST,
     schema: null,
   },
+  getNotifications: {
+    path: 'v1/notifications',
+    method: Method.GET,
+    schema: null,
+  },
+  readNotifications: {
+    path: 'v1/notifications/readings',
+    method: Method.PATCH,
+    schema: null,
+  },
 };

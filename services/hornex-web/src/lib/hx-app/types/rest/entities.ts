@@ -94,3 +94,15 @@ export const invite = z.object({
   declined: z.string(),
 });
 export type Invite = z.infer<typeof invite>;
+
+export const notification = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  activity: z.string(),
+  data: z.string().or(z.object({})),
+  recipient_id: z.string().uuid(),
+  read_at: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+export type Notification = z.infer<typeof notification>;

@@ -1,4 +1,4 @@
-import TeamsPage from '@/components/ui/templates/teams';
+import TeamsTeamplate from '@/components/ui/templates/teams';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { GetInvitesResponse } from '@/lib/hx-app/types';
@@ -8,41 +8,45 @@ import {
 } from '@/services/hx-core/get-teams';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-const { useData: getTeams } = dataLoader<GetTeamsOutput>('getTeams');
-const { fetch: getInvites } = dataLoader<GetInvitesResponse>('getUserInvites');
+const { useData: useGetTeams } = dataLoader<GetTeamsOutput>('getTeams');
+const { useData: useGetInvites } =
+  dataLoader<GetInvitesResponse>('getUserInvites');
 
-const Teams = ({
-  invites,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { data: teams, error, isLoading } = getTeams({});
+const TeamsPage = ({}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>) => {
+  const { data: teams, error, isLoading } = useGetTeams({});
+  const {
+    data: invites,
+    error: invitesError,
+    isLoading: isInvitesLoading,
+  } = useGetInvites({});
 
   if (error) {
     return <div>{error.message}</div>;
   }
 
-  if (teams && !isLoading) {
+  if (invitesError) {
+    return <div>{invitesError.message}</div>;
+  }
+  isInvitesLoading;
+  if (teams && !isLoading && invites && !isInvitesLoading) {
     return (
       <div className="mx-auto w-full max-w-[1160px]">
-        <TeamsPage teams={teams} invites={invites} />
+        <TeamsTeamplate teams={teams} invites={invites} />
       </div>
     );
   }
 };
 
-Teams.getLayout = (page: React.ReactElement) => {
+TeamsPage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data: invites } = await getInvites(
-    {
-      status: 'pending',
-    },
-    ctx.req
-  );
   return {
-    props: { invites },
+    props: {},
   };
 };
 
-export default Teams;
+export default TeamsPage;
