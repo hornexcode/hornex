@@ -106,7 +106,14 @@ class InviteSerializer(serializers.ModelSerializer):
         if it.exists():
             raise already_team_member
 
-        it = Invite.objects.filter(team=team, user=user)
+        # Verify if team's pending invite already exists for this user
+        it = Invite.objects.filter(
+            team=team,
+            user=user,
+            accepted_at__isnull=True,
+            declined_at__isnull=True,
+            expired_at__isnull=True,
+        )
         if it.exists():
             raise team_invite_already_exists
 
