@@ -1,5 +1,5 @@
-from django.db import models
 import uuid
+from django.db import models
 
 
 class Team(models.Model):
@@ -44,6 +44,10 @@ class Membership(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user.email} :: ({self.team.name})"
+
+    def can_play(self, tier: str):
+        u = self.user
+        return u.can_play(tier)
 
 
 class Invite(models.Model):

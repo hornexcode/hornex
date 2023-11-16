@@ -7,6 +7,7 @@ from abc import abstractmethod
 
 from tournaments.validators import validate_team_size
 from tournaments import errors
+from teams.models import Team
 
 
 class RegistrationError(Exception):
@@ -75,18 +76,32 @@ class Tournament(models.Model):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
+    def is_full(self):
+        return Registration.objects.filter(tournament=self).count() >= self.max_teams
+
+    def team_has_enough_members(self, team):
+        return team.members.count() >= self.team_size
+
+    def team_has_registration(self, team):
+        return Registration.objects.filter(tournament=self, team=team).exists()
+
+    def check_team_members_can_play(self, team: Team):
+        return all(
+            [
+                member.can_play(self.get_classification())
+                for member in team.members.all()
+            ]
+        )
+
     def register(self, team):
-        if (
-            Registration.objects.filter(tournament__id=self.id).count()
-            >= self.max_teams
-        ):
+        if self.is_full():
             raise RegistrationError(errors.TournamentFullError)
-
-        if Registration.objects.filter(tournament__id=self.id, team=team).exists():
+        if self.team_has_registration(team):
             raise RegistrationError(errors.TeamAlreadyRegisteredError)
-
-        if team.members.count() < self.team_size:
+        if not self.team_has_enough_members(team):
             raise RegistrationError(errors.EnoughMembersError)
+        if not self.check_team_members_can_play(team):
+            raise RegistrationError(errors.CannotPlayError)
 
         return Registration.objects.create(tournament=self, team=team)
 

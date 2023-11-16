@@ -51,6 +51,8 @@ class TournamentRegistrationTests(APITestCase):
             {"team": team.id},
         )
 
+        logger.info(resp.json())
+
         # response checks
         self.assertEqual(resp.status_code, 201)
 
