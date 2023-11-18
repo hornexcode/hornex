@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "django_celery_results",
     "corsheaders",  # dev only
     # apps
+    "accounts",
     "users",
     "teams",
     "invites",

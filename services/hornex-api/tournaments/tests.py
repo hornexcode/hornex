@@ -11,9 +11,16 @@ from platforms.models import Platform
 from games.models import Game
 from teams.models import Team, Membership
 from tournaments.models import Tournament, Registration
+from tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
 from tournaments import errors
 
-from test.factories import UserFactory, TeamFactory, TournamentFactory
+from test.factories import (
+    UserFactory,
+    TeamFactory,
+    TournamentFactory,
+    LeagueOfLegendsTournamentFactory,
+    LeagueOfLegendsAccountFactory,
+)
 from lib.logging import logger
 
 
@@ -31,11 +38,17 @@ class TournamentRegistrationTests(APITestCase):
 
     def test_tournament_registration_201_success(self):
         team = TeamFactory.new(created_by=self.user)
+        tier = Tier.objects.create(name="test tier")
         Membership.objects.create(team=team, user=self.user)
+        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier)
         for _ in range(0, 4):
-            Membership.objects.create(team=team, user=UserFactory.new())
+            usr = UserFactory.new()
+            LeagueOfLegendsAccountFactory.new(user=usr, tier=tier)
+            Membership.objects.create(team=team, user=usr)
 
-        self.tournament = TournamentFactory.new(organizer=self.user)
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user, classification=tier
+        )
 
         url = reverse(
             "tournament-register",
@@ -53,6 +66,9 @@ class TournamentRegistrationTests(APITestCase):
 
         logger.info(resp.json())
 
+        self.assertEqual(Tournament.objects.count(), 1)
+        self.assertEqual(LeagueOfLegendsTournament.objects.count(), 1)
+
         # response checks
         self.assertEqual(resp.status_code, 201)
 
@@ -61,7 +77,10 @@ class TournamentRegistrationTests(APITestCase):
 
     def test_tournament_registration_400_max_teams(self):
         team = TeamFactory.new(created_by=self.user)
-        tournament = TournamentFactory.new(organizer=self.user)
+        tier = Tier.objects.create(name="test tier")
+        tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user, classification=tier
+        )
 
         url = reverse(
             "tournament-register",

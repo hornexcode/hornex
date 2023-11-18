@@ -7,8 +7,6 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils import timezone
 
-from tournaments.leagueoflegends.models import Tier
-
 
 LEAGUE_OF_LEGENDS = "league-of-legends"
 
@@ -59,13 +57,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
 
-    def can_play(self, game: str) -> bool:
+    def can_play(self, game: str, classification: str) -> bool:
+        if game == LEAGUE_OF_LEGENDS:
+            return (
+                self.leagueoflegendsaccount.tier.name == classification
+                if self.leagueoflegendsaccount.tier is not None
+                else False
+            )
         return False
-
-
-class LeagueOfLegendsProfile(models.Model):
-    puuid = models.CharField(max_length=78, null=True, blank=True)
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="leagueoflegendsprofile"
-    )
-    tiers = models.ManyToManyField(Tier)

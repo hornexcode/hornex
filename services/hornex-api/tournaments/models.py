@@ -4,6 +4,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from abc import abstractmethod
+from rest_framework.exceptions import ValidationError
 
 from tournaments.validators import validate_team_size
 from tournaments import errors
@@ -85,23 +86,26 @@ class Tournament(models.Model):
     def team_has_registration(self, team):
         return Registration.objects.filter(tournament=self, team=team).exists()
 
-    def check_team_members_can_play(self, team: Team):
+    def team_members_can_play(self, team: Team):
         return all(
             [
-                member.can_play(self.get_classification())
+                member.can_play(
+                    game=Tournament.GameType.LEAGUE_OF_LEGENDS,
+                    classification=self.get_classification(),
+                )
                 for member in team.members.all()
             ]
         )
 
     def register(self, team):
         if self.is_full():
-            raise RegistrationError(errors.TournamentFullError)
+            raise ValidationError(detail=errors.TournamentFullError)
         if self.team_has_registration(team):
-            raise RegistrationError(errors.TeamAlreadyRegisteredError)
+            raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
         if not self.team_has_enough_members(team):
-            raise RegistrationError(errors.EnoughMembersError)
-        if not self.check_team_members_can_play(team):
-            raise RegistrationError(errors.CannotPlayError)
+            raise ValidationError(detail=errors.EnoughMembersError)
+        if not self.team_members_can_play(team):
+            raise ValidationError(detail=errors.CannotPlayError)
 
         return Registration.objects.create(tournament=self, team=team)
 

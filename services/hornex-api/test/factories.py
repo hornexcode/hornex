@@ -3,8 +3,8 @@ from datetime import timezone as tz, datetime as dt, timedelta as td
 from teams.models import Team
 from users.models import User
 from tournaments.models import Tournament
-from tournaments.leagueoflegends.models import LeagueOfLegendsTournament
-
+from tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
+from accounts.models import LeagueOfLegendsAccount
 
 fake = faker.Faker()
 
@@ -71,12 +71,15 @@ class TournamentFactory:
 
 class LeagueOfLegendsTournamentFactory:
     @staticmethod
-    def new(organizer: User, **kwargs):
+    def new(organizer: User, classification=None, **kwargs):
         """
         Create a new tournament with the given organizer and kwargs.
         """
+        if classification is not None and isinstance(classification, Tier):
+            classification = [classification]
+
         now = dt.now(tz=tz.utc)
-        return LeagueOfLegendsTournament.objects.create(
+        tmt = LeagueOfLegendsTournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),
             organizer=organizer,
@@ -97,4 +100,34 @@ class LeagueOfLegendsTournamentFactory:
             prize_pool=kwargs.get("prize_pool", 999),
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
+        )
+
+        tmt.tiers.set(classification) if classification is not None else None
+        return tmt
+
+
+class TierFactory:
+    @staticmethod
+    def new(**kwargs):
+        """
+        Create a new tier with the given kwargs.
+        """
+        return Tier.objects.create(
+            name=kwargs.get("name", fake.name()),
+        )
+
+
+class LeagueOfLegendsAccountFactory:
+    @staticmethod
+    def new(user: User, tier: Tier, **kwargs):
+        """
+        Create a new league of legends account with the given kwargs.
+        """
+        return LeagueOfLegendsAccount.objects.create(
+            user=user,
+            username=kwargs.get("username", fake.name()),
+            password=kwargs.get("password", "password"),
+            summoner_name=kwargs.get("summoner_name", fake.name()),
+            region=kwargs.get("region", "NA"),
+            tier=tier,
         )

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tournaments.models import Tournament
+from tournaments.models import Tournament, Registration
 from tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 
 
@@ -32,10 +32,16 @@ class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
         model = LeagueOfLegendsTournament
         fields = "__all__"
 
-    def to_representation(self, instance):
-        return super().to_representation(instance)
+    # def to_representation(self, instance):
+    #     return super().to_representation(instance)
 
 
-class RegistrationSerializer(serializers.Serializer):
+class RegistrationCreateSerializer(serializers.Serializer):
     team = serializers.UUIDField()
     tournament = serializers.UUIDField()
+
+
+class RegistrationReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registration
+        fields = "__all__"
