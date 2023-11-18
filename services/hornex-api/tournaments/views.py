@@ -139,15 +139,14 @@ class TournamentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        # try:
-        reg = tmt.register(tm)
-        # except ValidationError as e:
-        #     return Response({"error": e.detail[0]}, status=status.HTTP_400_BAD_REQUEST)
-        # except Exception as e:
-        #     logger.warning(e)
-        #     return Response(
-        #         {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        #     )
+        try:
+            reg = tmt.register(tm)
+        except ValidationError as e:
+            return Response({"error": e.detail[0]}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(
+                {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
         return Response(
             RegistrationReadSerializer(reg).data,

@@ -105,7 +105,7 @@ class Tournament(models.Model):
         if not self.team_has_enough_members(team):
             raise ValidationError(detail=errors.EnoughMembersError)
         if not self.team_members_can_play(team):
-            raise ValidationError(detail=errors.CannotPlayError)
+            raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
 
         return Registration.objects.create(tournament=self, team=team)
 

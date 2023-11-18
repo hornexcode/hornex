@@ -57,7 +57,7 @@ class LeagueOfLegendsTournament(BaseTournament):
         return f"{self.name} ({self.id})"
 
     def get_classification(self):
-        return "".join([f"{tier.name}, " for tier in self.tiers.all()])[:-2]
+        return [tier.name for tier in self.tiers.all()]
 
 
 class Code(models.Model):

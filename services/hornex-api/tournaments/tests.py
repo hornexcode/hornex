@@ -24,7 +24,7 @@ from test.factories import (
 from lib.logging import logger
 
 
-class TournamentRegistrationTests(APITestCase):
+class LeagueOfLegendsTournamentRegistrationTests(APITestCase):
     def setUp(self) -> None:
         self.user = UserFactory.new()
 
@@ -36,7 +36,7 @@ class TournamentRegistrationTests(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
         )
 
-    def test_tournament_registration_201_success(self):
+    def test_201_success(self):
         team = TeamFactory.new(created_by=self.user)
         tier = Tier.objects.create(name="test tier")
         Membership.objects.create(team=team, user=self.user)
@@ -64,8 +64,6 @@ class TournamentRegistrationTests(APITestCase):
             {"team": team.id},
         )
 
-        logger.info(resp.json())
-
         self.assertEqual(Tournament.objects.count(), 1)
         self.assertEqual(LeagueOfLegendsTournament.objects.count(), 1)
 
@@ -75,7 +73,7 @@ class TournamentRegistrationTests(APITestCase):
         # database checks
         self.assertEqual(Registration.objects.count(), 1)
 
-    def test_tournament_registration_400_max_teams(self):
+    def test_400_do_not_has_enough_members_error(self):
         team = TeamFactory.new(created_by=self.user)
         tier = Tier.objects.create(name="test tier")
         tournament = LeagueOfLegendsTournamentFactory.new(
@@ -99,12 +97,13 @@ class TournamentRegistrationTests(APITestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], errors.EnoughMembersError)
 
-    def test_tournament_registration_400_team_size(self):
+    def test_400_tournament_is_full_error(self):
         team = TeamFactory.new(created_by=self.user)
         Membership.objects.create(team=team, user=self.user)
-
-        self.tournament = TournamentFactory.new(
-            organizer=self.user, team_size=1, max_teams=1
+        tier = Tier.objects.create(name="test tier")
+        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier)
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user, classification=tier, team_size=1, max_teams=1
         )
 
         url = reverse(
@@ -155,11 +154,14 @@ class TournamentRegistrationTests(APITestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], errors.TournamentFullError)
 
-    def test_tournament_registration_400_team_already_registered(self):
+    def test_400_team_already_registered_error(self):
         team = TeamFactory.new(created_by=self.user)
         Membership.objects.create(team=team, user=self.user)
-
-        self.tournament = TournamentFactory.new(organizer=self.user, team_size=1)
+        tier = Tier.objects.create(name="test tier")
+        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier)
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user, classification=tier, team_size=1
+        )
 
         url = reverse(
             "tournament-register",
@@ -184,6 +186,41 @@ class TournamentRegistrationTests(APITestCase):
 
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], errors.TeamAlreadyRegisteredError)
+
+    def test_400_team_member_is_not_allowed_to_registrate_error(
+        self,
+    ):
+        team = TeamFactory.new(created_by=self.user)
+        tier_bronze = Tier.objects.create(name="silver tier")
+        tier_silver = Tier.objects.create(name="bronze tier")
+        tier_gold = Tier.objects.create(name="gold tier")
+        Membership.objects.create(team=team, user=self.user)
+        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier_gold)
+        for _ in range(0, 4):
+            usr = UserFactory.new()
+            LeagueOfLegendsAccountFactory.new(user=usr, tier=tier_bronze)
+            Membership.objects.create(team=team, user=usr)
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user, classification=[tier_bronze, tier_silver]
+        )
+
+        url = reverse(
+            "tournament-register",
+            kwargs={
+                "platform": "pc",
+                "game": "league-of-legends",
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {"team": team.id},
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.data["error"], errors.TeamMemberIsNotAllowedToRegistrate)
 
 
 class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
@@ -236,7 +273,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
 
         return super().setUp()
 
-    def test_tournament_registration_400_already_registered_error(self):
+    def test_400_already_registered_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
 
         Registration.objects.create(tournament=self.tournament, team=self.team)
@@ -249,7 +286,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], "Team is already registered.")
 
-    def test_tournament_registration_400_tournament_is_full_error(self):
+    def test_400_tournament_is_full_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
         # Ensure that the tournament is full
         self.tournament.max_teams = 0
@@ -263,7 +300,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], "Tournament is full.")
 
-    def test_tournament_registration_400_tournament_has_started_error(self):
+    def test_400_tournament_has_started_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
 
         # Ensure that the tournament has started
@@ -290,7 +327,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], "Tournament has started or finished.")
 
-    def test_tournament_registration_400_team_admin_error(self):
+    def test_400_team_admin_error(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
 
         u = User.objects.create_user(email="testuser2", password="testpass")
@@ -307,7 +344,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
             resp.data["error"], "Only team admin can register for a tournament."
         )
 
-    def test_tournament_registration_team_game_400(self):
+    def test_team_game_400(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
         game = Game.objects.create(name="test game")
         game.platforms.set([self.platform])
@@ -325,7 +362,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
             resp.data["error"], "Team's game does not match tournament's game."
         )
 
-    def test_tournament_registration_team_platform_400(self):
+    def test_team_platform_400(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
         platform = Platform.objects.create(name="test platform 2")
         self.tournament.platform = platform
@@ -342,7 +379,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
             resp.data["error"], "Team's platform does not match tournament's platform."
         )
 
-    def test_tournament_registration_team_size_400(self):
+    def test_team_size_400(self):
         url = reverse("tournament-register", kwargs={"id": self.tournament.id})
         self.tournament.team_size = 2
         self.tournament.save()
@@ -358,7 +395,7 @@ class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
             resp.data["error"], "Team's size does not match tournament requirements."
         )
 
-    def test_tournament_registration_404(self):
+    def test_404(self):
         url = reverse("tournament-register", kwargs={"id": uuid.uuid4()})
         resp = self.client.post(
             url,
