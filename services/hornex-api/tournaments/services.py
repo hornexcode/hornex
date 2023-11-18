@@ -152,8 +152,7 @@ class TournamentManagementService:
         ).exists():
             raise PermissionDenied("Only team admin can cancel registration.")
 
-        registration.cancelled_at = timezone.now()
-        registration.save()
+        registration.cancel()
 
     def unregister(self, registration_id: int, user_id: int):
         user = User.objects.get(id=user_id)

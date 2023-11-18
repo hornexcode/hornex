@@ -110,10 +110,8 @@ class Tournament(models.Model):
         return Registration.objects.create(tournament=self, team=team)
 
     def cancel_registration(self, team):
-        registration = Registration.objects.get(tournament=self, team=team)
-        registration.cancelled_at = timezone.now()
-        registration.save()
-        return
+        regi = Registration.objects.get(tournament=self, team=team)
+        regi.cancel()
 
     def subscribe(self, team, payment_date: datetime):
         Subscription.objects.create(
@@ -181,18 +179,28 @@ class Subscription(models.Model):
 
 class RegistrationManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(cancelled_at__isnull=True)
+        return super().get_queryset().filter(status__in=["accepted", "pending"])
 
 
 class Registration(models.Model):
+    class RegistrationStatusType(models.TextChoices):
+        PENDING = "pending"
+        ACCEPTED = "accepted"
+        REJECTED = "rejected"
+        CANCELLED = "cancelled"
+
     objects = RegistrationManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
 
-    confirmed_at = models.DateTimeField(null=True, blank=True)
-    cancelled_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(
+        max_length=50,
+        choices=RegistrationStatusType.choices,
+        default=RegistrationStatusType.PENDING,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -201,10 +209,11 @@ class Registration(models.Model):
             | entry fee: ${self.tournament.entry_fee}"
 
     def accept(self):
-        self.confirmed_at = timezone.now()
-        self.tournament.subscribe(
-            team=self.team, status=Subscription.StatusOptions.ACTIVE
-        )
+        self.status = Registration.RegistrationStatusType.ACCEPTED
+        self.save()
+
+    def cancel(self):
+        self.status = Registration.RegistrationStatusType.CANCELLED
         self.save()
 
 
