@@ -34,7 +34,7 @@ jobs:
       # Install project dependencies
       - run:
           name: Install project dependencies
-          command: poetry install
+          command: poetry shell && poetry install
 
       # Lint the code
       - run:
