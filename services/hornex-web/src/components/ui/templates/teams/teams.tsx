@@ -1,14 +1,13 @@
-import { InvitesListTabPanel } from '@/components/system-design/organisms/invites-list-tab-panel';
-import { TeamsListTabPanel } from '@/components/system-design/organisms/teams-list-tab-panel';
+import { InvitesListTabPanel } from '@/components/ui/organisms/invites-list-tab-panel';
+import { TeamsListTabPanel } from '@/components/ui/organisms/teams-list-tab-panel';
 import { dataLoader } from '@/lib/api';
 import { Invite, Team } from '@/lib/hx-app/types';
 import { GetNotificationsResponse } from '@/lib/hx-app/types/rest/get-notifications';
 import { Tab } from '@headlessui/react';
 import classnames from 'classnames';
 import { FC, useCallback, useState } from 'react';
-import { toast } from 'react-toastify';
 
-type TeamsPageProps = {
+type TeamsListTemplateProps = {
   teams: Team[];
   invites: Invite[];
 };
@@ -20,7 +19,7 @@ const { patch: readNotifications } = dataLoader<undefined, string[]>(
   'readNotifications'
 );
 
-const TeamsListPage: FC<TeamsListPageProps> = ({ teams, invites }) => {
+const TeamsListTemplate: FC<TeamsListTemplateProps> = ({ teams, invites }) => {
   let [tabs] = useState({
     Teams: '',
     Invites: '',
@@ -84,4 +83,4 @@ const TeamsListPage: FC<TeamsListPageProps> = ({ teams, invites }) => {
   );
 };
 
-export default TeamsPage;
+export default TeamsListTemplate;
