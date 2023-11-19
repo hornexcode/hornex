@@ -29,11 +29,6 @@ jobs:
           name: Lint code
           command: poetry run black --check .
 
-      - save_cache:
-          key: deps-{{ checksum "poetry.lock" }}
-          paths:
-            - .
-
       # Run tests
       - run:
           name: Run tests
