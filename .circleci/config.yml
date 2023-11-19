@@ -31,10 +31,15 @@ jobs:
           command: |
             curl -sSL https://install.python-poetry.org | python3 -
 
+      - run:
+          name: Add Poetry to PATH
+          command: |
+            export PATH="/root/.local/bin:$PATH"
+
       # Install project dependencies
       - run:
           name: Install project dependencies
-          command: poetry shell && poetry install
+          command: poetry install
 
       # Lint the code
       - run:
