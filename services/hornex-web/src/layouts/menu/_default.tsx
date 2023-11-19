@@ -1,9 +1,9 @@
 'use client';
 import { menuItems } from './_menu-items';
-import { ChevronDown } from '@/components/ui/icons/chevron-down';
-import ActiveLink from '@/components/ui/links/active-link';
-import { Menu } from '@/components/ui/menu';
-import { Transition } from '@/components/ui/transition';
+import { ChevronDown } from '@/components/ui/atoms/icons/chevron-down';
+import ActiveLink from '@/components/ui/atoms/links/active-link';
+import { Menu } from '@/components/ui/atoms/menu';
+import { Transition } from '@/components/ui/atoms/transition';
 import routes from '@/config/routes';
 import { Fragment } from 'react';
 

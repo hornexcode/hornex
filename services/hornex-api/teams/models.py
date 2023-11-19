@@ -1,5 +1,5 @@
-from django.db import models
 import uuid
+from django.db import models
 
 
 class Team(models.Model):
@@ -23,7 +23,7 @@ class Team(models.Model):
     )
     created_by = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     members = models.ManyToManyField(
-        "users.User", through="TeamMember", related_name="teams"
+        "users.User", through="Membership", related_name="teams"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -34,7 +34,7 @@ class Team(models.Model):
         return f"{self.name} ({self.id})"
 
 
-class TeamMember(models.Model):
+class Membership(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
@@ -45,8 +45,12 @@ class TeamMember(models.Model):
     def __str__(self) -> str:
         return f"{self.user.email} :: ({self.team.name})"
 
+    def can_play(self, tier: str):
+        u = self.user
+        return u.can_play(tier)
 
-class TeamInvite(models.Model):
+
+class Invite(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)

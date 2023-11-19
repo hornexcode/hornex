@@ -7,12 +7,12 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 import uuid
 
-from teams.models import Team, TeamInvite, TeamMember
+from teams.models import Team, Invite, Membership
 from teams.serializers import (
     TeamSerializer,
-    TeamInviteSerializer,
-    TeamMemberSerializer,
-    TeamInviteListSerializer,
+    InviteSerializer,
+    MembershipSerializer,
+    InviteListSerializer,
 )
 from core.route import extract_game_and_platform
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -63,18 +63,18 @@ class TeamViewSet(viewsets.ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class TeamInviteViewSet(viewsets.ModelViewSet):
-    queryset = TeamInvite.objects.all()
-    serializer_class = TeamInviteSerializer
+class InviteViewSet(viewsets.ModelViewSet):
+    queryset = Invite.objects.all()
+    serializer_class = InviteSerializer
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     filter_backends = (filters.DjangoFilterBackend,)
 
     def get_queryset(self):
-        self.serializer_class = TeamInviteListSerializer
+        self.serializer_class = InviteListSerializer
         team_id = self.kwargs.get("id")
-        queryset = TeamInvite.objects.filter(team__id=team_id)
+        queryset = Invite.objects.filter(team__id=team_id)
         if "status" in self.request.GET:
             if self.request.GET["status"] == "pending":
                 queryset = queryset.filter(
@@ -118,9 +118,9 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
         team_id = kwargs.get("team_id")
         id = kwargs.get("id")
         try:
-            invite = TeamInvite.objects.get(team__id=team_id, id=id)
+            invite = Invite.objects.get(team__id=team_id, id=id)
 
-            admin = TeamMember.objects.filter(
+            admin = Membership.objects.filter(
                 team__id=team_id, user=request.user, is_admin=True
             )
             if not admin.exists():
@@ -135,16 +135,16 @@ class TeamInviteViewSet(viewsets.ModelViewSet):
             return Response({"message": str(err)}, status=status.HTTP_404_NOT_FOUND)
 
 
-class TeamMemberViewSet(viewsets.ModelViewSet):
-    queryset = TeamMember.objects.all()
-    serializer_class = TeamMemberSerializer
+class MembershipViewSet(viewsets.ModelViewSet):
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         id = self.kwargs.get("id")
-        return TeamMember.objects.filter(team__id=id)
+        return Membership.objects.filter(team__id=id)
 
     @swagger_auto_schema(
         operation_description="GET /api/v1/teams/<id>/members",
@@ -168,10 +168,10 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
         team_id = kwargs.get("team_id")
         id = kwargs.get("id")
         try:
-            team_member = TeamMember.objects.get(team__id=team_id, id=id)
+            team_member = Membership.objects.get(team__id=team_id, id=id)
             team = Team.objects.get(id=team_id)
 
-            admin = TeamMember.objects.filter(
+            admin = Membership.objects.filter(
                 team__id=team_id, user=request.user, is_admin=True
             )
             if not admin.exists():

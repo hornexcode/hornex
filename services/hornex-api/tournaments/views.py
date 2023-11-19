@@ -5,19 +5,25 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.exceptions import ValidationError
+from django.db import transaction
 
-from tournaments.models import Registration, Tournament, RegistrationError
+from tournaments.models import Registration, Tournament
 from tournaments.filters import TournamentListFilter, TournamentListOrdering
 from tournaments.serializers import (
-    RegistrationSerializer,
+    RegistrationReadSerializer,
+    RegistrationCreateSerializer,
     LeagueOfLegendsTournamentSerializer,
     TournamentSerializer,
 )
 from tournaments.pagination import TournamentPagination
 from tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 
-from teams.models import Team, TeamMember
+from teams.models import Team
 from core.route import extract_game_and_platform
+
+from lib.logging import logger
 
 # from tournaments.leagueoflegends.usecases import RegisterTeam
 
@@ -64,6 +70,15 @@ class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
     lookup_field = "id"
+    # permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_object(self, *args, **kwargs):
+        game = kwargs.get("game")
+        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
+            self.queryset = LeagueOfLegendsTournament.objects.select_for_update().all()
+
+        return super().get_object()
 
     def retrieve(self, request, *args, **kwargs):
         game, _ = extract_game_and_platform(kwargs)
@@ -97,16 +112,18 @@ class TournamentViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=["post"],
     )
-    def register(self, request, id):
+    @transaction.atomic
+    def register(self, request, *args, **kwargs):
+        game, _ = extract_game_and_platform(kwargs)
         # validate request
-        params = RegistrationSerializer(
-            data={**request.data, "tournament": id},
+        params = RegistrationCreateSerializer(
+            data={**request.data, "tournament": kwargs["id"]},
             context={"request": request},
         )
         if not params.is_valid():
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        tmt: Tournament = self.get_object()
+        tmt: Tournament = self.get_object(game=game)
 
         try:
             tm = Team.objects.get(id=params.data["team"])
@@ -116,28 +133,30 @@ class TournamentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        u = TeamMember.objects.filter(user__id=request.user.id, is_admin=True).first()
-        if u is None:
+        if tm.created_by != request.user:
             return Response(
                 {"error": "You are not a allowed to register a team"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
         try:
-            tmt.register(tm)
-        except RegistrationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            reg = tmt.register(tm)
+        except ValidationError as e:
+            return Response({"error": e.detail[0]}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(
-                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(
+            RegistrationReadSerializer(reg).data,
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all()
-    serializer_class = RegistrationSerializer
+    serializer_class = RegistrationCreateSerializer
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
 

@@ -4,8 +4,11 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from abc import abstractmethod
+from rest_framework.exceptions import ValidationError
 
 from tournaments.validators import validate_team_size
+from tournaments import errors
+from teams.models import Team
 
 
 class RegistrationError(Exception):
@@ -74,28 +77,41 @@ class Tournament(models.Model):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
+    def is_full(self):
+        return Registration.objects.filter(tournament=self).count() >= self.max_teams
+
+    def team_has_enough_members(self, team):
+        return team.members.count() >= self.team_size
+
+    def team_has_registration(self, team):
+        return Registration.objects.filter(tournament=self, team=team).exists()
+
+    def team_members_can_play(self, team: Team):
+        return all(
+            [
+                member.can_play(
+                    game=Tournament.GameType.LEAGUE_OF_LEGENDS,
+                    classification=self.get_classification(),
+                )
+                for member in team.members.all()
+            ]
+        )
+
     def register(self, team):
-        if (
-            Registration.objects.filter(tournament__id=self.id).count()
-            >= self.max_teams
-        ):
-            raise RegistrationError("Max teams reached")
-
-        if Registration.objects.filter(tournament__id=self.id, team=team).exists():
-            raise RegistrationError(f"Team: {team.name} already registered")
-
-        if team.members.count() != self.team_size:
-            raise RegistrationError(
-                f"Team: {team.name} must have {self.team_size} members"
-            )
+        if self.is_full():
+            raise ValidationError(detail=errors.TournamentFullError)
+        if self.team_has_registration(team):
+            raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
+        if not self.team_has_enough_members(team):
+            raise ValidationError(detail=errors.EnoughMembersError)
+        if not self.team_members_can_play(team):
+            raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
 
         return Registration.objects.create(tournament=self, team=team)
 
     def cancel_registration(self, team):
-        registration = Registration.objects.get(tournament=self, team=team)
-        registration.cancelled_at = timezone.now()
-        registration.save()
-        return
+        regi = Registration.objects.get(tournament=self, team=team)
+        regi.cancel()
 
     def subscribe(self, team, payment_date: datetime):
         Subscription.objects.create(
@@ -163,18 +179,28 @@ class Subscription(models.Model):
 
 class RegistrationManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(cancelled_at__isnull=True)
+        return super().get_queryset().filter(status__in=["accepted", "pending"])
 
 
 class Registration(models.Model):
+    class RegistrationStatusType(models.TextChoices):
+        PENDING = "pending"
+        ACCEPTED = "accepted"
+        REJECTED = "rejected"
+        CANCELLED = "cancelled"
+
     objects = RegistrationManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
 
-    confirmed_at = models.DateTimeField(null=True, blank=True)
-    cancelled_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(
+        max_length=50,
+        choices=RegistrationStatusType.choices,
+        default=RegistrationStatusType.PENDING,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -183,10 +209,11 @@ class Registration(models.Model):
             | entry fee: ${self.tournament.entry_fee}"
 
     def accept(self):
-        self.confirmed_at = timezone.now()
-        self.tournament.subscribe(
-            team=self.team, status=Subscription.StatusOptions.ACTIVE
-        )
+        self.status = Registration.RegistrationStatusType.ACCEPTED
+        self.save()
+
+    def cancel(self):
+        self.status = Registration.RegistrationStatusType.CANCELLED
         self.save()
 
 

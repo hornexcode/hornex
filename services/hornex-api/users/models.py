@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 import uuid
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -7,6 +6,9 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 from django.utils import timezone
+
+
+LEAGUE_OF_LEGENDS = "league-of-legends"
 
 
 class UserManager(BaseUserManager):
@@ -54,3 +56,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
+
+    def can_play(self, game: str, classification) -> bool:
+        if game == LEAGUE_OF_LEGENDS:
+            if isinstance(classification, str):
+                return (
+                    self.leagueoflegendsaccount.tier.name == classification
+                    if self.leagueoflegendsaccount.tier is not None
+                    else False
+                )
+            if isinstance(classification, list):
+                return (
+                    self.leagueoflegendsaccount.tier.name in classification
+                    if self.leagueoflegendsaccount.tier is not None
+                    else False
+                )
+        return False

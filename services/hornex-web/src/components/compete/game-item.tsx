@@ -1,5 +1,5 @@
-import { Badge } from '../ui/badge';
-import Button from '@/components/ui/button/button';
+import { Badge } from '../ui/atoms/badge';
+import Button from '@/components/ui/atoms/button/button';
 import classNames from 'classnames';
 import Image, { StaticImageData } from 'next/image';
 import { FC } from 'react';
@@ -53,7 +53,7 @@ export const GameItem: FC<GameItemProps> = ({
   registeredPlayers,
   tournaments,
 }) => (
-  <div className="rounded bg-light-dark shadow-card">
+  <div className="bg-light-dark shadow-card rounded">
     {/* tournament card header */}
     <div className="p-4">
       <div
@@ -63,13 +63,13 @@ export const GameItem: FC<GameItemProps> = ({
           backgroundRepeat: 'no-repeat',
         }}
         className={classNames(
-          'group relative h-full w-full overflow-hidden rounded',
+          'group relative h-full w-full overflow-hidden rounded'
         )}
       >
         <div
           className={classNames(
             'absolute top-0 h-full w-full rounded opacity-70 transition-opacity duration-500 ease-linear',
-            bgColors[bgColor],
+            bgColors[bgColor]
           )}
         ></div>
         <div className="relative top-4 flex h-full flex-col items-center">
@@ -103,7 +103,7 @@ export const GameItem: FC<GameItemProps> = ({
                   key={i}
                   className={classNames(
                     'w-7 rounded-md fill-white p-1',
-                    platform.bgColor,
+                    platform.bgColor
                   )}
                 />
               ))}

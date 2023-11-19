@@ -1,8 +1,8 @@
-import Button from '@/components/ui/button/button';
-import Input from '@/components/ui/form/input';
-import InputLabel from '@/components/ui/form/input-label';
-import Listbox, { ListboxOption } from '@/components/ui/list-box';
-import Loader from '@/components/ui/loader';
+import Button from '@/components/ui/atoms/button/button';
+import Input from '@/components/ui/atoms/form/input';
+import InputLabel from '@/components/ui/atoms/form/input-label';
+import Listbox, { ListboxOption } from '@/components/ui/atoms/list-box';
+import Loader from '@/components/ui/atoms/loader';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';

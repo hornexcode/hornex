@@ -1,7 +1,7 @@
-import Button from '@/components/ui/button/button';
-import Input from '@/components/ui/form/input';
-import InputLabel from '@/components/ui/form/input-label';
-import { Logo } from '@/components/ui/logo';
+import Button from '@/components/ui/atoms/button/button';
+import Input from '@/components/ui/atoms/form/input';
+import InputLabel from '@/components/ui/atoms/form/input-label';
+import { Logo } from '@/components/ui/atoms/logo';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';

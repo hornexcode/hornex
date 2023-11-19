@@ -82,6 +82,11 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  registerTeam: {
+    path: 'v1/[platform]/[game]/tournaments/[tournamentId]/register',
+    method: Method.POST,
+    schema: null,
+  },
   getTeamMembers: {
     path: 'v1/teams/[id]/members',
     method: Method.GET,

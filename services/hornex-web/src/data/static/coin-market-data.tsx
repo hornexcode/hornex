@@ -1,4 +1,4 @@
-import { Ethereum } from '@/components/ui/icons/ethereum';
+import { Ethereum } from '@/components/ui/atoms/icons/ethereum';
 
 export const CoinPriceData = [
   {

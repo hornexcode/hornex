@@ -2,10 +2,8 @@ from django.contrib import admin, messages
 from tournaments.models import (
     Registration,
     Subscription,
-    Tournament,
     Bracket,
 )
-from tournaments.services import TournamentManagementService
 from django.utils.translation import ngettext
 from tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
@@ -53,24 +51,7 @@ class TournamentAdmin(admin.ModelAdmin):
 
     @admin.action(description="Generate brackets", permissions=["change"])
     def generate_brackets(modeladmin, request, queryset):
-        svc = TournamentManagementService()
-
-        success_count = 0
-        for tournament in queryset:
-            try:
-                svc.generate_brackets(tournament)
-                success_count += 1
-            except Exception as e:
-                return messages.error(request, str(e))
-
-        return messages.success(
-            request,
-            ngettext(
-                "%d tournament had its brackets created successfully!",
-                "%d tournaments had its brackets created successfully",
-                success_count,
-            ),
-        )
+        pass
 
 
-admin.site.register(Tournament, TournamentAdmin)
+# admin.site.register(Tournament, TournamentAdmin)

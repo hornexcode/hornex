@@ -1,11 +1,11 @@
 import { useModal } from '@/components/modal-views/context';
-import { TeamInviteList } from '@/components/system-design/organisms/team-invite-list';
-import { TeamMemberList } from '@/components/system-design/organisms/team-member-list';
-import Button from '@/components/ui/button/button';
-import Input from '@/components/ui/form/input';
-import InputLabel from '@/components/ui/form/input-label';
-import { LongArrowLeft } from '@/components/ui/icons/long-arrow-left';
-import Loader from '@/components/ui/loader';
+import { TeamInviteList } from '@/components/ui/organisms/team-invite-list';
+import { TeamMemberList } from '@/components/ui/organisms/team-member-list';
+import Button from '@/components/ui/atoms/button/button';
+import Input from '@/components/ui/atoms/form/input';
+import InputLabel from '@/components/ui/atoms/form/input-label';
+import { LongArrowLeft } from '@/components/ui/atoms/icons/long-arrow-left';
+import Loader from '@/components/ui/atoms/loader';
 import UserSearchList from '@/components/users/user-search-list';
 import { Team } from '@/domain';
 import { AppLayout } from '@/layouts';

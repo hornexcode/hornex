@@ -1,20 +1,24 @@
 import { MODAL_VIEW, useModal } from '@/components/modal-views/context';
-import Button from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
-import { Close } from '@/components/ui/icons/close';
-import { Transition } from '@/components/ui/transition';
+import Button from '@/components/ui/atoms/button';
+import { Dialog } from '@/components/ui/atoms/dialog';
+import { Close } from '@/components/ui/atoms/icons/close';
+import { Transition } from '@/components/ui/atoms/transition';
 import cn from 'classnames';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect } from 'react';
 // dynamic imports
 const SearchView = dynamic(() => import('@/components/search/view'));
+const RegistrationView = dynamic(
+  () => import('@/components/ui/templates/registration-view')
+);
 
 function renderModalContent(view: MODAL_VIEW) {
   switch (view) {
     case 'SEARCH_VIEW':
       return <SearchView />;
-
+    case 'REGISTRATION_VIEW':
+      return <RegistrationView />;
     default:
       return null;
   }

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from teams.models import Team, TeamInvite, TeamMember
+from teams.models import Team, Invite, Membership
 
 admin.site.register(Team)
-admin.site.register(TeamInvite)
-admin.site.register(TeamMember)
+admin.site.register(Invite)
+admin.site.register(Membership)

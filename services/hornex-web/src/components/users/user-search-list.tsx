@@ -1,10 +1,10 @@
 'use client';
 
-import { TeamMemberListItem } from '../system-design/molecules/team-member-list-item';
-import Input from '@/components/ui/form/input';
-import { ProfileIcon } from '@/components/ui/icons/profile-icon';
-import { SearchIcon } from '@/components/ui/icons/search';
-import { XMarkIcon } from '@/components/ui/icons/x-mark-icon';
+import { TeamMemberListItem } from '../ui/molecules/team-member-list-item';
+import Input from '@/components/ui/atoms/form/input';
+import { ProfileIcon } from '@/components/ui/atoms/icons/profile-icon';
+import { SearchIcon } from '@/components/ui/atoms/icons/search';
+import { XMarkIcon } from '@/components/ui/atoms/icons/x-mark-icon';
 import { dataLoader } from '@/lib/api';
 import { User } from '@/lib/hx-app/types';
 import { GetUsersResponse } from '@/lib/hx-app/types/rest/get-users';

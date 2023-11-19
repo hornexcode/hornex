@@ -1,7 +1,7 @@
-import Button from '@/components/ui/button/button';
-import Input from '@/components/ui/form/input';
-import InputLabel from '@/components/ui/form/input-label';
-import { Logo } from '@/components/ui/logo';
+import Button from '@/components/ui/atoms/button/button';
+import Input from '@/components/ui/atoms/form/input';
+import InputLabel from '@/components/ui/atoms/form/input-label';
+import { Logo } from '@/components/ui/atoms/logo';
 import { dataLoader } from '@/lib/api';
 import {
   RegisterInput,
@@ -132,7 +132,7 @@ export default function RegisterPage() {
             isLoading={isFecthing}
             type="submit"
             className="w-full"
-            color="secondary"
+            color="warning"
             size="small"
             shape="rounded"
           >

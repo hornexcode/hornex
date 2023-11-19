@@ -1,9 +1,8 @@
-import TournamentsFeedPage from '@/components/system-design/templates/tournaments-feed-page/tournaments-feed-page';
+import TournamentsFeedPage from '@/components/ui/templates/tournaments/tournaments';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { GetTournamentsResponse } from '@/lib/hx-app/types/rest/get-tournaments';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { FC } from 'react';
 
 const { useData: getTournaments } =
   dataLoader<GetTournamentsResponse>('getTournaments');

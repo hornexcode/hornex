@@ -1,4 +1,4 @@
-import ParamTab, { TabPanel } from '@/components/ui/param-tab';
+import ParamTab, { TabPanel } from '@/components/ui/atoms/param-tab';
 import cn from 'classnames';
 // static data
 
