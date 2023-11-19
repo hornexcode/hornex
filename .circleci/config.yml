@@ -33,6 +33,12 @@ jobs:
 
       # Run tests
       - run:
+          name: Run migrations
+          command: poetry run python manage.py migrate
+          working_directory: services/hornex-api
+
+      # Run tests
+      - run:
           name: Run tests
           command: poetry run python manage.py test
           working_directory: services/hornex-api
