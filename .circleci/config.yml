@@ -8,7 +8,7 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  hornex-api-lint-and-test:
+  ci-hornex-api-lint-and-test:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/configuration-reference/#executor-job
     docker:
@@ -43,4 +43,4 @@ workflows:
   ci-hornex-api:
     # when: << pipeline.parameters.services-platform-api-content-modified >>
     jobs:
-      - hornex-api-lint-and-test
+      - ci-hornex-api-lint-and-test
