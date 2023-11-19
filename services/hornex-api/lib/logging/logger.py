@@ -4,3 +4,7 @@ def info(*args):
 
 def warning(*args):
     print("\033[93m", *args, "\033[00m")
+
+
+def success(*args):
+    print("\033[92m", *args, "\033[00m")
