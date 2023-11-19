@@ -1,9 +1,9 @@
-import unittest
+from django.test import TestCase
 from tournaments.models import Tournament, Registration
 from test.factories import TournamentFactory, UserFactory, TeamFactory
 
 
-class TestTournamentModel(unittest.TestCase):
+class TestTournamentModel(TestCase):
     tournament = Tournament(
         name="Test Tournament",
         game="League of Legends",
@@ -25,7 +25,7 @@ class TestTournamentModel(unittest.TestCase):
         )
 
 
-class TestRegistrationModel(unittest.TestCase):
+class TestRegistrationModel(TestCase):
     user = UserFactory.new()
     tournament = TournamentFactory.new(organizer=user)
     team = TeamFactory.new(created_by=user)

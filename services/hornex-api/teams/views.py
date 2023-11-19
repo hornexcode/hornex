@@ -1,11 +1,10 @@
 from rest_framework import viewsets, status
 from django_filters import rest_framework as filters
 from django.db.models import Count
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
-import uuid
 
 from teams.models import Team, Invite, Membership
 from teams.serializers import (
@@ -44,7 +43,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
-                {"team": serializer.data},
+                serializer.data,
                 status=status.HTTP_201_CREATED,
             )
 

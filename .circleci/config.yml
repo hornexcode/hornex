@@ -3,18 +3,18 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@2.0.3
+  python: circleci/python@2.1.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  hornex-api-lint-and-test:
+  ci-hornex-api-lint-and-test:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/configuration-reference/#executor-job
     docker:
-      - image: python:3.11
+      - image: cimg/python:3.11
 
-    working_directory: ~/services/hornex-api
+    # working_directory: services/hornex-api
 
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
@@ -23,16 +23,25 @@ jobs:
 
       - python/install-packages:
           pkg-manager: poetry
+          app-dir: services/hornex-api
 
       # Lint the code
       - run:
           name: Lint code
           command: poetry run black --check .
+          working_directory: services/hornex-api
+
+      # Run tests
+      - run:
+          name: Run migrations
+          command: poetry run python manage.py migrate
+          working_directory: services/hornex-api
 
       # Run tests
       - run:
           name: Run tests
-          command: python manage.py test
+          command: poetry run python manage.py test
+          working_directory: services/hornex-api
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -40,4 +49,4 @@ workflows:
   ci-hornex-api:
     # when: << pipeline.parameters.services-platform-api-content-modified >>
     jobs:
-      - hornex-api-lint-and-test
+      - ci-hornex-api-lint-and-test
