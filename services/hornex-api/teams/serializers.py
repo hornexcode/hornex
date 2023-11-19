@@ -37,6 +37,10 @@ class TeamSerializer(serializers.ModelSerializer):
             "deactivated_at",
         ]
 
+    def validate(self, attrs):
+        print(attrs)
+        return super().validate(attrs)
+
     def create(self, validated_data):
         request = self.context["request"]
         validated_data = {**validated_data, **{"created_by": request.user}}
