@@ -9,3 +9,6 @@ class PixPayment:
         order = self.client.create_order_with_transaction_id(txid, payload)
         qrcode = self.client.create_qrcode(order.get("loc").get("id"))
         return qrcode
+
+    def list(self):
+        return self.client.list_orders()

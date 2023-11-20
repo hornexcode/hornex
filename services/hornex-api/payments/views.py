@@ -2,30 +2,26 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 
-from django.http import HttpResponse
 from lib.efi.pix import PixPayment
-from django.core.files.base import ContentFile
 
 
-@api_view(["POST"])
+@api_view(["POST", "GET"])
 def create_order(request):
     """
     Create a new order
     """
-    txid = "tx1ODVdv2eZvKYlo2CBvWozvPZ"
+    txid = "tx1ODVdv2eZvKYlo2CBvWozvHZ"
 
     pp = PixPayment()
 
-    try:
-        qrcode = pp.charge(txid, request.data)
-    except Exception:
-        return Response({"error": "Error on creating pix charge"}, status=500)
+    if request.method == "POST":
+        try:
+            qrcode = pp.charge(txid, request.data)
+        except Exception:
+            return Response({"error": "Error on creating pix charge"}, status=500)
 
-    return Response(qrcode, status=status.HTTP_201_CREATED)
+        return Response(qrcode, status=status.HTTP_201_CREATED)
 
-    # return file of mime type jpg
-    # file_to_send = ContentFile(p, name="qrcode.jpg")
-    # resp = HttpResponse(file_to_send, content_type="image/jpeg")
-    # resp["Content-Disposition"] = "attachment; filename=qrcode.jpg"
-    # resp["Content-Length"] = file_to_send.size
-    # return resp
+    orders = pp.list()
+    print(orders)
+    return Response(orders, status=status.HTTP_200_OK)
