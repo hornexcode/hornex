@@ -19,13 +19,6 @@ class OAuthToken:
     expires_in: int
 
 
-@dataclass
-class Order:
-    user_doc_id: str
-    user_doc_name: str
-    amount: int
-
-
 class Clientable(ABC):
     @abstractmethod
     def get_oauth_token(self) -> OAuthToken:
@@ -34,14 +27,18 @@ class Clientable(ABC):
 
 class Client(Clientable):
     def __init__(self) -> None:
-        # TODO: remove this
-        self.base_url = os.getenv("EFI_BASE_URL", "https://pix.api.efipay.com.br")
-        self.client_id = os.getenv(
-            "EFI_CLIENT_ID", "Client_Id_e616c51bd5adb9f08cd19aa5dd47d0f1f80e3d6a"
-        )
-        self.client_secret = os.getenv(
-            "EFI_CLIENT_ID", "Client_Secret_0c38cbac65fc629e9b97b19fd291b26fc3c303bb"
-        )
+        self.base_url = os.getenv("EFI_BASE_URL")
+        self.client_id = os.getenv("EFI_CLIENT_ID")
+        self.client_secret = os.getenv("EFI_CLIENT_ID")
+        self.certificate = os.getenv("EFI_CERTIFICATE_PATH")
+
+        if (
+            not self.base_url
+            or not self.client_id
+            or not self.client_secret
+            or not self.certificate
+        ):
+            raise Exception("Missing EFI env vars")
 
         resp = self.get_oauth_token()
 
@@ -59,11 +56,8 @@ class Client(Clientable):
         payload = json.dumps({"grant_type": "client_credentials"})
         headers = {"Authorization": f"Basic {auth}", "Content-Type": "application/json"}
 
-        # TODO: remove this
-        certificado = f"{BASE_DIR}/certificado_prod.pem"
-
         resp = requests.post(
-            uri, headers=headers, data=payload, cert=certificado, timeout=5
+            uri, headers=headers, data=payload, cert=self.certificate, timeout=5
         )
 
         data = resp.json()
