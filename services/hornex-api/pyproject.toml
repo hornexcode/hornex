@@ -19,6 +19,8 @@ celery = "^5.3.4"
 django-celery-results = "^2.5.1"
 django-cors-headers = "^4.2.0"
 faker = "^20.0.0"
+pyqrcode = "^1.2.1"
+pillow = "^10.1.0"
 
 
 [tool.poetry.group.dev.dependencies]

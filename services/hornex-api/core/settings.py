@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "corsheaders",  # dev only
     # apps
     "accounts",
+    "payments",
     "users",
     "teams",
     "invites",
