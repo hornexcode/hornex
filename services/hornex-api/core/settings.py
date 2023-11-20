@@ -47,15 +47,14 @@ INSTALLED_APPS = [
     "django_celery_results",
     "corsheaders",  # dev only
     # apps
-    "accounts",
-    "payments",
-    "users",
-    "teams",
-    "invites",
-    "tournaments",
-    "platforms",
-    "games",
-    "notifications",
+    "apps.payments.apps.PaymentsConfig",
+    "apps.users.apps.UsersConfig",
+    "apps.teams.apps.TeamsConfig",
+    "apps.invites.apps.InvitesConfig",
+    "apps.tournaments.apps.TournamentsConfig",
+    "apps.platforms.apps.PlatformsConfig",
+    "apps.games.apps.GamesConfig",
+    "apps.notifications.apps.NotificationsConfig",
 ]
 
 MIDDLEWARE = [
