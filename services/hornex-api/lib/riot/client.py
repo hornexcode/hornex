@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from typing import Iterable, Set
 from enum import Enum
 from lib.logging import logger
-import json
 
 
 class RegionalRoutingType(Enum):
@@ -56,13 +55,13 @@ class CreateTournamentCode:
     count: int
 
     # body params
-    allowed_participants: dict
+    allowedParticipants: list[str]
     metadata: str
-    team_size: int
-    pick_type: PickType
-    map_type: MapType
-    spectator_type: SpectatorType
-    enough_players: bool
+    teamSize: int
+    pickType: PickType
+    mapType: MapType
+    spectatorType: SpectatorType
+    enoughPlayers: bool
 
 
 @dataclass
@@ -183,7 +182,7 @@ class Clientable(ABC):
         """
         Register the tournament provider
 
-        POST /lol/tournament/v5/providers
+        POST /lol/tournament-stub/v5/providers
         {
             "url": "https://example.com",
             "region": "NA"
@@ -199,9 +198,9 @@ class Clientable(ABC):
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
         """
-        Register the tournament and returns providerID
+        Register the tournament and returns its id
 
-        POST /lol/tournament/v5/tournaments
+        POST /lol/tournament-stub/v5/tournaments
         {
             "name": "Example Tournament",
             "providerId": 0
@@ -212,14 +211,13 @@ class Clientable(ABC):
     @abstractmethod
     def create_tournament_code(
         self,
-        params,
-        region: RegionalRoutingType,
+        params: CreateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> Iterable[str]:
         """
         Returns tournament codes
 
-        POST /lol/tournament/v4/codes
+        POST /lol/tournament-stub/v4/codes
         {
             "allowedSummonerIds": [
                 "string-puuid"
@@ -243,7 +241,7 @@ class Clientable(ABC):
         """
         Returns the tournament code DTO associated with a tournament code string
 
-        GET /lol/tournament/v5/codes/{tournamentCode}
+        GET /lol/tournament-stub/v5/codes/{tournamentCode}
         """
         raise NotImplementedError
 
@@ -256,7 +254,7 @@ class Clientable(ABC):
         """
         Update the pick type, map, spectator type, or allowed puuids for a code.
 
-        PUT /lol/tournament/v5/codes/{tournamentCode}
+        PUT /lol/tournament-stub/v5/codes/{tournamentCode}
         {
             "allowedSummonerIds": [
                 "string-puuid"
@@ -277,7 +275,7 @@ class Clientable(ABC):
         """
         Get games details
 
-        GET /lol/tournament/v5/games/by-code/{tournamentCode}
+        GET /lol/tournament-stub/v5/games/by-code/{tournamentCode}
 
         IMPLEMENTATION NOTES
 
@@ -294,7 +292,7 @@ class Clientable(ABC):
         """
         Gets a list of lobby events by tournament code.
 
-        GET /lol/tournament/v5/lobby-events/by-code/{tournamentCode}
+        GET /lol/tournament-stub/v5/lobby-events/by-code/{tournamentCode}
         """
         raise NotImplementedError
 
@@ -311,12 +309,12 @@ class Client(Clientable):
         region: RegionType,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = f"https://{regional_routing}/lol/tournament/v5/providers?api_key={self.api_key}"
+        endpoint = f"https://{regional_routing.value}/lol/tournament-stub/v5/providers?api_key={self.api_key}"
         response = requests.post(endpoint, json={"url": url, "region": region})
 
         if response.status_code != 200:
-            logger.warning("Error registering tournament provider")
-            raise Exception("Error registering tournament provider")
+            logger.warning("Error registering tournament provider", response.json())
+            raise Exception("Error registering tournament provider", response.json())
 
         return response.json()
 
@@ -326,14 +324,14 @@ class Client(Clientable):
         provider_id: int,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = f"https://{regional_routing}/lol/tournament/v5/tournaments?api_key={self.api_key}"
+        endpoint = f"https://{regional_routing.value}/lol/tournament-stub/v5/tournaments?api_key={self.api_key}"
         response = requests.post(
             endpoint, json={"name": name, "providerId": provider_id}
         )
 
         if response.status_code != 200:
-            logger.warning("Error registering tournament")
-            raise Exception("Error registering tournament")
+            logger.warning("Error registering tournament", response.json())
+            raise Exception("Error registering tournament", response.json())
 
         return response.json()
 
@@ -342,14 +340,23 @@ class Client(Clientable):
         params: CreateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> Iterable[str]:
-        url = (
-            f"https://{regional_routing}/lol/tournament/v5/codes?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes?api_key={self.api_key}&tournamentId={params.tournament_id}&count={params.count}"
+
+        response = requests.post(
+            url,
+            json={
+                "allowedParticipants": params.allowedParticipants,
+                "metadata": params.metadata,
+                "teamSize": params.teamSize,
+                "pickType": params.pickType.value,
+                "mapType": params.mapType.value,
+                "spectatorType": params.spectatorType.value,
+                "enoughPlayers": params.enoughPlayers,
+            },
         )
 
-        response = requests.post(url, json=params)
-
         if response.status_code != 200:
-            logger.warning("Error on creating tournament code", response.json())
+            logger.warning("Error creating tournament code", response.json())
             raise Exception("Error creating tournament code", response.json())
 
         return response.json()
@@ -359,7 +366,7 @@ class Client(Clientable):
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> TournamentCodeV5DTO:
-        url = f"https://{regional_routing}/lol/tournament/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
@@ -377,14 +384,12 @@ class Client(Clientable):
         params: UpdateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> None:
-        url = (
-            f"https://{regional_routing}/lol/tournament/v5/codes?api_key={self.api_key}"
-        )
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes?api_key={self.api_key}"
 
         response = requests.put(url, json=params)
 
         if response.status_code != 200:
-            logger.warning("Error on updating tournament code", response.json())
+            logger.warning("Error updating tournament code", response.json())
             raise Exception("Error updating tournament code", response.json())
 
         return response.json()
@@ -394,7 +399,7 @@ class Client(Clientable):
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> Set[TournamentGamesV5]:
-        url = f"https://{regional_routing}/lol/tournament/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
@@ -403,11 +408,9 @@ class Client(Clientable):
 
         data = response.json()
 
-        tournament_games = set() 
+        tournament_games: Set[TournamentGamesV5] = set()
         for tournament_game in data:
-            tournament_games.add(
-                TournamentGamesV5.from_api_response(tournament_game)
-            )
+            tournament_games.add(TournamentGamesV5.from_api_response(tournament_game))
 
         return tournament_games
 
@@ -416,7 +419,7 @@ class Client(Clientable):
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> LobbyEventV5DTOWrapper:
-        url = f"https://{regional_routing}/lol/tournament/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
