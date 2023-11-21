@@ -1,6 +1,6 @@
 .PHONY:run
 run:
-	poetry run uvicorn cmd.asgi:application --port 8000 --workers 4 --log-level debug --reload
+	poetry run uvicorn core.asgi:application --port 8000 --workers 4 --log-level debug --reload
 
 .PHONY:migrations
 migrations:
