@@ -1,9 +1,12 @@
 import '@/styles/global.css';
 import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
+import '@/websocket/app'; // websocket
 
 import ModalsContainer from '@/components/modal-views/container';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
+import { NotificationContextProvider } from '@/lib/notification';
+import { WebSocketContextProvider } from '@/websocket/context';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -48,8 +51,10 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         )}
       >
         <AuthContextProvider>
-          {getLayout(<Component {...pageProps} />)}
-          <ModalsContainer />
+          <NotificationContextProvider>
+            {getLayout(<Component {...pageProps} />)}
+            <ModalsContainer />
+          </NotificationContextProvider>
           {/* <SettingsDrawer /> */}
         </AuthContextProvider>
         <ToastContainer

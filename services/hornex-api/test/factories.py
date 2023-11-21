@@ -1,9 +1,9 @@
 import faker
 from datetime import timezone as tz, datetime as dt, timedelta as td
-from teams.models import Team
-from users.models import User
-from tournaments.models import Tournament
-from tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
+from apps.teams.models import Team
+from apps.users.models import User
+from apps.tournaments.models import Tournament
+from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
 from accounts.models import LeagueOfLegendsAccount
 
 fake = faker.Faker()

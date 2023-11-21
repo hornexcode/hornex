@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from apps.notifications.consumers import NotificationConsumer
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -44,12 +45,18 @@ urlpatterns = [
     path("api/v1/token", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     # api/v1
-    path("api/v1/users", include("users.urls")),
-    path("api/v1/invites", include("invites.urls")),
-    path("api/v1/platforms", include("platforms.urls")),
-    path("api/v1/teams", include("teams.urls")),
-    path("api/v1/games", include("games.urls")),
-    path("api/v1/payments", include("payments.urls")),
+    path("api/v1/users", include("apps.users.urls")),
+    path("api/v1/invites", include("apps.invites.urls")),
+    path("api/v1/platforms", include("apps.platforms.urls")),
+    path("api/v1/teams", include("apps.teams.urls")),
+    path("api/v1/games", include("apps.games.urls")),
+    path("api/v1/payments", include("apps.payments.urls")),
+    path("api/v1/notifications", include("apps.notifications.urls")),
     # api/v1/<platform>/<game>
-    path(f"{prefix}/tournaments", include("tournaments.urls")),
+    path(f"{prefix}/tournaments", include("apps.tournaments.urls")),
+]
+
+
+websocket_urlpatterns = [
+    path("ws/notifications", NotificationConsumer.as_asgi()),
 ]

@@ -112,6 +112,11 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  countUserInvites: {
+    path: 'v1/invites/count',
+    method: Method.GET,
+    schema: null,
+  },
   deleteTeamInvite: {
     path: 'v1/teams/[teamId]/invites/[id]',
     method: Method.DELETE,
@@ -125,6 +130,16 @@ export const routes = {
   declineInvite: {
     path: 'v1/invites/decline',
     method: Method.POST,
+    schema: null,
+  },
+  getNotifications: {
+    path: 'v1/notifications',
+    method: Method.GET,
+    schema: null,
+  },
+  readNotifications: {
+    path: 'v1/notifications/readings',
+    method: Method.PATCH,
     schema: null,
   },
 };

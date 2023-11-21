@@ -41,7 +41,7 @@ export default function SearchView({ ...props }) {
       user: userId,
     });
 
-    if (error) {
+    if (error?.response) {
       toast.error(error.response.message);
       setIsLoading(false);
       return;
