@@ -45,3 +45,527 @@ function prompt() {
 function info() {
   log "${COLOR_BLUE}-->${COLOR_NONE} ${COLOR_BLUE}$*${COLOR_NONE}"
 }
+
+function confirm() {
+  while true; do
+    prompt ${1:-Continue?} [y/n]:
+    read -r REPLY
+    case ${REPLY} in
+    [yY])
+      echo
+      return 0
+      ;;
+    [nN])
+      echo
+      return 1
+      ;;
+    *) warning "Please type 'y' or 'n'" ;;
+    esac
+  done
+}
+
+function require_repo_root() (
+  if [[ -z "${REPO_ROOT:-}" ]]; then
+    error "REPO_ROOT must be set"
+    exit 1
+  fi
+)
+
+function populate_axios_services() {
+  require_repo_root
+  AXIOS_SERVICES=($(ls ${REPO_ROOT}/services | tr ' ' '\n' | sort | uniq | tr '\n' ' '))
+}
+
+function populate_axios_functions() {
+  require_repo_root
+  AXIOS_FUNCTIONS=($(ls ${REPO_ROOT}/functions | tr ' ' '\n' | sort | uniq | tr '\n' ' '))
+}
+
+function is_axios_service() {
+  populate_axios_services
+  if [[ " ${AXIOS_SERVICES[@]} " =~ " ${1} " ]]; then
+    return 0
+  fi
+  return 1
+}
+
+function git_current_branch() {
+  echo "$(git rev-parse --abbrev-ref HEAD)"
+}
+
+function git_repo_path() {
+  local REPO_PATH="$(git config remote.origin.url)"
+  if [[ $REPO_PATH == http* ]]; then
+    # For http URLs.
+    REPO_PATH=${REPO_PATH#*\.com\/}
+    REPO_PATH=${REPO_PATH%\.git}
+  else
+    # For ssh URLs.
+    REPO_PATH=${REPO_PATH#*:}
+    REPO_PATH=${REPO_PATH%\.git}
+  fi
+  echo $REPO_PATH
+}
+
+function github_credentials_osx() {
+  if [[ $(uname -s) == "Darwin" ]]; then
+    printf "protocol=https\nhost=github.com\n" | git credential-osxkeychain get
+  fi
+}
+
+function github_username_osx() {
+  github_credentials_osx | sed -n 's/^username=\(.*\)/\1/p'
+}
+
+function github_password_osx() {
+  github_credentials_osx | sed -n 's/^password=\(.*\)/\1/p'
+}
+
+function github_access_token() {
+  if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+    echo $(github_password_osx)
+    return
+  fi
+  echo ${GITHUB_TOKEN}
+}
+
+# Install the homebrew package manager from https://brew.sh/
+function install_homebrew() {
+  if ! which brew &>/dev/null; then
+    info "Installing brew..."
+    /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  fi
+}
+
+# List of package version pairs, populated lazily
+_current_versions=""
+
+# Use brew to install a command package
+# Args:
+#  1: Name of command to check
+#  2: Minimum version number (causes automatic upgrade when necessary)
+#  3: Optional name of package to install (defaults to name of command)
+function brew_install_command() {
+  local cmd=${1}
+  local minimum_version=${2:-}
+  local pkg=${3:-$cmd}
+
+  if ! which "${cmd}" &>/dev/null; then
+    info "Installing ${cmd}..."
+    brew install "${pkg}"
+    return
+  fi
+
+  if [[ -z "${minimum_version}" ]]; then
+    return
+  fi
+
+  if [[ -z "${_current_versions}" ]]; then
+    # cache the result
+    _current_versions="$(brew list --versions)"
+  fi
+
+  current="$(echo "${_current_versions}" | grep -E "^(${pkg}|${cmd}) .+" | cut -d ' ' -f 2 || true)"
+  if [[ -z "${current}" ]]; then
+    warning "Failed to get version number for package ${pkg}"
+    return
+  fi
+
+  if ! _version_equal_or_greater "${current}" "${minimum_version}"; then
+    warning "${cmd} version ${current} is less than minimum required version ${minimum_version}"
+    info "Upgrading ${cmd}..."
+    brew upgrade "${pkg}"
+  fi
+}
+
+# Compare two semver style version numbers
+# _version_equal_or_greater 1.2.4 1.2.3 is true (returns 0)
+# _version_equal_or_greater 2.1.1 2.3.3 is false (returns 1)
+function _version_equal_or_greater() (
+  current=${1}
+  target=${2}
+
+  if [[ "${current}" == "${target}" ]]; then
+    return 0
+  fi
+
+  # sort the versions, if the last one is the target then current isn't greater than target
+  last="$(echo -e "${current}\\n${target}" | sort --version-sort | tail -n 1)"
+  if [[ "${last}" == "${target}" ]]; then
+    return 1
+  fi
+)
+
+# Print a warning and suggent removal when a brew command is installed that we no longer use
+# Args:
+#  1: Name of command to check
+#  2: Optional name of package to recommend uninstalling (defaults to arg 1)
+function brew_unused_command() {
+  local cmd=${1}
+  local pkg=${2:-$cmd}
+
+  if which "${cmd}" &>/dev/null; then
+    warning "UNUSED: ${cmd} is no longer used by Axios and can be safely removed: brew uninstall ${pkg}"
+  fi
+}
+
+# Use brew to install a library package
+# This is different than brew_install_command() since some packages don't provide commands
+# So this checks for the package using `brew list` instead of `which command`
+# Args:
+#  1: Name of package
+function brew_install_library() {
+  local lib=${1}
+
+  if ! brew list | grep "${lib}" &>/dev/null; then
+    info "Installing ${lib}..."
+    brew install "${lib}"
+  fi
+}
+
+function brew_upgrade() {
+  local current_month
+  local marker
+
+  require_repo_root
+
+  current_month="$(date "+%m")"
+  marker="${REPO_ROOT}/.brew_upgrade_marker"
+
+  touch "${marker}"
+  if [[ "$current_month" != $(cat "${marker}") ]]; then
+    info "Upgrading brew packages..."
+    brew update
+    brew upgrade
+    echo "$current_month" >"${marker}"
+  fi
+}
+
+function helm_plugin() {
+  local plugin=${1}
+  local source=${2}
+  local version=${3}
+
+  if ! helm plugin list | grep ${plugin} >/dev/null; then
+    info "Installing helm plugin: ${plugin}"
+    helm plugin install ${source} --version ${version}
+  fi
+
+  if ! helm plugin list | grep -E "${plugin}\s+${version}" >/dev/null; then
+    info "Upgrading helm plugin: ${plugin}"
+    helm plugin uninstall ${plugin}
+    helm plugin install ${source} --version ${version}
+  fi
+
+}
+
+function install_yarn() {
+  if ! which yarn &>/dev/null; then
+    info "Installing yarn..."
+    npm install -g yarn
+  fi
+}
+
+# Requires that a repository be cloned into the parent directory of this repo
+# If the repo exists and the current checkout matches the default branch, update the branch to the latest
+function require_repo() {
+  local name dir
+
+  require_repo_root
+
+  name=${1}
+  dir="${REPO_ROOT}/../${name}"
+
+  if [[ ! -d "${dir}" || ! -d "${dir}/.git" ]]; then
+    warning "A local clone of ${name} is required, cloning now..."
+    git_clone ${name} ${dir}
+    return
+  fi
+
+  default_branch=$(git -C "${dir}" symbolic-ref refs/remotes/origin/HEAD | awk -F / '{print $NF}')
+  current_branch=$(git -C "${dir}" symbolic-ref HEAD | awk -F / '{print $NF}' || echo "")
+
+  if [[ "${current_branch}" == "${default_branch}" ]]; then
+    info "Repo ${name}: Updating to latest ${current_branch}"
+    git -C "${dir}" pull --quiet origin "${current_branch}" || error "Error pulling repo: ${name}"
+  elif [[ -z "${current_branch}" ]]; then
+    warning "Repo ${name}: Unknown branch or detatched HEAD"
+  else
+    warning "Repo ${name}: Feature branch checkout: ${current_branch}"
+  fi
+}
+
+# In CI clone with https and GITHUB_TOKEN
+# Otherwise use ssh since it never asks for a password, and doesen't store the token in .git/config
+function git_clone() {
+  if [[ "${CI:-}" != "" ]]; then
+    (
+      set -x
+      git clone https://${GITHUB_TOKEN}@github.com/axioscode/${1}.git ${2}
+    )
+  else
+    (
+      set -x
+      git clone git@github.com:axioscode/${1} ${2}
+    )
+  fi
+}
+
+# kubectl with context and namespace
+function k() (
+  # shellcheck disable=SC2068
+  kubectl --context=dev --namespace="$(dev_namespace)" $@
+)
+
+# kubectl with context and namespace and set -x to log the command
+function kx() (
+  ns=$(dev_namespace)
+  set -x
+  # shellcheck disable=SC2068
+  kubectl --context=dev --namespace="${ns}" $@
+)
+
+function ensure_twingate() (
+
+  # Don't check twingate if in circleCI
+  if [ -n "${CI:-}" ]; then
+    return
+  fi
+
+  if [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
+    warning "WSL detected, unable to verify Twingate is running; Please ensure Twingate is running for connectivity to AWS resources"
+    return
+  fi
+
+  case $(uname -s) in
+  Darwin)
+
+    # Start Twingate
+    /Applications/Twingate.app/Contents/Library/LoginItems/Twingate\ Launcher.app/Contents/MacOS/Twingate\ Launcher
+
+    for i in {1..10}; do
+      if launchctl list | grep twingate | grep -v launcher &>/dev/null; then
+        return
+      fi
+      info "Waiting for twingate to start... (${i}/10)"
+      sleep 5
+    done
+
+    error "Please ensure Twingate is running for connectivity to AWS resources"
+
+    ;;
+  Linux)
+
+    # start is idempotent
+    twingate start
+
+    for i in {1..10}; do
+
+      if [[ "$(twingate status)" == "online" ]]; then
+        return
+      fi
+
+      info "Waiting for twingate to authenticate... (${i}/10)"
+      sleep 5
+    done
+
+    error "Please ensure Twingate is running for connectivity to AWS resources"
+    ;;
+  esac
+)
+
+function ensure_docker() (
+  # Don't check docker if in circleCI
+  if [ -n "${CI:-}" ]; then
+    return
+  fi
+
+  if [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
+    warning "WSL detected, unable to verify Docker is running; Please ensure Docker is running for connectivity to AWS resources"
+    return
+  fi
+
+  case $(uname -s) in
+  Darwin)
+
+    # Start Docker Desktop
+    open -ga /Applications/Docker.app
+
+    for i in {1..10}; do
+      if docker ps &>/dev/null; then
+        return
+      fi
+      info "Waiting for docker to start... (${i}/10)"
+      sleep 5
+    done
+
+    error "Please ensure docker is running"
+
+    ;;
+  Linux)
+
+    # We are assuming systemd here, does anyone run anything else?
+    # start is idempotent
+    # On some (most?) systemd systems interacting with docker.socket will start docker.service,
+    # without needsing to use sudo, so try that and then fall back to starting the service
+    docker ps &>/dev/null || sudo systemctl start docker.service
+
+    for i in {1..10}; do
+
+      if docker ps &>/dev/null; then
+        return
+      fi
+
+      info "Waiting for docker to start... (${i}/10)"
+      sleep 5
+    done
+
+    error "Please ensure docker is running"
+    ;;
+  esac
+)
+
+function abspath() (
+  # Changing the directory here is safe since we are in a subshell
+
+  # If the path is a directory, we just need to 'cd' into it and print the new path.
+  if [ -d "$1" ]; then
+    cd "$1" || error "${1}: Does not exist"
+    pwd
+  # If the path points to anything else, like a file or FIFO
+  elif [ -e "$1" ]; then
+    cd "$(dirname "${1}")" || error "${1}: Does not exist"
+    pwd
+  else
+    error "${1}: Does not exist"
+  fi
+)
+
+function dev_namespace() (
+  if [[ -n "${AXIOS_TILT_FORCE_REMOTE_NAMESPACE:-}" ]]; then
+    echo "${AXIOS_TILT_REMOTE_NAMESPACE:-}"
+  else
+    echo "dev-$(aws --output=json sts get-caller-identity | jq -r .Arn | cut -d '/' -f 2)"
+  fi
+)
+
+function configure_dev_namespace() (
+  ns="$(dev_namespace)"
+
+  if [[ "${ns}" == "" || "${ns}" == "dev-" || "${ns:-}" == "dev-postlight" ]]; then
+    warning "Please ask Polaris for an AWS user account in slack channel #pt-squad-polaris"
+    warning "AWS user account: $(aws --output=json sts get-caller-identity | jq -r .Arn)"
+    error "Unexpected dev namespace: ${ns}"
+  fi
+
+  if [[ "${ns}" == "dev-axios-admin-full" ]]; then
+    warning "Are you a member of  Polaris and using AssumeRole?"
+    warning "You probably need to set:"
+    warning "  AXIOS_TILT_FORCE_REMOTE_NAMESPACE=true"
+    warning "  AXIOS_TILT_REMOTE_NAMESPACE=dev-{ username }"
+    error "Unexpected dev namespace: ${ns}"
+  fi
+
+  info "Switching to Kubernetes context: dev/${ns}"
+
+  # shellcheck disable=SC2086
+  go run ${REPO_ROOT}/lib/golang/src/scripts/kubeconfig-set-context-namespace --namespace="${ns}"
+
+  # shellcheck disable=SC2086
+  ${REPO_ROOT}/devops/scripts/ecr-login
+
+  if [[ "${CI:-}" == "" ]]; then
+    if ! k get namespace --output=name "${ns}" >/dev/null 2>&1; then
+      warning "You don't appear to have a development namespace: ${ns}"
+      error "Please ask Polaris to configure your dev namespace in slack channel #pt-squad-polaris"
+    fi
+  fi
+)
+
+# Platform independent sed -i
+function sed-i() (
+  platform=$(uname -s)
+
+  if [[ "${platform}" == "Darwin" ]]; then
+    sed -i '' "$@"
+  elif [[ "${platform}" == "Linux" ]]; then
+    sed -i "$@"
+  fi
+)
+
+# Platform independent GNU date
+function isodate() (
+  platform=$(uname -s)
+
+  if [[ "${platform}" == "Darwin" ]]; then
+    # requires coreutils package from homebrew
+    gdate --utc --iso-8601=seconds "$@"
+  elif [[ "${platform}" == "Linux" ]]; then
+    date --utc --iso-8601=seconds "$@"
+  fi
+)
+
+function hax_aws_rotate_keys() (
+  if [[ "${CI:-}" != "" ]]; then
+    warning "Skipping Key Rotation in CI"
+    return
+  fi
+
+  # Find profile with keys to rotate
+  profiles=(default media root)
+  rotate_profile=default
+  for profile in "${profiles[@]}"; do
+    profile_key="$(AWS_PROFILE="" aws configure get aws_access_key_id --profile "${profile}" || true)"
+    if [[ -n "$profile_key" ]]; then
+      rotate_profile="${profile}"
+      break
+    fi
+  done
+
+  require_repo_root
+
+  # How often we want to rotate (on or after)
+  rotation_interval="1week"
+
+  # aws config name
+  key="axios_last_key_rotation"
+
+  last="$(aws configure get --profile "${rotate_profile}" ${key} || echo "")"
+  now="$(isodate --date=now)"
+
+  # If now is more (after) the marked date
+  if [[ "${now}" > "${last}" ]]; then
+    info "Rotating AWS Access Keys in profile ${rotate_profile}"
+
+    # rotate keys
+    AWS_PROFILE="" "${REPO_ROOT}/../hax/bin/hax" aws:rotate-keys --yes --profiles "${rotate_profile}"
+
+    # schedule next rotation
+    next_week="$(isodate --date=now+${rotation_interval})"
+    info "Scheduling next rotation for on or after: ${next_week}"
+    aws configure set --profile "${rotate_profile}" "${key}" "${next_week}"
+  fi
+)
+
+function tilt_set_config() (
+  key="${1}"
+  value="${2}"
+  default="${3}"
+
+  current=$(yq "${key}" "${REPO_ROOT}/tilt_config.yaml")
+  if [[ "${current}" == "${default}" ]] || [[ "${current}" == "null" ]]; then
+    info "Setting Tilt Config: ${key} = ${value}"
+
+    # Need the var so we read and replace the whole file, (could have used sponge, but it's probably not available)
+    config="$(yq -y "${key} = ${value}" "${REPO_ROOT}/tilt_config.yaml")"
+    echo "${config}" >"${REPO_ROOT}/tilt_config.yaml"
+  fi
+)
+
+function tilt_enable() (
+  tilt_set_config ${1} true false
+)
+
+function tilt_disable() (
+  tilt_set_config ${1} false true
+)

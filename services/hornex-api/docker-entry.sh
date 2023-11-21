@@ -76,28 +76,28 @@ function run_setup() (
   echo "====================="
   python3 manage.py migrate
 
-  printf "\n\n"
-  echo "Loading fixture data..."
-  echo "======================="
-  python3 manage.py loaddata 01_admin_data \
-    02_sections_and_templates \
-    03_bulk_test_data \
-    04_newsletters \
-    05_bulk_newsletters \
-    06_stories_with_embeds \
-    07_environment_vars
-  echo "Loading mock deep dive data"
-  # Since this isn't run through manage.py (in root), we have to make PYTHONPATH explicit so it can import Django modules
-  PYTHONPATH="." python3 bin/one-shot/2021/08_deep_dive_data.py
-  echo "Loading mock job posting data"
-  python3 manage.py gen_mock_job_postings
-  echo "Loading mock pro newsletter data"
-  python3 manage.py add_mock_pro_nls
-  printf "\n\n"
-  echo "Creating superuser..."
-  echo "(Hit ctrl-C if you don't need or want a super user)"
-  echo "====================="
-  python3 manage.py createsuperuser
+  # printf "\n\n"
+  # echo "Loading fixture data..."
+  # echo "======================="
+  # python3 manage.py loaddata 01_admin_data \
+  #   02_sections_and_templates \
+  #   03_bulk_test_data \
+  #   04_newsletters \
+  #   05_bulk_newsletters \
+  #   06_stories_with_embeds \
+  #   07_environment_vars
+  # echo "Loading mock deep dive data"
+  # # Since this isn't run through manage.py (in root), we have to make PYTHONPATH explicit so it can import Django modules
+  # PYTHONPATH="." python3 bin/one-shot/2021/08_deep_dive_data.py
+  # echo "Loading mock job posting data"
+  # python3 manage.py gen_mock_job_postings
+  # echo "Loading mock pro newsletter data"
+  # python3 manage.py add_mock_pro_nls
+  # printf "\n\n"
+  # echo "Creating superuser..."
+  # echo "(Hit ctrl-C if you don't need or want a super user)"
+  # echo "====================="
+  # python3 manage.py createsuperuser
 
   echo "Done!"
 
