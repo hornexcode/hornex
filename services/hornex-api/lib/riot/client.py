@@ -4,6 +4,15 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Iterable, Set
 from enum import Enum
+from lib.logging import logger
+import json
+
+
+class RegionalRoutingType(Enum):
+    AMERICAS = "americas.api.riotgames.com"
+    ASIA = "asia.api.riotgames.com"
+    EUROPE = "europe.api.riotgames.com"
+    SEA = "sea.api.riotgames.com"
 
 
 class RegionType(Enum):
@@ -84,6 +93,24 @@ class TournamentCodeV5DTO:
     map: str
     participants: set[str]
 
+    @classmethod
+    def from_api_response(self, data):
+        return self(
+            code=data["code"],
+            spectators=data["spectators"],
+            lobbyName=data["lobbyName"],
+            metaData=data["metaData"],
+            password=data["password"],
+            teamSize=data["teamSize"],
+            providerId=data["providerId"],
+            pickType=data["pickType"],
+            tournamentId=data["tournamentId"],
+            id=data["id"],
+            region=data["region"],
+            map=data["map"],
+            participants=set(data["participants"]),
+        )
+
 
 @dataclass
 class TournamentTeamV5:
@@ -103,6 +130,21 @@ class TournamentGamesV5:
     gameMode: str
     region: str  # Region of the game
 
+    @classmethod
+    def from_api_response(self, data):
+        return self(
+            winningTeam=data["winningTeam"],
+            losingTeam=data["losingTeam"],
+            shortCode=data["shortCode"],
+            metaData=data["metaData"],
+            gameId=data["gameId"],
+            gameName=data["gameName"],
+            gameType=data["gameType"],
+            gameMap=data["gameMap"],
+            gameMode=data["gameMode"],
+            region=data["region"],
+        )
+
 
 @dataclass
 class LobbyEventV5DTO:
@@ -115,10 +157,29 @@ class LobbyEventV5DTO:
 class LobbyEventV5DTOWrapper:
     eventList: list[LobbyEventV5DTO]
 
+    @classmethod
+    def from_api_response(self, data):
+        events = []
+        for lobby_event in data:
+            events.append(
+                LobbyEventV5DTO(
+                    timestamp=lobby_event["timestamp"],
+                    eventType=lobby_event["eventType"],
+                    puuid=lobby_event["puuid"],
+                )
+            )
+
+        return self(eventList=events)
+
 
 class Clientable(ABC):
     @abstractmethod
-    def register_tournament_provider(self, url: str, region: RegionType) -> int:
+    def register_tournament_provider(
+        self,
+        url: str,
+        region: RegionType,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> int:
         """
         Register the tournament provider
 
@@ -131,7 +192,12 @@ class Clientable(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def register_tournament(self, name: str, provider_id: int) -> int:
+    def register_tournament(
+        self,
+        name: str,
+        provider_id: int,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> int:
         """
         Register the tournament and returns providerID
 
@@ -144,7 +210,12 @@ class Clientable(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create_tournament_code(self, params) -> Iterable[str]:
+    def create_tournament_code(
+        self,
+        params,
+        region: RegionalRoutingType,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> Iterable[str]:
         """
         Returns tournament codes
 
@@ -164,7 +235,11 @@ class Clientable(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_tournament_code(self, tournamentCode: str) -> TournamentCodeV5DTO:
+    def get_tournament_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> TournamentCodeV5DTO:
         """
         Returns the tournament code DTO associated with a tournament code string
 
@@ -173,7 +248,11 @@ class Clientable(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def update_tournament_code(self, params: UpdateTournamentCode) -> None:
+    def update_tournament_code(
+        self,
+        params: UpdateTournamentCode,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> None:
         """
         Update the pick type, map, spectator type, or allowed puuids for a code.
 
@@ -190,7 +269,11 @@ class Clientable(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_games_by_code(self, tournamentCode: str) -> Set[TournamentGamesV5]:
+    def get_games_by_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> Set[TournamentGamesV5]:
         """
         Get games details
 
@@ -203,7 +286,11 @@ class Clientable(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_lobby_events_by_code(self, tournamentCode: str) -> LobbyEventV5DTOWrapper:
+    def get_lobby_events_by_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> LobbyEventV5DTOWrapper:
         """
         Gets a list of lobby events by tournament code.
 
@@ -218,13 +305,126 @@ class Client(Clientable):
         if not self.api_key:
             raise Exception("RIOT_API_KEY not found")
 
-    def create_tournament_code(
-        self, params: CreateTournamentCode, region="americas"
-    ) -> Iterable[str]:
-        url = f"https://{region}.api.riotgames.com/lol/tournament-stub/v4/codes?api_key={self.api_key}"
-        response = requests.post(url, data=params)
+    def register_tournament_provider(
+        self,
+        url: str,
+        region: RegionType,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> int:
+        endpoint = f"https://{regional_routing}/lol/tournament/v5/providers?api_key={self.api_key}"
+        response = requests.post(endpoint, json={"url": url, "region": region})
 
         if response.status_code != 200:
-            raise Exception("Error creating tournament code")
+            logger.warning("Error registering tournament provider")
+            raise Exception("Error registering tournament provider")
 
         return response.json()
+
+    def register_tournament(
+        self,
+        name: str,
+        provider_id: int,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> int:
+        endpoint = f"https://{regional_routing}/lol/tournament/v5/tournaments?api_key={self.api_key}"
+        response = requests.post(
+            endpoint, json={"name": name, "providerId": provider_id}
+        )
+
+        if response.status_code != 200:
+            logger.warning("Error registering tournament")
+            raise Exception("Error registering tournament")
+
+        return response.json()
+
+    def create_tournament_code(
+        self,
+        params: CreateTournamentCode,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> Iterable[str]:
+        url = (
+            f"https://{regional_routing}/lol/tournament/v5/codes?api_key={self.api_key}"
+        )
+
+        response = requests.post(url, json=params)
+
+        if response.status_code != 200:
+            logger.warning("Error on creating tournament code", response.json())
+            raise Exception("Error creating tournament code", response.json())
+
+        return response.json()
+
+    def get_tournament_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> TournamentCodeV5DTO:
+        url = f"https://{regional_routing}/lol/tournament/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            logger.warning("Error retrieving tournament code DTO", response.json())
+            raise Exception("Error retrieving tournament code DTO", response.json())
+
+        data = response.json()
+
+        tournamentCodeDTO = TournamentCodeV5DTO.from_api_response(data)
+
+        return tournamentCodeDTO
+
+    def update_tournament_code(
+        self,
+        params: UpdateTournamentCode,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> None:
+        url = (
+            f"https://{regional_routing}/lol/tournament/v5/codes?api_key={self.api_key}"
+        )
+
+        response = requests.put(url, json=params)
+
+        if response.status_code != 200:
+            logger.warning("Error on updating tournament code", response.json())
+            raise Exception("Error updating tournament code", response.json())
+
+        return response.json()
+
+    def get_games_by_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> Set[TournamentGamesV5]:
+        url = f"https://{regional_routing}/lol/tournament/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            logger.warning("Error retrieving games", response.json())
+            raise Exception("Error retrieving games", response.json())
+
+        data = response.json()
+
+        tournament_games = set() 
+        for tournament_game in data:
+            tournament_games.add(
+                TournamentGamesV5.from_api_response(tournament_game)
+            )
+
+        return tournament_games
+
+    def get_lobby_events_by_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> LobbyEventV5DTOWrapper:
+        url = f"https://{regional_routing}/lol/tournament/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            logger.warning("Error retrieving lobby events", response.json())
+            raise Exception("Error retrieving lobby events", response.json())
+
+        data = response.json()
+
+        lobby_events = LobbyEventV5DTOWrapper.from_api_response(data)
+
+        return lobby_events
