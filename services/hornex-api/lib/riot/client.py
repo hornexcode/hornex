@@ -182,7 +182,7 @@ class Clientable(ABC):
         """
         Register the tournament provider
 
-        POST /lol/tournament-stub/v5/providers
+        POST /lol/tournament/v5/providers
         {
             "url": "https://example.com",
             "region": "NA"
@@ -200,7 +200,7 @@ class Clientable(ABC):
         """
         Register the tournament and returns its id
 
-        POST /lol/tournament-stub/v5/tournaments
+        POST /lol/tournament/v5/tournaments
         {
             "name": "Example Tournament",
             "providerId": 0
@@ -217,7 +217,7 @@ class Clientable(ABC):
         """
         Returns tournament codes
 
-        POST /lol/tournament-stub/v4/codes
+        POST /lol/tournament/v4/codes
         {
             "allowedSummonerIds": [
                 "string-puuid"
@@ -241,7 +241,7 @@ class Clientable(ABC):
         """
         Returns the tournament code DTO associated with a tournament code string
 
-        GET /lol/tournament-stub/v5/codes/{tournamentCode}
+        GET /lol/tournament/v5/codes/{tournamentCode}
         """
         raise NotImplementedError
 
@@ -254,7 +254,7 @@ class Clientable(ABC):
         """
         Update the pick type, map, spectator type, or allowed puuids for a code.
 
-        PUT /lol/tournament-stub/v5/codes/{tournamentCode}
+        PUT /lol/tournament/v5/codes/{tournamentCode}
         {
             "allowedSummonerIds": [
                 "string-puuid"
@@ -275,7 +275,7 @@ class Clientable(ABC):
         """
         Get games details
 
-        GET /lol/tournament-stub/v5/games/by-code/{tournamentCode}
+        GET /lol/tournament/v5/games/by-code/{tournamentCode}
 
         IMPLEMENTATION NOTES
 
@@ -292,7 +292,7 @@ class Clientable(ABC):
         """
         Gets a list of lobby events by tournament code.
 
-        GET /lol/tournament-stub/v5/lobby-events/by-code/{tournamentCode}
+        GET /lol/tournament/v5/lobby-events/by-code/{tournamentCode}
         """
         raise NotImplementedError
 
@@ -309,7 +309,7 @@ class Client(Clientable):
         region: RegionType,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = f"https://{regional_routing.value}/lol/tournament-stub/v5/providers?api_key={self.api_key}"
+        endpoint = f"https://{regional_routing.value}/lol/tournament/v5/providers?api_key={self.api_key}"
         response = requests.post(endpoint, json={"url": url, "region": region.value})
 
         if response.status_code != 200:
@@ -324,7 +324,7 @@ class Client(Clientable):
         provider_id: int,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = f"https://{regional_routing.value}/lol/tournament-stub/v5/tournaments?api_key={self.api_key}"
+        endpoint = f"https://{regional_routing.value}/lol/tournament/v5/tournaments?api_key={self.api_key}"
         response = requests.post(
             endpoint, json={"name": name, "providerId": provider_id}
         )
@@ -340,7 +340,7 @@ class Client(Clientable):
         params: CreateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> Iterable[str]:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes?api_key={self.api_key}&tournamentId={params.tournament_id}&count={params.count}"
+        url = f"https://{regional_routing.value}/lol/tournament/v5/codes?api_key={self.api_key}&tournamentId={params.tournament_id}&count={params.count}"
 
         response = requests.post(
             url,
@@ -366,7 +366,7 @@ class Client(Clientable):
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> TournamentCodeV5DTO:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament/v5/codes/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
@@ -384,7 +384,7 @@ class Client(Clientable):
         params: UpdateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> None:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{params.tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament/v5/codes/{params.tournamentCode}?api_key={self.api_key}"
 
         response = requests.put(
             url,
@@ -407,7 +407,7 @@ class Client(Clientable):
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> List[TournamentGamesV5]:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/games/by-code/{tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament/v5/games/by-code/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
@@ -429,7 +429,7 @@ class Client(Clientable):
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> LobbyEventV5DTOWrapper:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/lobby-events/by-code/{tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament/v5/lobby-events/by-code/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
