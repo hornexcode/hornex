@@ -2,7 +2,7 @@ import requests
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Iterable, Set
+from typing import Iterable, Set, List
 from enum import Enum
 from lib.logging import logger
 
@@ -67,13 +67,13 @@ class CreateTournamentCode:
 @dataclass
 class UpdateTournamentCode:
     # query params
-    tournament_code: str
+    tournamentCode: str
 
     # body params
-    allowed_participants: dict
-    pick_type: PickType
-    map_type: MapType
-    spectator_type: SpectatorType
+    allowedParticipants: dict
+    pickType: PickType
+    mapType: MapType
+    spectatorType: SpectatorType
 
 
 @dataclass
@@ -90,30 +90,30 @@ class TournamentCodeV5DTO:
     id: int
     region: str
     map: str
-    participants: set[str]
+    participants: list[str]
 
     @classmethod
     def from_api_response(self, data):
         return self(
-            code=data["code"],
-            spectators=data["spectators"],
-            lobbyName=data["lobbyName"],
-            metaData=data["metaData"],
-            password=data["password"],
-            teamSize=data["teamSize"],
-            providerId=data["providerId"],
-            pickType=data["pickType"],
-            tournamentId=data["tournamentId"],
-            id=data["id"],
-            region=data["region"],
-            map=data["map"],
-            participants=set(data["participants"]),
+            code=data.get("code"),
+            spectators=data.get("spectators"),
+            lobbyName=data.get("lobbyName"),
+            metaData=data.get("metaData"),
+            password=data.get("password"),
+            teamSize=data.get("teamSize"),
+            providerId=data.get("providerId"),
+            pickType=data.get("pickType"),
+            tournamentId=data.get("tournamentId"),
+            id=data.get("id"),
+            region=data.get("region"),
+            map=data.get("map"),
+            participants=[data.get("participants")],
         )
 
 
 @dataclass
 class TournamentTeamV5:
-    puuid: str
+    puuid: str  # Player Unique UUID (Encrypted)
 
 
 @dataclass
@@ -132,16 +132,16 @@ class TournamentGamesV5:
     @classmethod
     def from_api_response(self, data):
         return self(
-            winningTeam=data["winningTeam"],
-            losingTeam=data["losingTeam"],
-            shortCode=data["shortCode"],
-            metaData=data["metaData"],
-            gameId=data["gameId"],
-            gameName=data["gameName"],
-            gameType=data["gameType"],
-            gameMap=data["gameMap"],
-            gameMode=data["gameMode"],
-            region=data["region"],
+            winningTeam=data.get("winningTeam"),
+            losingTeam=data.get("losingTeam"),
+            shortCode=data.get("shortCode"),
+            metaData=data.get("metaData"),
+            gameId=data.get("gameId"),
+            gameName=data.get("gameName"),
+            gameType=data.get("gameType"),
+            gameMap=data.get("gameMap"),
+            gameMode=data.get("gameMode"),
+            region=data.get("region"),
         )
 
 
@@ -159,12 +159,12 @@ class LobbyEventV5DTOWrapper:
     @classmethod
     def from_api_response(self, data):
         events = []
-        for lobby_event in data:
+        for lobby_event in data.get("eventList", []):
             events.append(
                 LobbyEventV5DTO(
-                    timestamp=lobby_event["timestamp"],
-                    eventType=lobby_event["eventType"],
-                    puuid=lobby_event["puuid"],
+                    timestamp=lobby_event.get("timestamp"),
+                    eventType=lobby_event.get("eventType"),
+                    puuid=lobby_event.get("puuid"),
                 )
             )
 
@@ -271,7 +271,7 @@ class Clientable(ABC):
         self,
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> Set[TournamentGamesV5]:
+    ) -> List[TournamentGamesV5]:
         """
         Get games details
 
@@ -310,7 +310,7 @@ class Client(Clientable):
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
         endpoint = f"https://{regional_routing.value}/lol/tournament-stub/v5/providers?api_key={self.api_key}"
-        response = requests.post(endpoint, json={"url": url, "region": region})
+        response = requests.post(endpoint, json={"url": url, "region": region.value})
 
         if response.status_code != 200:
             logger.warning("Error registering tournament provider", response.json())
@@ -384,9 +384,17 @@ class Client(Clientable):
         params: UpdateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> None:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{params.tournamentCode}?api_key={self.api_key}"
 
-        response = requests.put(url, json=params)
+        response = requests.put(
+            url,
+            json={
+                "allowedParticipants": params.allowedParticipants,
+                "mapType": params.mapType.value,
+                "pickType": params.pickType.value,
+                "spectatorType": params.spectatorType.value,
+            },
+        )
 
         if response.status_code != 200:
             logger.warning("Error updating tournament code", response.json())
@@ -398,8 +406,8 @@ class Client(Clientable):
         self,
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> Set[TournamentGamesV5]:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{tournamentCode}?api_key={self.api_key}"
+    ) -> List[TournamentGamesV5]:
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/games/by-code/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
@@ -408,9 +416,11 @@ class Client(Clientable):
 
         data = response.json()
 
-        tournament_games: Set[TournamentGamesV5] = set()
+        tournament_games: List[TournamentGamesV5] = []
         for tournament_game in data:
-            tournament_games.add(TournamentGamesV5.from_api_response(tournament_game))
+            tournament_games.append(
+                TournamentGamesV5.from_api_response(tournament_game)
+            )
 
         return tournament_games
 
@@ -419,7 +429,7 @@ class Client(Clientable):
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> LobbyEventV5DTOWrapper:
-        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/codes/{tournamentCode}?api_key={self.api_key}"
+        url = f"https://{regional_routing.value}/lol/tournament-stub/v5/lobby-events/by-code/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
         if response.status_code != 200:
