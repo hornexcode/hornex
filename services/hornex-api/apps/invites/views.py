@@ -8,8 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from apps.invites.serializers import InviteSerializer
-from apps.teams.models import Invite, Membership
-from apps.teams.serializers import InviteSerializer
+from apps.teams.models import Invite
 from .errors import not_found
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
