@@ -2,7 +2,7 @@ import requests
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Iterable, Set, List
+from typing import List
 from enum import Enum
 from lib.logging import logger
 
@@ -92,9 +92,9 @@ class TournamentCodeV5DTO:
     map: str
     participants: list[str]
 
-    @classmethod
-    def from_api_response(self, data):
-        return self(
+    @staticmethod
+    def from_api_response(data):
+        return TournamentCodeV5DTO(
             code=data.get("code"),
             spectators=data.get("spectators"),
             lobbyName=data.get("lobbyName"),
@@ -129,9 +129,9 @@ class TournamentGamesV5:
     gameMode: str
     region: str  # Region of the game
 
-    @classmethod
-    def from_api_response(self, data):
-        return self(
+    @staticmethod
+    def from_api_response(data):
+        return TournamentGamesV5(
             winningTeam=data.get("winningTeam"),
             losingTeam=data.get("losingTeam"),
             shortCode=data.get("shortCode"),
@@ -156,8 +156,8 @@ class LobbyEventV5DTO:
 class LobbyEventV5DTOWrapper:
     eventList: list[LobbyEventV5DTO]
 
-    @classmethod
-    def from_api_response(self, data):
+    @staticmethod
+    def from_api_response(data):
         events = []
         for lobby_event in data.get("eventList", []):
             events.append(
@@ -168,7 +168,7 @@ class LobbyEventV5DTOWrapper:
                 )
             )
 
-        return self(eventList=events)
+        return LobbyEventV5DTOWrapper(eventList=events)
 
 
 class Clientable(ABC):
@@ -213,7 +213,7 @@ class Clientable(ABC):
         self,
         params: CreateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> Iterable[str]:
+    ) -> List[str]:
         """
         Returns tournament codes
 
@@ -339,7 +339,7 @@ class Client(Clientable):
         self,
         params: CreateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> Iterable[str]:
+    ) -> List[str]:
         url = f"https://{regional_routing.value}/lol/tournament/v5/codes?api_key={self.api_key}&tournamentId={params.tournament_id}&count={params.count}"
 
         response = requests.post(
