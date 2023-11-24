@@ -14,6 +14,9 @@ jobs:
     docker:
       - image: cimg/python:3.11
 
+    environment:
+      - RIOT_API_KEY: 'fake-api-key'
+
     # working_directory: services/hornex-api
 
     # Add steps to the job
