@@ -10,6 +10,7 @@ from apps.tournaments import errors
 from apps.teams.models import Team
 from lib.logging import logger
 from django.db.models.query import QuerySet
+from django.conf import settings
 
 
 class RegistrationError(Exception):
@@ -78,16 +79,13 @@ class Tournament(models.Model):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
-    def is_full(self):
-        return Registration.objects.filter(tournament=self).count() >= self.max_teams
-
-    def team_has_enough_members(self, team):
+    def _check_team_has_enough_members(self, team):
         return team.members.count() >= self.team_size
 
-    def team_has_registration(self, team):
+    def _check_team_has_registration(self, team):
         return Registration.objects.filter(tournament=self, team=team).exists()
 
-    def team_members_can_play(self, team: Team):
+    def _check_team_members_can_play(self, team: Team):
         return all(
             [
                 member.can_play(
@@ -98,17 +96,64 @@ class Tournament(models.Model):
             ]
         )
 
-    def register(self, team):
-        if self.is_full():
-            raise ValidationError(detail=errors.TournamentFullError)
-        if self.team_has_registration(team):
-            raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
-        if not self.team_has_enough_members(team):
-            raise ValidationError(detail=errors.EnoughMembersError)
-        if not self.team_members_can_play(team):
-            raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
+    def _get_last_round(self) -> "Round":
+        last_round = self.rounds.all().order_by("-created_at").first()
+        if not last_round:
+            raise ValueError("No rounds found")
+        return last_round
 
-        return Registration.objects.create(tournament=self, team=team)
+    def _get_allowed_numer_of_teams(self) -> list[int]:
+        try:
+            max = int(settings.TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER)
+        except ValueError:
+            raise Exception("invalid settings.TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER")
+
+        return (
+            [2**i for i in range(1, max + 1)]
+            if self._is_first_round()
+            else [2**i for i in range(1, max + 1)][::-1]
+        )
+
+    def _get_number_of_teams(self):
+        return self.teams.count()
+
+    def _get_key(self):
+        if self.keys.count() == 0:
+            return Key.objects.create(tournament=self)
+        return self.keys.first()
+
+    def _is_bracket_generation_allowed(self):
+        if self._is_first_round():
+            return True
+
+        return not Bracket.objects.filter(
+            tournament=self, winner_id__isnull=True
+        ).exists()
+
+    def _is_first_round(self):
+        return self.rounds.count() == 0
+
+    def start(self):
+        pass
+
+    def get_number_of_rounds(self):
+        num_of_teams = self._get_number_of_teams()
+        if num_of_teams <= 2:
+            return 1
+
+        if num_of_teams <= 4:
+            return 2
+
+        if num_of_teams <= 8:
+            return 3
+
+        if num_of_teams <= 16:
+            return 4
+
+        if num_of_teams <= 32:
+            return 5
+
+        return 0
 
     def cancel_registration(self, team):
         regi = Registration.objects.get(tournament=self, team=team)
@@ -125,32 +170,20 @@ class Tournament(models.Model):
         self.teams.add(team)
         self.save()
 
-    @abstractmethod
-    def get_classification(self):
-        raise NotImplementedError
-
-    def is_first_round(self):
-        return self.rounds.count() == 0
-
-    def get_key(self):
-        if self.keys.count() == 0:
-            return Key.objects.create(tournament=self)
-        return self.keys.first()
-
     def generate_brackets(self, print_brackets=False):
-        key = self.get_key()
+        key = self._get_key()
 
         rounds = self.rounds.all()
         num_rounds = len(rounds)
 
-        if not self.is_bracket_generation_allowed():
+        if not self._is_bracket_generation_allowed():
             raise ValidationError(detail=errors.BracketGenerationNotAllowedError)
 
         # TODO: Clean this up
         # if num_rounds == 0: # First round
         # else get the last round and get the winners
-        if not self.is_first_round():
-            teams = self.get_last_round().get_winners()  # -> QuerySet[Team]
+        if not self._is_first_round():
+            teams = self._get_last_round().get_winners()  # -> QuerySet[Team]
         else:
             teams = self.teams.all()  # -> QuerySet[Team]
 
@@ -159,8 +192,10 @@ class Tournament(models.Model):
         )
 
         num_of_teams = len(teams)
-        if num_of_teams not in [8, 16, 32, 64]:
-            raise ValueError("Number of teams must be 8, 16, 32, or 64")
+        if num_of_teams not in self._get_allowed_numer_of_teams():
+            raise ValueError(
+                f"Number of teams must be in {self._get_allowed_numer_of_teams().__str__()}"
+            )
         for i in range(0, int(num_of_teams / 2)):
             Bracket.objects.create(
                 tournament=self,
@@ -184,59 +219,28 @@ class Tournament(models.Model):
                 print(v)
                 # logger.warning("-" * len(v))
 
-    def is_bracket_generation_allowed(self):
-        if self.is_first_round():
-            return True
+    def register(self, team):
+        if self.is_full():
+            raise ValidationError(detail=errors.TournamentFullError)
+        if self._check_team_has_registration(team):
+            raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
+        if not self._check_team_has_enough_members(team):
+            raise ValidationError(detail=errors.EnoughMembersError)
+        if not self._check_team_members_can_play(team):
+            raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
 
-        return not Bracket.objects.filter(
-            tournament=self, winner_id__isnull=True
-        ).exists()
+        return Registration.objects.create(tournament=self, team=team)
 
-    def get_last_round(self) -> "Round":
-        last_round = self.rounds.all().order_by("-created_at").first()
-        if not last_round:
-            raise ValueError("No rounds found")
-        return last_round
-
-    def start(self):
-        self.validate()
-        self.validate_participants()
-        # Migh be async
-        self.notifiy_participants()
-        # Migh be async
-        self.generate_brackets()
-
-    def validate(self):
-        pass
+    def is_full(self):
+        return Registration.objects.filter(tournament=self).count() >= self.max_teams
 
     @abstractmethod
     def validate_participants(self):
         raise NotImplementedError
 
-    def notifiy_participants(self):
+    @abstractmethod
+    def get_classification(self):
         raise NotImplementedError
-
-    def get_number_of_teams(self):
-        return self.teams.count()
-
-    def get_number_of_rounds(self):
-        num_of_teams = self.get_number_of_teams()
-        if num_of_teams <= 2:
-            return 1
-
-        if num_of_teams <= 4:
-            return 2
-
-        if num_of_teams <= 8:
-            return 3
-
-        if num_of_teams <= 16:
-            return 4
-
-        if num_of_teams <= 32:
-            return 5
-
-        return 0
 
 
 class Subscription(models.Model):

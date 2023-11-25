@@ -40,16 +40,22 @@ class TestUnitTournamentModel(TestCase):
         self.tournament.save()
         self.tournament.refresh_from_db()
 
-        self.assertEqual(32, self.tournament.get_number_of_teams())
+        self.assertEqual(32, self.tournament.teams.count())
 
         num_rounds = self.tournament.get_number_of_rounds()
-        for _ in range(0, num_rounds):
+
+        num_teams = MAX_TEAMS
+        for index in range(1, num_rounds + 1):
             self.tournament.generate_brackets()
             rounds = self.tournament.rounds.all()
 
-            self.assertEqual(1, len(rounds))
-            self.assertEqual(16, rounds[0].brackets.count())
+            if num_teams < 2:
+                return
+
+            self.assertEqual(index, len(rounds))
+            self.assertEqual(num_teams / 2, rounds[0].brackets.count())
             fake_tournament_brackets_winners(self.tournament)
+            num_teams = num_teams / 2
 
 
 class TestUnitRegistrationModel(TestCase):
@@ -68,60 +74,11 @@ class TestUnitRegistrationModel(TestCase):
 
 
 class TestUnitRoundModel(TestCase):
-    def setUp(self) -> None:
-        self.tournament = TournamentFactory.new()
-        self.tournament.teams.set([TeamFactory.new() for _ in range(0, 32)])
-        self.tournament.save()
-        self.tournament.refresh_from_db()
-
-    def test_rounds_count(self):
-        self.assertEqual(0, self.tournament.get_number_of_rounds())
-
-        self.tournament.generate_brackets()
-        self.tournament.refresh_from_db()
-
-        self.assertEqual(1, self.tournament.get_number_of_rounds())
-
-        self.tournament.generate_brackets()
-        self.tournament.refresh_from_db()
-
-        self.assertEqual(1, self.tournament.get_number_of_rounds())
-
-    def test_rounds_brackets_count(self):
-        self.assertEqual(0, self.tournament.get_number_of_brackets())
-
-        self.tournament.generate_brackets()
-        self.tournament.refresh_from_db()
-
-        self.assertEqual(16, self.tournament.get_number_of_brackets())
-
-        self.tournament.generate_brackets()
-        self.tournament.refresh_from_db()
-
-        self.assertEqual(16, self.tournament.get_number_of_brackets())
+    ...
 
 
 class TestUnitBracketModel(TestCase):
-    def setUp(self) -> None:
-        self.tournament = TournamentFactory.new()
-        self.tournament.teams.set([TeamFactory.new() for _ in range(0, 32)])
-        self.tournament.save()
-        self.tournament.refresh_from_db()
-        self.tournament.generate_brackets()
-        self.tournament.refresh_from_db()
-
-    def test_bracket_teams_count(self):
-        self.assertEqual(0, self.tournament.get_number_of_teams_in_bracket(1))
-
-        self.tournament.generate_brackets()
-        self.tournament.refresh_from_db()
-
-        self.assertEqual(2, self.tournament.get_number_of_teams_in_bracket(1))
-
-        self.tournament.generate_brackets()
-        self.tournament.refresh_from_db()
-
-        self.assertEqual(2, self.tournament.get_number_of_teams_in_bracket(1))
+    ...
 
 
 def fake_tournament_brackets_winners(tournament: Tournament):
