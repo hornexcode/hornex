@@ -4,7 +4,7 @@ from apps.teams.models import Team
 from apps.users.models import User
 from apps.tournaments.models import Tournament
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
-from accounts.models import LeagueOfLegendsAccount
+from apps.accounts.models import LeagueOfLegendsAccount
 
 fake = faker.Faker()
 
@@ -21,7 +21,7 @@ class UserFactory:
 
 class TeamFactory:
     @staticmethod
-    def new(created_by: User, **kwargs) -> Team:
+    def new(created_by: User | None = None, **kwargs) -> Team:
         """
         Create a new team with the given owner and kwargs.
 
@@ -29,6 +29,9 @@ class TeamFactory:
         :param kwargs: The team fields
         :return: The created team
         """
+        if created_by is None:
+            created_by = UserFactory.new()
+
         return Team.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Team description"),

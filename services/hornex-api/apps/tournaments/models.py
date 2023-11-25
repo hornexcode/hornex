@@ -8,6 +8,9 @@ from rest_framework.exceptions import ValidationError
 from apps.tournaments.validators import validate_team_size
 from apps.tournaments import errors
 from apps.teams.models import Team
+from lib.logging import logger
+from django.db.models.query import QuerySet
+from django.conf import settings
 
 
 class RegistrationError(Exception):
@@ -68,7 +71,7 @@ class Tournament(models.Model):
     max_teams = models.IntegerField(default=0)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    teams = models.ManyToManyField("teams.Team", blank=True)
+    teams = models.ManyToManyField("teams.Team", related_name="tournaments")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -76,16 +79,13 @@ class Tournament(models.Model):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
-    def is_full(self):
-        return Registration.objects.filter(tournament=self).count() >= self.max_teams
-
-    def team_has_enough_members(self, team):
+    def _check_team_has_enough_members(self, team):
         return team.members.count() >= self.team_size
 
-    def team_has_registration(self, team):
+    def _check_team_has_registration(self, team):
         return Registration.objects.filter(tournament=self, team=team).exists()
 
-    def team_members_can_play(self, team: Team):
+    def _check_team_members_can_play(self, team: Team):
         return all(
             [
                 member.can_play(
@@ -96,17 +96,64 @@ class Tournament(models.Model):
             ]
         )
 
-    def register(self, team):
-        if self.is_full():
-            raise ValidationError(detail=errors.TournamentFullError)
-        if self.team_has_registration(team):
-            raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
-        if not self.team_has_enough_members(team):
-            raise ValidationError(detail=errors.EnoughMembersError)
-        if not self.team_members_can_play(team):
-            raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
+    def _get_last_round(self) -> "Round":
+        last_round = self.rounds.all().order_by("-created_at").first()
+        if not last_round:
+            raise ValueError("No rounds found")
+        return last_round
 
-        return Registration.objects.create(tournament=self, team=team)
+    def _get_allowed_numer_of_teams(self) -> list[int]:
+        try:
+            max = int(settings.TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER)
+        except ValueError:
+            raise Exception("invalid settings.TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER")
+
+        return (
+            [2**i for i in range(1, max + 1)]
+            if self._is_first_round()
+            else [2**i for i in range(1, max + 1)][::-1]
+        )
+
+    def _get_number_of_teams(self):
+        return self.teams.count()
+
+    def _get_key(self):
+        if self.keys.count() == 0:
+            return Key.objects.create(tournament=self)
+        return self.keys.first()
+
+    def _is_bracket_generation_allowed(self):
+        if self._is_first_round():
+            return True
+
+        return not Bracket.objects.filter(
+            tournament=self, winner_id__isnull=True
+        ).exists()
+
+    def _is_first_round(self):
+        return self.rounds.count() == 0
+
+    def start(self):
+        pass
+
+    def get_number_of_rounds(self):
+        num_of_teams = self._get_number_of_teams()
+        if num_of_teams <= 2:
+            return 1
+
+        if num_of_teams <= 4:
+            return 2
+
+        if num_of_teams <= 8:
+            return 3
+
+        if num_of_teams <= 16:
+            return 4
+
+        if num_of_teams <= 32:
+            return 5
+
+        return 0
 
     def cancel_registration(self, team):
         regi = Registration.objects.get(tournament=self, team=team)
@@ -123,29 +170,76 @@ class Tournament(models.Model):
         self.teams.add(team)
         self.save()
 
-    @abstractmethod
-    def get_classification(self):
-        raise NotImplementedError
+    def generate_brackets(self, print_brackets=False):
+        key = self._get_key()
 
-    def generate_brackets(self):
-        pass
+        rounds = self.rounds.all()
+        num_rounds = len(rounds)
 
-    def start(self):
-        self.validate()
-        self.validate_participants()
-        # Migh be async
-        self.notifiy_participants()
-        # Migh be async
-        self.generate_brackets()
+        if not self._is_bracket_generation_allowed():
+            raise ValidationError(detail=errors.BracketGenerationNotAllowedError)
 
-    def validate(self):
-        pass
+        # TODO: Clean this up
+        # if num_rounds == 0: # First round
+        # else get the last round and get the winners
+        if not self._is_first_round():
+            teams = self._get_last_round().get_winners()  # -> QuerySet[Team]
+        else:
+            teams = self.teams.all()  # -> QuerySet[Team]
+
+        round = Round.objects.create(
+            tournament=self, key=key, name=f"Round {num_rounds + 1}"
+        )
+
+        num_of_teams = len(teams)
+        if num_of_teams not in self._get_allowed_numer_of_teams():
+            raise ValueError(
+                f"Number of teams must be in {self._get_allowed_numer_of_teams().__str__()}"
+            )
+        for i in range(0, int(num_of_teams / 2)):
+            Bracket.objects.create(
+                tournament=self,
+                team_a_id=teams[i].id,
+                team_b_id=teams[num_of_teams - i - 1].id,
+                round=round,
+            )
+
+        if print_brackets:
+            # Determine the width of the bracket
+            max_team_len = max(len(team.name) for team in teams)
+            # bracket_width = max_team_len + 4  # padding and borders
+
+            for bracket in Bracket.objects.filter(tournament=self):
+                # logger.warning(round.name.center(bracket_width))
+                team1 = bracket.team_a_id.__str__().ljust(max_team_len)
+                team2 = bracket.team_b_id.__str__().rjust(max_team_len)
+
+                v = f"| {team1} | vs | {team2} |"
+                print("-" * len(v))
+                print(v)
+                # logger.warning("-" * len(v))
+
+    def register(self, team):
+        if self.is_full():
+            raise ValidationError(detail=errors.TournamentFullError)
+        if self._check_team_has_registration(team):
+            raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
+        if not self._check_team_has_enough_members(team):
+            raise ValidationError(detail=errors.EnoughMembersError)
+        if not self._check_team_members_can_play(team):
+            raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
+
+        return Registration.objects.create(tournament=self, team=team)
+
+    def is_full(self):
+        return Registration.objects.filter(tournament=self).count() >= self.max_teams
 
     @abstractmethod
     def validate_participants(self):
         raise NotImplementedError
 
-    def notifiy_participants(self):
+    @abstractmethod
+    def get_classification(self):
         raise NotImplementedError
 
 
@@ -219,35 +313,63 @@ class Registration(models.Model):
 class Bracket(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    team_a = models.ForeignKey(
-        "teams.Team",
-        on_delete=models.CASCADE,
-        related_name="team_a",
-        null=True,
-        blank=True,
+    team_a_id = models.UUIDField()
+    team_b_id = models.UUIDField()
+    winner_id = models.UUIDField(null=True, blank=True)
+    loser_id = models.UUIDField(null=True, blank=True)
+    round = models.ForeignKey(
+        "Round", on_delete=models.CASCADE, related_name="brackets"
     )
-    team_b = models.ForeignKey(
-        "teams.Team",
-        on_delete=models.CASCADE,
-        related_name="team_b",
-        null=True,
-        blank=True,
-    )
-    winner = models.ForeignKey(
-        "teams.Team",
-        on_delete=models.CASCADE,
-        related_name="winner",
-        null=True,
-        blank=True,
-    )
-    loser = models.ForeignKey(
-        "teams.Team",
-        on_delete=models.CASCADE,
-        related_name="loser",
-        null=True,
-        blank=True,
-    )
-    round = models.IntegerField(null=False, editable=False)
 
     def __str__(self) -> str:
         return f"Bracket ({self.id}) | round: {self.round} | {self.tournament.name}"
+
+    @property
+    def team_a(self):
+        return Team.objects.get(id=self.team_a_id)
+
+    @property
+    def team_b(self):
+        return Team.objects.get(id=self.team_b_id)
+
+    def set_winner(self, team_id):
+        if team_id not in [self.team_a_id, self.team_b_id]:
+            raise ValueError("Invalid team id")
+
+        self.winner_id = team_id
+        self.loser_id = self.team_a_id if team_id == self.team_b_id else self.team_b_id
+
+        self.save()
+
+    def get_winner(self):
+        return Team.objects.get(id=self.winner_id)
+
+    def get_loser(self):
+        return Team.objects.get(id=self.loser_id)
+
+
+class Round(models.Model):
+    tournament = models.ForeignKey(
+        Tournament, on_delete=models.CASCADE, related_name="rounds"
+    )
+    name = models.CharField(max_length=255)
+    key = models.ForeignKey("Key", on_delete=models.CASCADE, related_name="rounds")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"Round ({self.id}) | {self.tournament.name}"
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def get_winners(self) -> QuerySet[Team]:
+        return Team.objects.filter(id__in=self.get_winner_ids())
+
+    def get_winner_ids(self):
+        return [bracket.winner_id for bracket in self.brackets.all()]
+
+
+class Key(models.Model):
+    tournament = models.ForeignKey(
+        Tournament, on_delete=models.CASCADE, related_name="keys"
+    )

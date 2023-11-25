@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "apps.platforms.apps.PlatformsConfig",
     "apps.games.apps.GamesConfig",
     "apps.notifications.apps.NotificationsConfig",
+    "apps.accounts.apps.AccountsConfig",
 ]
 
 MIDDLEWARE = [
@@ -187,3 +188,5 @@ CHANNEL_LAYERS = {
         },
     }
 }
+
+TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER = 5
