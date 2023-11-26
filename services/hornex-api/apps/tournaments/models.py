@@ -1,5 +1,5 @@
 import uuid
-import datetime
+from datetime import datetime, timezone, timedelta
 
 from django.db import models
 from abc import abstractmethod
@@ -220,7 +220,7 @@ class Tournament(models.Model):
                 # logger.warning("-" * len(v))
 
     def register(self, team):
-        if self.is_full():
+        if self._is_full():
             raise ValidationError(detail=errors.TournamentFullError)
         if self._check_team_has_registration(team):
             raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
@@ -231,8 +231,22 @@ class Tournament(models.Model):
 
         return Registration.objects.create(tournament=self, team=team)
 
-    def is_full(self):
-        return Registration.objects.filter(tournament=self).count() >= self.max_teams
+    def _is_full(self):
+        now = datetime.now(tz=timezone.utc)
+
+        accepted_registrations = Registration.objects.filter(
+            tournament=self, status=Registration.RegistrationStatusType.ACCEPTED
+        ).count()
+
+        # get the number of pending registrations that are not paid
+        # in 2 hours
+        pending_registrations = Registration.objects.filter(
+            tournament=self,
+            status=Registration.RegistrationStatusType.PENDING,
+            created_at__gt=now - timedelta(hours=2),
+        ).count()
+
+        return accepted_registrations + pending_registrations >= self.max_teams
 
     @abstractmethod
     def validate_participants(self):
