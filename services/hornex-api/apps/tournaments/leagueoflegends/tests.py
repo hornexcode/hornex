@@ -5,6 +5,7 @@ from apps.teams.models import Membership
 from apps.tournaments.models import Tournament, Registration
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
 from tournaments import errors
+from datetime import datetime as dt, timezone as tz, timedelta as td
 
 from test.factories import (
     UserFactory,
@@ -63,6 +64,9 @@ class LeagueOfLegendsTournamentTests(APITestCase):
         # database checks
         self.assertEqual(Registration.objects.count(), 1)
 
+        regi = Registration.objects.first()
+        self.assertEqual(regi.status, Registration.RegistrationStatusType.PENDING)
+
     def test_register_400_do_not_has_enough_members_error(self):
         team = TeamFactory.new(created_by=self.user)
         tier = Tier.objects.create(name="test tier")
@@ -116,8 +120,7 @@ class LeagueOfLegendsTournamentTests(APITestCase):
         user_b = UserFactory.new()
         team_b = TeamFactory.new(created_by=user_b)
         Membership.objects.create(team=team_b, user=user_b)
-        for _ in range(0, 4):
-            Membership.objects.create(team=team, user=UserFactory.new())
+        LeagueOfLegendsAccountFactory.new(user=user_b, tier=tier)
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(user_b)
@@ -143,6 +146,18 @@ class LeagueOfLegendsTournamentTests(APITestCase):
 
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], errors.TournamentFullError)
+
+        # fake registration has expired in 2 hours
+        regi = Registration.objects.first()
+        regi.created_at = regi.created_at - td(hours=2, seconds=1)
+        regi.save()
+
+        resp = self.client.post(
+            url,
+            {"team": team_b.id},
+        )
+
+        self.assertEqual(resp.status_code, 201)
 
     def test_register_400_team_already_registered_error(self):
         team = TeamFactory.new(created_by=self.user)
