@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from apps.teams.models import Membership
 from apps.tournaments.models import Tournament, Registration
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
-from tournaments import errors
+from apps.tournaments import errors
 from datetime import datetime as dt, timezone as tz, timedelta as td
 
 from test.factories import (
