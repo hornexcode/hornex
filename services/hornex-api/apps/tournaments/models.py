@@ -30,11 +30,11 @@ class Tournament(models.Model):
         XBOX = "xbox"
         MOBILE = "mobile"
 
-    class TournamentStatusType(models.TextChoices):
-        NOT_STARTED = "not_started"
-        STARTED = "started"
-        FINISHED = "finished"
-        CANCELLED = "cancelled"
+    class PhaseType(models.TextChoices):
+        REGISTRATION_OPEN = "registration_open"
+        RESULTS_TRACKING = "results_tracking"
+        PAYMENT_PENDING = "payment_pending"
+        FINISHED_AND_PAID = "finished_and_paid"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -47,10 +47,10 @@ class Tournament(models.Model):
         choices=PlatformType.choices, max_length=50, default=PlatformType.PC
     )
     is_public = models.BooleanField(default=False)
-    status = models.CharField(
+    phase = models.CharField(
         max_length=50,
-        choices=TournamentStatusType.choices,
-        default=TournamentStatusType.NOT_STARTED,
+        choices=PhaseType.choices,
+        default=PhaseType.REGISTRATION_OPEN,
     )
 
     start_date = models.DateField()

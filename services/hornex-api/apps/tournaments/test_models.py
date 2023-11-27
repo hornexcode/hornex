@@ -27,10 +27,8 @@ class TestUnitTournamentModel(TestCase):
     def test_tournament_game(self):
         self.assertEqual(self.tournament.game, "League of Legends")
 
-    def test_tournament_status(self):
-        self.assertEqual(
-            self.tournament.status, Tournament.TournamentStatusType.NOT_STARTED
-        )
+    def test_tournament_phase(self):
+        self.assertEqual(self.tournament.phase, Tournament.PhaseType.REGISTRATION_OPEN)
 
     def test_generate_tournament_brackets(self):
         MAX_TEAMS = 32

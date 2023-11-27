@@ -12,7 +12,7 @@ from apps.games.models import Game
 from apps.teams.models import Team, Membership
 from apps.tournaments.models import Tournament, Registration
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
-from tournaments import errors
+from apps.tournaments import errors
 
 from test.factories import (
     UserFactory,
