@@ -1,4 +1,4 @@
-import TeamsTeamplate from '@/components/ui/templates/teams';
+import TeamsTemplate from '@/components/ui/templates/teams';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { GetInvitesResponse } from '@/lib/hx-app/types';
@@ -33,7 +33,7 @@ const TeamsPage = ({}: InferGetServerSidePropsType<
   if (teams && !isLoading && invites && !isInvitesLoading) {
     return (
       <div className="mx-auto w-full max-w-[1160px]">
-        <TeamsTeamplate teams={teams} invites={invites} />
+        <TeamsTemplate teams={teams} invites={invites} />
       </div>
     );
   }

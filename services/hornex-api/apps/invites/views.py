@@ -8,8 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from apps.invites.serializers import InviteSerializer
-from apps.teams.models import Invite, Membership
-from apps.teams.serializers import InviteSerializer
+from apps.teams.models import Invite
 from .errors import not_found
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -50,6 +49,14 @@ def get_invites(request):
     return Response(ils.data, status=status.HTTP_200_OK)
 
 
+@swagger_auto_schema(
+    operation_description="GET /api/v1/invites/count",
+    operation_summary="Count all team invites for a user",
+    methods=["get"],
+    responses={
+        200: openapi.Response("response description", int),
+    },
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
@@ -68,7 +75,7 @@ def get_invites_count(request):
         inviteStatus = {"accepted_at__isnull": True, "declined_at__isnull": True}
 
     return Response(
-        Membership.objects.filter(user__id=u.id, **inviteStatus).count(),
+        Invite.objects.filter(user__id=u.id, **inviteStatus).count(),
         status=status.HTTP_200_OK,
     )
 
