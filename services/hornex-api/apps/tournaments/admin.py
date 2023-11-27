@@ -12,10 +12,7 @@ from apps.tournaments.leagueoflegends.models import (
 )
 
 
-admin.site.register([Subscription, Match])
-admin.site.register(
-    [LeagueOfLegendsTournamentProvider, LeagueOfLegendsTournament, Tier]
-)
+admin.site.register([LeagueOfLegendsTournamentProvider, Tier, Subscription, Match])
 
 
 class RegistrationAdmin(admin.ModelAdmin):
@@ -55,3 +52,30 @@ class TournamentAdmin(admin.ModelAdmin):
 
 
 # admin.site.register(Tournament, TournamentAdmin)
+
+
+class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
+    actions = ["start_tournament"]
+
+    @admin.action(
+        description="Start selected league of legends tournament",
+        permissions=["change"],
+    )
+    def start_tournament(self, request, queryset):
+        print("AQUI Start")
+        success_count = 0
+
+        for tournament in queryset:
+            try:
+                print(tournament)
+                success_count += 1
+            except Exception as e:
+                return messages.error(request, str(e))
+
+        return messages.success(
+            request,
+            f"{success_count} tournament was(were) started successfully.",
+        )
+
+
+admin.site.register(LeagueOfLegendsTournament, LeagueOfLegendsTournamentAdmin)

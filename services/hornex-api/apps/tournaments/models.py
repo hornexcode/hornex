@@ -74,7 +74,9 @@ class Tournament(models.Model):
     max_teams = models.IntegerField(default=0)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    teams = models.ManyToManyField("teams.Team", related_name="tournaments")
+    teams = models.ManyToManyField(
+        "teams.Team", related_name="tournaments", null=True, blank=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
