@@ -1,9 +1,5 @@
 from django.contrib import admin, messages
-from apps.tournaments.models import (
-    Registration,
-    Subscription,
-    Match,
-)
+from apps.tournaments.models import Registration, Subscription, Match, Round
 from django.utils.translation import ngettext
 from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
@@ -12,7 +8,9 @@ from apps.tournaments.leagueoflegends.models import (
 )
 
 
-admin.site.register([LeagueOfLegendsTournamentProvider, Tier, Subscription, Match])
+admin.site.register(
+    [LeagueOfLegendsTournamentProvider, Tier, Subscription, Match, Round]
+)
 
 
 class RegistrationAdmin(admin.ModelAdmin):
@@ -66,7 +64,8 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
 
         for tournament in queryset:
             try:
-                print(tournament)
+                tournament.start()
+
                 success_count += 1
             except Exception as e:
                 return messages.error(request, str(e))

@@ -32,6 +32,7 @@ whitenoise = "^6.6.0"
 coverage = "^7.3.1"
 black = "^23.7.0"
 mock = "^5.1.0"
+freezegun = "^1.2.2"
 
 [build-system]
 requires = ["poetry-core"]

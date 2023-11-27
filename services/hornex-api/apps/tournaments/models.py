@@ -138,8 +138,20 @@ class Tournament(models.Model):
     def _is_first_round(self):
         return self.rounds.count() == 0
 
+    def _has_start_datetime(self):
+        return bool(self.start_date) and bool(self.start_time)
+
     def start(self):
-        pass
+        if not (datetime.today().weekday() >= 5):
+            raise ValidationError(detail=errors.NotWeekend)
+
+        if not self._has_start_datetime():
+            raise ValidationError(detail=errors.TournamentHasNoStartDateTime)
+
+        self.phase = Tournament.PhaseType.RESULTS_TRACKING
+        self.save()
+
+        self.generate_brackets()
 
     def get_number_of_rounds(self):
         num_of_teams = self._get_number_of_teams()
