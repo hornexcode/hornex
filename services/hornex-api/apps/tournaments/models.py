@@ -105,7 +105,7 @@ class Tournament(models.Model):
             raise ValueError("No rounds found")
         return last_round
 
-    def _get_allowed_numer_of_teams(self) -> list[int]:
+    def _get_allowed_number_of_teams(self) -> list[int]:
         try:
             max = int(settings.TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER)
         except ValueError:
@@ -195,9 +195,9 @@ class Tournament(models.Model):
         )
 
         num_of_teams = len(teams)
-        if num_of_teams not in self._get_allowed_numer_of_teams():
+        if num_of_teams not in self._get_allowed_number_of_teams():
             raise ValueError(
-                f"Number of teams must be in {self._get_allowed_numer_of_teams().__str__()}"
+                f"Number of teams must be in {self._get_allowed_number_of_teams().__str__()}"
             )
         for i in range(0, int(num_of_teams / 2)):
             Bracket.objects.create(
