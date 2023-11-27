@@ -56,6 +56,8 @@ class TournamentFactory:
             platform=kwargs.get("platform", Tournament.PlatformType.PC),
             is_public=kwargs.get("is_public", True),
             phase=kwargs.get("phase", Tournament.PhaseType.REGISTRATION_OPEN),
+            registration_start_date=kwargs.get("registration_start_date", now),
+            registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
                 "start_date",
                 now + td(days=15),
@@ -90,6 +92,8 @@ class LeagueOfLegendsTournamentFactory:
             platform=kwargs.get("platform", Tournament.PlatformType.PC),
             is_public=kwargs.get("is_public", True),
             phase=kwargs.get("phase", Tournament.PhaseType.REGISTRATION_OPEN),
+            registration_start_date=kwargs.get("registration_start_date", now),
+            registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
                 "start_date",
                 now + td(days=15),

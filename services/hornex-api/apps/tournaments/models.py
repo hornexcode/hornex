@@ -47,11 +47,15 @@ class Tournament(models.Model):
         choices=PlatformType.choices, max_length=50, default=PlatformType.PC
     )
     is_public = models.BooleanField(default=False)
+
     phase = models.CharField(
         max_length=50,
         choices=PhaseType.choices,
         default=PhaseType.REGISTRATION_OPEN,
     )
+
+    registration_start_date = models.DateTimeField()
+    registration_end_date = models.DateTimeField()
 
     start_date = models.DateField()
     end_date = models.DateField()
