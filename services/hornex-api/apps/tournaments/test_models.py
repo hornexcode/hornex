@@ -1,21 +1,23 @@
 import random
 from django.test import TestCase
-from apps.tournaments.models import Tournament, Registration, Bracket
+from apps.tournaments.models import Tournament, Registration
 from test.factories import TournamentFactory, UserFactory, TeamFactory
-from lib.logging import logger
 from datetime import datetime as dt, timezone as tz, timedelta as td
 
 
 class TestUnitTournamentModel(TestCase):
     def setUp(self) -> None:
         now = dt.now(tz.utc)
+        self.now = now
         self.tournament = Tournament.objects.create(
             name="Test Tournament",
             game="League of Legends",
             max_teams=8,
             entry_fee=10,
-            start_date=now + td(days=1),
-            end_date=now + td(days=2),
+            registration_start_date=now,
+            registration_end_date=now + td(days=7),
+            start_date=now + td(days=7),
+            end_date=now + td(days=9),
             start_time="10:00:00",
             end_time="12:00:00",
             organizer=UserFactory.new(),
@@ -29,6 +31,12 @@ class TestUnitTournamentModel(TestCase):
 
     def test_tournament_phase(self):
         self.assertEqual(self.tournament.phase, Tournament.PhaseType.REGISTRATION_OPEN)
+
+    def test_tournament_registration_start_date(self):
+        self.assertEqual(self.tournament.registration_start_date, self.now)
+
+    def test_tournament_registration_end_date(self):
+        self.assertEqual(self.tournament.registration_end_date, self.now + td(days=7))
 
     def test_generate_tournament_brackets(self):
         MAX_TEAMS = 32
