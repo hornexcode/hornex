@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from apps.tournaments.models import (
     Registration,
     Subscription,
-    Bracket,
+    Match,
 )
 from django.utils.translation import ngettext
 from apps.tournaments.leagueoflegends.models import (
@@ -12,7 +12,7 @@ from apps.tournaments.leagueoflegends.models import (
 )
 
 
-admin.site.register([Subscription, Bracket])
+admin.site.register([Subscription, Match])
 admin.site.register(
     [LeagueOfLegendsTournamentProvider, LeagueOfLegendsTournament, Tier]
 )
