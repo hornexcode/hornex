@@ -1,8 +1,7 @@
 import random
 from django.test import TestCase
-from apps.tournaments.models import Tournament, Registration, Bracket
+from apps.tournaments.models import Tournament, Registration
 from test.factories import TournamentFactory, UserFactory, TeamFactory
-from lib.logging import logger
 from datetime import datetime as dt, timezone as tz, timedelta as td
 
 

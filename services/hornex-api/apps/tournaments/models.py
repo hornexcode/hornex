@@ -8,7 +8,6 @@ from rest_framework.exceptions import ValidationError
 from apps.tournaments.validators import validate_team_size
 from apps.tournaments import errors
 from apps.teams.models import Team
-from lib.logging import logger
 from django.db.models.query import QuerySet
 from django.conf import settings
 
