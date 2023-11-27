@@ -62,7 +62,6 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
         permissions=["change"],
     )
     def start_tournament(self, request, queryset):
-        print("AQUI Start")
         success_count = 0
 
         for tournament in queryset:
@@ -74,7 +73,12 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
 
         return messages.success(
             request,
-            f"{success_count} tournament was(were) started successfully.",
+            ngettext(
+                "%(success_count)d tournament was started successfully.",
+                "%(success_count)d tournament were started successfully.",
+                success_count,
+            )
+            % {"success_count": success_count},
         )
 
 
