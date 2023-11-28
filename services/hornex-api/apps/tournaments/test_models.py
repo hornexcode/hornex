@@ -59,7 +59,7 @@ class TestUnitTournamentModel(TestCase):
                 return
 
             self.assertEqual(index, len(rounds))
-            self.assertEqual(num_teams / 2, rounds[0].brackets.count())
+            self.assertEqual(num_teams / 2, rounds[0].matches.count())
             fake_tournament_brackets_winners(self.tournament)
             num_teams = num_teams / 2
 
@@ -92,5 +92,5 @@ def fake_tournament_brackets_winners(tournament: Tournament):
     if rounds.count() == 0:
         raise Exception("Not rounds were found")
 
-    for bracket in rounds.first().brackets.all():
+    for bracket in rounds.first().matches.all():
         bracket.set_winner(random.choice([bracket.team_a_id, bracket.team_b_id]))

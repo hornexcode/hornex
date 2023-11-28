@@ -105,7 +105,7 @@ class Tournament(models.Model):
             raise ValueError("No rounds found")
         return last_round
 
-    def _get_allowed_numer_of_teams(self) -> list[int]:
+    def _get_allowed_number_of_teams(self) -> list[int]:
         try:
             max = int(settings.TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER)
         except ValueError:
@@ -129,7 +129,7 @@ class Tournament(models.Model):
         if self._is_first_round():
             return True
 
-        return not Bracket.objects.filter(
+        return not Match.objects.filter(
             tournament=self, winner_id__isnull=True
         ).exists()
 
@@ -195,16 +195,17 @@ class Tournament(models.Model):
         )
 
         num_of_teams = len(teams)
-        if num_of_teams not in self._get_allowed_numer_of_teams():
+        if num_of_teams not in self._get_allowed_number_of_teams():
             raise ValueError(
-                f"Number of teams must be in {self._get_allowed_numer_of_teams().__str__()}"
+                f"Number of teams must be in {self._get_allowed_number_of_teams().__str__()}"
             )
         for i in range(0, int(num_of_teams / 2)):
-            Bracket.objects.create(
+            Match.objects.create(
                 tournament=self,
                 team_a_id=teams[i].id,
                 team_b_id=teams[num_of_teams - i - 1].id,
                 round=round,
+                is_wo=True,
             )
 
         if print_brackets:
@@ -212,7 +213,7 @@ class Tournament(models.Model):
             max_team_len = max(len(team.name) for team in teams)
             # bracket_width = max_team_len + 4  # padding and borders
 
-            for bracket in Bracket.objects.filter(tournament=self):
+            for bracket in Match.objects.filter(tournament=self):
                 # logger.warning(round.name.center(bracket_width))
                 team1 = bracket.team_a_id.__str__().ljust(max_team_len)
                 team2 = bracket.team_b_id.__str__().rjust(max_team_len)
@@ -327,19 +328,30 @@ class Registration(models.Model):
         self.save()
 
 
-class Bracket(models.Model):
+class Match(models.Model):
+    class StatusType(models.TextChoices):
+        FUTURE = "future"
+        PAST = "past"
+        LIVE = "live"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team_a_id = models.UUIDField()
     team_b_id = models.UUIDField()
     winner_id = models.UUIDField(null=True, blank=True)
     loser_id = models.UUIDField(null=True, blank=True)
-    round = models.ForeignKey(
-        "Round", on_delete=models.CASCADE, related_name="brackets"
+    round = models.ForeignKey("Round", on_delete=models.CASCADE, related_name="matches")
+    is_wo = models.BooleanField()
+    status = models.CharField(
+        max_length=50,
+        choices=StatusType.choices,
+        default=StatusType.FUTURE,
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return f"Bracket ({self.id}) | round: {self.round} | {self.tournament.name}"
+        return f"Match ({self.id}) | round: {self.round} | {self.tournament.name}"
 
     @property
     def team_a(self):
@@ -365,6 +377,18 @@ class Bracket(models.Model):
         return Team.objects.get(id=self.loser_id)
 
 
+class MatchRound(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    team_a_id = models.UUIDField()
+    team_b_id = models.UUIDField()
+    team_a_score = models.CharField(max_length=255)
+    team_b_score = models.CharField(max_length=255)
+    schedule = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 class Round(models.Model):
     tournament = models.ForeignKey(
         Tournament, on_delete=models.CASCADE, related_name="rounds"
@@ -383,7 +407,7 @@ class Round(models.Model):
         return Team.objects.filter(id__in=self.get_winner_ids())
 
     def get_winner_ids(self):
-        return [bracket.winner_id for bracket in self.brackets.all()]
+        return [bracket.winner_id for bracket in self.matches.all()]
 
 
 class Key(models.Model):
