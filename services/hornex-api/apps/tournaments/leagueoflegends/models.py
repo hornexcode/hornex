@@ -27,7 +27,6 @@ class LeagueOfLegendsTournamentProvider(models.Model):
         editable=True,
         null=False,
     )
-    provider_id = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

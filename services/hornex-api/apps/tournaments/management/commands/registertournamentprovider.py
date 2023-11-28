@@ -12,23 +12,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         riot = Client()
-        region = options.get("region", "")
         url = options.get("url", "")
+        region = options.get("region", "")
 
         try:
-            provider_id = riot.register_tournament_provider(url, region)
+            id = riot.register_tournament_provider(url, region)
         except Exception as e:
             raise CommandError(e)
 
         try:
             LeagueOfLegendsTournamentProvider.objects.create(
-                region=region, url=url, provider_id=provider_id
+                region=region, url=url, id=id
             )
         except Exception as e:
             raise CommandError(f"Failed to create provider: {e}")
         else:
             self.stdout.write(
                 self.style.SUCCESS(
-                    'Successfully created tournament provider of id "%s"' % provider_id
+                    'Successfully created tournament provider of id "%s"' % id
                 )
             )
