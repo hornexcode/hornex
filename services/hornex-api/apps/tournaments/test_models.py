@@ -3,7 +3,6 @@ from django.test import TestCase
 from apps.tournaments.models import Tournament, Registration
 from test.factories import TournamentFactory, UserFactory, TeamFactory
 from datetime import datetime as dt, timezone as tz, timedelta as td
-from freezegun import freeze_time
 
 
 class TestUnitTournamentModel(TestCase):
@@ -67,7 +66,6 @@ class TestUnitTournamentModel(TestCase):
             fake_tournament_brackets_winners(self.tournament)
             num_teams = num_teams / 2
 
-    @freeze_time("2023-11-25")
     def test_start_tournament(self):
         MAX_TEAMS = 16
         teams = [TeamFactory.new() for _ in range(0, MAX_TEAMS)]

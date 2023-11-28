@@ -142,9 +142,6 @@ class Tournament(models.Model):
         return bool(self.start_date) and bool(self.start_time)
 
     def start(self):
-        if not (datetime.today().weekday() >= 5):
-            raise ValidationError(detail=errors.NotWeekend)
-
         if not self._has_start_datetime():
             raise ValidationError(detail=errors.TournamentHasNoStartDateTime)
 

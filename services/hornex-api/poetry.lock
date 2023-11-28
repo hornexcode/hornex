@@ -816,20 +816,6 @@ files = [
 python-dateutil = ">=2.4"
 
 [[package]]
-name = "freezegun"
-version = "1.2.2"
-description = "Let your Python tests travel through time"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "freezegun-1.2.2-py3-none-any.whl", hash = "sha256:ea1b963b993cb9ea195adbd893a48d573fda951b0da64f60883d7e988b606c9f"},
-    {file = "freezegun-1.2.2.tar.gz", hash = "sha256:cd22d1ba06941384410cd967d8a99d5ae2442f57dfafeff2fda5de8dc5c05446"},
-]
-
-[package.dependencies]
-python-dateutil = ">=2.7"
-
-[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -1866,4 +1852,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2b7eec7ca983e2c2051111c0732ff37d36e3298a6eb5ca6293b4a26c7fa79d44"
+content-hash = "c7f2f10bab00f79d04299bffa43aa64a366fc76e60660ab4b560f4476a48f6fa"
