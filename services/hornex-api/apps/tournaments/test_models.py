@@ -38,6 +38,9 @@ class TestUnitTournamentModel(TestCase):
     def test_tournament_registration_end_date(self):
         self.assertEqual(self.tournament.registration_end_date, self.now + td(days=7))
 
+    def test_has_start_datetime(self):
+        self.assertEqual(self.tournament._has_start_datetime(), True)
+
     def test_generate_tournament_brackets(self):
         MAX_TEAMS = 32
         teams = [TeamFactory.new() for _ in range(0, MAX_TEAMS)]
@@ -62,6 +65,18 @@ class TestUnitTournamentModel(TestCase):
             self.assertEqual(num_teams / 2, rounds[0].matches.count())
             fake_tournament_brackets_winners(self.tournament)
             num_teams = num_teams / 2
+
+    def test_start_tournament(self):
+        MAX_TEAMS = 16
+        teams = [TeamFactory.new() for _ in range(0, MAX_TEAMS)]
+
+        self.tournament.teams.set(teams)
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        self.tournament.start()
+
+        self.assertEqual(self.tournament.phase, Tournament.PhaseType.RESULTS_TRACKING)
 
 
 class TestUnitRegistrationModel(TestCase):

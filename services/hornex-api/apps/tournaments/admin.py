@@ -1,9 +1,5 @@
 from django.contrib import admin, messages
-from apps.tournaments.models import (
-    Registration,
-    Subscription,
-    Match,
-)
+from apps.tournaments.models import Registration, Subscription, Match, Round
 from django.utils.translation import ngettext
 from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
@@ -12,9 +8,8 @@ from apps.tournaments.leagueoflegends.models import (
 )
 
 
-admin.site.register([Subscription, Match])
 admin.site.register(
-    [LeagueOfLegendsTournamentProvider, LeagueOfLegendsTournament, Tier]
+    [LeagueOfLegendsTournamentProvider, Tier, Subscription, Match, Round]
 )
 
 
@@ -55,3 +50,35 @@ class TournamentAdmin(admin.ModelAdmin):
 
 
 # admin.site.register(Tournament, TournamentAdmin)
+
+
+class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
+    actions = ["start_tournament"]
+
+    @admin.action(
+        description="Start selected league of legends tournament",
+        permissions=["change"],
+    )
+    def start_tournament(self, request, queryset):
+        success_count = 0
+
+        for tournament in queryset:
+            try:
+                tournament.start()
+
+                success_count += 1
+            except Exception as e:
+                return messages.error(request, str(e))
+
+        return messages.success(
+            request,
+            ngettext(
+                "%(success_count)d tournament was started successfully.",
+                "%(success_count)d tournament were started successfully.",
+                success_count,
+            )
+            % {"success_count": success_count},
+        )
+
+
+admin.site.register(LeagueOfLegendsTournament, LeagueOfLegendsTournamentAdmin)

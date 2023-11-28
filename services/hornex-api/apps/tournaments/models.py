@@ -74,7 +74,9 @@ class Tournament(models.Model):
     max_teams = models.IntegerField(default=0)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    teams = models.ManyToManyField("teams.Team", related_name="tournaments")
+    teams = models.ManyToManyField(
+        "teams.Team", related_name="tournaments", null=True, blank=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -136,8 +138,17 @@ class Tournament(models.Model):
     def _is_first_round(self):
         return self.rounds.count() == 0
 
+    def _has_start_datetime(self):
+        return bool(self.start_date) and bool(self.start_time)
+
     def start(self):
-        pass
+        if not self._has_start_datetime():
+            raise ValidationError(detail=errors.TournamentHasNoStartDateTime)
+
+        self.phase = Tournament.PhaseType.RESULTS_TRACKING
+        self.save()
+
+        self.generate_brackets()
 
     def get_number_of_rounds(self):
         num_of_teams = self._get_number_of_teams()
