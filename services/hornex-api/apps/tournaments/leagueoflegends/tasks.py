@@ -1,7 +1,13 @@
 from celery import shared_task
 from lib.hornex.riot import getApi
-from apps.tournaments.leagueoflegends.usecases import RegisterTournamentProviderUseCase
+from apps.tournaments.leagueoflegends.usecases import (
+    RegisterTournamentProviderUseCase,
+    RegisterTournamentUseCase,
+    CreateTournamentCodesUseCase,
+)
 from apps.tournaments.events import TournamentCreated
+from lib.riot.client import Client
+from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 
 client = getApi("keytest")
 
@@ -25,4 +31,28 @@ def register_tournament(self, event):
         data = TournamentCreated.from_message(event)
         uc.execute(name=data.name, region="BR")
     except Exception:
+        raise self.retry()
+
+
+@shared_task(
+    name="tournaments.leagueoflegends.tasks.on_brackets_generated",
+    bind=True,
+    max_retries=3,
+    default_retry_delay=30,
+)
+def on_brackets_generated(self, tournament: LeagueOfLegendsTournament):
+    """
+    Generate tournament code from tournament Id
+    """
+    try:
+        print("____ ON BRACKETS GEN _____")
+        print("____ TOURNAMENT _____")
+        print(tournament)
+        registerTournamentUseCase = RegisterTournamentUseCase(Client)
+        createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
+
+        riot_tournament_id = registerTournamentUseCase.execute(tournament)
+        createTournamentCodesUseCase.execute(riot_tournament_id, tournament)
+    except Exception as e:
+        print("ERROR --- AT ON BRA GEN", e)
         raise self.retry()

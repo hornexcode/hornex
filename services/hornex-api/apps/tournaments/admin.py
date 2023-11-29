@@ -6,7 +6,8 @@ from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournamentProvider,
     Tier,
 )
-
+from django.db import transaction
+from apps.tournaments.leagueoflegends.tasks import on_brackets_generated
 
 admin.site.register(
     [LeagueOfLegendsTournamentProvider, Tier, Subscription, Match, Round]
@@ -59,6 +60,7 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
         description="Start selected league of legends tournament",
         permissions=["change"],
     )
+    @transaction.atomic
     def start_tournament(self, request, queryset):
         success_count = 0
 
@@ -69,6 +71,11 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
                 success_count += 1
             except Exception as e:
                 return messages.error(request, str(e))
+
+        try:
+            on_brackets_generated.delay(tournament)
+        except Exception as e:
+            return messages.error(request, str(e))
 
         return messages.success(
             request,
