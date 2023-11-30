@@ -1,16 +1,19 @@
 from django.contrib import admin, messages
+from django.db import transaction
 from apps.tournaments.models import Registration, Subscription, Match, Round
 from django.utils.translation import ngettext
+
 from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
     LeagueOfLegendsTournamentProvider,
     Tier,
+    Code,
 )
-from django.db import transaction
 from apps.tournaments.leagueoflegends.tasks import on_brackets_generated
 
+
 admin.site.register(
-    [LeagueOfLegendsTournamentProvider, Tier, Subscription, Match, Round]
+    [LeagueOfLegendsTournamentProvider, Tier, Subscription, Match, Round, Code]
 )
 
 
@@ -67,15 +70,10 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
         for tournament in queryset:
             try:
                 tournament.start()
-
                 success_count += 1
+                result = on_brackets_generated.delay(str(tournament.id))
             except Exception as e:
                 return messages.error(request, str(e))
-
-        try:
-            on_brackets_generated.delay(tournament)
-        except Exception as e:
-            return messages.error(request, str(e))
 
         return messages.success(
             request,

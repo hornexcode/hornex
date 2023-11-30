@@ -1,19 +1,26 @@
-# https://developer.riotgames.com/docs/lol#tournament-api_best-practices
-from lib.riot.client import Clientable, CreateTournamentCode
 from requests import RequestException
-from apps.tournaments.leagueoflegends.models import Code
+from django.db import transaction
+
+from lib.riot.client import (
+    Clientable,
+    CreateTournamentCode,
+    PickType,
+    MapType,
+    SpectatorType,
+)
 from lib.logging import logger
+from apps.tournaments.leagueoflegends.models import Code
 from apps.tournaments.leagueoflegends.models import (
-    LeagueOfLegendsTournamentProvider,
     LeagueOfLegendsTournament,
 )
-from apps.tournaments.models import Match
+from apps.tournaments.models import Match, Tournament
 
 
 class CreateTournamentCodesUseCase:
     def __init__(self, api: Clientable):
         self.api: Clientable = api()
 
+    @transaction.atomic
     def execute(
         self, riot_tournament_id: int, tournament: LeagueOfLegendsTournament
     ) -> None:
@@ -24,19 +31,25 @@ class CreateTournamentCodesUseCase:
                 status=Match.StatusType.FUTURE,
             )
             matches_count = matches.count()
+
+            for match in matches:
+                players = [*match.team_a.members.all(), *match.team_b.members.all()]
+
+            puuids = [
+                user.get_game_account(Tournament.GameType.LEAGUE_OF_LEGENDS).puuid
+                for user in players
+            ]
+
             codes = self.api.create_tournament_code(
                 CreateTournamentCode(
                     tournament_id=riot_tournament_id,
                     count=matches_count,
-                    allowedParticipants=[
-                        "OxC7Ddyh8gdhnc24FbEaS3UbCCvEvdneOiKpzLeBADyY_aHvkRvt8ZL0e5sfZaoLaJUN0TmmsgvuRA"
-                        for match in range(matches_count * 5 * 2)
-                    ],
+                    allowedParticipants=puuids,
                     metadata=tournament.description,
                     teamSize=tournament.team_size,
-                    pickType=tournament.pick,
-                    mapType=tournament.map,
-                    spectatorType=tournament.spectator,
+                    pickType=PickType(tournament.pick),
+                    mapType=MapType(tournament.map),
+                    spectatorType=SpectatorType(tournament.spectator),
                     enoughPlayers=True,
                 )
             )

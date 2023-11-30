@@ -72,3 +72,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                     else False
                 )
         return False
+
+    def get_game_account(self, game: str):
+        if game == LEAGUE_OF_LEGENDS:
+            return self.leagueoflegendsaccount
+        return None

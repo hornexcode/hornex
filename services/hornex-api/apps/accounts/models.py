@@ -6,6 +6,7 @@ from apps.tournaments.leagueoflegends.models import Tier
 
 class LeagueOfLegendsAccount(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    puuid = models.CharField(max_length=78)
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="leagueoflegendsaccount"
     )

@@ -90,5 +90,4 @@ class Code(models.Model):
     code = models.CharField(max_length=30, primary_key=True, editable=False)
     tournament = models.ForeignKey(LeagueOfLegendsTournament, on_delete=models.CASCADE)
     match = models.ForeignKey("tournaments.Match", on_delete=models.CASCADE)
-    # users = models.ManyToManyField("users.User", related_name="tournament_codes")
     created_at = models.DateTimeField(auto_now_add=True)

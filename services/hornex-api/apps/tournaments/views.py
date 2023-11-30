@@ -14,8 +14,10 @@ from apps.tournaments.filters import TournamentListFilter, TournamentListOrderin
 from apps.tournaments.serializers import (
     RegistrationReadSerializer,
     RegistrationCreateSerializer,
-    LeagueOfLegendsTournamentSerializer,
     TournamentSerializer,
+)
+from apps.tournaments.leagueoflegends.serializers import (
+    LeagueOfLegendsTournamentSerializer,
 )
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
