@@ -3,7 +3,11 @@ from datetime import timezone as tz, datetime as dt, timedelta as td
 from apps.teams.models import Team
 from apps.users.models import User
 from apps.tournaments.models import Tournament
-from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
+from apps.tournaments.leagueoflegends.models import (
+    LeagueOfLegendsTournament,
+    LeagueOfLegendsTournamentProvider,
+    Tier,
+)
 from apps.accounts.models import LeagueOfLegendsAccount
 
 fake = faker.Faker()
@@ -80,6 +84,10 @@ class LeagueOfLegendsTournamentFactory:
         """
         Create a new tournament with the given organizer and kwargs.
         """
+        default_provider = LeagueOfLegendsTournamentProvider.objects.create(
+            id=1, region="BR", url="https://www.hornex.gg/"
+        )
+
         if classification is not None and isinstance(classification, Tier):
             classification = [classification]
 
@@ -107,6 +115,7 @@ class LeagueOfLegendsTournamentFactory:
             prize_pool=kwargs.get("prize_pool", 999),
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
+            provider=kwargs.get("provider", default_provider),
         )
 
         tmt.tiers.set(classification) if classification is not None else None

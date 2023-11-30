@@ -23,8 +23,8 @@ class RegisterTournamentUseCase:
             return riot_tournament_id
 
         except RequestException as e:
-            logger.warning(e)  # Connection Error, 404, 500, etc
-            return
+            logger.warning(e)
+            raise e
         except Exception as e:
-            logger.warning(e)  # Unkown error
-            return
+            logger.warning(e)
+            raise e
