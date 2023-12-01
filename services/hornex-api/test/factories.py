@@ -2,7 +2,7 @@ import faker
 from datetime import timezone as tz, datetime as dt, timedelta as td
 from apps.teams.models import Team
 from apps.users.models import User
-from apps.tournaments.models import Tournament
+from apps.tournaments.models import Tournament, Round, Match
 from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
     LeagueOfLegendsTournamentProvider,
@@ -82,7 +82,7 @@ class LeagueOfLegendsTournamentFactory:
     @staticmethod
     def new(organizer: User, classification=None, **kwargs):
         """
-        Create a new tournament with the given organizer and kwargs.
+        Create a new league of legends tournament with the given organizer and kwargs.
         """
         default_provider = LeagueOfLegendsTournamentProvider.objects.create(
             id=1, region="BR", url="https://www.hornex.gg/"
@@ -116,6 +116,11 @@ class LeagueOfLegendsTournamentFactory:
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
             provider=kwargs.get("provider", default_provider),
+            pick=kwargs.get("pick", LeagueOfLegendsTournament.PickType.DRAFT_MODE),
+            map=kwargs.get("map", LeagueOfLegendsTournament.MapType.HOWLING_ABYSS),
+            spectator=kwargs.get(
+                "spectator", LeagueOfLegendsTournament.SpectatorType.ALL
+            ),
         )
 
         tmt.tiers.set(classification) if classification is not None else None
@@ -135,15 +140,53 @@ class TierFactory:
 
 class LeagueOfLegendsAccountFactory:
     @staticmethod
-    def new(user: User, tier: Tier, **kwargs):
+    def new(user: User, **kwargs):
         """
         Create a new league of legends account with the given kwargs.
         """
+        tier = TierFactory.new()
         return LeagueOfLegendsAccount.objects.create(
             user=user,
             username=kwargs.get("username", fake.name()),
             password=kwargs.get("password", "password"),
             summoner_name=kwargs.get("summoner_name", fake.name()),
             region=kwargs.get("region", "NA"),
-            tier=tier,
+            tier=kwargs.get("tier", tier),
+        )
+
+
+class RoundFactory:
+    @staticmethod
+    def new(tournament: LeagueOfLegendsTournament, **kwargs):
+        """
+        Create a new round with the given kwargs.
+        """
+        return Round.objects.create(
+            tournament=tournament,
+            name=kwargs.get("name", f"Round | {fake.name()}"),
+            key=tournament._get_key(),
+        )
+
+
+class MatchFactory:
+    @staticmethod
+    def new(tournament: LeagueOfLegendsTournament, **kwargs):
+        """
+        Create a new match with the given kwargs.
+        """
+        user_a = UserFactory.new()
+        user_b = UserFactory.new()
+        team_a = TeamFactory.new(user_a)
+        team_b = TeamFactory.new(user_b)
+        round = RoundFactory.new(tournament)
+
+        return Match.objects.create(
+            tournament=tournament,
+            team_a_id=kwargs.get("team_a_id", team_a.id),
+            team_b_id=kwargs.get("team_b_id", team_b.id),
+            round=kwargs.get("round", round),
+            winner_id=kwargs.get("winner_id"),
+            loser_id=kwargs.get("loser_id"),
+            is_wo=kwargs.get("is_wo", False),
+            status=kwargs.get("status", Match.StatusType.FUTURE),
         )

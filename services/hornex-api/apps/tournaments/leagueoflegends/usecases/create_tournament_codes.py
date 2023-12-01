@@ -9,10 +9,8 @@ from lib.riot.client import (
     SpectatorType,
 )
 from lib.logging import logger
-from apps.tournaments.leagueoflegends.models import Code
-from apps.tournaments.leagueoflegends.models import (
-    LeagueOfLegendsTournament,
-)
+from utils.math import is_power_of_two
+from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Code
 from apps.tournaments.models import Match, Tournament
 
 
@@ -32,8 +30,18 @@ class CreateTournamentCodesUseCase:
             )
             matches_count = matches.count()
 
+            if not is_power_of_two(matches_count):
+                logger.warning("Tournament future matches are not power of two.")
+                raise Exception("Tournament future matches are not power of two.")
+
             for match in matches:
-                players = [*match.team_a.members.all(), *match.team_b.members.all()]
+                team_a = match.team_a
+                team_b = match.team_b
+
+                team_a._has_enough_members(tournament.team_size)
+                team_b._has_enough_members(tournament.team_size)
+
+                players = [*team_a.members.all(), *team_b.members.all()]
 
             puuids = [
                 user.get_game_account(Tournament.GameType.LEAGUE_OF_LEGENDS).puuid
@@ -59,7 +67,7 @@ class CreateTournamentCodesUseCase:
 
         except RequestException as e:
             logger.warning(e)  # Connection Error, 404, 500, etc
-            return
+            raise e
         except Exception as e:
             logger.warning(e)  # Unkown error
-            return
+            raise e
