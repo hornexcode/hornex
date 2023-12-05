@@ -11,6 +11,7 @@ jobs:
   ci-hornex-api-lint-and-test:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/configuration-reference/#executor-job
+    resource_class: medium+
     docker:
       - image: cimg/python:3.11
 
