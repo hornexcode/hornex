@@ -33,6 +33,11 @@ class Team(models.Model):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
+    def _has_enough_members(self, amount: int) -> bool:
+        if self.members.count() != amount:
+            raise Exception(f"Team {self.name} does not have {amount} members.")
+        return True
+
 
 class Membership(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

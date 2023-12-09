@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
             is_superuser=is_superuser,
             last_login=now,
             date_joined=now,
-            **extra_fields
+            **extra_fields,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -72,3 +72,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                     else False
                 )
         return False
+
+    def get_game_account(self, game: str):
+        if game == LEAGUE_OF_LEGENDS:
+            return self.leagueoflegendsaccount
+        return None
