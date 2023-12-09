@@ -2,7 +2,7 @@ from celery import shared_task
 from lib.hornex.riot import getApi
 from apps.tournaments.leagueoflegends.usecases import (
     RegisterTournamentProviderUseCase,
-    RegisterTournamentUseCase,
+    GetOrRegisterLeagueOfLegendsTournamentUseCase,
     CreateTournamentCodesUseCase,
 )
 from apps.tournaments.events import TournamentCreated
@@ -45,12 +45,11 @@ def on_brackets_generated(self, tournament_id: str):
     Generate tournament code from tournament Id
     """
     try:
+        rc = Client()
         tournament = LeagueOfLegendsTournament.objects.get(id=tournament_id)
-
-        registerTournamentUseCase = RegisterTournamentUseCase(Client)
-        createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
-
-        riot_tournament_id = registerTournamentUseCase.execute(tournament)
-        createTournamentCodesUseCase.execute(riot_tournament_id, tournament)
-    except Exception as e:
+        gortuc = GetOrRegisterLeagueOfLegendsTournamentUseCase(rc)
+        ctcuc = CreateTournamentCodesUseCase(rc)
+        rtid = gortuc.execute(tournament)
+        ctcuc.execute(rtid, tournament)
+    except Exception:
         raise self.retry()

@@ -5,5 +5,5 @@ from apps.tournaments.leagueoflegends.usecases.create_tournament_codes import (
     CreateTournamentCodesUseCase,
 )
 from apps.tournaments.leagueoflegends.usecases.register_tournament import (
-    RegisterTournamentUseCase,
+    GetOrRegisterLeagueOfLegendsTournamentUseCase,
 )

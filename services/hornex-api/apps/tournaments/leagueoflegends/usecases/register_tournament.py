@@ -7,12 +7,15 @@ from apps.tournaments.leagueoflegends.models import (
 )
 
 
-class RegisterTournamentUseCase:
+class GetOrRegisterLeagueOfLegendsTournamentUseCase:
     def __init__(self, api: Clientable):
-        self.api: Clientable = api()
+        self.api: Clientable = api
 
     def execute(self, tournament: LeagueOfLegendsTournament) -> int:
         try:
+            if tournament.riot_id:
+                return tournament.riot_id
+
             riot_tournament_id = self.api.register_tournament(
                 tournament.name, tournament.provider.id
             )
