@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from datetime import datetime as dt, timezone as tz
 
 
 class Team(models.Model):
@@ -72,6 +73,11 @@ class Invite(models.Model):
         if self.declined_at is not None:
             return "declined"
         return "pending"
+
+    def accept(self):
+        Membership.objects.create(team=self.team, user=self.user)
+        self.accepted_at = dt.now(tz=tz.utc)
+        self.save()
 
     def __str__(self) -> str:
         return f"Invite from {self.team.name} to {self.user.name} - ({self.status()})"

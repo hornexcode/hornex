@@ -37,8 +37,8 @@ ENV \
 RUN ln -s /src/static /static
 
 # psqlrc copy relies on base assumption that user is root
-COPY services/platform-api-content/psqlrc /root/.psqlrc
-COPY services/platform-api-content /src/
+COPY services/hornex-api/psqlrc /root/.psqlrc
+COPY services/hornex-api /src/
 
 # -------------------------------------------------------------------------------
 # Runtime prod/stage/etc
@@ -48,19 +48,15 @@ WORKDIR /app/
 
 ENV PATH=/app/.venv/bin:${PATH}
 
-COPY services/platform-api-content/pyproject.toml services/platform-api-content/poetry.lock /app/
+COPY services/hornex-api/pyproject.toml services/hornex-api/poetry.lock /app/
 RUN poetry install --only=main
 
 # psqlrc copy relies on base assumption that user is root
-COPY services/platform-api-content/psqlrc /root/.psqlrc
-COPY services/platform-api-content /app/
+COPY services/hornex-api/psqlrc /root/.psqlrc
+COPY services/hornex-api /app/
 
 RUN mv ./static /static
 
 ARG GIT_COMMIT=local
 ENV GIT_COMMIT=${GIT_COMMIT}
 ENV SENTRY_RELEASE=${GIT_COMMIT}
-<<<<<<< HEAD
-=======
-
->>>>>>> 280ad62 (chore: initial setup)

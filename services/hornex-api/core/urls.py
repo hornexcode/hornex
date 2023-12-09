@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from apps.notifications.consumers import NotificationConsumer
+from core.healthcheck import health
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -45,6 +46,7 @@ urlpatterns = [
     path("api/v1/token", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     # api/v1
+    path("api/v1/webhooks", include("apps.accounts.webhooks")),
     path("api/v1/users", include("apps.users.urls")),
     path("api/v1/invites", include("apps.invites.urls")),
     path("api/v1/platforms", include("apps.platforms.urls")),
@@ -54,6 +56,8 @@ urlpatterns = [
     path("api/v1/notifications", include("apps.notifications.urls")),
     # api/v1/<platform>/<game>
     path(f"{prefix}/tournaments", include("apps.tournaments.urls")),
+    # health check
+    path("api/v1/health", health),
 ]
 
 
