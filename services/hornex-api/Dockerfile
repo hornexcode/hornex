@@ -60,3 +60,7 @@ RUN mv ./static /static
 ARG GIT_COMMIT=local
 ENV GIT_COMMIT=${GIT_COMMIT}
 ENV SENTRY_RELEASE=${GIT_COMMIT}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 280ad62 (chore: initial setup)
