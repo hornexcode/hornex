@@ -9,22 +9,18 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("games", "0001_initial"),
-        ("platforms", "0001_initial"),
+        ("accounts", "0002_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="gameaccountriot",
+            model_name="leagueoflegendsaccount",
             name="user",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="leagueoflegendsaccount",
+                to=settings.AUTH_USER_MODEL,
             ),
-        ),
-        migrations.AddField(
-            model_name="game",
-            name="platforms",
-            field=models.ManyToManyField(to="platforms.platform"),
         ),
     ]
