@@ -12,19 +12,6 @@
 #   multiline strings and common string operations such as formatting.
 #
 #   More info: https://docs.tilt.dev/api.html#api.warn
-print(
-    """
------------------------------------------------------------------
-✨ Hello Tilt! This appears in the (Tiltfile) pane whenever Tilt
-   evaluates this file.
------------------------------------------------------------------
-""".strip()
-)
-warn(
-    "ℹ️ Open {tiltfile_path} in your favorite editor to get started.".format(
-        tiltfile_path=config.main_path
-    )
-)
 
 
 # Build Docker image
@@ -103,7 +90,6 @@ warn(
 #
 #   More info: https://github.com/tilt-dev/tilt-extensions
 #
-load("ext://git_resource", "git_checkout")
 
 
 # Organize logic into functions
@@ -112,18 +98,6 @@ load("ext://git_resource", "git_checkout")
 #
 #   More info: https://docs.tilt.dev/tiltfile_concepts.html
 #
-def tilt_demo():
-    # Tilt provides many useful portable built-ins
-    # https://docs.tilt.dev/api.html#modules.os.path.exists
-    if os.path.exists("tilt-avatars/Tiltfile"):
-        # It's possible to load other Tiltfiles to further organize
-        # your logic in large projects
-        # https://docs.tilt.dev/multiple_repos.html
-        load_dynamic("tilt-avatars/Tiltfile")
-    watch_file("tilt-avatars/Tiltfile")
-    git_checkout(
-        "https://github.com/tilt-dev/tilt-avatars.git", checkout_dir="tilt-avatars"
-    )
 
 
 # Edit your Tiltfile without restarting Tilt
@@ -136,20 +110,18 @@ def tilt_demo():
 
 
 def main():
+    allow_k8s_contexts("dev")
+
     options = {
         "debug": config.get("services", {}).get("debug", {}),
         "dev_build": {},
-        "image_ref": "148400639408.dkr.ecr.us-east-1.amazonaws.com/axioscode/dev-{}",
+        "image_ref": "148400639408.dkr.ecr.us-east-1.amazonaws.com/axioscode/test-{}",
         "namespace": get_namespace(),
-        "github_packages_token": get_env(
-            "GITHUB_PACKAGES_TOKEN",
-            "See https://inside.axioscode.tools/_/docs/getting-started/credentials/#github-packages-token",
-        ),
         "platform": "linux/amd64",
         "repo_root": os.getcwd(),
-        "tilt_local_database": str(
-            not config.get("options", {}).get("shared-database", True)
-        ).lower(),
+        # "tilt_local_database": str(
+        #     not config.get("options", {}).get("shared-database", True)
+        # ).lower(),
     }
 
 

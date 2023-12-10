@@ -115,9 +115,10 @@ export default function LoginPage() {
           <Button
             isLoading={fetching}
             disabled={fetching}
-            className="w-full"
+            className="w-full !text-light-dark"
             color="warning"
             shape="rounded"
+
           >
             Login
           </Button>

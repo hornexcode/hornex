@@ -1,0 +1,29 @@
+###################################################################################################
+#
+# This is the default config for tilt enabled services,
+# you probably don't want to edit this file directly.
+#
+# The file you are looking for is in the root of the repo called tilt_config.yaml
+# It is ignored by git so your editor might be hiding it from you.
+#
+###################################################################################################
+
+services:
+  enabled:
+    hornex-api: true
+    hornex-api-postgresql: true
+  # production-build:
+  #   axios-core: false
+  #   axios-docs: false
+  #   axios-queue-consumer: false
+  #   axios-runner: false
+  #   axios-web: false
+  #   platform-api-content: false
+  #   ads-fetcher: false
+  # debug:
+  #   axios-core: false
+  #   axios-queue-consumer: false
+  #   axios-runner: false
+  #   axios-web: false
+options:
+  shared-database: false

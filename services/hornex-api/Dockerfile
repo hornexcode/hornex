@@ -28,9 +28,8 @@ WORKDIR /src/
 
 ENV \
   PATH=/src/.venv/bin:${PATH} \
-  GIT_COMMIT=dev \
+  GIT_COMMIT=test \
   PIP_NO_CACHE_DIR=off \
-  SENTRY_RELEASE=dev \
   GUNICORN_RELOAD=true \
   CELERY_RELOAD=true
 

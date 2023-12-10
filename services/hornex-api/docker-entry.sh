@@ -9,7 +9,7 @@ function main() (
   fix_django_rest_swagger
 
   # Await Services
-  python3 ./wait-for-db.py
+  # python3 ./wait-for-db.py
 
   command="${1:-}"
 
@@ -24,15 +24,15 @@ function main() (
     coverage report
     ;;
 
-  "celery")
-    if [[ "${CELERY_RELOAD:-}" == "true" ]]; then
-      exec python3 manage.py celery_dev
-    else
-      exec celery \
-        --app config worker \
-        --concurrency="${CELERY_CONCURRENCY:-1}" \
-        --loglevel="${CELERY_LOGLEVEL:-debug}" \
-        --events
+  # "celery")
+  #   if [[ "${CELERY_RELOAD:-}" == "true" ]]; then
+  #     exec python3 manage.py celery_dev
+  #   else
+  #     exec celery \
+  #       --app config worker \
+  #       --concurrency="${CELERY_CONCURRENCY:-1}" \
+  #       --loglevel="${CELERY_LOGLEVEL:-debug}" \
+  #       --events
     fi
     ;;
 
