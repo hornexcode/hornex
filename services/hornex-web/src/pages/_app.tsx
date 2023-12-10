@@ -6,7 +6,6 @@ import '@/websocket/app'; // websocket
 import ModalsContainer from '@/components/modal-views/container';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
 import { NotificationContextProvider } from '@/lib/notification';
-import { WebSocketContextProvider } from '@/websocket/context';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -47,7 +46,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       <div
         className={classnames(
           'bg-dark text-xs font-semibold text-slate-500 antialiased',
-          redHatDisplay.className
+          jetBrains_Mono.className
         )}
       >
         <AuthContextProvider>
@@ -59,6 +58,8 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         </AuthContextProvider>
         <ToastContainer
           theme="dark"
+
+          bodyClassName={classnames('text-slate-500', 'bg-light-dark')}
           style={{
             fontSize: '0.925rem',
           }}

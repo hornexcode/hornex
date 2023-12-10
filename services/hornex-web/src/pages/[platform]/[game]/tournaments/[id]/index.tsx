@@ -2,7 +2,6 @@ import TournamentPage from '@/components/ui/templates/tournament';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { Tournament } from '@/lib/hx-app/types';
-import { Team } from '@/lib/proto/team';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
@@ -43,6 +42,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
     ctx.req
   );
+
+  console.log(tournamentError);
 
   if (!tournament || tournamentError) {
     return {

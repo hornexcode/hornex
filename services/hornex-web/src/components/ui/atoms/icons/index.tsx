@@ -7,6 +7,7 @@ export * from './dota-logo-icon';
 export * from './ethereum';
 export * from './eye-icon';
 export * from './lol-icon';
+export * from './lol-icon-flat-blank';
 export * from './lol-logo-icon';
 export * from './medal-icon';
 export * from './play-station-icon';

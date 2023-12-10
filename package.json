@@ -31,5 +31,8 @@
     "prettier-eslint": "13.0.0",
     "typescript": "5.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "jsdom": "^23.0.1",
+    "payment-token-efi": "^2.1.0"
+  }
 }

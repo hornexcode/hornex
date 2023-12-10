@@ -59,8 +59,8 @@ const Header = () => {
         {!isAuthenticated && (
           <div className="flex items-center justify-center">
             <Link href="/login">
-              <div className="flex items-center text-white">
-                Login <ArrowUpRightIcon className="h-5 w-5 text-white" />
+              <div className="flex items-center text-white text-sm">
+                Login <ArrowUpRightIcon className="ml-2 h-5 w-5 text-white" />
               </div>
             </Link>
           </div>

@@ -35,7 +35,7 @@ export default function PaymentOptions({
         <RadioGroup.Option value={item.value} key={index}>
           {({ checked }) => (
             <span
-              className={`shadow-card hover:shadow-large dark:bg-light-dark relative flex cursor-pointer items-center justify-center rounded-lg border-2 border-solid bg-white text-center text-sm font-medium tracking-wider transition-all ${
+              className={`shadow-card hover:shadow-large dark:bg-light-dark relative flex cursor-pointer items-center justify-center rounded border-2 border-solid bg-white text-center text-sm font-medium tracking-wider transition-all ${
                 checked
                   ? 'border-gray-400'
                   : 'border-light-dark dark:border-light-dark'

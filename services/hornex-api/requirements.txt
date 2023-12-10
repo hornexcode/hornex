@@ -21,9 +21,7 @@ automat==22.10.0 ; python_version >= "3.11" and python_version < "4.0" \
 billiard==4.2.0 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:07aa978b308f334ff8282bd4a746e681b3513db5c9a514cbdd810cbbdc19714d \
     --hash=sha256:9a3c3184cb275aa17a732f93f65b20c525d3d9f253722d26a82194803ade5a2c
-celery==5.3.6 ; python_version >= "3.11" and python_version < "4.0" \
-    --hash=sha256:870cc71d737c0200c397290d730344cc991d13a057534353d124c9380267aab9 \
-    --hash=sha256:9da4ea0118d232ce97dff5ed4974587fb1c0ff5c10042eb15278487cdd27d1af
+celery==5.3.6
 certifi==2023.11.17 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:9b469f3a900bf28dc19b8cfbf8019bf47f7fdd1a65a1d4ffb98fc14166beb4d1 \
     --hash=sha256:e036ab49d5b79556f99cfc2d9320b34cfbe5be05c5871b51de9329f0603b0474

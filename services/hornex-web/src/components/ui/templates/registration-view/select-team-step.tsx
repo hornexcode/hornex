@@ -5,10 +5,16 @@ import Listbox, { ListboxOption } from '../../atoms/list-box';
 import PaymentOptions from '../../molecules/payment-options';
 import { useStepContext } from './registration-view';
 import { dataLoader } from '@/lib/api';
-import { Team, Tournament } from '@/lib/proto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InfoIcon } from 'lucide-react';
-import React, { FC, FormEventHandler, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, {
+  FC,
+  FormEventHandler,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -23,7 +29,7 @@ type SubmitRegistrationFormType = z.infer<typeof submitRegistrationFormSchema>;
 export type SelectTeamStepProps = {};
 
 export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
-  const { nextStep, setTeam, teams, tournament } = useStepContext();
+  const { nextStep, setTeam, teams, team, step } = useStepContext();
   // react hook form
   const {
     register,
@@ -35,12 +41,19 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
     resolver: zodResolver(submitRegistrationFormSchema),
   });
 
+  const router = useRouter();
   const [isFetching, setIsFetching] = useState(false);
-  let [paymentMethod, setPaymentMethod] = useState('pix');
-  const [teamOption, setTeamOption] = useState({
-    name: 'Please select a team',
-    value: '',
-  });
+
+  const setTeamHandler = useCallback(
+    (team: ListboxOption) => {
+      setValue('team', team.value);
+    },
+    [team]
+  );
+
+  useEffect(() => {
+    team && setTeamHandler(team);
+  }, [step]);
 
   const teamOptions: ListboxOption[] =
     teams?.map((team) => ({
@@ -49,26 +62,22 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
     })) || [];
 
   async function submitHandler(data: SubmitRegistrationFormType) {
-    // setIsFetching(true);
-    // const { error } = await registerTeam({
-    //   team: teamOption.value,
-    //   tournamentId: tournament.id,
-    // });
-    // if (error) {
-    //   setIsFetching(false);
-    //   return;
-    // }
-    // setIsFetching(false);
-    setTeam(teamOption);
     console.log(data);
-    nextStep('CHECKOUT');
+    // set payment method into url params
+    if (team)
+      router.query = {
+        ...router.query,
+        step: 'PAYMENT_METHOD',
+      };
+
+    nextStep('PAYMENT_METHOD');
   }
 
   return (
     <>
       {/* <RegistrationStepper /> */}
       <h4 className="mb-4 text-left text-lg font-semibold">Registration</h4>
-      <div className="rounded bg-blue-400 p-4 text-left text-sm text-white">
+      <div className="bg-light-dark rounded p-4 text-left text-sm text-white">
         <InfoIcon className="mr-2 inline-block w-4" />
         Para registrar um time no torneio o líder do time deve realizar o
         pagamento total da inscrição de todos os membros incluindo a sua.
@@ -90,19 +99,16 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
             render={({ field: { name } }) => (
               <Listbox
                 options={teamOptions}
-                selectedOption={teamOption}
+                selectedOption={team}
                 onChange={(option) => {
-                  setTeamOption(option);
-                  setValue(name, teamOption.value);
+                  setTeam && setTeam(option);
+                  setValue(name, option.name);
                 }}
               />
             )}
           />
         </div>
-        <div className="w-full">
-          <InputLabel title="Payment method" important />
-          <PaymentOptions onChange={setPaymentMethod} value={paymentMethod} />
-        </div>
+
         <div className="flex items-center justify-end ">
           <Button
             color="gray"

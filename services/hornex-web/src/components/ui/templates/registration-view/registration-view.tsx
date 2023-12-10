@@ -1,12 +1,14 @@
 import { ListboxOption } from '../../atoms/list-box';
 import Loader from '../../atoms/loader';
 import { CheckoutStep } from './checkout-step';
+import { PaymentMethodStep } from './payment-method-step';
 import { SelectTeamStep } from './select-team-step';
 import { dataLoader } from '@/lib/api';
 import { Team, Tournament } from '@/lib/proto';
 import { motion } from 'framer-motion';
+import { SetStateAction } from 'jotai';
 import { useRouter } from 'next/router';
-import { createContext, useContext, useState } from 'react';
+import { createContext, Dispatch, useContext, useState } from 'react';
 
 const { useData: getTeams } = dataLoader<Team[]>('getTeams');
 const { useData: getTournament } = dataLoader<Tournament>('getTournament');
@@ -14,33 +16,44 @@ const { useData: getTournament } = dataLoader<Tournament>('getTournament');
 export type RegistrationSteps =
   | 'SELECT_TEAM'
   | 'CHECKOUT'
-  | 'PAYMENT'
+  | 'PAYMENT_METHOD'
   | 'SUCCESS';
+
+export type PaymentMethod = 'PIX' | 'CREDIT_CARD';
 
 export const RegistrationContext = createContext<{
   step: RegistrationSteps;
   teams?: Team[];
-  team?: ListboxOption;
+  team: ListboxOption;
+  paymentMethod: PaymentMethod;
   tournament?: Tournament;
   isFetching: boolean;
-  setTeam: (team: ListboxOption) => void;
+  setTeam?: Dispatch<SetStateAction<ListboxOption>>;
+  setPaymentMethod: (method: PaymentMethod) => void;
   nextStep: (step: RegistrationSteps) => void;
 }>({
   step: 'SELECT_TEAM',
   teams: undefined,
   tournament: undefined,
-  team: undefined,
+  team: {
+    name: 'Please select a team',
+    value: '',
+  },
+  paymentMethod: 'PIX',
   isFetching: false,
-  setTeam: (team: ListboxOption) => {},
   nextStep: (step: RegistrationSteps) => {},
+  setPaymentMethod: (method: PaymentMethod) => {},
 });
 
 const RegistrationView = () => {
   const [step, setStep] = useState<RegistrationSteps>('SELECT_TEAM');
-  const [team, setTeam] = useState<ListboxOption | undefined>(undefined);
+  const [team, setTeam] = useState<ListboxOption>({
+    name: 'Please select a team',
+    value: '',
+  });
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('PIX');
 
   const nextStep = (step: RegistrationSteps) => setStep(step);
-  const selectTeam = (team: ListboxOption) => setTeam(team);
 
   // get params
   const router = useRouter();
@@ -80,8 +93,10 @@ const RegistrationView = () => {
           team,
           tournament,
           isFetching: false,
+          paymentMethod,
           nextStep,
           setTeam,
+          setPaymentMethod,
         }}
       >
         {tournament && teams && renderStep(step)}
@@ -101,22 +116,31 @@ function renderStep(step: RegistrationSteps) {
       return (
         <motion.div
           layout
-          initial="exit"
-          animate="enter"
-          exit="exit"
-          variants={fadeInBottom('easeIn', 0.25, 16)}
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -300, opacity: 0 }}
         >
           <SelectTeamStep />
+        </motion.div>
+      );
+    case 'PAYMENT_METHOD':
+      return (
+        <motion.div
+          layout
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -300, opacity: 0 }}
+        >
+          <PaymentMethodStep />
         </motion.div>
       );
     case 'CHECKOUT':
       return (
         <motion.div
           layout
-          initial="exit"
-          animate="enter"
-          exit="exit"
-          variants={fadeInBottom('easeIn', 0.25, 16)}
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -300, opacity: 0 }}
         >
           <CheckoutStep />
         </motion.div>
@@ -149,6 +173,25 @@ export function fadeInBottom(
     },
     exit: {
       y: translateY,
+      opacity: 0,
+      transition: { type, duration },
+    },
+  };
+}
+
+export function fadeInLeft(
+  type: string = 'spring',
+  duration: number = 0.5,
+  translateX: number = 60
+) {
+  return {
+    enter: {
+      x: 0,
+      opacity: 1,
+      transition: { type, duration },
+    },
+    exit: {
+      x: translateX,
       opacity: 0,
       transition: { type, duration },
     },

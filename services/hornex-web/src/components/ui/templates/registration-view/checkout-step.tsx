@@ -1,18 +1,11 @@
-import Button from '../../atoms/button';
-import Input from '../../atoms/form/input';
-import InputLabel from '../../atoms/form/input-label';
-import { LongArrowLeft } from '../../atoms/icons/long-arrow-left';
-import { LongArrowRight } from '../../atoms/icons/long-arrow-right';
-import Listbox, { ListboxOption } from '../../atoms/list-box';
-import PaymentOptions from '../../molecules/payment-options';
 import { useStepContext } from './registration-view';
+import Button from '@/components/ui/atoms/button';
+import InputLabel from '@/components/ui/atoms/form/input-label';
+import { LongArrowLeft } from '@/components/ui/atoms/icons/long-arrow-left';
+import { LongArrowRight } from '@/components/ui/atoms/icons/long-arrow-right';
+import PaymentOptions from '@/components/ui/molecules/payment-options';
 import { dataLoader } from '@/lib/api';
-import { Team, Tournament } from '@/lib/proto';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { InfoIcon } from 'lucide-react';
-import React, { FC, FormEventHandler, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import React, { FC, useState } from 'react';
 
 const { post: registerTeam } = dataLoader<undefined>('registerTeam');
 
@@ -20,7 +13,7 @@ export type CheckoutStepProps = {};
 
 export const CheckoutStep: FC<CheckoutStepProps> = () => {
   const { nextStep, step, tournament, team } = useStepContext();
-
+  let [paymentMethod, setPaymentMethod] = useState('pix');
   if (!tournament) {
     return (
       <div className="flex flex-col p-8 text-center">
@@ -29,10 +22,14 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
     );
   }
 
+  async function submitHandler(data: any) {}
+
   return (
     <>
       {/* <RegistrationStepper /> */}
-      <h4 className="mb-4 text-left text-lg font-semibold">Checkout</h4>
+      <h4 className="mb-4 text-center text-lg font-semibold">
+        Subscription Checkout
+      </h4>
       {/* <div className="rounded bg-blue-400 p-4 text-left text-sm text-white">
         <InfoIcon className="mr-2 inline-block w-4" />
         Para registrar um time no torneio o líder do time deve realizar o
@@ -43,28 +40,21 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
         className="space-y-8"
         // onSubmit={handleSubmit(submitHandler)}
       >
-        <div className="space-y-2 border-t border-dashed border-gray-600 pt-4">
-          <h4 className="mb-4 uppercase tracking-wider text-gray-400">
-            Payment
-          </h4>
-        </div>
-        <div className="space-y-2 border-t border-dashed border-gray-600 pt-4">
-          <h4 className="mb-4 uppercase tracking-wider text-gray-400">
-            Details
-          </h4>
+        <div className="bg-light-dark space-y-2 rounded border-gray-600 p-8">
+          <h4 className="mb-4 uppercase tracking-wider">Details</h4>
           <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Team:</div>
-            <div className="font-semibold">{team?.name}</div>
+            <div className="">Team:</div>
+            <div className="">{team?.name}</div>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Entry fee:</div>
-            <div className="font-semibold">${tournament.entry_fee}</div>
+            <div className="">Entry fee:</div>
+            <div className="">${tournament.entry_fee}</div>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Number of members:</div>
-            <div className="font-semibold">x{tournament.team_size}</div>
+            <div className="">Number of members:</div>
+            <div className="">x{tournament.team_size}</div>
           </div>
-          <div className="flex items-center justify-between border-t border-dashed border-gray-600 pt-4 text-sm">
+          <div className="flex items-center justify-between border-t border-dashed border-gray-600 pt-2 text-sm">
             <div className="font-semibold">Total</div>
             <div className="text-2xl font-semibold">
               ${tournament.entry_fee * tournament.team_size}
@@ -87,8 +77,7 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
           </Button>
           <Button color="warning" shape="rounded" size="small" type="submit">
             <div className="flex items-center">
-              <div className="font-semibold">Continuar</div>
-              <LongArrowRight className="ml-2 w-5" />
+              <div className="font-semibold">Registrar</div>
             </div>
           </Button>
         </div>

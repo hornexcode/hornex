@@ -1,10 +1,11 @@
+import Button from '../../atoms/button/button';
+import { LolIconFlatBlank } from '@/components/ui/atoms/icons';
 import TournamentPhasesWidget from '@/components/ui/molecules/tournament-phases-widget';
 import TournamentDetailsHeadline from '@/components/ui/organisms/tournament-details-headline';
 import TournamentOverviewTabPanel from '@/components/ui/organisms/tournament-overview-tab-panel/tournament-overview-tab-panel';
 import TournamentScoringTabPanel from '@/components/ui/organisms/tournament-scoring-tab-panel';
 import TournamentStandingTabPanel from '@/components/ui/organisms/tournament-standing-tab-panel';
 import { Tournament } from '@/lib/hx-app/types';
-import { Team } from '@/lib/proto/team';
 import { Tab } from '@headlessui/react';
 import classnames from 'classnames';
 import { FC, useState } from 'react';
@@ -23,6 +24,15 @@ const Tournament: FC<TournamentProps> = ({ tournament }) => {
   });
   return (
     <div className="p-6">
+      <div className="mp-4 block lg:mb-10">
+        {/* <Input placeholder="Connect" /> */}
+        <Button color="warning" size="small" shape="rounded">
+          <div className="flex items-center">
+            <LolIconFlatBlank className="mr-2 h-7 w-7" />
+            Connect Account
+          </div>
+        </Button>
+      </div>
       <div className="mb-4 block lg:mb-10">
         <TournamentDetailsHeadline tournament={tournament} />
       </div>
