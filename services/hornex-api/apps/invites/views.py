@@ -9,7 +9,13 @@ from rest_framework.permissions import IsAuthenticated
 
 from apps.invites.serializers import InviteSerializer
 from apps.teams.models import Invite
-from .errors import not_found
+from .errors import (
+    invite_not_found,
+    invite_does_not_belongs_to_you,
+    invite_expired,
+    invite_accepted,
+    invite_declined,
+)
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -66,7 +72,6 @@ def get_invites_count(request):
     filtering = {"status": request.query_params.get("status", None)}
     inviteStatus = {}
 
-    print("filtering", filtering)
     if filtering["status"] is not None and filtering["status"] == "accepted":
         inviteStatus = {"accepted_at__isnull": False, "declined_at__isnull": True}
     elif filtering["status"] is not None and filtering["status"] == "declined":
@@ -86,14 +91,26 @@ def get_invites_count(request):
 def accept_invite(request):
     """Accepts a team invite."""
     invite_id = request.data.get("invite_id", None)
+    user = request.user
 
     try:
         invite = Invite.objects.get(id=invite_id)
     except Invite.DoesNotExist:
-        return not_found
+        return invite_not_found
 
-    ies = InviteSerializer(invite, context={"request": request})
-    ies.accept()
+    if user != invite.user:
+        return invite_does_not_belongs_to_you
+
+    if invite.expired_at:
+        return invite_expired
+
+    if invite.accepted_at:
+        return invite_accepted
+
+    if invite.declined_at:
+        return invite_declined
+
+    invite.accept()
 
     return Response(status=status.HTTP_200_OK)
 
@@ -103,16 +120,25 @@ def accept_invite(request):
 @authentication_classes([JWTAuthentication])
 def decline_invite(request):
     invite_id = request.data.get("invite_id", None)
+    user = request.user
 
     try:
         invite = Invite.objects.get(id=invite_id)
     except Invite.DoesNotExist:
-        return Response(
-            {"error": "Invite not found."},
-            status=status.HTTP_404_NOT_FOUND,
-        )
+        return invite_not_found
 
-    ies = InviteSerializer(invite, context={"request": request})
-    ies.decline()
+    if user != invite.user:
+        return invite_does_not_belongs_to_you
+
+    if invite.expired_at:
+        return invite_expired
+
+    if invite.accepted_at:
+        return invite_accepted
+
+    if invite.declined_at:
+        return invite_declined
+
+    invite.decline()
 
     return Response(status=status.HTTP_200_OK)

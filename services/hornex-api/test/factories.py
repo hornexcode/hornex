@@ -1,6 +1,6 @@
 import faker
 from datetime import timezone as tz, datetime as dt, timedelta as td
-from apps.teams.models import Team
+from apps.teams.models import Team, Invite
 from apps.users.models import User
 from apps.tournaments.models import Tournament, Round, Match
 from apps.tournaments.leagueoflegends.models import (
@@ -43,6 +43,19 @@ class TeamFactory:
             game=kwargs.get("game", Team.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", Team.PlatformType.PC),
         )
+
+
+class InviteFactory:
+    @staticmethod
+    def new(team: Team | None = None, **kwargs) -> Invite:
+        """
+        Create a new invite with the given kwargs.
+        """
+
+        if team is None:
+            team = TeamFactory.new()
+
+        return Invite.objects.create(team=team, user=kwargs.get("user"))
 
 
 class TournamentFactory:
