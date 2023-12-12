@@ -6,7 +6,7 @@ from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournamentPro
 from io import StringIO
 
 
-class LeagueOfLegendsCommandsTest(TestCase):
+class TestLeagueOfLegendsCommands(TestCase):
     @patch("requests.post")
     def test_registertournamentprovider(self, mock_post):
         mock_response = Mock(spec=Response)

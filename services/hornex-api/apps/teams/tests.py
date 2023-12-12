@@ -9,9 +9,9 @@ from test.factories import TeamFactory, InviteFactory, UserFactory
 prefix = "api/v1/<str:platform>/<str:game>"
 
 
-class TeamTests(APITestCase, URLPatternsTestCase):
+class TestTeam(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path(f"{prefix}/teams", include("teams.urls")),
+        path(f"{prefix}/teams", include("apps.teams.urls")),
     ]
 
     def setUp(self):
@@ -131,9 +131,9 @@ class TeamTests(APITestCase, URLPatternsTestCase):
         # self.assertEqual(len(resp.json()), 0)
 
 
-class InvitesTest(APITestCase, URLPatternsTestCase):
+class TestInvites(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path(f"/invites", include("teams.urls")),
+        path(f"/invites", include("apps.teams.urls")),
     ]
 
     def setUp(self):
@@ -195,7 +195,7 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 404)
-        self.assertEqual(resp.data.get("error"), "Not found.")
+        self.assertEqual(resp.data.get("message"), "Not found.")
 
     def test_accept_invite_unauthenticated_403(self):
         """
@@ -232,7 +232,7 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.data.get("error"), "This invite has been accepted.")
+        self.assertEqual(resp.data.get("message"), "This invite has been accepted.")
 
     def test_accept_invite_declined_400(self):
         """
@@ -251,7 +251,7 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.data.get("error"), "This invite has been declined.")
+        self.assertEqual(resp.data.get("message"), "This invite has been declined.")
 
     def test_accept_invite_expired_400(self):
         """
@@ -270,7 +270,7 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.data.get("error"), "This invite has expired.")
+        self.assertEqual(resp.data.get("message"), "This invite has expired.")
 
     def test_decline_invite_200(self):
         """
@@ -307,7 +307,7 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 404)
-        self.assertEqual(resp.data.get("error"), "Not found.")
+        self.assertEqual(resp.data.get("message"), "Not found.")
 
     def test_decline_invite_unauthenticated_403(self):
         """
@@ -344,7 +344,7 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.data.get("error"), "This invite has been accepted.")
+        self.assertEqual(resp.data.get("message"), "This invite has been accepted.")
 
     def test_decline_invite_declined_400(self):
         """
@@ -363,7 +363,7 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.data.get("error"), "This invite has been declined.")
+        self.assertEqual(resp.data.get("message"), "This invite has been declined.")
 
     def test_decline_invite_expired_400(self):
         """
@@ -382,4 +382,4 @@ class InvitesTest(APITestCase, URLPatternsTestCase):
         )
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.data.get("error"), "This invite has expired.")
+        self.assertEqual(resp.data.get("message"), "This invite has expired.")
