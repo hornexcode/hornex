@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     "apps.payments.apps.PaymentsConfig",
     "apps.users.apps.UsersConfig",
     "apps.teams.apps.TeamsConfig",
-    "apps.invites.apps.InvitesConfig",
     "apps.tournaments.apps.TournamentsConfig",
     "apps.platforms.apps.PlatformsConfig",
     "apps.games.apps.GamesConfig",
