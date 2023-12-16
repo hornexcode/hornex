@@ -2,8 +2,8 @@ specVersion: v0
 squad: media
 
 resources:
-  serviceAccountIAMRole: arn:aws:iam::148400639408:role/eks-prod-axios--platform-api-content
-  serviceAccountIAMRoleStage: arn:aws:iam::148400639408:role/eks-stage-axios-markII--platform-api-content
+  # serviceAccountIAMRole: arn:aws:iam::148400639408:role/eks-prod-axios--platform-api-content
+  serviceAccountIAMRoleStage: arn:aws:iam::684903586616:role/eks-stage-hornex--api
 
 network:
   servicePort: 8000
@@ -25,31 +25,26 @@ ingress:
   stageBasicAuth: false
   rules:
     - hosts:
-        - hornex-api.hornexcode.tools
-        - hornex-api.axios.com
-      env:
-        not: inside
-    - env: inside
-      host: inside-hornex-api.hornexcode.tools
-      auth: false
+        - api.hornexcode.com
+        # - api.hornex.gg
 
-dependencies:
-  - type: rabbitmq
-    name: hornex-api
-  - type: flower
-    config:
-      test:
-        brokerSecretName: test/rabbitmq/test-hornex-api
-        resultsURL: redis://platform-api-content-redis-master-0:6379/1
-        ingressRoute: flower.axioscode.tools
-      inside:
-        brokerSecretName: inside/rabbitmq/inside-platform-api-content
-        resultsURL: redis://platform-api-content-redis-master-0:6379/1
-        ingressRoute: inside-flower.axioscode.tools
-      prod:
-        brokerSecretName: prod/rabbitmq/prod-platform-api-content
-        resultsURL: redis://prod-platform-api-content.f5hkuj.ng.0001.use1.cache.amazonaws.com:6379/1
-        ingressRoute: flower.axios.com
+# dependencies:
+#   - type: rabbitmq
+#     name: hornex-api
+#   - type: flower
+#     config:
+#       test:
+#         brokerSecretName: test/rabbitmq/test-hornex-api
+#         resultsURL: redis://platform-api-content-redis-master-0:6379/1
+#         ingressRoute: flower.axioscode.tools
+#       inside:
+#         brokerSecretName: inside/rabbitmq/inside-platform-api-content
+#         resultsURL: redis://platform-api-content-redis-master-0:6379/1
+#         ingressRoute: inside-flower.axioscode.tools
+#       prod:
+#         brokerSecretName: prod/rabbitmq/prod-platform-api-content
+#         resultsURL: redis://prod-platform-api-content.f5hkuj.ng.0001.use1.cache.amazonaws.com:6379/1
+#         ingressRoute: flower.axios.com
   # 2021-09-22 Remove Elasticsearch for local development as it's generally not needed.
   # Uncomment this if you need Elasticsearch locally.
   # - type: elasticsearch
@@ -57,51 +52,51 @@ dependencies:
   #   env:
   #     ELASTICSEARCH_HOST: hostname
 
-cronjobs:
-  - name: run-scheduled-tasks
-    schedule: "*/1 * * * *" # every minute (production)
-    scheduleStage: "*/15 * * * *" # every 15 minutes (test)
-    description: "Run various scheduled tasks"
-    args:
-      - run_scheduled_tasks
-  - name: sync-user-table-with-sailthru
-    schedule: "*/10 * * * *" # every 10 minutes
-    description: "Generates and assigns an axios id to users in the 'needs_axios_id' Sailthru list, stores sailthru ids of users in the 'sids_not_stored' Sailthru list"
-    env: prod
-    args:
-      - sync_user_table_with_sailthru
-      - needs_axios_id # name of smart list in sailthru for subscribers without an axios id
-      - sid_not_stored # name of smart list in sailthru for subscribers whose sailthru ids haven't been stored in the database
-  - name: make-illos-review
-    schedule: "5 10 * * 2" # every Tuesday at 10:05am UTC
-    description: "Create the dated graphics review JS file at s3://graphics.axios.com/critique/"
-    env: prod
-    args:
-      - make_illos_review
-  - name: refresh-algolia-test-indexes
-    schedule: "db-reset"
-    description: "Refresh our test indices with production indices to mirror the nightly database refresh"
-    env: test
-    args:
-      - refresh_algolia_test_indexes
-  - name: schedule-homepage-promotions
-    schedule: "0 * * * *" # hourly
-    description: "Schedule homepage promotions to be published or unpublished"
-    env: prod
-    args:
-      - schedule_homepage_promotions
+# cronjobs:
+#   - name: run-scheduled-tasks
+#     schedule: "*/1 * * * *" # every minute (production)
+#     scheduleStage: "*/15 * * * *" # every 15 minutes (test)
+#     description: "Run various scheduled tasks"
+#     args:
+#       - run_scheduled_tasks
+#   - name: sync-user-table-with-sailthru
+#     schedule: "*/10 * * * *" # every 10 minutes
+#     description: "Generates and assigns an axios id to users in the 'needs_axios_id' Sailthru list, stores sailthru ids of users in the 'sids_not_stored' Sailthru list"
+#     env: prod
+#     args:
+#       - sync_user_table_with_sailthru
+#       - needs_axios_id # name of smart list in sailthru for subscribers without an axios id
+#       - sid_not_stored # name of smart list in sailthru for subscribers whose sailthru ids haven't been stored in the database
+#   - name: make-illos-review
+#     schedule: "5 10 * * 2" # every Tuesday at 10:05am UTC
+#     description: "Create the dated graphics review JS file at s3://graphics.axios.com/critique/"
+#     env: prod
+#     args:
+#       - make_illos_review
+#   - name: refresh-algolia-test-indexes
+#     schedule: "db-reset"
+#     description: "Refresh our test indices with production indices to mirror the nightly database refresh"
+#     env: test
+#     args:
+#       - refresh_algolia_test_indexes
+#   - name: schedule-homepage-promotions
+#     schedule: "0 * * * *" # hourly
+#     description: "Schedule homepage promotions to be published or unpublished"
+#     env: prod
+#     args:
+#       - schedule_homepage_promotions
 
-extraDeployments:
-  - name: celery
-    args:
-      - celery
-    resources:
-      cpu: 0.1
-      memory: 1.5Gi
-    replicasMin: 9
-    replicasMax: 9
-    replicasStage: 1
-    targetCPUUtilizationPercentage: 80
+# extraDeployments:
+#   - name: celery
+#     args:
+#       - celery
+#     resources:
+#       cpu: 0.1
+#       memory: 1.5Gi
+#     replicasMin: 9
+#     replicasMax: 9
+#     replicasStage: 1
+#     targetCPUUtilizationPercentage: 80
 
 deployment:
   devPersistentStorageDirs:
