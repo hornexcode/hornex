@@ -1,32 +1,3 @@
-# Welcome to Tilt!
-#   To get you started as quickly as possible, we have created a
-#   starter Tiltfile for you.
-#
-#   Uncomment, modify, and delete any commands as needed for your
-#   project's configuration.
-
-
-# Output diagnostic messages
-#   You can print log messages, warnings, and fatal errors, which will
-#   appear in the (Tiltfile) resource in the web UI. Tiltfiles support
-#   multiline strings and common string operations such as formatting.
-#
-#   More info: https://docs.tilt.dev/api.html#api.warn
-print(
-    """
------------------------------------------------------------------
-✨ Hello Tilt! This appears in the (Tiltfile) pane whenever Tilt
-   evaluates this file.
------------------------------------------------------------------
-""".strip()
-)
-warn(
-    "ℹ️ Open {tiltfile_path} in your favorite editor to get started.".format(
-        tiltfile_path=config.main_path
-    )
-)
-
-
 # Build Docker image
 #   Tilt will automatically associate image builds with the resource(s)
 #   that reference them (e.g. via Kubernetes or Docker Compose YAML).
@@ -112,18 +83,6 @@ load("ext://git_resource", "git_checkout")
 #
 #   More info: https://docs.tilt.dev/tiltfile_concepts.html
 #
-def tilt_demo():
-    # Tilt provides many useful portable built-ins
-    # https://docs.tilt.dev/api.html#modules.os.path.exists
-    if os.path.exists("tilt-avatars/Tiltfile"):
-        # It's possible to load other Tiltfiles to further organize
-        # your logic in large projects
-        # https://docs.tilt.dev/multiple_repos.html
-        load_dynamic("tilt-avatars/Tiltfile")
-    watch_file("tilt-avatars/Tiltfile")
-    git_checkout(
-        "https://github.com/tilt-dev/tilt-avatars.git", checkout_dir="tilt-avatars"
-    )
 
 
 # Edit your Tiltfile without restarting Tilt
@@ -136,21 +95,38 @@ def tilt_demo():
 
 
 def main():
+    """
+    Read tilt_config.yaml
+    For each service:
+        - build and push a docker image
+        - build and apply kubernetes manifests for the service
+        - follow logs of the service
+        - monitor source files for changes and (where possible) live update the running service
+    """
+
+    # configure tilt
+    allow_k8s_contexts("dev")
+    secret_settings(disable_scrub=True)
+
+    config_file = "tilt_config.yaml"
+    if not os.path.exists(config_file):
+        local("go run ./lib/golang/src/scripts/update-tilt-config/main.go")
+    config = read_yaml(config_file)
+
     options = {
         "debug": config.get("services", {}).get("debug", {}),
         "dev_build": {},
-        "image_ref": "148400639408.dkr.ecr.us-east-1.amazonaws.com/axioscode/dev-{}",
+        "image_ref": "684903586616.dkr.ecr.us-east-1.amazonaws.com/hornexcode/dev-{}",
         "namespace": get_namespace(),
-        "github_packages_token": get_env(
-            "GITHUB_PACKAGES_TOKEN",
-            "See https://inside.axioscode.tools/_/docs/getting-started/credentials/#github-packages-token",
-        ),
         "platform": "linux/amd64",
         "repo_root": os.getcwd(),
-        "tilt_local_database": str(
-            not config.get("options", {}).get("shared-database", True)
-        ).lower(),
+        # "tilt_local_database": str(
+        #     not config.get("options", {}).get("shared-database", True)
+        # ).lower(),
+        "tilt_local_database": False,
     }
+
+    hornex_api(options)
 
 
 def hornex_api(options):
@@ -175,24 +151,167 @@ def hornex_api(options):
         ],
     }
 
-    if options["dev_build"].get(name):
-        docker_build_options.update(
-            {
-                "target": "development",
-                "live_update": [
-                    fall_back_on("{}/docker-entry.sh".format(service_path)),
-                    sync(service_path, "/src/"),
-                    run(
-                        "poetry install --sync",
-                        trigger=[
-                            ("{}/{}".format(service_path, f)) for f in install_triggers
-                        ],
-                    ),
-                    run("/bin/kill -s SIGHUP 1"),
-                ],
-            }
-        )
+    # if options["dev_build"].get(name):
+    docker_build_options.update(
+        {
+            "target": "development",
+            "live_update": [
+                fall_back_on("{}/docker-entry.sh".format(service_path)),
+                sync(service_path, "/src/"),
+                run(
+                    "poetry install --sync",
+                    trigger=[
+                        ("{}/{}".format(service_path, f)) for f in install_triggers
+                    ],
+                ),
+                run("/bin/kill -s SIGHUP 1"),
+            ],
+        }
+    )
+
+    default_registry(
+        "684903586616.dkr.ecr.us-east-1.amazonaws.com",
+        single_name="dev/dev-{}".format(name),
+    )
 
     docker_build(**docker_build_options)
 
     watch_file(dockerfile)
+
+    # manifests = helmfile(name, options)
+    # _, rest = filter_yaml(
+    #     manifests,
+    #     api_version="batch/v1",
+    #     kind="CronJob",
+    #     name="platform-api-content-run-scheduled-tasks",
+    # )
+    # _, rest = filter_yaml(
+    #     rest,
+    #     api_version="batch/v1",
+    #     kind="CronJob",
+    #     name="platform-api-content-run-cdm-scheduled-tasks",
+    # )
+    # _, rest = filter_yaml(
+    #     rest,
+    #     api_version="batch/v1",
+    #     kind="Job",
+    #     labels={"axios.com/helm-hook": "db-migrate"},
+    # )
+    # k8s_yaml(rest)
+    k8s_yaml("{}/k8s/spec.yaml".format(service_path))
+
+    k8s_resource(
+        name,
+        labels=["services"],
+        links=[
+            link(
+                "https://{namespace}-hornex-api.hornexcode.com".format(**options),
+                name,
+            )
+        ],
+    )
+
+    k8s_resource(name, labels=["services"])
+
+
+###################################################################################################
+# helmfile functions
+
+
+def helmfile(name, options):
+    """
+    Generate kubernetes manifests for a service in the monorepo
+    """
+    watch_file("services/{}/env/dev.env".format(name))
+    watch_file("services/{}/helm/spec.yaml".format(name))
+
+    cmd = (
+        "REPOSITORIES_ROOT={repo_root}/.. "
+        + "REPOSITORIES=hornex/services/{name}=latest "
+        + "TILT_LOCAL_DATABASE={tilt_local_database} "
+        + "helmfile "
+        + "--file={repo_root}/../infra-chart/spec/helmfile.yaml "
+        + "--namespace={namespace} "
+        + "template"
+    ).format(
+        name=name,
+        **options,
+    )
+    manifests = local(cmd, quiet=True)
+    _, rest = filter_yaml(
+        manifests,
+        api_version="batch/v1",
+        kind="Job",
+        labels={"hornex.gg/helm-hook": "db-migrate"},
+    )
+    return rest
+
+
+def helmfile_polyrepo(name, options):
+    """
+    Generate kubernetes manifests for a service in another repo
+    """
+    src = "{}/../{}".format(options["repo_root"], name)
+    spec = "{}/spec.yaml".format(src)
+    helmfile = "{}/../infra-chart/spec/helmfile.yaml".format(options["repo_root"])
+
+    watch_file(spec)
+    watch_file(helmfile)
+
+    cmd = (
+        "REPOSITORIES_ROOT={repo_root}/.. "
+        + "REPOSITORIES={name}=latest "
+        + "TILT_LOCAL_DATABASE={tilt_local_database} "
+        + "SPEC_PATH={spec} "
+        + "helmfile "
+        + "--file={file} "
+        + "--namespace={namespace} "
+        + "template"
+    ).format(
+        name=name,
+        spec=spec,
+        file=helmfile,
+        **options,
+    )
+
+    manifests = local(cmd, quiet=True)
+    _, rest = filter_yaml(
+        manifests,
+        api_version="batch/v1",
+        kind="Job",
+        labels={"axios.com/helm-hook": "db-migrate"},
+    )
+    return rest
+
+
+###################################################################################################
+# helpers
+
+
+def get_env(name, help):
+    """
+    Return the valueof an environment variable, missing variables are fatal
+    """
+    value = os.getenv(name, "").strip()
+    if not value:
+        fail("{name} not set: {help}".format(name=name, help=help))
+    return value
+
+
+def get_namespace():
+    """
+    Get or calculate dev namesapce name based on AWS username
+    """
+    if os.getenv("AXIOS_TILT_FORCE_REMOTE_NAMESPACE", False):
+        ns = os.getenv("AXIOS_TILT_REMOTE_NAMESPACE", None)
+    else:
+        username = str(
+            local(
+                "aws sts get-caller-identity | jq -r .Arn | cut -d / -f 2", quiet=True
+            )
+        ).strip()
+        ns = "dev-{}".format(username)
+    return ns
+
+
+main()

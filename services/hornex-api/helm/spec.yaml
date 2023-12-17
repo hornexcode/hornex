@@ -1,0 +1,327 @@
+specVersion: v0
+squad: media
+
+network:
+  servicePort: 8000
+  probePath: /status/?key=k8s
+  dnsConfig:
+    options:
+      - name: ndots
+        value: "1"
+  prometheusPort: 8000
+  prometheusAnnotateService: true
+  livenessProbe:
+    periodSeconds: 30
+    timeoutSeconds: 30
+    failureThreshold: 3
+
+ingress:
+  enabled: true
+  defaultRule: false
+  stageBasicAuth: false
+  rules:
+    - hosts:
+        - hornex-api.hornexcode.com
+        - hornex-api.hornex.gg
+
+dependencies:
+  - type: rabbitmq
+    name: platform-api-content
+  - type: flower
+    config:
+      test:
+        brokerSecretName: test/rabbitmq/test-platform-api-content
+        resultsURL: redis://platform-api-content-redis-master-0:6379/1
+        ingressRoute: flower.axioscode.tools
+      inside:
+        brokerSecretName: inside/rabbitmq/inside-platform-api-content
+        resultsURL: redis://platform-api-content-redis-master-0:6379/1
+        ingressRoute: inside-flower.axioscode.tools
+      prod:
+        brokerSecretName: prod/rabbitmq/prod-platform-api-content
+        resultsURL: redis://prod-platform-api-content.f5hkuj.ng.0001.use1.cache.amazonaws.com:6379/1
+        ingressRoute: flower.axios.com
+
+# 2021-09-22 Remove Elasticsearch for local development as it's generally not needed.
+# Uncomment this if you need Elasticsearch locally.
+# - type: elasticsearch
+#   imageVersion: 7.14.0
+#   env:
+#     ELASTICSEARCH_HOST: hostname
+
+cronjobs:
+  - name: run-scheduled-tasks
+    schedule: "*/1 * * * *" # every minute (production)
+    scheduleStage: "*/15 * * * *" # every 15 minutes (test)
+    description: "Run various scheduled tasks"
+    args:
+      - run_scheduled_tasks
+  - name: sync-user-table-with-sailthru
+    schedule: "*/10 * * * *" # every 10 minutes
+    description: "Generates and assigns an axios id to users in the 'needs_axios_id' Sailthru list, stores sailthru ids of users in the 'sids_not_stored' Sailthru list"
+    env: prod
+    args:
+      - sync_user_table_with_sailthru
+      - needs_axios_id # name of smart list in sailthru for subscribers without an axios id
+      - sid_not_stored # name of smart list in sailthru for subscribers whose sailthru ids haven't been stored in the database
+  - name: make-illos-review
+    schedule: "5 10 * * 2" # every Tuesday at 10:05am UTC
+    description: "Create the dated graphics review JS file at s3://graphics.axios.com/critique/"
+    env: prod
+    args:
+      - make_illos_review
+  - name: refresh-algolia-test-indexes
+    schedule: "db-reset"
+    description: "Refresh our test indices with production indices to mirror the nightly database refresh"
+    env: test
+    args:
+      - refresh_algolia_test_indexes
+  - name: schedule-homepage-promotions
+    schedule: "0 * * * *" # hourly
+    description: "Schedule homepage promotions to be published or unpublished"
+    env: prod
+    args:
+      - schedule_homepage_promotions
+
+extraDeployments:
+  - name: celery
+    args:
+      - celery
+    resources:
+      cpu: 0.1
+      memory: 1.5Gi
+    replicasMin: 9
+    replicasMax: 9
+    replicasStage: 1
+    targetCPUUtilizationPercentage: 80
+
+deployment:
+  devPersistentStorageDirs:
+    - /root/.cache/pypoetry/
+    - /src/.venv
+  defaultTopologySpreadConstraints: true
+
+deploymentHooks:
+  - name: db-migrate
+    env: prod|inside|test|dev
+    order: 0
+    hookDeletePolicy: before-hook-creation
+    events:
+      - pre-install
+      - pre-upgrade
+    args:
+      - migrate
+  - name: ephemeral-eden-auth
+    env: test-.+
+    hookDeletePolicy: before-hook-creation
+    events:
+      - post-install
+      - post-upgrade
+    args:
+      - ephemeral_eden_auth
+
+env:
+  - match: dev|dev-.+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 4Gi
+      limits:
+        cpu: 1500m
+        memory: 4Gi
+    secrets:
+      - name: local/hornex-api/default
+      - name: local/database/api-content-{%tiltlocaldatabase%}
+        keys:
+          DB_NAME: DB_NAME
+          DB_PASS: DB_PASS
+          DB_PORT: DB_PORT
+          DB_USER: DB_USER
+          DB_HOST_DEFAULT: DB_HOST
+          DB_HOST_RO: DB_HOST_RO
+          # DB_HOST_SEARCH: DB_HOST_RO
+          # ALGOLIA_ENABLED: ALGOLIA_ENABLED
+    redis:
+      enabled: false # true
+    values:
+      # CELERY_QUEUE_PREFIX: $(NAMESPACE)-eks-pac
+      # APP_CACHE: axios-app-api-redis-master
+      # REDIS_URL: redis://platform-api-content-redis-master:6379/0
+      # CELERY_ASYNC_RESULTS: redis://platform-api-content-redis-master:6379/1
+      # CELERY_CONCURRENCY: "1"
+      # CELERY_LOGLEVEL: info
+      # CELERY_MQ_URL: amqp://axios:axios@platform-api-content-rabbitmq:5672
+      # CELERY_RESTART_MAX_MESSAGES: "20"
+      # DB_CONN_MAX_AGE: "120"
+      # ELASTICSEARCH_HOST: api-search-stage.axios-vpc.com:80
+      # FORWARDED_ALLOW_IPS: "*"
+      # GUNICORN_WORKERS: "1"
+      # HONEYCOMB_DATASET: media-dev
+      # HNY_REFINERY_URL: https://api.honeycomb.io
+      # REDIS_BACKEND: django_prometheus.cache.backends.redis.RedisCache
+      # REDIS_HOST: redis://platform-api-content-redis-master:6379/0
+      # S3_BUCKET: api-dev.axios.com
+      # SOCIAL_AUTH_REDIRECT_IS_HTTPS: "false"
+      # THUMBOR_INTERNAL_IMAGES_URL: http://axios-thumbor
+      # THUMBOR_IMAGES_URL: https://$(NAMESPACE)-images.axioscode.tools
+      # VARNISH_SERVICE_API_DNS: infra-varnish-headless
+      # PROMETHEUS_MULTIPROC_DIR: /tmp/prometheus_multiproc_dir
+      # SITE_URL: https://$(NAMESPACE).axioscode.tools/
+      # ADSNATIVE_URL: https://www.axios.com/
+      # APP_USER_POOL_DOMAIN: https://axios.auth.us-east-1.amazoncognito.com/
+      # AXIOS_SESSION_COOKIE_NAME: ax
+      # AXIOS_SESSION_SIGNING_KEY: aslkjf3920jf04fj2vh9nvmwf3v8sjfwkl3
+      # CHANNELS_API_URL: https://cdn-stage-axios-app-api.axioscode.tools/
+      # CORS_ORIGIN_ALLOW_ALL: "true"
+      # DEBUG: "1"
+      # EDITOR_EMAIL: test-editors@axios.com
+      # EMAIL_LAMBDA_URL: https://749q8p8fid.execute-api.us-east-1.amazonaws.com/test/
+      # IMAGE_BUCKET: thumbor-test.axios.com
+      # MEMCACHE_BACKEND: django.core.cache.backends.dummy.DummyCache
+      # MEMCACHE_HOST: memcache:11211
+      # RSS_CACHE_DURATION: "180"
+      # SITEMAPS_ENABLED: "true"
+      # SKIP_NOTIFY: "true"
+      # STATIC_URL: https://s3.amazonaws.com/api-static.axios.com/static/
+      # HNY_SEND_EVENTS: "false"
+      # SENTRY_ENABLE_TRACING: "false"
+      # CHARLOTTE_AXIOS: "https://$(NAMESPACE).axioscode.tools/local/charlotte/"
+      # CHARLOTTE_WORDPRESS: "https://charlotte.axios.com"
+      # DJANGO_REST_PREVIEW: "https://$(NAMESPACE)-platform-api-content.axioscode.tools/api/render/content/"
+      # ALGOLIA_ENV: "dev"
+      # AXIOS_SUBSCRIBE_ONLY_PATTERN: '.+@(contractor\.)?axios\.com$'
+      # AXIOS_LOG_ERROR_MISSING_CONTENT_LIVE_SESSION: "false"
+      # CLOUDFLARE_ACCOUNT_ID: a4f1aafae0577e2689cf275bbac290bc
+      # CLOUDFLARE_LIST_ID: c0499b73e79a48e7b7f7fc9f564ec481
+
+  - match: dev-.+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 1Gi
+      limits:
+        cpu: 1500m
+        memory: 6Gi
+
+  # - match: test|test-.+
+  #   secrets:
+  #     - name: stage/platform-api-content/default
+  #     - name: stage/database/api-content-test-platform-api-content
+  #       overrideContainers:
+  #         db-migrate: stage/database/api-content-test
+  #       keys: *databaseSecretKeys
+  #   redis:
+  #     enabled: true
+  #   values:
+  #     CELERY_QUEUE_PREFIX: $(NAMESPACE)-eks-pac
+  #     S3_BUCKET: api-stage.axios.com
+  #     VARNISH_SERVICE_API_DNS: infra-varnish-headless
+  #     REDIS_BACKEND: django_prometheus.cache.backends.redis.RedisCache
+  #     GUNICORN_WORKERS: "16"
+  #     DB_CONN_MAX_AGE: "120"
+  #     CELERY_RESTART_MAX_MESSAGES: "20"
+  #     CELERY_CONCURRENCY: "4"
+  #     CELERY_LOGLEVEL: info
+  #     FORWARDED_ALLOW_IPS: "*"
+  #     APP_CACHE: axios-app-api-redis-master
+  #     THUMBOR_INTERNAL_IMAGES_URL: http://axios-thumbor
+  #     THUMBOR_IMAGES_URL: https://$(NAMESPACE)-images.axioscode.tools
+  #     SOCIAL_AUTH_REDIRECT_IS_HTTPS: "true"
+  #     HNY_SEND_EVENTS: "true"
+  #     HNY_REFINERY_URL: tempo-distributor.monitoring.svc.cluster.local:4318
+  #     HONEYCOMB_DATASET: media-stage
+  #     PROMETHEUS_MULTIPROC_DIR: /tmp/prometheus_multiproc_dir
+  #     SITE_URL: https://$(NAMESPACE).axioscode.tools/
+  #     ALGOLIA_ENABLED: "true"
+  #     ALGOLIA_ENV: "test"
+  #     SENTRY_ENABLE_TRACING: "false"
+  #     AXIOS_SUBSCRIBE_ONLY_PATTERN: '.+@(contractor\.)?axios\.com$'
+  #     CHARLOTTE_AXIOS: "https://$(NAMESPACE).axioscode.tools/local/charlotte/"
+  #     CHARLOTTE_WORDPRESS: "https://charlotte.axios.com"
+  #     DJANGO_REST_PREVIEW: "https://$(NAMESPACE)-platform-api-content.axioscode.tools/api/render/content/"
+  #     AXIOS_LOG_ERROR_MISSING_CONTENT_LIVE_SESSION: "false"
+  #     CHANNELS_API_URL: http://axios-app-api
+  #     CLOUDFLARE_ACCOUNT_ID: a4f1aafae0577e2689cf275bbac290bc
+  #     CLOUDFLARE_LIST_ID: db1230be925f4d0193ff6bdaa78f6b6e
+  #     REDIS_URL: redis://platform-api-content-redis-master:6379/0
+  #     CELERY_ASYNC_RESULTS: redis://platform-api-content-redis-master:6379/1
+
+  # - match: test-.+
+  #   resources:
+  #     requests:
+  #       cpu: 10m
+  #       memory: 1Gi
+  #     limits:
+  #       cpu: 1500m
+  #       memory: 4Gi
+  #   values:
+  #     CELERY_MQ_URL: amqp://axios:axios@platform-api-content-rabbitmq:5672
+
+  # - match: test
+  #   replicas: 4
+  #   resources:
+  #     requests:
+  #       cpu: 10m
+  #       memory: 4Gi
+  #     limits:
+  #       cpu: 1500m
+  #       memory: 4Gi
+  #   secrets:
+  #     - name: test/rabbitmq/test-platform-api-content
+  #       keys:
+  #         CELERY_MQ_URL: URL
+
+  # - match: prod
+  #   replicas:
+  #     min: 9
+  #     max: 21
+  #     targetCPUUtilizationPercentage: 80
+  #   resources:
+  #     requests:
+  #       cpu: 750m
+  #       memory: 6Gi
+  #     limits:
+  #       cpu: 1500m
+  #       memory: 6Gi
+  #   secrets:
+  #     - name: prod/platform-api-content/default
+  #     - name: prod/platform-api-content/apple-news
+  #     - name: prod/rabbitmq/prod-platform-api-content
+  #       keys:
+  #         CELERY_MQ_URL: URL
+  #     - name: prod/database/api-content-platform-api-content
+  #       overrideContainers:
+  #         db-migrate: prod/database/api-content
+  #       keys: *databaseSecretKeys
+  #   redisExporter:
+  #     enabled: true
+  #     redisURL: redis://prod-platform-api-content.f5hkuj.ng.0001.use1.cache.amazonaws.com:6379
+  #   values:
+  #     CELERY_QUEUE_PREFIX: prod-eks-pac
+  #     S3_BUCKET: api-prod.axios.com
+  #     VARNISH_SERVICE_API_DNS: infra-varnish-headless
+  #     REDIS_BACKEND: django_prometheus.cache.backends.redis.RedisCache
+  #     GUNICORN_WORKERS: "24"
+  #     DB_CONN_MAX_AGE: "120"
+  #     CELERY_RESTART_MAX_MESSAGES: "20"
+  #     CELERY_CONCURRENCY: "4"
+  #     CELERY_LOGLEVEL: info
+  #     FORWARDED_ALLOW_IPS: "*"
+  #     APP_CACHE: redis-channels-api-prod.f5hkuj.ng.0001.use1.cache.amazonaws.com
+  #     SITE_URL: https://www.axios.com/
+  #     THUMBOR_INTERNAL_IMAGES_URL: http://axios-thumbor
+  #     THUMBOR_IMAGES_URL: https://images.axios.com
+  #     SOCIAL_AUTH_REDIRECT_IS_HTTPS: "true"
+  #     HNY_SEND_EVENTS: "true"
+  #     HNY_REFINERY_URL: http://honeycomb-refinery.monitoring.svc.cluster.local/
+  #     HONEYCOMB_DATASET: media-prod
+  #     PROMETHEUS_MULTIPROC_DIR: /tmp/prometheus_multiproc_dir
+  #     ALGOLIA_ENABLED: "true"
+  #     ALGOLIA_ENV: "prod"
+  #     SENTRY_ENABLE_TRACING: "false"
+  #     AXIOS_LOG_ERROR_MISSING_CONTENT_LIVE_SESSION: "true"
+  #     CHANNELS_API_URL: http://axios-app-api
+  #     CLOUDFLARE_ACCOUNT_ID: a4f1aafae0577e2689cf275bbac290bc
+  #     CLOUDFLARE_LIST_ID: 390229ca667b4ae2b6fd63eac805adb9
+  #     REDIS_URL: redis://prod-platform-api-content.f5hkuj.ng.0001.use1.cache.amazonaws.com:6379/0
+  #     CELERY_ASYNC_RESULTS: redis://prod-platform-api-content.f5hkuj.ng.0001.use1.cache.amazonaws.com:6379/1

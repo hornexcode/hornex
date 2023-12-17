@@ -5,7 +5,7 @@ module.exports = {
   extends: ['prettier', 'plugin:react-hooks/recommended', 'next'],
   settings: {
     next: {
-      rootDir: 'services/hx-web/',
+      rootDir: 'services/hornex-web/',
     },
   },
   plugins: ['@typescript-eslint', 'simple-import-sort', 'prettier', 'react'],

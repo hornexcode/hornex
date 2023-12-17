@@ -10,7 +10,7 @@
   "editor.formatOnSave": true,
   "editor.find.autoFindInSelection": "multiline",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.run": "onSave",
   "eslint.validate": [
@@ -32,14 +32,18 @@
     "GOPROXY": "https://proxy.golang.org"
   },
   "gopls": {
-    "build.buildFlags": ["-tags=integration_test"],
+    "build.buildFlags": [
+      "-tags=integration_test"
+    ],
     "ui.navigation.importShortcut": "Definition"
   },
   "go.toolsManagement.autoUpdate": true,
-  "prettier.configPath": "./eslintrc.js",
+  // "prettier.configPath": ".eslintrc.js",
   "problems.decorations.enabled": true,
   "protoc": {
-    "options": ["--proto_path=${workspaceRoot}/lib/proto"]
+    "options": [
+      "--proto_path=${workspaceRoot}/lib/proto"
+    ]
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -48,7 +52,7 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.preferences.autoImportFileExcludePatterns": [
     "lib/typescript/src/**",
-    "services/axios-web/lib/**"
+    "services/hornex-web/lib/**",
   ],
   "[js]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
@@ -71,5 +75,10 @@
   },
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "[go]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   }
 }

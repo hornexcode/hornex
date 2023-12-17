@@ -71,19 +71,19 @@ function require_repo_root() (
   fi
 )
 
-function populate_axios_services() {
+function populate_hornex_services() {
   require_repo_root
-  AXIOS_SERVICES=($(ls ${REPO_ROOT}/services | tr ' ' '\n' | sort | uniq | tr '\n' ' '))
+  HORNEX_SERVICES=($(ls ${REPO_ROOT}/services | tr ' ' '\n' | sort | uniq | tr '\n' ' '))
 }
 
-function populate_axios_functions() {
+function populate_hornex_functions() {
   require_repo_root
   AXIOS_FUNCTIONS=($(ls ${REPO_ROOT}/functions | tr ' ' '\n' | sort | uniq | tr '\n' ' '))
 }
 
-function is_axios_service() {
-  populate_axios_services
-  if [[ " ${AXIOS_SERVICES[@]} " =~ " ${1} " ]]; then
+function is_hornex_service() {
+  populate_hornex_services
+  if [[ " ${HORNEX_SERVICES[@]} " =~ " ${1} " ]]; then
     return 0
   fi
   return 1
@@ -301,12 +301,12 @@ function git_clone() {
   if [[ "${CI:-}" != "" ]]; then
     (
       set -x
-      git clone https://${GITHUB_TOKEN}@github.com/axioscode/${1}.git ${2}
+      git clone https://${GITHUB_TOKEN}@github.com/hornexcode/${1}.git ${2}
     )
   else
     (
       set -x
-      git clone git@github.com:axioscode/${1} ${2}
+      git clone git@github.com:hornexcode/${1} ${2}
     )
   fi
 }
@@ -458,7 +458,7 @@ function configure_dev_namespace() (
     error "Unexpected dev namespace: ${ns}"
   fi
 
-  if [[ "${ns}" == "dev-axios-admin-full" ]]; then
+  if [[ "${ns}" == "dev-hornex-admin-full" ]]; then
     warning "Are you a member of  Polaris and using AssumeRole?"
     warning "You probably need to set:"
     warning "  AXIOS_TILT_FORCE_REMOTE_NAMESPACE=true"
@@ -528,7 +528,7 @@ function hax_aws_rotate_keys() (
   rotation_interval="1week"
 
   # aws config name
-  key="axios_last_key_rotation"
+  key="hornex_last_key_rotation"
 
   last="$(aws configure get --profile "${rotate_profile}" ${key} || echo "")"
   now="$(isodate --date=now)"

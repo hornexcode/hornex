@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+--- psqlrc file to setpsql preferences
+---
+--- This file is the standard home for configuration of the psql
+--- client within the platform-api-content docker container.
+--- Please see https://wiki.postgresql.org/wiki/Psqlrc for
+---     examples and information.
+----------------------------------------------------------------
+
+\pset null '<nil>'

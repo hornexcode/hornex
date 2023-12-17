@@ -4,7 +4,7 @@ set -Eeuo pipefail
 REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
 source ${REPO_ROOT}/devops/scripts/helpers
 
-info "Setting up Axios..."
+info "Setting up Hornex..."
 
 ${REPO_ROOT}/devops/scripts/configure-shell
 
@@ -33,12 +33,18 @@ helm_plugin diff https://github.com/databus23/helm-diff 3.5.0
 helm_plugin helm-git https://github.com/aslafy-z/helm-git 0.11.2
 helm_plugin s3 https://github.com/hypnoglow/helm-s3.git 0.12.0
 
-# n auto
+n auto
 
 install_yarn
+
+info "Install linting and pre-commit hooks"
+yarn --silent install
+yarn --silent run husky uninstall >/dev/null
 
 # if [ ! -e ~/.tilt-dev/analytics/user/choice.txt ]; then
 #   tilt analytics opt out
 # fi
+
+configure_dev_namespace
 
 success "Setup complete"

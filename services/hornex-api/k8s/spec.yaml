@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hornex-api
+  namespace: dev-psantos
+  labels:
+    app: dev-hornex-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dev-hornex-api
+  template:
+    metadata:
+      labels:
+        app: dev-hornex-api
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                      - arm64
+      containers:
+        - name: dev-hornex-api
+          image: 684903586616.dkr.ecr.us-east-1.amazonaws.com/hornexcode/dev-hornex-api:latest
+          ports:
+            - name: http
+              containerPort: 80
+          imagePullPolicy: IfNotPresent
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-hornex-api
+  namespace: dev-psantos
+  labels:
+    app: dev-hornex-api
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: dev-hornex-api

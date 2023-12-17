@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -Eeuo pipefail
+
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
+source ${REPO_ROOT}/devops/scripts/helpers
+
+# Don't login to ECR if in circleCI
+if [ -n "${CI:-}" ]; then
+  exit 0
+fi
+
+info "Logging into AWS ECR"
+aws ecr get-login-password --region=us-east-1 | docker login 684903586616.dkr.ecr.us-east-1.amazonaws.com --username=AWS --password-stdin

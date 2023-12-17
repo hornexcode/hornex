@@ -5,17 +5,18 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "setup": "devops/scripts/setup",
     "postgres:reset": "devops/scripts/postgres-reset",
     "postgres:migrate:up": "devops/scripts/postgres-run-all-migrations",
     "postgres:migrate:down": "devops/scripts/postgres-migrate-down"
   },
   "devDependencies": {
-    "@types/node": "^20.6.0",
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
+    "bundlewatch": "0.3.3",
     "eslint": "8.44.0",
-    "eslint-config-next": "^13.4.19",
     "eslint-config-prettier": "8.8.0",
+    "eslint-config-react-app": "7.0.1",
     "eslint-plugin-chai-friendly": "0.7.2",
     "eslint-plugin-cypress": "2.13.3",
     "eslint-plugin-flowtype": "8.0.3",
@@ -27,6 +28,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-simple-import-sort": "10.0.0",
     "husky": "7.0.4",
+    "lint-staged": "12.3.1",
     "prettier": "2.5.0",
     "prettier-eslint": "13.0.0",
     "typescript": "5.0.2"

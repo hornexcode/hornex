@@ -90,7 +90,7 @@ export default function LoginPage() {
               error={errors.email?.message}
               {...register('email', { required: true })}
             />
-          </div>
+            </div>
 
           {/* Password */}
           <div>

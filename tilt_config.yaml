@@ -1,0 +1,11 @@
+# Tilt Configuration (to reset to defaults delete this file and run `yarn up` or `tilt up`)
+
+services:
+  enabled:
+    hornex-api: true
+  production-build:
+    hornex-api: false
+  debug:
+    hornex-api: false
+options:
+  shared-database: false

@@ -3,13 +3,14 @@
 set -Eeuo pipefail
 
 function main() (
+  echo '{"event":"docker-entry.sh", "logger":"docker-entry.sh"}'
 
   dev_poetry_install
 
-  fix_django_rest_swagger
+  # fix_django_rest_swagger
 
   # Await Services
-  python3 ./wait-for-db.py
+  # python3 ./wait-for-db.py
 
   command="${1:-}"
 

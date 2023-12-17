@@ -1,0 +1,19 @@
+###################################################################################################
+#
+# This is the default config for tilt enabled services,
+# you probably don't want to edit this file directly.
+#
+# The file you are looking for is in the root of the repo called tilt_config.yaml
+# It is ignored by git so your editor might be hiding it from you.
+#
+###################################################################################################
+
+services:
+  enabled:
+    hornex-api: true
+  production-build:
+    hornex-api: false
+  debug:
+    hornex-api: false
+options:
+  shared-database: false
