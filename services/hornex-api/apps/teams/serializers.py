@@ -5,7 +5,6 @@ from apps.teams.errors import (
     team_invite_already_exists,
     already_team_member,
 )
-from datetime import datetime
 from apps.users.serializers import UserSerializer
 
 

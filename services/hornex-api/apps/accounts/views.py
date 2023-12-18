@@ -39,7 +39,7 @@ def riot_oauth_callback(request):
             data=form,
             auth=(client_id, client_secret),
         )
-
+        print(resp.json())
         if resp.ok:
             ui_resp = requests.get(
                 "https://auth.riotgames.com/userinfo",

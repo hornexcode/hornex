@@ -35,7 +35,7 @@ const colors: Record<ColorNames, string[]> = {
   gray: ['text-gray-900', 'bg-gray-100', 'border-gray-100'],
   success: ['text-green-500', 'bg-green-500', 'border-green-500'],
   info: ['text-blue-500', 'bg-blue-500', 'border-blue-500'],
-  warning: ['text-brand', 'bg-amber-500', 'border-amber-500'],
+  warning: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
   danger: ['text-red-500', 'bg-red-500', 'border-red-500'],
 };
 const sizes: Record<SizeNames, string[]> = {
@@ -118,7 +118,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         break;
 
       default:
-        buttonColorClassNames = `!${colorClassNames[0]} ${colorClassNames[1]} ${colorClassNames[2]}`;
+        buttonColorClassNames = `${colorClassNames[1]} ${colorClassNames[2]}`;
         buttonDripColor = 'rgba(255, 255, 255, 0.3)';
         break;
     }
