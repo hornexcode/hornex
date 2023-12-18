@@ -108,12 +108,12 @@ export const routes = {
     schema: null,
   },
   getUserInvites: {
-    path: 'v1/invites',
+    path: 'v1/teams/invites/users',
     method: Method.GET,
     schema: null,
   },
   countUserInvites: {
-    path: 'v1/invites/count',
+    path: 'v1/teams/invites/count',
     method: Method.GET,
     schema: null,
   },
@@ -123,12 +123,12 @@ export const routes = {
     schema: null,
   },
   acceptInvite: {
-    path: 'v1/invites/accept',
+    path: 'v1/teams/invites/accept',
     method: Method.POST,
     schema: null,
   },
   declineInvite: {
-    path: 'v1/invites/decline',
+    path: 'v1/teams/invites/decline',
     method: Method.POST,
     schema: null,
   },

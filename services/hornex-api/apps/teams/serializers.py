@@ -119,41 +119,24 @@ class InviteSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
-    def accept(self):
-        if self.context["request"].user.id != self.instance.user.id:
-            raise serializers.ValidationError(
-                {"message": "You do not have permission to accept this invite."}
-            )
 
-        if self.instance.declined_at is not None:
-            raise serializers.ValidationError(
-                {"message": "Invite has already been declined."}
-            )
+class UserInviteSerializer(serializers.Serializer):
+    """Returns all team invites for a user."""
 
-        if self.instance.accepted_at is not None:
-            raise serializers.ValidationError(
-                {"message": "Invite has already been accepted."}
-            )
+    team = serializers.RelatedField(read_only=True)
+    accepted = serializers.BooleanField(read_only=True)
+    declined = serializers.BooleanField(read_only=True)
 
-        self.instance.accepted_at = datetime.utcnow()
-        self.instance.save()
-        Membership.objects.create(team=self.instance.team, user=self.instance.user)
-
-    def decline(self):
-        if self.context["request"].user.id != self.instance.user.id:
-            raise serializers.ValidationError(
-                {"message": "You do not have permission to decline this invite."}
-            )
-
-        if self.instance.declined_at is not None:
-            raise serializers.ValidationError(
-                {"message": "Invite has already been declined."}
-            )
-
-        if self.instance.accepted_at is not None:
-            raise serializers.ValidationError(
-                {"message": "Invite has already been accepted."}
-            )
-
-        self.instance.declined_at = datetime.utcnow()
-        self.instance.save()
+    def to_representation(self, instance):
+        return {
+            "id": instance.id,
+            "team": {
+                "id": instance.team.id,
+                "name": instance.team.name,
+                "description": instance.team.description,
+                "platform": instance.team.platform,
+                "game": instance.team.game,
+            },
+            "accepted": instance.accepted_at is not None,
+            "declined": instance.declined_at is not None,
+        }

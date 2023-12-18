@@ -7,9 +7,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from apps.notifications.models import Notification
 
 
-class NotificationTests(APITestCase, URLPatternsTestCase):
+class TestNotification(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path(f"/notifications", include("notifications.urls")),
+        path(f"/notifications", include("apps.notifications.urls")),
     ]
 
     def setUp(self):

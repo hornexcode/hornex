@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 
 from lib.riot.client import Client
 from apps.tournaments.leagueoflegends.usecases import (
-    RegisterTournamentUseCase,
+    GetOrRegisterLeagueOfLegendsTournamentUseCase,
 )
 from test.factories import UserFactory, LeagueOfLegendsTournamentFactory
 
@@ -15,7 +15,9 @@ class TestRegisterTournament(TestCase):
 
     @patch("requests.post")
     def test_register_tournament_use_case_success(self, mock):
-        registerTournamentUseCase = RegisterTournamentUseCase(Client)
+        getOrRegisterTournamentUseCase = GetOrRegisterLeagueOfLegendsTournamentUseCase(
+            Client
+        )
 
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -23,14 +25,18 @@ class TestRegisterTournament(TestCase):
 
         mock.return_value = mock_response
 
-        tournament_id = registerTournamentUseCase.execute(tournament=self.tournament)
+        tournament_id = getOrRegisterTournamentUseCase.execute(
+            tournament=self.tournament
+        )
 
         self.assertEqual(tournament_id, 7)
         self.assertEqual(self.tournament.riot_id, tournament_id)
 
     @patch("requests.post")
     def test_register_tournament_use_case_request_failure(self, mock):
-        registerTournamentUseCase = RegisterTournamentUseCase(Client)
+        getOrRegisterTournamentUseCase = GetOrRegisterLeagueOfLegendsTournamentUseCase(
+            Client
+        )
 
         mock_response = MagicMock()
         mock_response.status_code = 500
@@ -38,7 +44,7 @@ class TestRegisterTournament(TestCase):
         mock.return_value = mock_response
 
         try:
-            registerTournamentUseCase.execute(tournament=self.tournament)
+            getOrRegisterTournamentUseCase.execute(tournament=self.tournament)
         except Exception as e:
             msg, json = e.args
             self.assertRaises(

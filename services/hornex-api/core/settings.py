@@ -30,10 +30,7 @@ SECRET_KEY = "django-insecure-b=#p+ci^=crap5g$&1wos9*hk658@tqfli((9zyx$f4-15%@vo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "f4ad-45-169-190-206.ngrok-free.app",
-    "localhost",
-]
+ALLOWED_HOSTS = []
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000", "http://localhost:3000"]
 
@@ -56,7 +53,6 @@ INSTALLED_APPS = [
     "apps.payments.apps.PaymentsConfig",
     "apps.users.apps.UsersConfig",
     "apps.teams.apps.TeamsConfig",
-    "apps.invites.apps.InvitesConfig",
     "apps.tournaments.apps.TournamentsConfig",
     "apps.platforms.apps.PlatformsConfig",
     "apps.games.apps.GamesConfig",

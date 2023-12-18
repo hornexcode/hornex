@@ -15,7 +15,7 @@ from test.factories import (
 )
 
 
-class LeagueOfLegendsTournamentTests(APITestCase):
+class TestLeagueOfLegendsTournament(APITestCase):
     def setUp(self) -> None:
         self.user = UserFactory.new()
 

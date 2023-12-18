@@ -6,9 +6,9 @@ from rest_framework.serializers import ValidationError
 from apps.users.models import User
 
 
-class UsersTests(APITestCase, URLPatternsTestCase):
+class TestUsers(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path("api/v1/users", include("users.urls")),
+        path("api/v1/users", include("apps.users.urls")),
     ]
 
     def setUp(self):

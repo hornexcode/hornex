@@ -79,5 +79,13 @@ class Invite(models.Model):
         self.accepted_at = dt.now(tz=tz.utc)
         self.save()
 
+    def decline(self):
+        self.declined_at = dt.now(tz=tz.utc)
+        self.save()
+
+    def expire(self):
+        self.expired_at = dt.now(tz=tz.utc)
+        self.save()
+
     def __str__(self) -> str:
         return f"Invite from {self.team.name} to {self.user.name} - ({self.status()})"

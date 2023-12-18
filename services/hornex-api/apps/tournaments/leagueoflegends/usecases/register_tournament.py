@@ -1,4 +1,3 @@
-# https://developer.riotgames.com/docs/lol#tournament-api_best-practices
 from lib.riot.client import Clientable
 from requests import RequestException
 from lib.logging import logger
@@ -9,7 +8,7 @@ from apps.tournaments.leagueoflegends.models import (
 
 class GetOrRegisterLeagueOfLegendsTournamentUseCase:
     def __init__(self, api: Clientable):
-        self.api: Clientable = api
+        self.api: Clientable = api()
 
     def execute(self, tournament: LeagueOfLegendsTournament) -> int:
         try:
