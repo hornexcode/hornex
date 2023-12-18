@@ -10,7 +10,7 @@
   "editor.formatOnSave": true,
   "editor.find.autoFindInSelection": "multiline",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.run": "onSave",
   "eslint.validate": [
@@ -36,7 +36,7 @@
     "ui.navigation.importShortcut": "Definition"
   },
   "go.toolsManagement.autoUpdate": true,
-  "prettier.configPath": "./eslintrc.js",
+  // "prettier.configPath": "./eslintrc.js",
   "problems.decorations.enabled": true,
   "protoc": {
     "options": ["--proto_path=${workspaceRoot}/lib/proto"]

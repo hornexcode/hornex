@@ -32,16 +32,9 @@ export const dataLoader = <T, Data = unknown>(
   ): Promise<FetchResponse<UDT>> => {
     let data: UDT | null | undefined = null;
     let error: FetchError | null | undefined = null;
-
     try {
       if (res.ok) {
         data = await res.json();
-        // if (schema) {
-        //   data = schema.safeParse(data);
-        //   if (!data.success) {
-        //     throw new Error(result.error.message);
-        //   }
-        // }
       } else {
         try {
           const errRes = await res.json();
