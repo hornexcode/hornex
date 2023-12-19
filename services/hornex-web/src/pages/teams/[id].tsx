@@ -1,5 +1,5 @@
 import { useModal } from '@/components/modal-views/context';
-import Button from '@/components/ui/atoms/button/button';
+import Button from '@/components/ui/atoms/button';
 import Input from '@/components/ui/atoms/form/input';
 import InputLabel from '@/components/ui/atoms/form/input-label';
 import { LongArrowLeft } from '@/components/ui/atoms/icons/long-arrow-left';
@@ -149,7 +149,6 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 type="submit"
                 shape="rounded"
                 size="small"
-                className="bg-light-dark"
               >
                 {isSubmitting ? <Loader /> : 'Alterar'}
               </Button>

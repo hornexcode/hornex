@@ -50,7 +50,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.compete}`}
-            className="group flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-gray-800 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[45px] cursor-pointer items-center justify-center rounded bg-gray-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <HomeIcon className="h-5 w-5 text-slate-700 shadow-xl group-hover:text-white" />
           </Link>
@@ -58,7 +58,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[45px] cursor-pointer items-center justify-center rounded bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <TrophyIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
@@ -66,7 +66,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li title="Teams" className="relative">
           <Link
             href={`/${routes.teams}`}
-            className="group  flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all  hover:bg-slate-700"
+            className="group  flex h-[45px] cursor-pointer items-center justify-center rounded bg-slate-800 text-center shadow-lg transition-all  hover:bg-slate-700"
           >
             <UserGroupIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
@@ -84,7 +84,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.compete}#available-games`}
-            className="group flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[45px] cursor-pointer items-center justify-center rounded bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <SwordsIcon className="h-4 w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
           </Link>
@@ -95,7 +95,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[45px] cursor-pointer items-center justify-center rounded bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <LolIcon className="w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
           </Link>
@@ -103,7 +103,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href="#"
-            className="group flex h-[45px] cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[45px] cursor-pointer items-center justify-center rounded bg-slate-800 text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <CounterStrikeLogoIcon className="fill-slate-400 p-2 shadow-xl group-hover:fill-white" />
           </Link>

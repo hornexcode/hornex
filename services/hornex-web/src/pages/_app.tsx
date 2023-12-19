@@ -3,13 +3,13 @@ import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
 import '@/websocket/app'; // websocket
 
-import { AuthContextProvider } from '@/lib/auth/auth-context';
 import ModalsContainer from '@/components/modal-views/container';
+import { AuthContextProvider } from '@/lib/auth/auth-context';
 import { NotificationContextProvider } from '@/lib/notification';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { JetBrains_Mono, Kanit, Red_Hat_Display } from 'next/font/google';
+import { Source_Sans_3 } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -22,17 +22,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const kanit = Kanit({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const redHatDisplay = Red_Hat_Display({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const jetBrains_Mono = JetBrains_Mono({
+const source_Sans_3 = Source_Sans_3({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
   display: 'swap',
@@ -46,7 +36,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       <div
         className={classnames(
           'bg-dark text-xs font-semibold text-slate-500 antialiased',
-          redHatDisplay.className
+          source_Sans_3.className
         )}
       >
         <AuthContextProvider>

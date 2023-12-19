@@ -6,6 +6,9 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
+    fontFamily: {
+      'display': ['JetBrains mono', 'monospace'],
+    },
     container: {
       padding: {
         DEFAULT: '1rem',

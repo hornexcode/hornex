@@ -107,7 +107,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               <Button
                 onClick={() => openModal('REGISTRATION_VIEW')}
                 shape="rounded"
-                color="warning"
               >
                 Registrar time
               </Button>

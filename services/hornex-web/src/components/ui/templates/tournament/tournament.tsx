@@ -35,7 +35,7 @@ const Tournament: FC<TournamentProps> = ({ tournament }) => {
                   key={tab}
                   className={({ selected }) =>
                     classnames(
-                      '-mb-1.5 whitespace-nowrap border-b-2 border-transparent py-4 text-sm uppercase tracking-wide text-slate-400 outline-none transition-colors hover:text-white',
+                      '-mb-1.5 font-display whitespace-nowrap border-b-2 border-transparent py-4 text-sm uppercase tracking-wide font-medium text-slate-400 outline-none transition-colors hover:text-white',
                       selected ? ' border-white !text-white' : 'text-slate-400'
                     )
                   }

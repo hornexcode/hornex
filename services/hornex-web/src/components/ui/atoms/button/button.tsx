@@ -30,7 +30,7 @@ const variants: Record<VariantNames, string[]> = {
   transparent: ['bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800'],
 };
 const colors: Record<ColorNames, string[]> = {
-  primary: ['text-brand', 'bg-brand', 'border-brand'],
+  primary: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
   white: ['text-gray-900', 'bg-white', 'border-white'],
   gray: ['text-gray-900', 'bg-gray-100', 'border-gray-100'],
   success: ['text-green-500', 'bg-green-500', 'border-green-500'],
@@ -142,6 +142,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             : variants[variant],
           shapes[shape],
           shape === 'circle' ? `${sizeClassNames[1]}` : `${sizeClassNames[0]}`,
+          color === 'primary' ? '!text-gray-800' : '',
           className
         )}
         disabled={disabled}

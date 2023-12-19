@@ -18,7 +18,6 @@ export const TeamsListTabPanel: FC<TeamsListTabPanelProps> = ({ teams }) => {
         <div className="ml-auto mt-4">
           <Button
             onClick={() => router.push(routes.createTeam)}
-            className="bg-light-dark"
             shape="rounded"
             variant="solid"
             size="small"

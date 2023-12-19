@@ -1,7 +1,8 @@
+import { LongArrowRight } from '../../atoms/icons/long-arrow-right';
 import { TournamentCardInfoProps } from './tournament-card-info.types';
 import Button from '@/components/ui/atoms/button/button';
 import { UsersIcon } from '@heroicons/react/20/solid';
-import { DollarSign } from 'lucide-react';
+import { DollarSign, SwordIcon, Swords } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,7 +12,7 @@ import { FC } from 'react';
 const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
   const router = useRouter();
   return (
-    <div className="shadow-light bg-light-dark rounded-lg">
+    <div className="shadow-light bg-light-dark rounded">
       <div className="block p-5">
         <div className="mb-1">
           {moment(tournament.start_date).format('MMMM Do YYYY')}
@@ -36,7 +37,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
 
       {/* League of Legends Metadata */}
       <div className="block px-5 pt-5">
-        <div className="text-xs font-medium uppercase text-white">
+        <div className="text-xs font-medium uppercase text-white font-display">
           Classification
         </div>
         <div className="text-xs text-gray-400">{tournament.classification}</div>
@@ -47,7 +48,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
           <div className="flex justify-between">
             <div className="flex items-center">
               <UsersIcon className="mr-1 h-5 w-4 " />
-              <span className="pr-4 text-xs font-bold text-white">
+              <span className="pr-4 text-xs font-bold text-white font-display">
                 {tournament.teams.length}/{tournament.max_teams}
               </span>
             </div>
@@ -91,30 +92,16 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
         </div>
         <div className="ml-auto text-right">
           <Button
+            shape='rounded'
             onClick={() =>
               router.push(
                 `/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
               )
             }
-            className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
           >
             <div className="flex items-center">
-              <span className="text-sm font-medium">Jogar</span>
-              <svg
-                className="ml-2 h-3 w-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 10"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 5h12m0 0L9 1m4 4L9 9"
-                />
-              </svg>
+              <span className="">Jogar</span>
+              <Swords className="ml-2 h-5 w-5 text-gray-800" />
             </div>
           </Button>
         </div>
