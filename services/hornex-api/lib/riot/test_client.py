@@ -40,7 +40,7 @@ class ClientTest(TestCase):
         mock_post.return_value = mock_response
 
         try:
-            providerId = self.riot.register_tournament_provider(
+            self.riot.register_tournament_provider(
                 "https://www.hornex.gg/", RegionType.BR
             )
         except Exception as e:
@@ -70,7 +70,7 @@ class ClientTest(TestCase):
         mock_post.return_value = mock_response
 
         try:
-            tournamentId = self.riot.register_tournament("Tournament Name", 2)
+            self.riot.register_tournament("Tournament Name", 2)
         except Exception as e:
             msg, json = e.args
             self.assertRaises(Exception)

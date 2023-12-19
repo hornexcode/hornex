@@ -32,7 +32,7 @@ jobs:
       # Lint the code
       - run:
           name: Lint code
-          command: poetry run black --check .
+          command: poetry run ruff check .
           working_directory: services/hornex-api
 
       # Run tests
