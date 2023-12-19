@@ -1,4 +1,3 @@
-from django.conf import settings
 from requests import exceptions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets
@@ -81,7 +80,7 @@ def create_game_account(request, id):
             data = summoner_by_name(name, region)
         except exceptions.HTTPError as err:
             return Response(
-                {"error": f"Failed to get summoner by name"},
+                {"error": "Failed to get summoner by name"},
                 status=err.response.status_code,
             )
         # except RiotApiError as err:

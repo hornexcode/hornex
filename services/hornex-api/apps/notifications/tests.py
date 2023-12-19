@@ -9,7 +9,7 @@ from apps.notifications.models import Notification
 
 class TestNotification(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path(f"/notifications", include("apps.notifications.urls")),
+        path("/notifications", include("apps.notifications.urls")),
     ]
 
     def setUp(self):

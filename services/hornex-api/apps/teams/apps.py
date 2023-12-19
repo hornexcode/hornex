@@ -6,4 +6,4 @@ class TeamsConfig(AppConfig):
     name = "apps.teams"
 
     def ready(self):
-        import apps.teams.signals
+        pass

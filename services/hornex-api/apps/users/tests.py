@@ -100,7 +100,7 @@ class TestUsers(APITestCase, URLPatternsTestCase):
 
     def test_get_user_current_user_not_logged_in_401(self):
         url = reverse("current-user")
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer 157")
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer 157")
         resp = self.client.get(url)
 
         self.assertEqual(resp.status_code, 401)

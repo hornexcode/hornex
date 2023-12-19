@@ -121,5 +121,5 @@ def create_or_update_leagueoflegends_account(form: dict, account: LeagueOfLegend
                 return Response(data, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-        except requests.RequestException as e:
+        except requests.RequestException:
             return Response(status=status.HTTP_400_BAD_REQUEST)

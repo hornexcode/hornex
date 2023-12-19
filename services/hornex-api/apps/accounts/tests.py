@@ -10,7 +10,7 @@ from test.factories import TierFactory, LeagueOfLegendsAccountFactory
 
 class TestAccountsRiot(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path(f"/riot", include("apps.accounts.riot.urls")),
+        path("/riot", include("apps.accounts.riot.urls")),
     ]
 
     def setUp(self):

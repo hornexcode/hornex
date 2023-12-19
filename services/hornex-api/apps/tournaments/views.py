@@ -25,7 +25,6 @@ from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 from apps.teams.models import Team
 from core.route import extract_game_and_platform
 
-from lib.logging import logger
 
 # from apps.tournaments.leagueoflegends.usecases import RegisterTeam
 

@@ -133,7 +133,7 @@ class TestTeam(APITestCase, URLPatternsTestCase):
 
 class TestInvites(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path(f"/invites", include("apps.teams.urls")),
+        path("/invites", include("apps.teams.urls")),
     ]
 
     def setUp(self):
@@ -202,7 +202,7 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         Ensure an unauthenticated user can not accept a team invite.
         """
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer invalid-token")
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer invalid-token")
 
         url = reverse(
             "invite-accept",
@@ -314,7 +314,7 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         Ensure an unauthenticated user can not decline a team invite.
         """
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer invalid-token")
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer invalid-token")
 
         url = reverse(
             "invite-decline",

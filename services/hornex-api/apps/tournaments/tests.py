@@ -1,27 +1,6 @@
 # Test cases for the tournaments app from client side
-import uuid
 
-from datetime import timedelta
-from django.utils import timezone
-from django.urls import include, path, reverse
-from rest_framework.test import APITestCase, URLPatternsTestCase
-from rest_framework_simplejwt.tokens import RefreshToken
-from apps.users.models import User
-from apps.platforms.models import Platform
-from apps.games.models import Game
-from apps.teams.models import Team, Membership
-from apps.tournaments.models import Tournament, Registration
-from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
-from apps.tournaments import errors
 
-from test.factories import (
-    UserFactory,
-    TeamFactory,
-    TournamentFactory,
-    LeagueOfLegendsTournamentFactory,
-    LeagueOfLegendsAccountFactory,
-)
-from lib.logging import logger
 
 
 # class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
