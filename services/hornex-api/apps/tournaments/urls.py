@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.tournaments.views import TournamentReadOnlyViewSet, TournamentViewSet
+from apps.tournaments.views import TournamentReadOnlyViewSet, TournamentViewSet, TournamentRegistrationViewSet
 
 urlpatterns = [
     path(
@@ -12,7 +12,7 @@ urlpatterns = [
     ),
     path(
         "/<str:id>/register",
-        TournamentViewSet.as_view({"post": "register"}),
+        TournamentRegistrationViewSet.as_view({"post": "register"}),
         name="tournament-register",
     ),
     # path(

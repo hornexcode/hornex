@@ -90,6 +90,20 @@ class TournamentViewSet(viewsets.ModelViewSet):
 
         return super().retrieve(request, *args, **kwargs)
 
+class TournamentRegistrationViewSet(viewsets.ModelViewSet):
+    queryset = Registration.objects.all()
+    serializer_class = RegistrationCreateSerializer
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_object(self, *args, **kwargs):
+        game = kwargs.get("game")
+        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
+            self.queryset = LeagueOfLegendsTournament.objects.select_for_update().all()
+
+        return super().get_object()
+
     @swagger_auto_schema(
         operation_description="POST /api/v1/tournaments/<str:id>/register",
         operation_summary="Register a team to a tournament",
@@ -154,13 +168,6 @@ class TournamentViewSet(viewsets.ModelViewSet):
             RegistrationReadSerializer(reg).data,
             status=status.HTTP_201_CREATED,
         )
-
-
-class TournamentRegistrationViewSet(viewsets.ModelViewSet):
-    queryset = Registration.objects.all()
-    serializer_class = RegistrationCreateSerializer
-    lookup_field = "id"
-    permission_classes = [IsAuthenticated]
 
 
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
