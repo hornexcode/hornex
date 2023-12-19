@@ -13,45 +13,45 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
 }) => {
   return (
     <>
-      <div className="bg-light-dark rounded-lg shadow-md">
-        <div className="border-b border-gray-800 p-5">
-          <h4 className="leading-2 text-sm font-medium uppercase text-gray-200">
+      <div className="bg-medium-dark rounded shadow-md">
+        <div className="border-b border-gray-700 p-5">
+          <h4 className="leading-2 text-header text-lg font-extrabold">
             Tournament details
           </h4>
         </div>
-        <div className="grid grid-cols-4">
-          <div className="col-span-1 border-r border-gray-800 p-5">
-            <div className="box space-y-3 text-center">
-              <SwordsIcon className="mx-auto h-5 w-5 fill-gray-400" />
-              <p className="text-xs font-bold text-gray-200">Format</p>
-              <p className="text-xs font-bold text-gray-400">
+        <div className="bg-light-dark flex flex-col items-start rounded-b">
+          <div className="col-span-1 w-full p-5">
+            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+              <SwordsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
+              <p className="text-sm font-bold text-cyan-500">Format</p>
+              <p className="text-header text-xs font-bold">
                 {tournament.team_size}v{tournament.team_size}
               </p>
             </div>
           </div>
-          <div className="col-span-1 border-r border-gray-800  p-5">
-            <div className="box space-y-3 text-center">
-              <ComputerDesktopIcon className="mx-auto h-5 w-5 fill-gray-400" />
-              <p className="text-xs font-bold text-gray-200">Platform</p>
-              <p className="text-xs font-bold text-gray-400">
+          <div className="col-span-1  w-full p-5">
+            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+              <ComputerDesktopIcon className="mx-auto h-5 w-5 fill-cyan-500" />
+              <p className="text-sm font-bold text-cyan-500">Platform</p>
+              <p className="text-header text-xs font-bold">
                 {tournament.platform}
               </p>
             </div>
           </div>
-          <div className="col-span-1 border-r border-gray-800  p-5">
-            <div className="box space-y-3 text-center">
-              <LockOpenIcon className="mx-auto h-5 w-5 fill-gray-400" />
-              <p className="text-xs font-bold text-gray-200">Classification</p>
-              <p className="text-xs font-bold text-gray-400">
+          <div className="col-span-1  w-full p-5">
+            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+              <LockOpenIcon className="mx-auto h-5 w-5 fill-cyan-500" />
+              <p className="text-sm font-bold text-cyan-500">Classification</p>
+              <p className="text-header text-xs font-bold">
                 {tournament.classification}
               </p>
             </div>
           </div>
-          <div className="col-span-1 border-gray-800  p-5">
-            <div className="box space-y-3 text-center">
-              <CoinsIcon className="mx-auto h-5 w-5 fill-gray-400" />
-              <p className="text-xs font-bold text-gray-200">Entry fee</p>
-              <p className="text-xs font-bold text-gray-400">
+          <div className="w-full p-5">
+            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+              <CoinsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
+              <p className="text-sm font-bold text-cyan-500">Entry fee</p>
+              <p className="text-header text-xs font-bold">
                 {tournament.entry_fee}
               </p>
             </div>

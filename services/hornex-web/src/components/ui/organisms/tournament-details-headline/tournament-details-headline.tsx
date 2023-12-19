@@ -22,7 +22,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const { openModal } = useModal();
   return (
     <>
-      <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52">
+      <div className="3xl:h-[448px] shadow-card relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52">
         <Image
           // loader={imageLoader}
           // src="1920x1080/232f48/jpg"
@@ -35,7 +35,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           alt="Cover Image"
         />
       </div>
-      <div className="bg-light-dark flex rounded-b-md p-4">
+      <div className="bg-medium-dark flex rounded-b-md p-4">
         <div className="flex w-full justify-between">
           <div className="block space-y-6">
             <div className="block">
@@ -58,7 +58,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             {/* TODO: make this a molecule component */}
             <div className="flex items-center">
               {/*  */}
-              <div className="flex items-center space-x-4 border-r-2 border-dotted border-slate-700 pr-8">
+              <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 pr-8">
                 <div>
                   <TrophyIcon className="w-6 fill-gray-400" />
                 </div>
@@ -105,6 +105,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </div>
             <div className="block">
               <Button
+                size="small"
                 onClick={() => openModal('REGISTRATION_VIEW')}
                 shape="rounded"
               >

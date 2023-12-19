@@ -33,7 +33,7 @@ const Header = () => {
     state: { user, isAuthenticated },
   } = useAuthContext();
   return (
-    <header className="bg-light-dark sticky left-0 top-0 z-40 h-16 w-full border-b border-gray-800 px-4">
+    <header className="bg-medium-dark sticky left-0 top-0 z-40 h-14 w-full border-b border-gray-700 px-4">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block font-extrabold text-white" href="/">

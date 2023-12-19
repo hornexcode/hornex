@@ -6,6 +6,15 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
+    borderRadius: {
+      'none': '0',
+      'sm': '0.125rem',
+      DEFAULT: '3px',
+      'md': '0.375rem',
+      'lg': '0.5rem',
+      'full': '9999px',
+      'large': '12px',
+    },
     fontFamily: {
       'display': ['JetBrains mono', 'monospace'],
     },
@@ -31,10 +40,12 @@ module.exports = {
     extend: {
       colors: {
         brand: 'rgb(var(--color-brand) / <alpha-value>)',
-        body: '#fcfcfc',
-        dark: '#0D1321',
-        'light-dark': '#171e2e',
-        'sidebar-body': '#F8FAFC',
+        body: '#95a5a6',
+        header: '#eaeded',
+        dark: '#16191f',
+        'medium-dark': '#21252d',
+        'light-dark': '#292e34',
+        'sidebar-body': '#F8FAFC'
       },
       spacing: {
         13: '3.375rem',

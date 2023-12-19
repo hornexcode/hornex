@@ -145,11 +145,7 @@ const TeamPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </div>
             <div className="mt-1">
-              <Button
-                type="submit"
-                shape="rounded"
-                size="small"
-              >
+              <Button type="submit" shape="rounded" size="small">
                 {isSubmitting ? <Loader /> : 'Alterar'}
               </Button>
             </div>

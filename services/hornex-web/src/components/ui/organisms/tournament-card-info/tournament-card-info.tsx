@@ -13,8 +13,9 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
   const router = useRouter();
   return (
     <div className="shadow-light bg-light-dark rounded">
+      <div className="bg-medium-dark">
       <div className="block p-5">
-        <div className="mb-1">
+        <div className="mb-1 text-body">
           {moment(tournament.start_date).format('MMMM Do YYYY')}
         </div>
         <Link
@@ -24,6 +25,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
           {/* trim name */}
           {tournament.name}
         </Link>
+      </div>
       </div>
 
       <div className="block">
@@ -78,7 +80,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
         </div> */}
       </div>
 
-      <div className="shadow-light flex items-end rounded-b-lg border-t border-slate-800 p-5">
+      <div className="shadow-light flex items-end rounded-b-lg border-t border-gray-700 p-5">
         <div className="block">
           <span className="text-xs text-slate-400">Prize Pool</span>
           <div className="flex items-center space-x-1">

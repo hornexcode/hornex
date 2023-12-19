@@ -13,10 +13,12 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
 }) => {
   return (
     <div className="bg-light-dark shadow-light space-y-2 rounded-md ">
-      <div className="border-b border-gray-800 p-5">
-        <h4 className="leading-2 text-sm font-medium uppercase text-gray-200">
-          Tournament Phases
-        </h4>
+      <div className="bg-medium-dark">
+        <div className="border-b border-gray-700 p-5">
+          <h4 className="leading-2 text-header text-lg font-extrabold">
+            Tournament Phases
+          </h4>
+        </div>
       </div>
       <div className="block p-5">
         <ol className="relative border-l border-gray-200 dark:border-gray-700">
