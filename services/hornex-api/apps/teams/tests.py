@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import patch
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -158,12 +159,12 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         self.team_owner = UserFactory.new()
         self.team = TeamFactory.new(self.team_owner)
 
-        self.invite = InviteFactory.new(self.team, user=self.user)
-
-    def test_accept_invite_200(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_accept_invite_200(self, mock):
         """
         Ensure an logged user can accept a team invite.
         """
+        self.invite = InviteFactory.new(self.team, user=self.user)
 
         url = reverse(
             "invite-accept",
@@ -175,16 +176,17 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         )
 
         self.invite.refresh_from_db()
-
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(self.invite.accepted_at)
         self.assertEqual(Membership.objects.count(), 2)
 
-    def test_accept_invite_not_found_404(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_accept_invite_not_found_404(self, mock):
         """
         Ensure invalid team invite can not be accepted.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         url = reverse(
             "invite-accept",
         )
@@ -194,14 +196,16 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": uuid.uuid4()},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 404)
         self.assertEqual(resp.data.get("message"), "Not found.")
 
-    def test_accept_invite_unauthenticated_403(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_accept_invite_unauthenticated_403(self, mock):
         """
         Ensure an unauthenticated user can not accept a team invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION="Bearer invalid-token")
 
         url = reverse(
@@ -213,13 +217,15 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 401)
 
-    def test_accept_invite_accepted_400(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_accept_invite_accepted_400(self, mock):
         """
         Ensure user can not accept already accepted invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.invite.accept()
 
         url = reverse(
@@ -231,14 +237,16 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data.get("message"), "This invite has been accepted.")
 
-    def test_accept_invite_declined_400(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_accept_invite_declined_400(self, mock):
         """
         Ensure user can not accept already declined invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.invite.decline()
 
         url = reverse(
@@ -250,14 +258,16 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data.get("message"), "This invite has been declined.")
 
-    def test_accept_invite_expired_400(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_accept_invite_expired_400(self, mock):
         """
         Ensure user can not accept already expired invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.invite.expire()
 
         url = reverse(
@@ -269,14 +279,16 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data.get("message"), "This invite has expired.")
 
-    def test_decline_invite_200(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_decline_invite_200(self, mock):
         """
         Ensure an logged user can decline a team invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         url = reverse(
             "invite-decline",
         )
@@ -287,16 +299,17 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         )
 
         self.invite.refresh_from_db()
-
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(self.invite.declined_at)
         self.assertEqual(Membership.objects.count(), 1)
 
-    def test_decline_invite_not_found_404(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_decline_invite_not_found_404(self, mock):
         """
         Ensure invalid team invite can not be declined.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         url = reverse(
             "invite-decline",
         )
@@ -306,14 +319,16 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": uuid.uuid4()},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 404)
         self.assertEqual(resp.data.get("message"), "Not found.")
 
-    def test_decline_invite_unauthenticated_403(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_decline_invite_unauthenticated_403(self, mock):
         """
         Ensure an unauthenticated user can not decline a team invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION="Bearer invalid-token")
 
         url = reverse(
@@ -325,13 +340,15 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 401)
 
-    def test_decline_invite_accepted_400(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_decline_invite_accepted_400(self, mock):
         """
         Ensure user can not decline already accepted invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.invite.accept()
 
         url = reverse(
@@ -343,14 +360,16 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data.get("message"), "This invite has been accepted.")
 
-    def test_decline_invite_declined_400(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_decline_invite_declined_400(self, mock):
         """
         Ensure user can not decline already declined invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.invite.decline()
 
         url = reverse(
@@ -362,14 +381,16 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data.get("message"), "This invite has been declined.")
 
-    def test_decline_invite_expired_400(self):
+    @patch("apps.teams.signals.send_notification")
+    def test_decline_invite_expired_400(self, mock):
         """
         Ensure user can not decline already expired invite.
         """
-
+        self.invite = InviteFactory.new(self.team, user=self.user)
         self.invite.expire()
 
         url = reverse(
@@ -381,5 +402,6 @@ class TestInvites(APITestCase, URLPatternsTestCase):
             {"invite_id": self.invite.id},
         )
 
+        mock.assert_called_once()
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data.get("message"), "This invite has expired.")

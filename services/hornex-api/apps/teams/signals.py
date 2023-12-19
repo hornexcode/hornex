@@ -17,7 +17,10 @@ def team_created(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Invite)
 def invite_created(sender, instance, created, **kwargs):
     if created:
-        notification = Notification.objects.create(
+        send_notification(instance)
+
+def send_notification(instance: Invite):
+    notification = Notification.objects.create(
             name=instance.__str__(),
             data=json.dumps(
                 {
@@ -31,16 +34,16 @@ def invite_created(sender, instance, created, **kwargs):
             recipient_id=instance.user.id,
         )
 
-        timestamp_in_milliseconds = int(notification.created_at.timestamp() * 1000)
-        channel_layer = channels.layers.get_channel_layer()
+    timestamp_in_milliseconds = int(notification.created_at.timestamp() * 1000)
+    channel_layer = channels.layers.get_channel_layer()
 
-        async_to_sync(channel_layer.group_send)(
-            f"notifications_{instance.user.id}",
-            message={
-                "id": notification.id.__str__(),
-                "type": notification.activity,
-                "message": "You have been invited to join a team",
-                "data": json.loads(notification.data),
-                "created_at": timestamp_in_milliseconds,
-            },
-        )
+    async_to_sync(channel_layer.group_send)(
+        f"notifications_{instance.user.id}",
+        message={
+            "id": notification.id.__str__(),
+            "type": notification.activity,
+            "message": "You have been invited to join a team",
+            "data": json.loads(notification.data),
+            "created_at": timestamp_in_milliseconds,
+        },
+    )
