@@ -157,18 +157,18 @@ class LeagueOfLegendsAccountFactory:
         """
         Create a new league of legends account with the given kwargs.
         """
-        tier = kwargs.get("tier") 
+        tier = kwargs.get("tier")
         return LeagueOfLegendsAccount.objects.create(
-            summoner_id = kwargs.get("summoner_id", fake.name()),
-            account_id = kwargs.get("account_id", fake.name()),
-            puuid = kwargs.get("puuid", fake.name()),
-            summoner_name = kwargs.get("summoner_name", fake.name()),
-            profile_icon_id = kwargs.get("profile_icon_id", 123),
-            revision_date = kwargs.get("revision_date", 123),
-            summoner_level = kwargs.get("summoner_level", 123),
-            sub = kwargs.get("sub", fake.name()),
-            jti = kwargs.get("jti", fake.name()),
-            tag_line = kwargs.get("jti", LeagueOfLegendsAccount.TagLineType.BR1),
+            summoner_id=kwargs.get("summoner_id", fake.name()),
+            account_id=kwargs.get("account_id", fake.name()),
+            puuid=kwargs.get("puuid", fake.name()),
+            summoner_name=kwargs.get("summoner_name", fake.name()),
+            profile_icon_id=kwargs.get("profile_icon_id", 123),
+            revision_date=kwargs.get("revision_date", 123),
+            summoner_level=kwargs.get("summoner_level", 123),
+            sub=kwargs.get("sub", fake.name()),
+            jti=kwargs.get("jti", fake.name()),
+            tag_line=kwargs.get("jti", LeagueOfLegendsAccount.TagLineType.BR1),
             user=user,
             tier=tier if tier is not None else TierFactory.new(),
         )

@@ -111,7 +111,7 @@ class ClientTest(TestCase):
         mock_post.return_value = mock_response
 
         try:
-            data = self.riot.create_tournament_code(
+            self.riot.create_tournament_code(
                 CreateTournamentCode(
                     tournament_id=7,
                     count=1,
@@ -166,7 +166,7 @@ class ClientTest(TestCase):
         mock_get.return_value = mock_response
 
         try:
-            data = self.riot.get_tournament_code("test-tournament-code-123")
+            self.riot.get_tournament_code("test-tournament-code-123")
         except Exception as e:
             msg, json = e.args
             self.assertRaises(Exception)
@@ -203,7 +203,7 @@ class ClientTest(TestCase):
         mock_put.return_value = mock_response
 
         try:
-            data = self.riot.update_tournament_code(
+            self.riot.update_tournament_code(
                 UpdateTournamentCode(
                     tournamentCode="test-tournament-code-123",
                     allowedParticipants=[
@@ -266,7 +266,7 @@ class ClientTest(TestCase):
         mock_get.return_value = mock_response
 
         try:
-            data = self.riot.get_games_by_code("test-tournament-code-123")
+            self.riot.get_games_by_code("test-tournament-code-123")
         except Exception as e:
             msg, json = e.args
             self.assertRaises(Exception)
@@ -311,7 +311,7 @@ class ClientTest(TestCase):
         mock_get.return_value = mock_response
 
         try:
-            data = self.riot.get_lobby_events_by_code("test-tournament-code-123")
+            self.riot.get_lobby_events_by_code("test-tournament-code-123")
         except Exception as e:
             msg, json = e.args
             self.assertRaises(Exception)

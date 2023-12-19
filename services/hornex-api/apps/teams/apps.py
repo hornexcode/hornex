@@ -6,4 +6,5 @@ class TeamsConfig(AppConfig):
     name = "apps.teams"
 
     def ready(self):
-        pass
+        # ruff: noqa: F401
+        import apps.teams.signals

@@ -71,7 +71,7 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
             try:
                 tournament.start()
                 success_count += 1
-                result = on_brackets_generated.delay(str(tournament.id))
+                on_brackets_generated.delay(str(tournament.id))
             except Exception as e:
                 return messages.error(request, str(e))
 
