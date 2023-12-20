@@ -11,6 +11,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         token = self.scope.get("cookies").get("hx.auth.token")
+
+        if not token:
+            await self.send_error_message("No token provided")
+            return await self.close()
+
         decoded_token = jwt.decode(
             str(token), settings.SECRET_KEY, algorithms=["HS256"]
         )
