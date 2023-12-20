@@ -6,6 +6,7 @@
   :root {
     --color-brand: 17 24 39;
   }
+
   html {
     @apply bg-body font-body;
     -webkit-tap-highlight-color: transparent;
