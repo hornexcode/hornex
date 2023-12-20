@@ -7,16 +7,16 @@ module.exports = {
   darkMode: 'class',
   theme: {
     borderRadius: {
-      'none': '0',
-      'sm': '0.125rem',
+      none: '0',
+      sm: '0.125rem',
       DEFAULT: '3px',
-      'md': '0.375rem',
-      'lg': '0.5rem',
-      'full': '9999px',
-      'large': '12px',
+      md: '0.375rem',
+      lg: '0.5rem',
+      full: '9999px',
+      large: '12px',
     },
     fontFamily: {
-      'display': ['JetBrains mono', 'monospace'],
+      display: ['JetBrains mono', 'monospace'],
     },
     container: {
       padding: {
@@ -45,7 +45,7 @@ module.exports = {
         dark: '#16191f',
         'medium-dark': '#21252d',
         'light-dark': '#292e34',
-        'sidebar-body': '#F8FAFC'
+        'sidebar-body': '#F8FAFC',
       },
       spacing: {
         13: '3.375rem',
@@ -73,7 +73,7 @@ module.exports = {
         main: '0px 6px 18px rgba(0, 0, 0, 0.04)',
         light: '0px 4px 4px rgba(0, 0, 0, 0.08)',
         large: '0px 8px 16px rgba(17, 24, 39, 0.1)',
-        card: '0px 2px 6px rgba(0, 0, 0, 0.06)',
+        card: '0px 2px 4px rgba(0, 0, 0, 0.9)',
         transaction: '0px 8px 16px rgba(17, 24, 39, 0.06)',
         expand: '0px 0px 50px rgba(17, 24, 39, 0.2)',
         button:

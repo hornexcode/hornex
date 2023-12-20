@@ -1,4 +1,4 @@
-import TournamentsFeedPage from '@/components/ui/templates/tournaments/tournaments';
+import TournamentsFeedPage from '@/components/ui/templates/tournaments-feed-template/tournaments-feed-template';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { GetTournamentsResponse } from '@/lib/hx-app/types/rest/get-tournaments';
