@@ -47,6 +47,7 @@ class Classification(models.Model):
         CHALLENGER = "CHALLENGER"
 
     class Rank(models.TextChoices):
+        # ruff: noqa: E741
         I = "I"
         II = "II"
         III = "III"

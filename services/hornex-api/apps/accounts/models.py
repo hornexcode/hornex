@@ -1,4 +1,3 @@
-import uuid
 from django.db import models
 from apps.users.models import User
 from apps.tournaments.leagueoflegends.models import Classification
