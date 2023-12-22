@@ -128,7 +128,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={buttonRef}
         onClick={clickHandler}
         className={cn(
-          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold tracking-wide outline-none transition-all sm:text-[15px]',
+          'shadow-card relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold tracking-wide outline-none transition-all sm:text-[15px]',
           !disabled
             ? buttonColorClassNames
             : 'cursor-not-allowed bg-gray-400 text-gray-400',
