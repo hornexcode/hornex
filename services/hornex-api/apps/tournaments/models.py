@@ -93,7 +93,7 @@ class Tournament(models.Model):
             [
                 member.can_play(
                     game=Tournament.GameType.LEAGUE_OF_LEGENDS,
-                    classification=self.get_classification(),  # ["1","4","5"]
+                    classifications=self.get_classifications(),  # ["1","4","5"]
                 )
                 for member in team.members.all()
             ]

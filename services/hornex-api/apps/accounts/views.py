@@ -26,8 +26,6 @@ provider = "https://auth.riotgames.com"
 authorizeUrl = provider + "/authorize"
 tokenUrl = provider + "/token"
 
-riot_client = Client()
-
 
 # https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://robin-lasting-magpie.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access
 @swagger_auto_schema(
@@ -41,13 +39,13 @@ riot_client = Client()
     },
 )
 @api_view(["GET"])
-# @permission_classes([IsAuthenticated])
-# @authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 def riot_oauth_callback(request):
     access_code = request.GET.get("code")
-    # user = request.user
-    # if not user:
-    # return Response(status=status.HTTP_401_UNAUTHORIZED)
+    user = request.user
+    if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     # post information as x-www-form-urlencoded
     form = {
@@ -57,26 +55,27 @@ def riot_oauth_callback(request):
     }
 
     is_new = True
-    # try:
+    try:
     # It will throw an exception whenever the user does not have acc.
-    # user.leagueoflegendsaccount
-    # is_new = False
-    # except LeagueOfLegendsAccount.DoesNotExist:
-    # is_new = True
+        user.leagueoflegendsaccount
+        is_new = False
+    except LeagueOfLegendsAccount.DoesNotExist:
+        is_new = True
 
     if is_new:
         account = LeagueOfLegendsAccount()
-        # account.user = user
+        account.user = user
 
         return create_or_update_leagueoflegends_account(form, account)
     else:
-        # account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
+        account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
         return create_or_update_leagueoflegends_account(form, account)
 
 
 def create_or_update_leagueoflegends_account(
     form: dict, account: LeagueOfLegendsAccount
 ):
+    riot_client = Client()
     try:
         resp = requests.post(
             tokenUrl,
@@ -115,20 +114,17 @@ def create_or_update_leagueoflegends_account(
             account.revision_date = summonerme.get("revisionDate")
             account.summoner_level = summonerme.get("summonerLevel")
 
-            # fazer a request pegar os dados
             entries = riot_client.get_entries_by_summoner_id(account.summoner_id)
 
             if not entries:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
-            # salvar os dados na ACC, não no TIER
-            # Adicionar Rank no TIER ou transformar Rank e Tier em Choices/Enum?
             classification = Classification.objects.get(
                 tier=entries[0].tier, rank=entries[0].rank
-            )
+            )  
             account.classification = classification
             account.save()
-
+            
             return Response(data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

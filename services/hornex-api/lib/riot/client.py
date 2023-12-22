@@ -305,8 +305,6 @@ class Client(Clientable):
         encryptedSummonerId: str,
         platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
     ) -> list[LeagueEntryDTO]:
-        print("RIOT_API_KEY")
-        print(self.api_key)
         url = f"https://{platform_routing.value}.api.riotgames.com/lol/league/v4/entries/by-summoner/{encryptedSummonerId}?api_key={self.api_key}"
         response = requests.get(url)
 

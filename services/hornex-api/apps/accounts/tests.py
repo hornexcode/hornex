@@ -29,15 +29,13 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
         )
 
-        self.classification = ClassificationFactory.new()
-
     @patch("requests.post")
     @patch("requests.get")
     def test_connect_riot_account_200(self, mock_post, mock_get):
         """
         Ensure an logged user can connect his riot account.
         """
-
+        self.classification = ClassificationFactory.new()
         mock_get_response = MagicMock()
         mock_post_response = MagicMock()
         mock_post_response.status_code = 200
@@ -84,9 +82,9 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         """
         Ensure an logged user can connect his riot account.
         """
-
+        self.classification = ClassificationFactory.new()
         self.user.leagueoflegendsaccount = LeagueOfLegendsAccountFactory.new(
-            user=User.objects.get(email=self.user.email)
+            user=User.objects.get(email=self.user.email), classification=self.classification
         )
         self.user.save()
 

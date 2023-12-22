@@ -144,7 +144,7 @@ class ClassificationFactory:
     @staticmethod
     def new(**kwargs):
         """
-        Create a new tier with the given kwargs.
+        Create a new classification with the given kwargs.
         """
         return Classification.objects.create(
             tier=kwargs.get("name", Classification.Tier.SILVER),

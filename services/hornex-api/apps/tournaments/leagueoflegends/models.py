@@ -57,7 +57,7 @@ class Classification(models.Model):
     rank = models.CharField(max_length=50, choices=Rank.choices, default=Rank.I)
 
     def __str__(self) -> str:
-        return f"{self.name} ({self.id})"
+        return f"{self.tier} {self.rank} ({self.id})"
 
 
 class LeagueOfLegendsTournament(BaseTournament):
