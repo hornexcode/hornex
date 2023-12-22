@@ -1,4 +1,3 @@
-from django.conf import settings
 from requests import exceptions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets
@@ -56,7 +55,6 @@ def summoner_by_name(name: str, region: str):
         204: openapi.Response("Account connected"),
         404: openapi.Response("Not found"),
         400: openapi.Response("Failed to get summoner by name"),
-        400: openapi.Response("Game account already exist"),
     },
 )
 @api_view(["POST"])
@@ -81,7 +79,7 @@ def create_game_account(request, id):
             data = summoner_by_name(name, region)
         except exceptions.HTTPError as err:
             return Response(
-                {"error": f"Failed to get summoner by name"},
+                {"error": "Failed to get summoner by name"},
                 status=err.response.status_code,
             )
         # except RiotApiError as err:
@@ -102,7 +100,7 @@ def create_game_account(request, id):
 
         user = get_object_or_404(User, pk=user.id)
 
-        riot_account = GameAccountRiot.objects.create(
+        GameAccountRiot.objects.create(
             user=user,
             game=game,
             encrypted_summoner_id=data["id"],

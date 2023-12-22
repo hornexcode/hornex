@@ -18,7 +18,7 @@ export function SortList() {
   return (
     <div className="relative">
       <Listbox value={selectedItem} onChange={setSelectedItem}>
-        <Listbox.Button className="flex h-10 w-auto items-center justify-between rounded bg-gray-100 px-4 text-xs text-gray-900 dark:bg-gray-800 dark:text-white sm:w-56 sm:text-sm lg:h-11">
+        <Listbox.Button className="dark:bg-light-dark flex h-10 w-auto items-center justify-between rounded bg-gray-100 px-4 text-xs text-gray-900 dark:text-white sm:w-56 sm:text-sm lg:h-11">
           {selectedItem.name}
           <ChevronDown className="ltr:ml-2 rtl:mr-2" />
         </Listbox.Button>
@@ -37,7 +37,7 @@ export function SortList() {
                   <div
                     className={`block cursor-pointer rounded px-3 py-2 text-xs font-medium text-gray-900 transition dark:text-white sm:text-sm  ${
                       selected
-                        ? 'my-1 bg-gray-100 dark:bg-gray-800'
+                        ? 'dark:bg-light-dark my-1 bg-gray-100'
                         : 'hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
@@ -77,7 +77,7 @@ export function PriceRange() {
     <div className="p-5">
       <div className="mb-4 grid grid-cols-2 gap-2">
         <input
-          className="h-9 rounded border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
+          className="dark:bg-light-dark h-9 rounded border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-gray-500"
           type="number"
           value={range.min}
           onChange={(e) => handleMinChange(parseInt(e.target.value))}
@@ -85,7 +85,7 @@ export function PriceRange() {
           max={range.max}
         />
         <input
-          className="h-9 rounded border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
+          className="dark:bg-light-dark h-9 rounded border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-gray-500"
           type="number"
           value={range.max}
           onChange={(e) => handleMaxChange(parseInt(e.target.value))}
@@ -117,8 +117,8 @@ export function Status() {
           <span
             className={`flex h-9 cursor-pointer items-center justify-center rounded border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
               checked
-                ? 'border-brand bg-brand shadow-button text-white'
-                : 'text-brand border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                ? 'border-brand bg-brand shadow-button text-white dark:border-gray-600'
+                : 'text-brand dark:bg-light-dark border-gray-200 bg-white dark:border-gray-600 dark:text-white'
             }`}
           >
             Buy Now
@@ -131,7 +131,7 @@ export function Status() {
             className={`flex h-9 cursor-pointer items-center justify-center rounded border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
               checked
                 ? 'border-brand bg-brand shadow-button text-white'
-                : 'text-brand border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                : 'text-brand dark:bg-light-dark border-gray-200 bg-white dark:border-gray-600 dark:text-white'
             }`}
           >
             On Auction
@@ -144,7 +144,7 @@ export function Status() {
             className={`flex h-9 cursor-pointer items-center justify-center rounded border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
               checked
                 ? 'border-brand bg-brand shadow-button text-white'
-                : 'text-brand border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                : 'text-brand dark:bg-light-dark border-gray-200 bg-white dark:border-gray-600 dark:text-white'
             }`}
           >
             New
@@ -157,7 +157,7 @@ export function Status() {
             className={`flex h-9 cursor-pointer items-center justify-center rounded border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
               checked
                 ? 'border-brand bg-brand shadow-button text-white'
-                : 'text-brand border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                : 'text-brand dark:bg-light-dark border-gray-200 bg-white dark:border-gray-600 dark:text-white'
             }`}
           >
             Has offers

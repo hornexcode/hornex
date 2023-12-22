@@ -57,20 +57,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
 
-    def can_play(self, game: str, classification) -> bool:
+    def can_play(self, game: str, classifications: list[str]) -> bool:
         if game == LEAGUE_OF_LEGENDS:
-            if isinstance(classification, str):
-                return (
-                    self.leagueoflegendsaccount.tier.name == classification
-                    if self.leagueoflegendsaccount.tier is not None
-                    else False
-                )
-            if isinstance(classification, list):
-                return (
-                    self.leagueoflegendsaccount.tier.name in classification
-                    if self.leagueoflegendsaccount.tier is not None
-                    else False
-                )
+            return self.leagueoflegendsaccount.get_classification() in classifications
         return False
 
     def get_game_account(self, game: str):

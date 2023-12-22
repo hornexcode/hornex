@@ -22,7 +22,7 @@ export default function Collapse({
 
   return (
     <div
-      className={`ease-[cubic-bezier(0.33, 1, 0.68, 1)] shadow-card hover:shadow-transaction dark:bg-light-dark relative mb-5 overflow-hidden rounded-lg bg-white transition-all duration-[350ms] last:mb-0 ${
+      className={`ease-[cubic-bezier(0.33, 1, 0.68, 1)] shadow-card hover:shadow-transaction dark:bg-light-dark relative mb-5 overflow-hidden rounded bg-white transition-all duration-[350ms] last:mb-0 ${
         isOpen ? 'shadow-transaction' : 'shadow-card'
       }`}
       style={{ height: isOpen ? 54 + height : 54 }}

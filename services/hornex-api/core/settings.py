@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +31,8 @@ SECRET_KEY = "django-insecure-b=#p+ci^=crap5g$&1wos9*hk658@tqfli((9zyx$f4-15%@vo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["3e5b-45-169-190-206.ngrok-free.app", "localhost", "127.0.0.1"]
-CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = ["*"]
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000", "http://localhost:3000"]
 
 # Application definition
@@ -191,5 +192,7 @@ CHANNEL_LAYERS = {
         },
     }
 }
+
+TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER = 5

@@ -15,7 +15,7 @@ export type TournamentsPageTemplateProps = {
   isLoading: boolean;
 };
 
-const TournamentsFeedPage: FC<TournamentsPageTemplateProps> = ({
+const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
   isLoading,
   tournaments,
 }) => {
@@ -83,4 +83,4 @@ const TournamentsFeedPage: FC<TournamentsPageTemplateProps> = ({
   );
 };
 
-export default TournamentsFeedPage;
+export default TournamentsFeedTemplate;

@@ -77,84 +77,90 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
   }, []);
 
   return (
-    <div className="mx-auto space-y-8 p-8">
-      <div className="flex items-end justify-between pb-2">
-        <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
-          Create New Team
-        </h2>
+    <div className="flex pt-14">
+      <div className="bg-light-dark shadow-card mx-auto w-2/4 ">
+        <div className="bg-medium-dark border-b border-gray-600 p-5">
+          <div className="flex items-end justify-between">
+            <h2 className="text-header text-sm font-bold sm:text-xl">
+              Create New Team
+            </h2>
+          </div>
+        </div>
+
+        <div className="p-8">
+          <form onSubmit={handleSubmit(submitHandler)}>
+            <div className="w-full">
+              <InputLabel title="Nome do time" important />
+              <Input
+                inputClassName={classnames(
+                  errors.name?.message ? 'focus:ring-red-500' : ''
+                )}
+                placeholder="Nome do time"
+                error={errors.name?.message}
+                {...register('name', { required: true })}
+              />
+            </div>
+            <div className="mt-5 w-full">
+              <InputLabel title="Descrição do time" />
+              <Input
+                inputClassName={classnames(
+                  errors.description?.message ? 'focus:ring-red-500' : ''
+                )}
+                placeholder="Descrição do time"
+                error={errors.description?.message}
+                {...register('description')}
+              />
+            </div>
+            <div className="mt-5 w-full">
+              <InputLabel title="Plaform" important />
+
+              <Controller
+                name="platform"
+                control={control}
+                rules={{
+                  required: 'Please select an platfrom',
+                }}
+                render={({ field: { name } }) => (
+                  <Listbox
+                    options={platformOptions}
+                    selectedOption={platformOption}
+                    onChange={(option) => {
+                      setPlatformOption(option);
+                      setValue(name, platformOption.value);
+                    }}
+                  />
+                )}
+              />
+            </div>
+            <div className="mt-5 w-full">
+              <InputLabel title="Game" important />
+
+              <Controller
+                name="game"
+                control={control}
+                rules={{
+                  required: 'Please select a game',
+                }}
+                render={({ field: { name } }) => (
+                  <Listbox
+                    options={gameOptions}
+                    selectedOption={gameOption}
+                    onChange={(option) => {
+                      setGameOption(option);
+                      setValue(name, gameOption.value);
+                    }}
+                  />
+                )}
+              />
+            </div>
+            <div className="mt-10">
+              <Button size="small" shape="rounded" type="submit">
+                {isSubmitting ? <Loader /> : 'Create'}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <form onSubmit={handleSubmit(submitHandler)}>
-        <div className="w-full sm:w-80 lg:w-2/3">
-          <InputLabel title="Nome do time" important />
-          <Input
-            inputClassName={classnames(
-              errors.name?.message ? 'focus:ring-red-500' : ''
-            )}
-            placeholder="Nome do time"
-            error={errors.name?.message}
-            {...register('name', { required: true })}
-          />
-        </div>
-        <div className="mt-5 w-full sm:w-80 lg:w-2/3">
-          <InputLabel title="Descrição do time" />
-          <Input
-            inputClassName={classnames(
-              errors.description?.message ? 'focus:ring-red-500' : ''
-            )}
-            placeholder="Descrição do time"
-            error={errors.description?.message}
-            {...register('description')}
-          />
-        </div>
-        <div className="mt-5 w-full sm:w-80 lg:w-2/3">
-          <InputLabel title="Plaform" important />
-
-          <Controller
-            name="platform"
-            control={control}
-            rules={{
-              required: 'Please select an platfrom',
-            }}
-            render={({ field: { name } }) => (
-              <Listbox
-                options={platformOptions}
-                selectedOption={platformOption}
-                onChange={(option) => {
-                  setPlatformOption(option);
-                  setValue(name, platformOption.value);
-                }}
-              />
-            )}
-          />
-        </div>
-        <div className="mt-5 w-full sm:w-80 lg:w-2/3">
-          <InputLabel title="Game" important />
-
-          <Controller
-            name="game"
-            control={control}
-            rules={{
-              required: 'Please select a game',
-            }}
-            render={({ field: { name } }) => (
-              <Listbox
-                options={gameOptions}
-                selectedOption={gameOption}
-                onChange={(option) => {
-                  setGameOption(option);
-                  setValue(name, gameOption.value);
-                }}
-              />
-            )}
-          />
-        </div>
-        <div className="mt-10">
-          <Button shape="rounded" type="submit">
-            {isSubmitting ? <Loader /> : 'CREATE'}
-          </Button>
-        </div>
-      </form>
     </div>
   );
 };

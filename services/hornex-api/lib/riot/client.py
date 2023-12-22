@@ -1,174 +1,19 @@
 import requests
 import os
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import List
-from enum import Enum
 from lib.logging import logger
-
-
-class RegionalRoutingType(Enum):
-    AMERICAS = "americas.api.riotgames.com"
-    ASIA = "asia.api.riotgames.com"
-    EUROPE = "europe.api.riotgames.com"
-    SEA = "sea.api.riotgames.com"
-
-
-class RegionType(Enum):
-    BR = "BR"
-    EUNE = "EUNE"
-    EUW = "EUW"
-    JP = "JP"
-    LAN = "LAN"
-    LAS = "LAS"
-    NA = "NA"
-    OCE = "OCE"
-    PBE = "PBE"
-    RU = "RU"
-    TR = "TR"
-    KR = "KR"
-
-
-class PickType(Enum):
-    BLIND_PICK = "BLIND_PICK"
-    DRAFT_MODE = "DRAFT_MODE"
-    ALL_RANDOM = "ALL_RANDOM"
-    TOURNAMENT_DRAFT = "TOURNAMENT_DRAFT"
-
-
-class MapType(Enum):
-    SUMMONERS_RIFT = "SUMMONERS_RIFT"
-    TWISTED_TREELINE = "TWISTED_TREELINE"
-    HOWLING_ABYSS = "HOWLING_ABYSS"
-
-
-class SpectatorType(Enum):
-    NONE = "NONE"
-    LOBBYONLY = "LOBBYONLY"
-    ALL = "ALL"
-
-
-@dataclass
-class CreateTournamentCode:
-    # query params
-    tournament_id: int
-    count: int
-
-    # body params
-    allowedParticipants: list[str]
-    metadata: str
-    teamSize: int
-    pickType: PickType
-    mapType: MapType
-    spectatorType: SpectatorType
-    enoughPlayers: bool
-
-
-@dataclass
-class UpdateTournamentCode:
-    # query params
-    tournamentCode: str
-
-    # body params
-    allowedParticipants: dict
-    pickType: PickType
-    mapType: MapType
-    spectatorType: SpectatorType
-
-
-@dataclass
-class TournamentCodeV5DTO:
-    code: str
-    spectators: str
-    lobbyName: str
-    metaData: str
-    password: str
-    teamSize: int
-    providerId: int
-    pickType: str
-    tournamentId: int
-    id: int
-    region: str
-    map: str
-    participants: list[str]
-
-    @staticmethod
-    def from_api_response(data):
-        return TournamentCodeV5DTO(
-            code=data.get("code"),
-            spectators=data.get("spectators"),
-            lobbyName=data.get("lobbyName"),
-            metaData=data.get("metaData"),
-            password=data.get("password"),
-            teamSize=data.get("teamSize"),
-            providerId=data.get("providerId"),
-            pickType=data.get("pickType"),
-            tournamentId=data.get("tournamentId"),
-            id=data.get("id"),
-            region=data.get("region"),
-            map=data.get("map"),
-            participants=[data.get("participants")],
-        )
-
-
-@dataclass
-class TournamentTeamV5:
-    puuid: str  # Player Unique UUID (Encrypted)
-
-
-@dataclass
-class TournamentGamesV5:
-    winningTeam: list[TournamentTeamV5]
-    losingTeam: list[TournamentTeamV5]
-    shortCode: str  # Tournament Code
-    metaData: str  # Metadata for the TournamentCode
-    gameId: int
-    gameName: str
-    gameType: str
-    gameMap: int  # Game Map ID
-    gameMode: str
-    region: str  # Region of the game
-
-    @staticmethod
-    def from_api_response(data):
-        return TournamentGamesV5(
-            winningTeam=data.get("winningTeam"),
-            losingTeam=data.get("losingTeam"),
-            shortCode=data.get("shortCode"),
-            metaData=data.get("metaData"),
-            gameId=data.get("gameId"),
-            gameName=data.get("gameName"),
-            gameType=data.get("gameType"),
-            gameMap=data.get("gameMap"),
-            gameMode=data.get("gameMode"),
-            region=data.get("region"),
-        )
-
-
-@dataclass
-class LobbyEventV5DTO:
-    timestamp: str  # Timestamp from the event
-    eventType: str  # The type of event that was triggered
-    puuid: str  # The puuid that triggered the event (Encrypted)
-
-
-@dataclass
-class LobbyEventV5DTOWrapper:
-    eventList: list[LobbyEventV5DTO]
-
-    @staticmethod
-    def from_api_response(data):
-        events = []
-        for lobby_event in data.get("eventList", []):
-            events.append(
-                LobbyEventV5DTO(
-                    timestamp=lobby_event.get("timestamp"),
-                    eventType=lobby_event.get("eventType"),
-                    puuid=lobby_event.get("puuid"),
-                )
-            )
-
-        return LobbyEventV5DTOWrapper(eventList=events)
+from lib.riot.types import (
+    CreateTournamentCode,
+    UpdateTournamentCode,
+    TournamentCodeV5DTO,
+    TournamentGamesV5,
+    LobbyEventV5DTOWrapper,
+    LeagueEntryDTO,
+    RegionalRoutingType,
+    PlatformRoutingType,
+    RegionType,
+)
 
 
 class Clientable(ABC):
@@ -293,6 +138,19 @@ class Clientable(ABC):
         Gets a list of lobby events by tournament code.
 
         GET /lol/tournament/v5/lobby-events/by-code/{tournamentCode}
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_entries_by_summoner_id(
+        self,
+        tournamentCode: str,
+        platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
+    ) -> LobbyEventV5DTOWrapper:
+        """
+        Get league entries in all queues for a given summoner ID.
+
+        GET /lol/league/v4/entries/by-summoner/{encryptedSummonerId}
         """
         raise NotImplementedError
 
@@ -441,3 +299,21 @@ class Client(Clientable):
         lobby_events = LobbyEventV5DTOWrapper.from_api_response(data)
 
         return lobby_events
+
+    def get_entries_by_summoner_id(
+        self,
+        encryptedSummonerId: str,
+        platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
+    ) -> list[LeagueEntryDTO]:
+        url = f"https://{platform_routing.value}.api.riotgames.com/lol/league/v4/entries/by-summoner/{encryptedSummonerId}?api_key={self.api_key}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            logger.warning("Error retrieving entries", response.json())
+            raise Exception("Error retrieving entries", response.json())
+
+        data = response.json()
+
+        league_entries = LeagueEntryDTO.from_api_response_list(data)
+
+        return league_entries

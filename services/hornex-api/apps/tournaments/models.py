@@ -93,7 +93,7 @@ class Tournament(models.Model):
             [
                 member.can_play(
                     game=Tournament.GameType.LEAGUE_OF_LEGENDS,
-                    classification=self.get_classification(),
+                    classifications=self.get_classifications(),  # ["1","4","5"]
                 )
                 for member in team.members.all()
             ]
@@ -266,7 +266,7 @@ class Tournament(models.Model):
         raise NotImplementedError
 
     @abstractmethod
-    def get_classification(self):
+    def get_classifications(self) -> list[str]:
         raise NotImplementedError
 
 

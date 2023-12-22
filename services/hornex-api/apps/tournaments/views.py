@@ -25,7 +25,6 @@ from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 from apps.teams.models import Team
 from core.route import extract_game_and_platform
 
-from lib.logging import logger
 
 # from apps.tournaments.leagueoflegends.usecases import RegisterTeam
 
@@ -89,6 +88,20 @@ class TournamentViewSet(viewsets.ModelViewSet):
             self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().retrieve(request, *args, **kwargs)
+
+class TournamentRegistrationViewSet(viewsets.ModelViewSet):
+    queryset = Registration.objects.all()
+    serializer_class = RegistrationCreateSerializer
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_object(self, *args, **kwargs):
+        game = kwargs.get("game")
+        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
+            self.queryset = LeagueOfLegendsTournament.objects.select_for_update().all()
+
+        return super().get_object()
 
     @swagger_auto_schema(
         operation_description="POST /api/v1/tournaments/<str:id>/register",
@@ -154,13 +167,6 @@ class TournamentViewSet(viewsets.ModelViewSet):
             RegistrationReadSerializer(reg).data,
             status=status.HTTP_201_CREATED,
         )
-
-
-class TournamentRegistrationViewSet(viewsets.ModelViewSet):
-    queryset = Registration.objects.all()
-    serializer_class = RegistrationCreateSerializer
-    lookup_field = "id"
-    permission_classes = [IsAuthenticated]
 
 
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):

@@ -6,7 +6,7 @@ from apps.tournaments.models import Tournament, Round, Match
 from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
     LeagueOfLegendsTournamentProvider,
-    Tier,
+    Classification,
 )
 from apps.accounts.models import LeagueOfLegendsAccount
 
@@ -101,7 +101,7 @@ class LeagueOfLegendsTournamentFactory:
             id=1, region="BR", url="https://www.hornex.gg/"
         )
 
-        if classification is not None and isinstance(classification, Tier):
+        if classification is not None and isinstance(classification, Classification):
             classification = [classification]
 
         now = dt.now(tz=tz.utc)
@@ -136,18 +136,19 @@ class LeagueOfLegendsTournamentFactory:
             ),
         )
 
-        tmt.tiers.set(classification) if classification is not None else None
+        tmt.classifications.set(classification) if classification is not None else None
         return tmt
 
 
-class TierFactory:
+class ClassificationFactory:
     @staticmethod
     def new(**kwargs):
         """
-        Create a new tier with the given kwargs.
+        Create a new classification with the given kwargs.
         """
-        return Tier.objects.create(
-            name=kwargs.get("name", fake.name()),
+        return Classification.objects.create(
+            tier=kwargs.get("name", Classification.Tier.SILVER),
+            rank=kwargs.get("rank", Classification.Rank.I),
         )
 
 
@@ -157,14 +158,22 @@ class LeagueOfLegendsAccountFactory:
         """
         Create a new league of legends account with the given kwargs.
         """
-        tier = TierFactory.new()
+        classification = kwargs.get("classification")
         return LeagueOfLegendsAccount.objects.create(
-            user=user,
-            username=kwargs.get("username", fake.name()),
-            password=kwargs.get("password", "password"),
+            summoner_id=kwargs.get("summoner_id", fake.name()),
+            account_id=kwargs.get("account_id", fake.name()),
+            puuid=kwargs.get("puuid", fake.name()),
             summoner_name=kwargs.get("summoner_name", fake.name()),
-            region=kwargs.get("region", "NA"),
-            tier=kwargs.get("tier", tier),
+            profile_icon_id=kwargs.get("profile_icon_id", 123),
+            revision_date=kwargs.get("revision_date", 123),
+            summoner_level=kwargs.get("summoner_level", 123),
+            sub=kwargs.get("sub", fake.name()),
+            jti=kwargs.get("jti", fake.name()),
+            tag_line=kwargs.get("jti", LeagueOfLegendsAccount.TagLineType.BR1),
+            user=user,
+            classification=classification
+            if classification is not None
+            else ClassificationFactory.new(),
         )
 
 

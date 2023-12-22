@@ -10,7 +10,6 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 
 from apps.users.models import User
-from apps.teams.models import Team
 from apps.users.serializers import (
     UserSerializer,
     LoggedInUserSerializerReadOnly,

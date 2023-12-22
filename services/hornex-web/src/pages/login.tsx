@@ -64,74 +64,81 @@ export default function LoginPage() {
       <div className="mt-8 self-center">
         <Logo size="sm" />
       </div>
-      <div className="m-auto w-[450px] space-y-4 p-6 sm:p-8 md:space-y-6">
-        <div className="text-center">
-          <h1 className="text-xl font-bold text-white md:text-4xl">Welcome</h1>
+      <div className="m-auto w-[450px]">
+        <div className="bg-medium-dark rounded border border-gray-600 p-6 sm:p-8">
+          <div className="pb-8 pt-2">
+            <h1 className="text-xl font-bold text-white md:text-4xl">
+              Welcome
+            </h1>
+          </div>
+          <div className="space-y-4">
+            {error && (
+              <div className="rounded bg-red-500 p-2 text-center text-sm text-white">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="rounded bg-green-500 p-2 text-center text-sm text-white">
+                Login successful!
+              </div>
+            )}
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={handleSubmit(handleOnSubmit)}
+            >
+              {/* Email */}
+              <div>
+                <InputLabel title="Email" important />
+                <Input
+                  placeholder="jonh.doe@example.com"
+                  error={errors.email?.message}
+                  {...register('email', { required: true })}
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <InputLabel title="Password" important />
+                <Input
+                  type="password"
+                  placeholder="****"
+                  error={errors.password?.message}
+                  {...register('password', { required: true })}
+                />
+                <div className="mt-1 flex items-center justify-between">
+                  <a
+                    href="#"
+                    className="text-sm font-normal text-gray-400 hover:underline"
+                  >
+                    Esqueceu sua senha?
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <Button
+                  isLoading={fetching}
+                  disabled={fetching}
+                  fullWidth
+                  size="small"
+                  shape="rounded"
+                >
+                  Login
+                </Button>
+
+                <p className="mt-1 text-sm font-normal text-gray-400">
+                  Não possui uma conta?{' '}
+                  <Link
+                    href={`${routes.register}`}
+                    className="font-bold text-gray-200 hover:underline"
+                  >
+                    Registre-se
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
         </div>
-        {error && (
-          <div className="rounded bg-red-500 p-2 text-center text-sm text-white">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="rounded bg-green-500 p-2 text-center text-sm text-white">
-            Login successful!
-          </div>
-        )}
-        <form
-          className="space-y-4 md:space-y-6"
-          onSubmit={handleSubmit(handleOnSubmit)}
-        >
-          {/* Email */}
-          <div>
-            <InputLabel title="Email" important />
-            <Input
-              placeholder="jonh.doe@example.com"
-              error={errors.email?.message}
-              {...register('email', { required: true })}
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <InputLabel title="Password" important />
-            <Input
-              type="password"
-              placeholder="****"
-              error={errors.password?.message}
-              {...register('password', { required: true })}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <a
-              href="#"
-              className="text-sm font-medium text-gray-400 hover:underline"
-            >
-              Esqueceu sua senha?
-            </a>
-          </div>
-
-          <Button
-            isLoading={fetching}
-            disabled={fetching}
-            fullWidth
-            color="warning"
-            shape="rounded"
-          >
-            Login
-          </Button>
-
-          <p className="text-sm text-gray-400">
-            Não possui uma conta?{' '}
-            <Link
-              href={`${routes.register}`}
-              className="font-bold text-gray-200 hover:underline"
-            >
-              Registre-se
-            </Link>
-          </p>
-        </form>
       </div>
     </div>
   );
