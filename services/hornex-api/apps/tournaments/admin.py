@@ -6,14 +6,21 @@ from django.utils.translation import ngettext
 from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
     LeagueOfLegendsTournamentProvider,
-    Tier,
+    Classification,
     Code,
 )
 from apps.tournaments.leagueoflegends.tasks import on_brackets_generated
 
 
 admin.site.register(
-    [LeagueOfLegendsTournamentProvider, Tier, Subscription, Match, Round, Code]
+    [
+        LeagueOfLegendsTournamentProvider,
+        Classification,
+        Subscription,
+        Match,
+        Round,
+        Code,
+    ]
 )
 
 

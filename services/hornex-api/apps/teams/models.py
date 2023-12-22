@@ -51,9 +51,9 @@ class Membership(models.Model):
     def __str__(self) -> str:
         return f"{self.user.email} :: ({self.team.name})"
 
-    def can_play(self, tier: str):
+    def can_play(self, classification):
         u = self.user
-        return u.can_play(tier)
+        return u.can_play(classification)
 
 
 class Invite(models.Model):

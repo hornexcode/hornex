@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import LeagueOfLegendsAccount, User
-from test.factories import TierFactory, LeagueOfLegendsAccountFactory
+from test.factories import ClassificationFactory, LeagueOfLegendsAccountFactory
 
 
 class TestAccountsRiot(APITestCase, URLPatternsTestCase):
@@ -29,7 +29,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
         )
 
-        self.tier = TierFactory.new(name="fake-tier")
+        self.classification = ClassificationFactory.new()
 
     @patch("requests.post")
     @patch("requests.get")
@@ -63,7 +63,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
                 "revisionDate": 1699057103000,
                 "summonerLevel": 79,
             },
-            [{"tier": "fake-tier"}],
+            [{"tier": "SILVER", "rank": "I"}],
         ]
         mock_post.return_value = mock_get_response
         mock_get.return_value = mock_get_response
@@ -88,6 +88,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         self.user.leagueoflegendsaccount = LeagueOfLegendsAccountFactory.new(
             user=User.objects.get(email=self.user.email)
         )
+        self.user.save()
 
         mock_get_response = MagicMock()
         mock_post_response = MagicMock()
@@ -114,7 +115,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
                 "revisionDate": 1699057103000,
                 "summonerLevel": 79,
             },
-            [{"tier": "fake-tier"}],
+            [{"tier": "SILVER", "rank": "I"}],
         ]
         mock_post.return_value = mock_get_response
         mock_get.return_value = mock_get_response

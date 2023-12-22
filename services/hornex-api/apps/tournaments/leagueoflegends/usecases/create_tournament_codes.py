@@ -1,8 +1,7 @@
 from requests import RequestException
 from django.db import transaction
-
-from lib.riot.client import (
-    Clientable,
+from lib.riot.client import Clientable
+from lib.riot.types import (
     CreateTournamentCode,
     PickType,
     MapType,

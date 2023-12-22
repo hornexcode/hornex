@@ -3,7 +3,10 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 from apps.teams.models import Membership
 from apps.tournaments.models import Tournament, Registration
-from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Tier
+from apps.tournaments.leagueoflegends.models import (
+    LeagueOfLegendsTournament,
+    Classification,
+)
 from apps.tournaments import errors
 from datetime import timedelta as td
 
@@ -29,16 +32,18 @@ class TestLeagueOfLegendsTournament(APITestCase):
 
     def test_register_register_201_success(self):
         team = TeamFactory.new(created_by=self.user)
-        tier = Tier.objects.create(name="test tier")
+        classification = Classification.objects.create(
+            tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
+        )
         Membership.objects.create(team=team, user=self.user)
-        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier)
+        LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
         for _ in range(0, 4):
             usr = UserFactory.new()
-            LeagueOfLegendsAccountFactory.new(user=usr, tier=tier)
+            LeagueOfLegendsAccountFactory.new(user=usr, classification=classification)
             Membership.objects.create(team=team, user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
-            organizer=self.user, classification=tier
+            organizer=self.user, classification=classification
         )
 
         url = reverse(
@@ -69,9 +74,11 @@ class TestLeagueOfLegendsTournament(APITestCase):
 
     def test_register_400_do_not_has_enough_members_error(self):
         team = TeamFactory.new(created_by=self.user)
-        tier = Tier.objects.create(name="test tier")
+        classification = Classification.objects.create(
+            tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
+        )
         tournament = LeagueOfLegendsTournamentFactory.new(
-            organizer=self.user, classification=tier
+            organizer=self.user, classification=classification
         )
 
         url = reverse(
@@ -94,10 +101,12 @@ class TestLeagueOfLegendsTournament(APITestCase):
     def test_register_400_tournament_is_full_error(self):
         team = TeamFactory.new(created_by=self.user)
         Membership.objects.create(team=team, user=self.user)
-        tier = Tier.objects.create(name="test tier")
-        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier)
+        classification = Classification.objects.create(
+            tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
+        )
+        LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
         self.tournament = LeagueOfLegendsTournamentFactory.new(
-            organizer=self.user, classification=tier, team_size=1, max_teams=1
+            organizer=self.user, classification=classification, team_size=1, max_teams=1
         )
 
         url = reverse(
@@ -120,7 +129,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         user_b = UserFactory.new()
         team_b = TeamFactory.new(created_by=user_b)
         Membership.objects.create(team=team_b, user=user_b)
-        LeagueOfLegendsAccountFactory.new(user=user_b, tier=tier)
+        LeagueOfLegendsAccountFactory.new(user=user_b, classification=classification)
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(user_b)
@@ -162,10 +171,12 @@ class TestLeagueOfLegendsTournament(APITestCase):
     def test_register_400_team_already_registered_error(self):
         team = TeamFactory.new(created_by=self.user)
         Membership.objects.create(team=team, user=self.user)
-        tier = Tier.objects.create(name="test tier")
-        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier)
+        classification = Classification.objects.create(
+            tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
+        )
+        LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
         self.tournament = LeagueOfLegendsTournamentFactory.new(
-            organizer=self.user, classification=tier, team_size=1
+            organizer=self.user, classification=classification, team_size=1
         )
 
         url = reverse(
@@ -196,18 +207,30 @@ class TestLeagueOfLegendsTournament(APITestCase):
         self,
     ):
         team = TeamFactory.new(created_by=self.user)
-        tier_bronze = Tier.objects.create(name="silver tier")
-        tier_silver = Tier.objects.create(name="bronze tier")
-        tier_gold = Tier.objects.create(name="gold tier")
+        classification_gold = Classification.objects.create(
+            tier=Classification.Tier.GOLD, rank=Classification.Rank.I
+        )
+        classification_bronze = Classification.objects.create(
+            tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
+        )
+        classification_silver = Classification.objects.create(
+            tier=Classification.Tier.SILVER, rank=Classification.Rank.I
+        )
+
         Membership.objects.create(team=team, user=self.user)
-        LeagueOfLegendsAccountFactory.new(user=self.user, tier=tier_gold)
+        LeagueOfLegendsAccountFactory.new(
+            user=self.user, classification=classification_gold
+        )
         for _ in range(0, 4):
             usr = UserFactory.new()
-            LeagueOfLegendsAccountFactory.new(user=usr, tier=tier_bronze)
+            LeagueOfLegendsAccountFactory.new(
+                user=usr, classification=classification_bronze
+            )
             Membership.objects.create(team=team, user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
-            organizer=self.user, classification=[tier_bronze, tier_silver]
+            organizer=self.user,
+            classification=[classification_bronze, classification_silver],
         )
 
         url = reverse(

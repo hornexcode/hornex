@@ -33,9 +33,28 @@ class LeagueOfLegendsTournamentProvider(models.Model):
         return f"League of Legends Provider ({self.id})"
 
 
-class Tier(models.Model):
+class Classification(models.Model):
+    class Tier(models.TextChoices):
+        IRON = "IRON"
+        BRONZE = "BRONZE"
+        SILVER = "SILVER"
+        GOLD = "GOLD"
+        PLATINUM = "PLATINUM"
+        EMERALD = "EMERALD"
+        DIAMOND = "DIAMOND"
+        MASTER = "MASTER"
+        GRANDMASTER = "GRANDMASTER"
+        CHALLENGER = "CHALLENGER"
+
+    class Rank(models.TextChoices):
+        I = "I"
+        II = "II"
+        III = "III"
+        IV = "IV"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=20, unique=True)
+    tier = models.CharField(max_length=50, choices=Tier.choices, default=Tier.SILVER)
+    rank = models.CharField(max_length=50, choices=Rank.choices, default=Rank.I)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
@@ -65,7 +84,7 @@ class LeagueOfLegendsTournament(BaseTournament):
         blank=True,
     )
     riot_id = models.IntegerField(null=True, blank=True)
-    tiers = models.ManyToManyField(Tier)
+    classifications = models.ManyToManyField(Classification)
     pick = models.CharField(
         max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK
     )
@@ -82,8 +101,8 @@ class LeagueOfLegendsTournament(BaseTournament):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
-    def get_classification(self):
-        return [tier.name for tier in self.tiers.all()]
+    def get_classifications(self) -> list[str]:
+        return ["{}".format(c.id) for c in self.classifications.all()]
 
 
 class Code(models.Model):
