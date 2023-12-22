@@ -130,3 +130,5 @@ def create_or_update_leagueoflegends_account(
             return Response(status=status.HTTP_400_BAD_REQUEST)
     except requests.RequestException:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    except Classification.DoesNotExist:
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
