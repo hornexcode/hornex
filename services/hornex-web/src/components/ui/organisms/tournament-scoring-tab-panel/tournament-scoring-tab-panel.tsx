@@ -1,5 +1,5 @@
-import TournamentScoreTable from '@/components/ui/molecules/tournament-score-table';
 import { Star } from '@/components/ui/atoms/icons/star';
+import TournamentScoreTable from '@/components/ui/molecules/tournament-score-table';
 import { CoinPriceData } from '@/data/static/coin-market-data';
 import { Tournament } from '@/lib/hx-app/types';
 import React, { FC } from 'react';

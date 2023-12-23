@@ -1,0 +1,37 @@
+name: hornex-web
+
+on: push
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: services/hornex-web
+
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: npm install --global yarn
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: |
+            yarn.lock
+            services/hornex-web/yarn.lock
+
+      - run: yarn install
+        working-directory: ${{ github.workspace }}
+
+      - run: yarn install
+
+      - run: yarn test
+
+      - run: yarn lint
