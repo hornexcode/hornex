@@ -17,37 +17,10 @@ fi
 
 ALL_SET="true"
 
-# if [[ -z "${GITHUB_PACKAGES_TOKEN:-}" ]]; then
-#   warning "export GITHUB_PACKAGES_TOKEN={insert token here}\t# A Github Token (Classic) with read:packages scope is required: See https://inside.axioscode.tools/_/docs/getting-started/credentials/#github-packages-token"
-#   ALL_SET="false"
-# fi
-
-# if [[ -e "${REPO_ROOT}/tilt_config.yaml" ]] && [[ $(yq '.services."production-build"."axios-web" // false' "${REPO_ROOT}/tilt_config.yaml") == "true" ]]; then
-#   if [[ -z "${SENTRY_AUTH_TOKEN:-}" ]]; then
-#     warning "export SENTRY_AUTH_TOKEN={insert token here}\t# An npm token is required for axios-web when production-build is enabled: See https://inside.axioscode.tools/_/docs/getting-started/credentials/#sentry"
-#     ALL_SET="false"
-#   fi
-# fi
-
 if [[ -z "${GOPATH:-}" ]]; then
   warning "export GOPATH=~/go\t# Feel free to change the value but it must be a writable directory"
   ALL_SET="false"
 fi
-
-# if [[ -z "${AXIOS_NO_CHECK_KUBECONFIG:-}" ]]; then
-#   if [[ -z "${KUBECONFIG:-}" ]]; then
-#     warning "export KUBECONFIG=${HOME}/.kube/config:${REPO_ROOT}/devops/kubeconfig"
-#     ALL_SET="false"
-#   elif [[ "${KUBECONFIG}" != *"${REPO_ROOT}/devops/kubeconfig"* ]]; then
-#     warning "export KUBECONFIG=${KUBECONFIG}:${REPO_ROOT}/devops/kubeconfig"
-#     ALL_SET="false"
-#   fi
-# fi
-
-# if [[ -z "${N_PREFIX:-}" ]]; then
-#   warning "export N_PREFIX=~/.n \t\t\t# Feel free to change the value"
-#   ALL_SET="false"
-# fi
 
 if [[ ":${PATH}:" != *":${REPO_ROOT}/devops/scripts:"* ]]; then
   warning "export PATH=\"${REPO_ROOT}/devops/scripts:\${PATH}\""
@@ -64,88 +37,9 @@ if [[ ":${PATH}:" != *":${GOPATH:-not_a_real_gopath]}/bin:"* ]]; then
   ALL_SET="false"
 fi
 
-# if [[ ":${PATH}:" != *":${N_PREFIX:-not_a_real_n_prefix}/bin:"* ]]; then
-#   warning "export PATH=\"\${N_PREFIX}/bin:\${PATH}\""
-#   ALL_SET="false"
-# fi
-
 if [[ "${ALL_SET}" != "true" ]]; then
   error "Please add the above export lines to ${SHELL_CONFIG} and restart your shell"
 fi
-
-# =============================================================================
-# If the user does not have an aws creds file, but they do have env vars, tell them how to migrate
-# if [[ -z "${CI:-}" && ! -e ~/.aws/credentials && -n "${AWS_ACCESS_KEY_ID:-}" && -n "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
-#   mkdir --parents ~/.aws
-
-#   error "Please migrate your AWS keys to a file.
-
-#   ~/.aws/credentials should contain the following:
-#   \`\`\`
-#   [default]
-#   aws_access_key_id = ${AWS_ACCESS_KEY_ID}
-#   aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
-#   \`\`\`
-
-#   ~/.aws/config should contain the following:
-#   \`\`\`
-#   [default]
-#   region = us-east-1
-#   \`\`\`
-
-#   Then configure your shell to not have AWS_ACCESS_KEY_ID= and AWS_SECRET_ACCESS_KEY= as environment variables."
-# fi
-
-# MISSING_AWS_FILES=false
-# if [[ -z "${CI:-}" && ! -e ~/.aws/credentials ]]; then
-#   MISSING_AWS_FILES=true
-#   mkdir -p ~/.aws
-
-#   warning "
-#   ~/.aws/credentials should contain the following:
-#   \`\`\`
-#   [default]
-#   aws_access_key_id = {AWS_ACCESS_KEY_ID}
-#   aws_secret_access_key = {AWS_SECRET_ACCESS_KEY}
-#   \`\`\`
-
-#   See https://inside.axioscode.tools/_/docs/getting-started/credentials/#aws"
-# fi
-
-# if [[ -z "${CI:-}" && ! -e ~/.aws/config ]]; then
-#   MISSING_AWS_FILES=true
-#   mkdir -p ~/.aws
-
-#   warning "
-#   ~/.aws/config should contain the following:
-#   \`\`\`
-#   [default]
-#   region = us-east-1
-#   \`\`\`"
-# fi
-
-# if [[ "${MISSING_AWS_FILES:-}" == "true" ]]; then
-#   error "Please configure AWS"
-# fi
-
-# =============================================================================
-# Check for env vars that must be removed
-
-# NEED_UNSET="false"
-
-# if [[ -z "${CI:-}" && -n "${AWS_ACCESS_KEY_ID:-}" ]]; then
-#   warning "AWS_ACCESS_KEY_ID must be unset"
-#   NEED_UNSET="true"
-# fi
-
-# if [[ -z "${CI:-}" && -n "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
-#   warning "AWS_SECRET_ACCESS_KEY must be unset"
-#   NEED_UNSET="true"
-# fi
-
-# if [[ "${NEED_UNSET}" != "false" ]]; then
-#   error "Please remove the above environment variables from your shell config, then restart your shell."
-# fi
 
 # =============================================================================
 # More complex checks
@@ -159,30 +53,3 @@ fi
 if [[ ! -w ${GOPATH} ]]; then
   error "GOPATH (${GOPATH}) is not writable or doesn't exist! Check that the directory exists and either change GOPATH to a writable directory (recommended) or run 'sudo chown -R $(whoami):$(whoami) ${GOPATH}'"
 fi
-
-# if [[ -z "${AXIOS_NO_CHECK_KUBECONFIG:-}" ]]; then
-#   if [[ "${KUBECONFIG}" = *"~/.kube/config"* ]]; then
-#     warning "Some of our tooling doesn't work correctly with '~' in KUBECONFIG so use '${HOME}' instead"
-#     warning "export KUBECONFIG=$(echo $KUBECONFIG | sed "s#~/.kube/config#${HOME}/.kube/config#")"
-#     error "Please adjust your ${SHELL_CONFIG}"
-#   fi
-# fi
-
-# =============================================================================
-# Check for env vars that can be removed
-
-# if [[ -n "${AXIOS_USE_K3D:-}" ]]; then
-#   error "AXIOS_USE_K3D is now the default. The environment variable must now be unset"
-# fi
-
-# if [[ -n "${AXIOS_TILT_REMOTE_NAMESPACE:-}" && -z "${AXIOS_TILT_FORCE_REMOTE_NAMESPACE:-}" ]]; then
-#   error "AXIOS_TILT_REMOTE_NAMESPACE is now enabled by default. The environment variable must now be unset"
-# fi
-
-# if [[ -n "${GITHUB_TOKEN:-}" ]]; then
-#   warning "GITHUB_TOKEN is no longer required, unless you use ./devops/scripts/git-pull-request"
-# fi
-
-# if [[ -n "${NPM_TOKEN:-}" ]]; then
-#   warning "NPM_TOKEN is no longer required. The environment variable should now be unset"
-# fi
