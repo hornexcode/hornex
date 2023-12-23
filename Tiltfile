@@ -1,4 +1,6 @@
 
+allow_k8s_contexts("k3d-hornex")
+
 def main():
     hornex_api()
 

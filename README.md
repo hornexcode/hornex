@@ -35,3 +35,31 @@ define a package like `internal/<bounded-context>` that then should follow the s
   - `internal/<bounded-context>/<datastoreN>`
   - `internal/<bounded-context>/http`
   - `internal/<bounded-context>/service`
+
+## Development Environment
+
+Hornex uses a Development Environment that runs inside a Kubernetes cluster on your local machine.
+Currently this uses:
+
+- [`k3d` Cluster](https://k3d.io/v5.6.0/)
+- [`tilt`](https://tilt.dev/)
+
+### Initial setup
+
+1. Install Docker
+2. Install `git`
+3. Clone the `hornex` repo
+4. Run `devops/scripts/setup` until successful
+
+## Cluster startup
+
+After doing the initial setup at least once:
+
+1. `yarn up`
+2. Visit The [Tilt Web UI](http://localhost:10350/r/(all)/overview) to see status
+
+## Cluster teardown
+
+To delete the cluster and start from scratch:
+
+`yarn down`

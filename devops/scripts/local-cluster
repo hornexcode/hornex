@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Create (or delete) a k3d cluster for use with Tilt
+# Ref: https://docs.tilt.dev/choosing_clusters.html#k3d
+# Ref: https://k3d.io/v5.6.0/
+# Ref: https://github.com/k3d-io/k3d
+
+set -Eeuo pipefail
+
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
+source ${REPO_ROOT}/devops/scripts/helpers
+
+function main() (
+  case "${1}" in
+    up)
+      k3d cluster create hornex \
+        --registry-create=registry:0.0.0.0:5432 \
+        --timeout=1m
+      ;;
+
+    down)
+      k3d cluster delete hornex
+      ;;
+
+    *)
+      error "Unknown command: '${1}', expected either 'up' or 'down'"
+      ;;
+  esac
+)
+
+main "${@}"

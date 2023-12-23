@@ -17,6 +17,7 @@ brew_install_command go 1.21.1
 brew_install_command golangci-lint 1.55.0
 brew_install_command helm 3.9.4
 brew_install_command jq 1.6
+brew_install_command k3d 5.6.0
 brew_install_command kubectl 1.27.2 kubernetes-cli
 brew_install_command poetry 1.4.0
 brew_install_command tilt 0.30.13 tilt-dev/tap/tilt
