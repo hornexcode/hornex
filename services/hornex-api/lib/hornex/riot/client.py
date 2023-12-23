@@ -1,9 +1,8 @@
-from typing import List, Dict
-from abc import ABC, abstractmethod
 import random
-
-from enum import Enum
 import uuid
+from abc import ABC, abstractmethod
+from enum import Enum
+
 from django.utils import timezone
 
 # Tournament regions: BR, EUNE, EUW, JP, LAN, LAS, NA, OCE, PBE, RU, TR
@@ -48,8 +47,8 @@ class Clientable(ABC):
         tournament_id: int,
         count: int,
         team_size: int,
-        allowed_summoner_ids: List[str],
-    ) -> List[str]:
+        allowed_summoner_ids: list[str],
+    ) -> list[str]:
         """
         Returns tournament codes
 
@@ -68,7 +67,7 @@ class Clientable(ABC):
         pass
 
     @abstractmethod
-    def get_match_data_by_tournament_code(self, tournament_code: str) -> Dict:
+    def get_match_data_by_tournament_code(self, tournament_code: str) -> dict:
         """
         Get match data by tournament code in case notification is missing
         Returns game results including MatchID
@@ -78,7 +77,7 @@ class Clientable(ABC):
         pass
 
     @abstractmethod
-    def get_lobby_events_by_tournament_code(self, tournament_code: str) -> List[Dict]:
+    def get_lobby_events_by_tournament_code(self, tournament_code: str) -> list[dict]:
         """
         Return lobby data by tournament code
 
@@ -87,7 +86,7 @@ class Clientable(ABC):
         pass
 
     @abstractmethod
-    def get_a_summoner_by_summoner_name(self, name: str, region: str) -> Dict:
+    def get_a_summoner_by_summoner_name(self, name: str, region: str) -> dict:
         """
         Get a summoner by summoner name.
 
@@ -96,7 +95,7 @@ class Clientable(ABC):
         pass
 
     @abstractmethod
-    def get_league_by_summoner_id(self, id: str, region: str) -> List[Dict]:
+    def get_league_by_summoner_id(self, id: str, region: str) -> list[dict]:
         """
         Get league entries in all queues for a given summoner ID.
 
@@ -139,8 +138,8 @@ class TestApi(Clientable):
         tournament_id: int,
         count: int,
         team_size: int,
-        allowed_summoner_ids: List[str],
-    ) -> List[str]:
+        allowed_summoner_ids: list[str],
+    ) -> list[str]:
         codes = []
 
         for i in range(count):
@@ -156,10 +155,10 @@ class TestApi(Clientable):
 
         return codes
 
-    def get_match_data_by_tournament_code(self, tournament_code: str) -> Dict:
+    def get_match_data_by_tournament_code(self, tournament_code: str) -> dict:
         return {}
 
-    def get_lobby_events_by_tournament_code(self, tournament_code: str) -> List[Dict]:
+    def get_lobby_events_by_tournament_code(self, tournament_code: str) -> list[dict]:
         return [
             {
                 "timestamp": str(timezone.now()),
@@ -168,7 +167,7 @@ class TestApi(Clientable):
             }
         ]
 
-    def get_a_summoner_by_summoner_name(self, name: str, region: str) -> Dict:
+    def get_a_summoner_by_summoner_name(self, name: str, region: str) -> dict:
         return {
             "id": str(uuid.uuid4()),
             "accountId": str(uuid.uuid4()),
@@ -179,7 +178,7 @@ class TestApi(Clientable):
             "summonerLevel": 30,
         }
 
-    def get_league_by_summoner_id(self, id: str, region: str) -> List[Dict]:
+    def get_league_by_summoner_id(self, id: str, region: str) -> list[dict]:
         return [
             {
                 "leagueId": str(uuid.uuid4()),

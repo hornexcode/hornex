@@ -1,16 +1,17 @@
-from django.test import TestCase
-from unittest.mock import patch, MagicMock
-
-from lib.riot.client import Client
-from apps.tournaments.leagueoflegends.usecases import CreateTournamentCodesUseCase
-from apps.tournaments.leagueoflegends.models import Code
-from apps.teams.models import Team
 from test.factories import (
-    UserFactory,
+    LeagueOfLegendsAccountFactory,
     LeagueOfLegendsTournamentFactory,
     MatchFactory,
-    LeagueOfLegendsAccountFactory,
+    UserFactory,
 )
+from unittest.mock import MagicMock, patch
+
+from django.test import TestCase
+
+from apps.teams.models import Team
+from apps.tournaments.leagueoflegends.models import Code
+from apps.tournaments.leagueoflegends.usecases import CreateTournamentCodesUseCase
+from lib.riot.client import Client
 
 
 class TestCreateTournamentCodes(TestCase):

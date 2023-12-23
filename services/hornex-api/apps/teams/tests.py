@@ -1,11 +1,13 @@
 import uuid
+from test.factories import InviteFactory, TeamFactory, UserFactory
 from unittest.mock import patch
+
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from apps.teams.models import Membership, Team
 from apps.users.models import User
-from apps.teams.models import Team, Membership
-from test.factories import TeamFactory, InviteFactory, UserFactory
 
 prefix = "api/v1/<str:platform>/<str:game>"
 

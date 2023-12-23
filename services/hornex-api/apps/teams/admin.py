@@ -1,6 +1,7 @@
 from django.contrib import admin, messages
-from apps.teams.models import Team, Invite, Membership
 from django.utils.translation import ngettext
+
+from apps.teams.models import Invite, Membership, Team
 
 
 class InviteAdmin(admin.ModelAdmin):

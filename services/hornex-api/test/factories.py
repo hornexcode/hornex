@@ -1,14 +1,18 @@
+from datetime import UTC
+from datetime import datetime as dt
+from datetime import timedelta as td
+
 import faker
-from datetime import timezone as tz, datetime as dt, timedelta as td
-from apps.teams.models import Team, Invite
-from apps.users.models import User
-from apps.tournaments.models import Tournament, Round, Match
+
+from apps.accounts.models import LeagueOfLegendsAccount
+from apps.teams.models import Invite, Team
 from apps.tournaments.leagueoflegends.models import (
+    Classification,
     LeagueOfLegendsTournament,
     LeagueOfLegendsTournamentProvider,
-    Classification,
 )
-from apps.accounts.models import LeagueOfLegendsAccount
+from apps.tournaments.models import Match, Round, Tournament
+from apps.users.models import User
 
 fake = faker.Faker()
 
@@ -64,7 +68,7 @@ class TournamentFactory:
         """
         Create a new tournament with the given organizer and kwargs.
         """
-        now = dt.now(tz=tz.utc)
+        now = dt.now(tz=UTC)
         return Tournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),
@@ -104,7 +108,7 @@ class LeagueOfLegendsTournamentFactory:
         if classification is not None and isinstance(classification, Classification):
             classification = [classification]
 
-        now = dt.now(tz=tz.utc)
+        now = dt.now(tz=UTC)
         tmt = LeagueOfLegendsTournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),

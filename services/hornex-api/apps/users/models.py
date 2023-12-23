@@ -1,4 +1,5 @@
 import uuid
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -6,7 +7,6 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 from django.utils import timezone
-
 
 LEAGUE_OF_LEGENDS = "league-of-legends"
 

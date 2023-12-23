@@ -1,12 +1,13 @@
 import base64
-import os
 import json
-import requests
+import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from lib.logging import logger
 from pathlib import Path
 
+import requests
+
+from lib.logging import logger
 
 BASE_DIR = Path(__file__).resolve().parent
 

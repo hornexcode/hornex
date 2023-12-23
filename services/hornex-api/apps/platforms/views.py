@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+
 from apps.platforms.models import Platform
 from apps.platforms.serializers import PlatformSerializer
 

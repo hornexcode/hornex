@@ -1,8 +1,7 @@
 import json
-from dataclasses import dataclass, asdict
 from abc import ABC
-from typing import TypeVar, Generic
-
+from dataclasses import asdict, dataclass
+from typing import Generic, TypeVar
 
 T = TypeVar("T", bound="Event")
 

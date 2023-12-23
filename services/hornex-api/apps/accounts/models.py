@@ -1,6 +1,7 @@
 from django.db import models
-from apps.users.models import User
+
 from apps.tournaments.leagueoflegends.models import Classification
+from apps.users.models import User
 
 
 class LeagueOfLegendsAccount(models.Model):
@@ -48,4 +49,4 @@ class LeagueOfLegendsAccount(models.Model):
     )
 
     def get_classification(self) -> str:
-        return "{}".format(self.classification.id)
+        return f"{self.classification.id}"

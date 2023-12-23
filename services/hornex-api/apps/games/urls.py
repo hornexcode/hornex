@@ -1,4 +1,5 @@
 from django.urls import path
+
 from apps.games.views import GameViewSet, create_game_account
 
 urlpatterns = [

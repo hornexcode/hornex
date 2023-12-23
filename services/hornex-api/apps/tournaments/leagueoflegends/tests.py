@@ -1,21 +1,22 @@
+from datetime import timedelta as td
+from test.factories import (
+    LeagueOfLegendsAccountFactory,
+    LeagueOfLegendsTournamentFactory,
+    TeamFactory,
+    UserFactory,
+)
+
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-from apps.teams.models import Membership
-from apps.tournaments.models import Tournament, Registration
-from apps.tournaments.leagueoflegends.models import (
-    LeagueOfLegendsTournament,
-    Classification,
-)
-from apps.tournaments import errors
-from datetime import timedelta as td
 
-from test.factories import (
-    UserFactory,
-    TeamFactory,
-    LeagueOfLegendsTournamentFactory,
-    LeagueOfLegendsAccountFactory,
+from apps.teams.models import Membership
+from apps.tournaments import errors
+from apps.tournaments.leagueoflegends.models import (
+    Classification,
+    LeagueOfLegendsTournament,
 )
+from apps.tournaments.models import Registration, Tournament
 
 
 class TestLeagueOfLegendsTournament(APITestCase):

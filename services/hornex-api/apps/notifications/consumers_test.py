@@ -1,15 +1,15 @@
+from asgiref.sync import sync_to_async
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.testing import WebsocketCommunicator
 from django.test import TestCase
 from django.urls import path
-from channels.testing import WebsocketCommunicator
-from core.middlewares.injectcookie import CookieMiddleware
-from channels.routing import ProtocolTypeRouter, URLRouter
 from rest_framework_simplejwt.tokens import RefreshToken
-from asgiref.sync import sync_to_async
 
 from apps.notifications.consumers import NotificationConsumer
-from apps.users.models import User
 from apps.notifications.models import Notification
-from apps.teams.models import TeamInvite, Team
+from apps.teams.models import Team, TeamInvite
+from apps.users.models import User
+from core.middlewares.injectcookie import CookieMiddleware
 
 
 class NotificationConsumerTest(TestCase):

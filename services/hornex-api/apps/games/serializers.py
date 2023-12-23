@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from apps.games.models import Game
 from apps.platforms.serializers import PlatformSerializer
 

@@ -1,4 +1,5 @@
 import uuid
+
 from django.db import models
 
 from apps.tournaments.models import Tournament as BaseTournament
@@ -103,7 +104,7 @@ class LeagueOfLegendsTournament(BaseTournament):
         return f"{self.name} ({self.id})"
 
     def get_classifications(self) -> list[str]:
-        return ["{}".format(c.id) for c in self.classifications.all()]
+        return [f"{c.id}" for c in self.classifications.all()]
 
 
 class Code(models.Model):

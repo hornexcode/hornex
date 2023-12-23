@@ -1,30 +1,28 @@
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.exceptions import ValidationError
-from django.db import transaction
 
-from apps.tournaments.models import Registration, Tournament
+from apps.teams.models import Team
 from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
-from apps.tournaments.serializers import (
-    RegistrationReadSerializer,
-    RegistrationCreateSerializer,
-    TournamentSerializer,
-)
+from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
 from apps.tournaments.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
+from apps.tournaments.models import Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
-from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
-
-from apps.teams.models import Team
+from apps.tournaments.serializers import (
+    RegistrationCreateSerializer,
+    RegistrationReadSerializer,
+    TournamentSerializer,
+)
 from core.route import extract_game_and_platform
-
 
 # from apps.tournaments.leagueoflegends.usecases import RegisterTeam
 
@@ -88,6 +86,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
             self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().retrieve(request, *args, **kwargs)
+
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all()

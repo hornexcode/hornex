@@ -6,7 +6,6 @@ from pathlib import Path
 import psycopg2
 import requests
 import structlog
-
 from config.settings import LOGGING, get_settings
 
 logging.config.dictConfig(LOGGING)
