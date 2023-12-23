@@ -43,7 +43,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
               <LockOpenIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Classification</p>
               <p className="text-title text-xs font-bold">
-                {tournament.classification}
+                {tournament.classifications.join(', ')}
               </p>
             </div>
           </div>

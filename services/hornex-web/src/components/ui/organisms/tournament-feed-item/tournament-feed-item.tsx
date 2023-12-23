@@ -43,7 +43,9 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
         <div className="font-display text-xs font-medium uppercase text-white">
           Classification
         </div>
-        <div className="text-xs text-gray-400">{tournament.classification}</div>
+        <div className="text-xs text-gray-400">
+          {tournament.classifications.join(', ')}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 space-y-2 p-5">

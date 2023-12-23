@@ -90,7 +90,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
         </ol>
       </div>
 
-      <div className="block border-t-2 border-slate-800 p-5">
+      <div className="block border-t border-dashed border-gray-600 p-5">
         <Button color="warning" fullWidth shape="rounded">
           Registrar
         </Button>

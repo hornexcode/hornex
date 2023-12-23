@@ -9,7 +9,7 @@ from rest_framework.decorators import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.shortcuts import redirect
 
 from apps.accounts.models import Classification, LeagueOfLegendsAccount
 from lib.riot.client import Client
@@ -38,10 +38,11 @@ tokenUrl = provider + "/token"
     },
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication])
 def riot_oauth_callback(request):
+    request_id = request.GET.get("request_id")
+    print(request_id)
     access_code = request.GET.get("code")
+
     user = request.user
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -124,10 +125,24 @@ def create_or_update_leagueoflegends_account(
             account.classification = classification
             account.save()
 
-            return Response(data, status=status.HTTP_200_OK)
+            return redirect("https://robin-lasting-magpie.ngrok-free.app")
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     except requests.RequestException:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     except Classification.DoesNotExist:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def get_connect_account_link(request):
+    game = request.GET.get("game")
+
+    if game == "league-of-legends":
+        return Response(
+            {
+                "link": "https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://robin-lasting-magpie.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access&request_id=1234"
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    return Response(status=status.HTTP_400_BAD_REQUEST)

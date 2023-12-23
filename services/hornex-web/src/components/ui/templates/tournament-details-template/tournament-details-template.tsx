@@ -4,10 +4,11 @@ import TournamentOverviewTabPanel from '@/components/ui/organisms/tournament-ove
 import TournamentScoringTabPanel from '@/components/ui/organisms/tournament-scoring-tab-panel';
 import TournamentStandingTabPanel from '@/components/ui/organisms/tournament-standing-tab-panel';
 import { Tournament } from '@/lib/hx-app/types';
-import { Team } from '@/lib/proto/team';
 import { Tab } from '@headlessui/react';
 import classnames from 'classnames';
 import { FC, useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
+import Button from '../../atoms/button/button';
 
 type TournamentProps = {
   tournament: Tournament;
@@ -21,6 +22,9 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({ tournament }) => {
     Scoring: '',
     Rules: '',
   });
+
+  const { toast } = useToast();
+
   return (
     <div className="p-6">
       <div className="mb-4 block lg:mb-10">
@@ -29,14 +33,14 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({ tournament }) => {
       <Tab.Group>
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
-            <Tab.List className="no-scrollbar flex gap-4 overflow-auto border-b-2 border-slate-800 py-1 sm:overflow-visible md:gap-10">
+            <Tab.List className="no-scrollbar flex gap-4 overflow-auto border-b border-gray-500 py-1 sm:overflow-visible md:gap-10">
               {Object.keys(tabs).map((tab) => (
                 <Tab
                   key={tab}
                   className={({ selected }) =>
                     classnames(
-                      'font-display -mb-1.5 whitespace-nowrap border-b-2 border-transparent py-4 text-sm font-medium uppercase tracking-wide text-slate-400 outline-none transition-colors hover:text-white',
-                      selected ? ' border-white !text-white' : 'text-slate-400'
+                      'font-display text-body -mb-1.5 whitespace-nowrap border-b-2 border-transparent py-4 text-xs font-medium uppercase tracking-wide outline-none transition-colors hover:text-white',
+                      selected ? ' border-white !text-white' : 'text-body'
                     )
                   }
                 >

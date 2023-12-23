@@ -13,6 +13,7 @@ import { Source_Sans_3 } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
+import { Toaster } from '@/components/ui/sonner';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -52,6 +53,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
             fontSize: '0.925rem',
           }}
         />
+        <Toaster />
       </div>
     </NextThemesProvider>
   );
