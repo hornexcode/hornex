@@ -18,6 +18,7 @@ brew_install_command golangci-lint 1.55.0
 brew_install_command helm 3.9.4
 brew_install_command jq 1.6
 brew_install_command kubectl 1.27.2 kubernetes-cli
+brew_install_command lefthook 1.5.5
 brew_install_command poetry 1.4.0
 brew_install_command tilt 0.30.13 tilt-dev/tap/tilt
 brew_install_command yq 3.1.0 python-yq
@@ -25,5 +26,7 @@ brew_install_command yq 3.1.0 python-yq
 brew_install_library coreutils
 
 install_yarn
+
+lefthook install
 
 success "Setup complete"
