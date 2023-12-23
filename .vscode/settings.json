@@ -50,6 +50,10 @@
     "lib/typescript/src/**",
     "services/axios-web/lib/**"
   ],
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
   "[js]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
@@ -68,8 +72,5 @@
   "yaml.format.enable": true,
   "yaml.schemas": {
     "https://json.schemastore.org/circleciconfig.json": ".circleci/workflows.yml"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
   }
 }

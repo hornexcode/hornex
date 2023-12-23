@@ -80,7 +80,7 @@ Styles for Swiper slider
 }
 
 .swiper-scrollbar {
-  @apply relative rounded bg-gray-200 dark:bg-gray-600;
+  @apply dark:bg-dark relative rounded bg-gray-200;
 }
 
 .swiper-horizontal > .swiper-scrollbar {
