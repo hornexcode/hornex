@@ -1,9 +1,11 @@
+from io import StringIO
+from unittest.mock import Mock, patch
+
 from django.core.management import call_command
 from django.test import TestCase
 from requests import Response
-from unittest.mock import patch, Mock
+
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournamentProvider
-from io import StringIO
 
 
 class TestLeagueOfLegendsCommands(TestCase):

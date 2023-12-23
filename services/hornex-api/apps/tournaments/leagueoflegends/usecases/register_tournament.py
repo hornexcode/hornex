@@ -1,9 +1,10 @@
-from lib.riot.client import Clientable
 from requests import RequestException
-from lib.logging import logger
+
 from apps.tournaments.leagueoflegends.models import (
     LeagueOfLegendsTournament,
 )
+from lib.logging import logger
+from lib.riot.client import Clientable
 
 
 class GetOrRegisterLeagueOfLegendsTournamentUseCase:

@@ -1,17 +1,16 @@
-from requests import exceptions
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework import viewsets
-from rest_framework.response import Response
-from apps.games.models import Game, GameAccountRiot
-from apps.users.models import User
-from apps.games.serializers import GameSerializer
-from rest_framework import status
-from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
-
-from rest_framework.permissions import IsAuthenticated
-from drf_yasg.utils import swagger_auto_schema
+from django.shortcuts import get_object_or_404
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from requests import exceptions
+from rest_framework import status, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from apps.games.models import Game, GameAccountRiot
+from apps.games.serializers import GameSerializer
+from apps.users.models import User
 
 
 class GameViewSet(viewsets.ModelViewSet):

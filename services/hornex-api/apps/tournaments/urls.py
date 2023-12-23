@@ -1,5 +1,10 @@
 from django.urls import path
-from apps.tournaments.views import TournamentReadOnlyViewSet, TournamentViewSet, TournamentRegistrationViewSet
+
+from apps.tournaments.views import (
+    TournamentReadOnlyViewSet,
+    TournamentRegistrationViewSet,
+    TournamentViewSet,
+)
 
 urlpatterns = [
     path(

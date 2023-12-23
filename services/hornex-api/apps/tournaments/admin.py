@@ -1,16 +1,15 @@
 from django.contrib import admin, messages
 from django.db import transaction
-from apps.tournaments.models import Registration, Subscription, Match, Round
 from django.utils.translation import ngettext
 
 from apps.tournaments.leagueoflegends.models import (
-    LeagueOfLegendsTournament,
-    LeagueOfLegendsTournamentProvider,
     Classification,
     Code,
+    LeagueOfLegendsTournament,
+    LeagueOfLegendsTournamentProvider,
 )
 from apps.tournaments.leagueoflegends.tasks import on_brackets_generated
-
+from apps.tournaments.models import Match, Registration, Round, Subscription
 
 admin.site.register(
     [

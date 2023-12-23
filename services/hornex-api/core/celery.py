@@ -1,6 +1,7 @@
-from celery import Celery
-import django
 import os
+
+import django
+from celery import Celery
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()

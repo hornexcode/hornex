@@ -1,13 +1,14 @@
 from celery import shared_task
-from lib.hornex.riot import getApi
-from apps.tournaments.leagueoflegends.usecases import (
-    RegisterTournamentProviderUseCase,
-    GetOrRegisterLeagueOfLegendsTournamentUseCase,
-    CreateTournamentCodesUseCase,
-)
+
 from apps.tournaments.events import TournamentCreated
-from lib.riot.client import Client
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
+from apps.tournaments.leagueoflegends.usecases import (
+    CreateTournamentCodesUseCase,
+    GetOrRegisterLeagueOfLegendsTournamentUseCase,
+    RegisterTournamentProviderUseCase,
+)
+from lib.hornex.riot import getApi
+from lib.riot.client import Client
 
 client = getApi("keytest")
 

@@ -1,6 +1,8 @@
 import uuid
+from datetime import UTC
+from datetime import datetime as dt
+
 from django.db import models
-from datetime import datetime as dt, timezone as tz
 
 
 class Team(models.Model):
@@ -76,15 +78,15 @@ class Invite(models.Model):
 
     def accept(self):
         Membership.objects.create(team=self.team, user=self.user)
-        self.accepted_at = dt.now(tz=tz.utc)
+        self.accepted_at = dt.now(tz=UTC)
         self.save()
 
     def decline(self):
-        self.declined_at = dt.now(tz=tz.utc)
+        self.declined_at = dt.now(tz=UTC)
         self.save()
 
     def expire(self):
-        self.expired_at = dt.now(tz=tz.utc)
+        self.expired_at = dt.now(tz=UTC)
         self.save()
 
     def __str__(self) -> str:

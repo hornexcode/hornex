@@ -1,22 +1,22 @@
-from rest_framework import viewsets, status
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, viewsets
 from rest_framework.decorators import (
     api_view,
-    permission_classes,
     authentication_classes,
+    permission_classes,
 )
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from django_filters.rest_framework import DjangoFilterBackend
 
+from apps.users.filters import UserFilter
 from apps.users.models import User
 from apps.users.serializers import (
-    UserSerializer,
     LoggedInUserSerializerReadOnly,
+    UserSerializer,
     serialize_user,
 )
-from django.shortcuts import get_object_or_404
-from apps.users.filters import UserFilter
 
 
 # ViewSets define the view behavior.

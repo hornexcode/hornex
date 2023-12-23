@@ -1,12 +1,14 @@
 from django.urls import path
-from apps.teams.views import TeamViewSet, InviteViewSet, MembershipViewSet
+
 from apps.teams.views import (
-    get_invites,
+    InviteViewSet,
+    MembershipViewSet,
+    TeamViewSet,
     accept_invite,
     decline_invite,
+    get_invites,
     get_invites_count,
 )
-
 
 urlpatterns = [
     path(

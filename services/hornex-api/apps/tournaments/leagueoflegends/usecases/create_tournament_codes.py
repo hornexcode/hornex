@@ -1,16 +1,17 @@
-from requests import RequestException
 from django.db import transaction
+from requests import RequestException
+
+from apps.tournaments.leagueoflegends.models import Code, LeagueOfLegendsTournament
+from apps.tournaments.models import Match, Tournament
+from lib.logging import logger
 from lib.riot.client import Clientable
 from lib.riot.types import (
     CreateTournamentCode,
-    PickType,
     MapType,
+    PickType,
     SpectatorType,
 )
-from lib.logging import logger
 from utils.math import is_power_of_two
-from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament, Code
-from apps.tournaments.models import Match, Tournament
 
 
 class CreateTournamentCodesUseCase:

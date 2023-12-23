@@ -1,12 +1,13 @@
+from test.factories import ClassificationFactory, LeagueOfLegendsAccountFactory
+from unittest.mock import MagicMock, patch
+
 import requests
-from unittest.mock import patch, MagicMock
 from django.urls import include, path, reverse
 from django.utils.http import urlencode
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import LeagueOfLegendsAccount, User
-from test.factories import ClassificationFactory, LeagueOfLegendsAccountFactory
 
 
 class TestAccountsRiot(APITestCase, URLPatternsTestCase):
@@ -85,7 +86,8 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         """
         self.classification = ClassificationFactory.new()
         self.user.leagueoflegendsaccount = LeagueOfLegendsAccountFactory.new(
-            user=User.objects.get(email=self.user.email), classification=self.classification
+            user=User.objects.get(email=self.user.email),
+            classification=self.classification,
         )
         self.user.save()
 
@@ -161,7 +163,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
 
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(LeagueOfLegendsAccount.objects.count(), 0)
-    
+
     @patch("requests.post")
     @patch("requests.get")
     def test_update_riot_account_400_no_userinfo(self, mock_post, mock_get):
@@ -182,7 +184,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
                 "token_type": "Bearer",
                 "expires_in": 3600,
             },
-            requests.RequestException
+            requests.RequestException,
         ]
         mock_post.return_value = mock_get_response
         mock_get.return_value = mock_get_response
@@ -190,12 +192,12 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         query_string = urlencode({"code": "fake-code"})
         base_url = reverse("riot-oauth-callback")
         url = f"{base_url}?{query_string}"
-        
+
         resp = self.client.get(url)
-        
+
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(LeagueOfLegendsAccount.objects.count(), 0)
-        
+
     @patch("requests.post")
     @patch("requests.get")
     def test_update_riot_account_400_account(self, mock_post, mock_get):
@@ -217,7 +219,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
                 "expires_in": 3600,
             },
             {"sub": "fake-sub", "jti": "fake-jti"},
-            requests.RequestException
+            requests.RequestException,
         ]
         mock_post.return_value = mock_get_response
         mock_get.return_value = mock_get_response
@@ -225,9 +227,9 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         query_string = urlencode({"code": "fake-code"})
         base_url = reverse("riot-oauth-callback")
         url = f"{base_url}?{query_string}"
-        
+
         resp = self.client.get(url)
-        
+
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(LeagueOfLegendsAccount.objects.count(), 0)
 
@@ -253,7 +255,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
             },
             {"sub": "fake-sub", "jti": "fake-jti"},
             {"puuid": "fake-ppuid", "gameName": "Celus O recomeço", "tagLine": "BR1"},
-            requests.RequestException
+            requests.RequestException,
         ]
         mock_post.return_value = mock_get_response
         mock_get.return_value = mock_get_response
@@ -261,13 +263,12 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         query_string = urlencode({"code": "fake-code"})
         base_url = reverse("riot-oauth-callback")
         url = f"{base_url}?{query_string}"
-        
+
         resp = self.client.get(url)
-        
+
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(LeagueOfLegendsAccount.objects.count(), 0)
-        
-        
+
     @patch("requests.post")
     @patch("requests.get")
     def test_update_riot_account_400_entries(self, mock_post, mock_get):
@@ -299,7 +300,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
                 "revisionDate": 1699057103000,
                 "summonerLevel": 79,
             },
-            requests.RequestException
+            requests.RequestException,
         ]
         mock_post.return_value = mock_get_response
         mock_get.return_value = mock_get_response
@@ -307,14 +308,12 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         query_string = urlencode({"code": "fake-code"})
         base_url = reverse("riot-oauth-callback")
         url = f"{base_url}?{query_string}"
-        
+
         resp = self.client.get(url)
-        
+
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(LeagueOfLegendsAccount.objects.count(), 0)
-        
-        
-          
+
     @patch("requests.post")
     @patch("requests.get")
     def test_update_riot_account_400_empty_entries(self, mock_post, mock_get):
@@ -346,7 +345,7 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
                 "revisionDate": 1699057103000,
                 "summonerLevel": 79,
             },
-            []
+            [],
         ]
         mock_post.return_value = mock_get_response
         mock_get.return_value = mock_get_response
@@ -354,12 +353,12 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         query_string = urlencode({"code": "fake-code"})
         base_url = reverse("riot-oauth-callback")
         url = f"{base_url}?{query_string}"
-        
+
         resp = self.client.get(url)
-        
+
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(LeagueOfLegendsAccount.objects.count(), 0)
-        
+
     @patch("requests.post")
     @patch("requests.get")
     def test_update_riot_account_400_missing_classification(self, mock_post, mock_get):
@@ -399,10 +398,8 @@ class TestAccountsRiot(APITestCase, URLPatternsTestCase):
         query_string = urlencode({"code": "fake-code"})
         base_url = reverse("riot-oauth-callback")
         url = f"{base_url}?{query_string}"
-        
+
         resp = self.client.get(url)
-        
+
         self.assertEqual(resp.status_code, 500)
         self.assertEqual(LeagueOfLegendsAccount.objects.count(), 0)
-        
-        

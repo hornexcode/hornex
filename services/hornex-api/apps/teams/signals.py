@@ -1,10 +1,12 @@
 import json
+
+import channels.layers
+from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from apps.teams.models import Team, Membership, Invite
+
 from apps.notifications.models import Notification
-from asgiref.sync import async_to_sync
-import channels.layers
+from apps.teams.models import Invite, Membership, Team
 
 
 @receiver(post_save, sender=Team)
@@ -19,20 +21,21 @@ def invite_created(sender, instance, created, **kwargs):
     if created:
         send_notification(instance)
 
+
 def send_notification(instance: Invite):
     notification = Notification.objects.create(
-            name=instance.__str__(),
-            data=json.dumps(
-                {
-                    "team": {
-                        "id": instance.team.id.__str__(),
-                        "name": instance.team.name,
-                    }
+        name=instance.__str__(),
+        data=json.dumps(
+            {
+                "team": {
+                    "id": instance.team.id.__str__(),
+                    "name": instance.team.name,
                 }
-            ),
-            activity=Notification.ActivityType.TEAM_INVITATION,
-            recipient_id=instance.user.id,
-        )
+            }
+        ),
+        activity=Notification.ActivityType.TEAM_INVITATION,
+        recipient_id=instance.user.id,
+    )
 
     timestamp_in_milliseconds = int(notification.created_at.timestamp() * 1000)
     channel_layer = channels.layers.get_channel_layer()

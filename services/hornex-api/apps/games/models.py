@@ -1,8 +1,8 @@
-from django.db import models
-from django.utils import timezone
+import uuid
 from datetime import timedelta
 
-import uuid
+from django.db import models
+from django.utils import timezone
 
 
 class Game(models.Model):
@@ -80,9 +80,7 @@ class GameAccountRiot(GameAccount):
     summoner_level = (
         models.IntegerField()
     )  # Summoner level associated with the summoner.
-    revision_date = (
-        models.BigIntegerField()
-    )  # Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: summoner name change, summoner level change, or profile icon change.
+    revision_date = models.BigIntegerField()  # Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: summoner name change, summoner level change, or profile icon change.
 
     def __str__(self) -> str:
         return f"{self.summoner_name} ({self.id})"

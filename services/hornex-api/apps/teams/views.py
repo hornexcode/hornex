@@ -1,34 +1,34 @@
-from rest_framework import viewsets, status
-from django_filters import rest_framework as filters
-from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
+from django.db.models import Count
+from django_filters import rest_framework as filters
 from drf_yasg import openapi
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status, viewsets
 from rest_framework.decorators import (
     api_view,
-    permission_classes,
     authentication_classes,
+    permission_classes,
 )
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from core.route import extract_game_and_platform
-from apps.teams.models import Team, Invite, Membership
-from apps.teams.serializers import (
-    TeamSerializer,
-    InviteSerializer,
-    UserInviteSerializer,
-    MembershipSerializer,
-    InviteListSerializer,
-)
 from apps.teams.errors import (
-    invite_not_found,
-    invite_does_not_belongs_to_you,
-    invite_expired,
     invite_accepted,
     invite_declined,
+    invite_does_not_belongs_to_you,
+    invite_expired,
+    invite_not_found,
 )
+from apps.teams.models import Invite, Membership, Team
+from apps.teams.serializers import (
+    InviteListSerializer,
+    InviteSerializer,
+    MembershipSerializer,
+    TeamSerializer,
+    UserInviteSerializer,
+)
+from core.route import extract_game_and_platform
 
 
 class TeamViewSet(viewsets.ModelViewSet):

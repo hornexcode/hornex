@@ -1,19 +1,18 @@
 import requests
-from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import (
     api_view,
-    permission_classes,
     authentication_classes,
+    permission_classes,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from apps.accounts.models import Classification, LeagueOfLegendsAccount
 from lib.riot.client import Client
-from apps.accounts.models import LeagueOfLegendsAccount, Classification
 
 client_id = "6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54"
 client_secret = "E9wzc2eEN6Ph5bxdtbxvmef_NJriKXQ0qbgkL9i-DSC"
@@ -56,7 +55,7 @@ def riot_oauth_callback(request):
 
     is_new = True
     try:
-    # It will throw an exception whenever the user does not have acc.
+        # It will throw an exception whenever the user does not have acc.
         user.leagueoflegendsaccount
         is_new = False
     except LeagueOfLegendsAccount.DoesNotExist:
@@ -121,10 +120,10 @@ def create_or_update_leagueoflegends_account(
 
             classification = Classification.objects.get(
                 tier=entries[0].tier, rank=entries[0].rank
-            )  
+            )
             account.classification = classification
             account.save()
-            
+
             return Response(data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

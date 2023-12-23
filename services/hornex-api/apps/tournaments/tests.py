@@ -1,8 +1,6 @@
 # Test cases for the tournaments app from client side
 
 
-
-
 # class TournamentCRUDTests(APITestCase, URLPatternsTestCase):
 #     urlpatterns = [
 #         path("api/v1/tournaments", include("tournaments.urls")),

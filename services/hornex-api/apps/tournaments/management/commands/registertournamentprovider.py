@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
+
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournamentProvider
 from lib.riot.client import Client
-from django.db import transaction
 
 
 class Command(BaseCommand):

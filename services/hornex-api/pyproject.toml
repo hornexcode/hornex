@@ -32,8 +32,34 @@ psycopg2 = "^2.9.9"
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.3.1"
 mock = "^5.1.0"
-ruff = "^0.1.8"
+ruff = "^0.1.9"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = [
+    "DJ", # flake8-django
+    "E", # pycodestyle Error
+    "F", # Pyflakes
+    "I", # isort
+    "RUF", # Ruff-specific rules
+    "UP", # pyupgrade
+    "W", # pycodestyle Wrning
+    "YTT", # flake8-2020
+]
+target-version = "py311"
+ignore = [
+  "E501",
+
+  ## TODO Fix and enable these
+  "DJ001",
+  "DJ008",
+  "DJ012",
+  "RUF012",
+  "UP008",
+  ]
+
+[tool.ruff.format]
+quote-style = "double"

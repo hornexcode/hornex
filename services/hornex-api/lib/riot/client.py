@@ -1,18 +1,19 @@
-import requests
 import os
 from abc import ABC, abstractmethod
-from typing import List
+
+import requests
+
 from lib.logging import logger
 from lib.riot.types import (
     CreateTournamentCode,
-    UpdateTournamentCode,
+    LeagueEntryDTO,
+    LobbyEventV5DTOWrapper,
+    PlatformRoutingType,
+    RegionalRoutingType,
+    RegionType,
     TournamentCodeV5DTO,
     TournamentGamesV5,
-    LobbyEventV5DTOWrapper,
-    LeagueEntryDTO,
-    RegionalRoutingType,
-    PlatformRoutingType,
-    RegionType,
+    UpdateTournamentCode,
 )
 
 
@@ -58,7 +59,7 @@ class Clientable(ABC):
         self,
         params: CreateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Returns tournament codes
 
@@ -116,7 +117,7 @@ class Clientable(ABC):
         self,
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> List[TournamentGamesV5]:
+    ) -> list[TournamentGamesV5]:
         """
         Get games details
 
@@ -197,7 +198,7 @@ class Client(Clientable):
         self,
         params: CreateTournamentCode,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> List[str]:
+    ) -> list[str]:
         url = f"https://{regional_routing.value}/lol/tournament/v5/codes?api_key={self.api_key}&tournamentId={params.tournament_id}&count={params.count}"
 
         response = requests.post(
@@ -264,7 +265,7 @@ class Client(Clientable):
         self,
         tournamentCode: str,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
-    ) -> List[TournamentGamesV5]:
+    ) -> list[TournamentGamesV5]:
         url = f"https://{regional_routing.value}/lol/tournament/v5/games/by-code/{tournamentCode}?api_key={self.api_key}"
         response = requests.get(url)
 
@@ -274,7 +275,7 @@ class Client(Clientable):
 
         data = response.json()
 
-        tournament_games: List[TournamentGamesV5] = []
+        tournament_games: list[TournamentGamesV5] = []
         for tournament_game in data:
             tournament_games.append(
                 TournamentGamesV5.from_api_response(tournament_game)

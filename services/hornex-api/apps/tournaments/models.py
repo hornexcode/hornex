@@ -1,15 +1,15 @@
 import uuid
-from datetime import datetime, timezone, timedelta
-
-from django.db import models
 from abc import abstractmethod
+from datetime import UTC, datetime, timedelta
+
+from django.conf import settings
+from django.db import models
+from django.db.models.query import QuerySet
 from rest_framework.exceptions import ValidationError
 
-from apps.tournaments.validators import validate_team_size
-from apps.tournaments import errors
 from apps.teams.models import Team
-from django.db.models.query import QuerySet
-from django.conf import settings
+from apps.tournaments import errors
+from apps.tournaments.validators import validate_team_size
 
 
 class RegistrationError(Exception):
@@ -245,7 +245,7 @@ class Tournament(models.Model):
         return Registration.objects.create(tournament=self, team=team)
 
     def _is_full(self):
-        now = datetime.now(tz=timezone.utc)
+        now = datetime.now(tz=UTC)
 
         accepted_registrations = Registration.objects.filter(
             tournament=self, status=Registration.RegistrationStatusType.ACCEPTED

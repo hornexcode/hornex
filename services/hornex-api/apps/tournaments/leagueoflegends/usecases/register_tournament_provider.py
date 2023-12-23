@@ -1,8 +1,10 @@
 # https://developer.riotgames.com/docs/lol#tournament-api_best-practices
-from lib.hornex.riot import Clientable
 from enum import Enum
+
 from requests import RequestException
+
 from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournamentProvider
+from lib.hornex.riot import Clientable
 
 
 class Region(Enum):

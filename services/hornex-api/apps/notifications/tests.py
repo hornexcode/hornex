@@ -1,10 +1,12 @@
-import uuid
 import json
+import uuid
+
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
-from apps.users.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from apps.notifications.models import Notification
+from apps.users.models import User
 
 
 class TestNotification(APITestCase, URLPatternsTestCase):
@@ -57,7 +59,7 @@ class TestNotification(APITestCase, URLPatternsTestCase):
             recipient_id=self.user.id,
         )
 
-        url = f"{reverse('notification-list')}?activity={str(Notification.ActivityType.TEAM_INVITATION)}"
+        url = f"{reverse('notification-list')}?activity={Notification.ActivityType.TEAM_INVITATION!s}"
         resp = self.client.get(url)
 
         self.assertEqual(resp.status_code, 200)

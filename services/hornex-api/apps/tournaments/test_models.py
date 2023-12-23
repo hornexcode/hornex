@@ -1,13 +1,17 @@
 import random
+from datetime import UTC
+from datetime import datetime as dt
+from datetime import timedelta as td
+from test.factories import TeamFactory, TournamentFactory, UserFactory
+
 from django.test import TestCase
-from apps.tournaments.models import Tournament, Registration
-from test.factories import TournamentFactory, UserFactory, TeamFactory
-from datetime import datetime as dt, timezone as tz, timedelta as td
+
+from apps.tournaments.models import Registration, Tournament
 
 
 class TestUnitTournamentModel(TestCase):
     def setUp(self) -> None:
-        now = dt.now(tz.utc)
+        now = dt.now(UTC)
         self.now = now
         self.tournament = Tournament.objects.create(
             name="Test Tournament",
