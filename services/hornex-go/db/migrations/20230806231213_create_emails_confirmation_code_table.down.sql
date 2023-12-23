@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS emails_confirmation_code;
