@@ -1,0 +1,50 @@
+name: hornex-api
+
+on: push
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+
+
+    # Enable this when we can use Postgres in Django Settings
+    # services:
+    #   postgres:
+    #     image: postgres
+    #     env:
+    #       POSTGRES_PASSWORD: postgres
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+
+    defaults:
+      run:
+        working-directory: services/hornex-api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: pip install poetry
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: services/hornex-api/pyproject.toml
+          cache: poetry
+
+      - run: poetry install
+
+      - run: poetry run python manage.py migrate
+
+      - run: poetry run python manage.py test
+        env:
+          RIOT_API_KEY: example
+
+      - run: poetry run ruff check .
+
+      - run: poetry run ruff format --check .
