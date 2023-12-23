@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS league_of_legends_accounts;
