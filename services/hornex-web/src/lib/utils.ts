@@ -14,5 +14,5 @@ export function calcPrizePool(
 }
 
 export function toCurrency(num: number): string {
-  return `$${num.toLocaleString()}`;
+  return `$${num.toLocaleString()},00`;
 }

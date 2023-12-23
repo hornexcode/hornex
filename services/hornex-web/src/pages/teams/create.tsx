@@ -81,7 +81,7 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
       <div className="bg-light-dark shadow-card mx-auto w-2/4 ">
         <div className="bg-medium-dark border-b border-gray-600 p-5">
           <div className="flex items-end justify-between">
-            <h2 className="text-header text-sm font-bold sm:text-xl">
+            <h2 className="text-title text-sm font-bold sm:text-xl">
               Create New Team
             </h2>
           </div>

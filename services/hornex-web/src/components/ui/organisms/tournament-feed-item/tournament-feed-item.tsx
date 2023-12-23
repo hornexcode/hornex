@@ -1,5 +1,4 @@
-import { LongArrowRight } from '../../atoms/icons/long-arrow-right';
-import { TournamentCardInfoProps } from './tournament-card-info.types';
+import { TournamentFeedItemProps } from './tournament-feed-item.types';
 import Button from '@/components/ui/atoms/button/button';
 import { UsersIcon } from '@heroicons/react/20/solid';
 import { DollarSign, SwordIcon, Swords } from 'lucide-react';
@@ -9,23 +8,25 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 
-const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
+const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
   const router = useRouter();
   return (
     <div className="shadow-light bg-light-dark rounded">
-      <div className="bg-medium-dark">
-      <div className="block p-5">
-        <div className="mb-1 text-body">
-          {moment(tournament.start_date).format('MMMM Do YYYY')}
+      <div className="bg-medium-dark rounded-t">
+        <div className="block px-5 py-4">
+          <Link
+            href="/nft-details"
+            className="dark:text-title text-lg font-extrabold text-black"
+          >
+            {/* trim name */}
+            {tournament.name.length >= 25
+              ? tournament.name.substring(0, 20) + '...'
+              : tournament.name}
+          </Link>
+          <div className="text-body mb-1">
+            {moment(tournament.start_date).format('MMMM Do YYYY')}
+          </div>
         </div>
-        <Link
-          href="/nft-details"
-          className="text-sm font-extrabold leading-3 text-black dark:text-white"
-        >
-          {/* trim name */}
-          {tournament.name}
-        </Link>
-      </div>
       </div>
 
       <div className="block">
@@ -39,7 +40,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
 
       {/* League of Legends Metadata */}
       <div className="block px-5 pt-5">
-        <div className="text-xs font-medium uppercase text-white font-display">
+        <div className="font-display text-xs font-medium uppercase text-white">
           Classification
         </div>
         <div className="text-xs text-gray-400">{tournament.classification}</div>
@@ -50,7 +51,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
           <div className="flex justify-between">
             <div className="flex items-center">
               <UsersIcon className="mr-1 h-5 w-4 " />
-              <span className="pr-4 text-xs font-bold text-white font-display">
+              <span className="font-display pr-4 text-xs font-bold text-white">
                 {tournament.teams.length}/{tournament.max_teams}
               </span>
             </div>
@@ -80,7 +81,7 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
         </div> */}
       </div>
 
-      <div className="shadow-light flex items-end rounded-b-lg border-t border-gray-700 p-5">
+      <div className="shadow-light flex items-end rounded-b-lg border-t border-dashed border-gray-600 px-5 py-4">
         <div className="block">
           <span className="text-xs text-slate-400">Prize Pool</span>
           <div className="flex items-center space-x-1">
@@ -94,7 +95,8 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
         </div>
         <div className="ml-auto text-right">
           <Button
-            shape='rounded'
+            shape="rounded"
+            size="small"
             onClick={() =>
               router.push(
                 `/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
@@ -103,7 +105,6 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
           >
             <div className="flex items-center">
               <span className="">Jogar</span>
-              <Swords className="ml-2 h-5 w-5 text-gray-800" />
             </div>
           </Button>
         </div>
@@ -112,4 +113,4 @@ const TournamentCardInfo: FC<TournamentCardInfoProps> = ({ tournament }) => {
   );
 };
 
-export default TournamentCardInfo;
+export default TournamentFeedItem;

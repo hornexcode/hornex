@@ -42,7 +42,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-light-dark fixed top-14 z-20 flex h-full w-16 flex-col border-r border-t border-slate-800 px-2 shadow-2xl',
+        'bg-medium-dark shadow-card fixed top-14 z-20 flex h-full w-16 flex-col px-2',
         className
       )}
     >
@@ -50,15 +50,15 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.compete}`}
-            className="group flex h-[45px] cursor-pointer items-center justify-center rounded bg-amber-500 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="group flex h-[45px] w-[45px] cursor-pointer items-center justify-center rounded bg-amber-500 text-center shadow-lg transition-all hover:bg-slate-700"
           >
-            <HomeIcon className="h-5 w-5 text-slate-700 shadow-xl group-hover:text-white" />
+            <HomeIcon className="h-5 w-5 text-white shadow-xl group-hover:text-white" />
           </Link>
         </li>
         <li>
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="bg-dark group flex h-[45px] cursor-pointer items-center justify-center rounded border border-gray-500 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="bg-dark group flex h-[45px] w-[45px] cursor-pointer items-center justify-center rounded  text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <TrophyIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
@@ -66,7 +66,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li title="Teams" className="relative">
           <Link
             href={`/${routes.teams}`}
-            className="bg-dark  group flex h-[45px] cursor-pointer items-center justify-center rounded border border-gray-500 text-center shadow-lg transition-all  hover:bg-slate-700"
+            className="bg-dark  group flex h-[45px] w-[45px] cursor-pointer items-center justify-center rounded  text-center shadow-lg transition-all  hover:bg-slate-700"
           >
             <UserGroupIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
           </Link>
@@ -74,7 +74,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           {!!invitesNum && (
             <div>
               <span className="sr-only">Notifications</span>
-              <div className="absolute -right-2 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red-500 font-bold text-[11x] text-white dark:border-gray-900">
+              <div className="absolute -right-2 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-white bg-red-500 font-bold text-[11x] text-white dark:border-gray-900">
                 {invitesNum}
               </div>
             </div>
@@ -84,38 +84,30 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.compete}#available-games`}
-            className="bg-dark group flex h-[45px] cursor-pointer items-center justify-center rounded border border-gray-500 text-center shadow-lg transition-all hover:bg-slate-700"
+            className="bg-dark group flex h-[45px] w-[45px] cursor-pointer items-center justify-center rounded  text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <SwordsIcon className="h-4 w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
           </Link>
         </li>
       </ul>
-      <div className="bg-dark rounded-mdborder h-[1.5px] w-[36px] self-center border-gray-500 "></div>
+      <div className="bg-dark h-[1.5px] w-[36px] self-center rounded-md  "></div>
       <ul className="block space-y-3 py-2">
         <li>
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="bg-dark roundedborder group flex h-[45px] cursor-pointer items-center justify-center border-gray-500  text-center shadow-lg transition-all hover:bg-slate-700"
+            className="bg-dark group flex h-[45px] w-[45px] cursor-pointer items-center justify-center rounded  text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <LolIcon className="w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link
             href="#"
-            className="bg-dark roundedborder group flex h-[45px] cursor-pointer items-center justify-center border-gray-500  text-center shadow-lg transition-all hover:bg-slate-700"
+            className="bg-dark roundedborder group flex h-[45px] w-[45px] cursor-pointer items-center justify-center   text-center shadow-lg transition-all hover:bg-slate-700"
           >
             <CounterStrikeLogoIcon className="fill-slate-400 p-2 shadow-xl group-hover:fill-white" />
           </Link>
-        </li>
-        <li>
-          <Link
-            href={`/${routes.compete}`}
-            className="bg-dark group flex h-[42px] cursor-pointer items-center justify-center rounded text-center shadow-lg ring-2 ring-slate-800 hover:ring-slate-700"
-          >
-            <PlusIcon className="fill-dark bg-dark rounded-smborder w-4 border-gray-500  group-hover:bg-slate-700" />
-          </Link>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

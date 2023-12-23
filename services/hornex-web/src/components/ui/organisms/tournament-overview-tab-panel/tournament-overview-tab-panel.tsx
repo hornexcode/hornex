@@ -15,7 +15,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
     <>
       <div className="bg-medium-dark rounded shadow-md">
         <div className="border-b border-gray-700 p-5">
-          <h4 className="leading-2 text-header text-lg font-extrabold">
+          <h4 className="leading-2 text-title text-lg font-extrabold">
             Tournament details
           </h4>
         </div>
@@ -24,7 +24,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
               <SwordsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Format</p>
-              <p className="text-header text-xs font-bold">
+              <p className="text-title text-xs font-bold">
                 {tournament.team_size}v{tournament.team_size}
               </p>
             </div>
@@ -33,7 +33,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
               <ComputerDesktopIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Platform</p>
-              <p className="text-header text-xs font-bold">
+              <p className="text-title text-xs font-bold">
                 {tournament.platform}
               </p>
             </div>
@@ -42,7 +42,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
               <LockOpenIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Classification</p>
-              <p className="text-header text-xs font-bold">
+              <p className="text-title text-xs font-bold">
                 {tournament.classification}
               </p>
             </div>
@@ -51,7 +51,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
               <CoinsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Entry fee</p>
-              <p className="text-header text-xs font-bold">
+              <p className="text-title text-xs font-bold">
                 {tournament.entry_fee}
               </p>
             </div>

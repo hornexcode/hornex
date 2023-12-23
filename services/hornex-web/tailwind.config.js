@@ -41,7 +41,7 @@ module.exports = {
       colors: {
         brand: 'rgb(var(--color-brand) / <alpha-value>)',
         body: '#95a5a6',
-        header: '#eaeded',
+        title: '#eaeded',
         dark: '#16191f',
         'medium-dark': '#21252d',
         'light-dark': '#292e34',
@@ -73,7 +73,7 @@ module.exports = {
         main: '0px 6px 18px rgba(0, 0, 0, 0.04)',
         light: '0px 4px 4px rgba(0, 0, 0, 0.08)',
         large: '0px 8px 16px rgba(17, 24, 39, 0.1)',
-        card: '0px 2px 4px rgba(0, 0, 0, 0.9)',
+        card: '0px 1px 2px rgba(0, 0, 0, 0.5)',
         transaction: '0px 8px 16px rgba(17, 24, 39, 0.06)',
         expand: '0px 0px 50px rgba(17, 24, 39, 0.2)',
         button:

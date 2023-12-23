@@ -25,11 +25,6 @@ export default function HomePage() {
 
   return (
     <main className="">
-      {/* <div className="bg-amber-500 py-1 text-center">
-        <span className="text-xs text-white">
-          We are still developing this platform, Hornex is lunching soon...
-        </span>
-      </div> */}
       <nav className="bg-dark/40 fixed top-0 z-10 w-full border-b border-slate-700">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 text-sm">
           <Link href="/" className="flex items-center">

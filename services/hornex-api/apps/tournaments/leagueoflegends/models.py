@@ -35,6 +35,10 @@ class LeagueOfLegendsTournamentProvider(models.Model):
 
 
 class Classification(models.Model):
+    class Meta:
+        unique_together = ["tier", "rank"]
+        ordering = ["tier", "rank"]
+
     class Tier(models.TextChoices):
         IRON = "IRON"
         BRONZE = "BRONZE"

@@ -17,14 +17,17 @@ class TournamentListSerializer(serializers.Serializer):
 
 
 class TournamentSerializer(serializers.ModelSerializer):
-    classification = serializers.SerializerMethodField()
+    classifications = serializers.SerializerMethodField()
 
     class Meta:
         model = Tournament
         fields = "__all__"
 
-    def get_classification(self, obj):
-        return obj.get_classification()
+    def get_classifications(self, obj):
+        return [
+            "{} {}".format(classification.tier, classification.rank)
+            for classification in obj.classifications.all()
+        ]
 
 
 class RegistrationCreateSerializer(serializers.Serializer):

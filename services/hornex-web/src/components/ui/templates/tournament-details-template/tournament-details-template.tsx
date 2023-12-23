@@ -13,7 +13,7 @@ type TournamentProps = {
   tournament: Tournament;
 };
 
-const Tournament: FC<TournamentProps> = ({ tournament }) => {
+const TournamentDetailsTemplate: FC<TournamentProps> = ({ tournament }) => {
   let [tabs] = useState({
     Overview: '',
     Standings: '',
@@ -79,4 +79,4 @@ const Tournament: FC<TournamentProps> = ({ tournament }) => {
   );
 };
 
-export default Tournament;
+export default TournamentDetailsTemplate;
