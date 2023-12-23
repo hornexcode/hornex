@@ -4,12 +4,11 @@ set -Eeuo pipefail
 REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
 source ${REPO_ROOT}/devops/scripts/helpers
 
-info "Setting up Axios..."
+info "Setting up Hornex..."
 
 ${REPO_ROOT}/devops/scripts/configure-shell
 
 ensure_docker
-# ensure_twingate
 
 install_homebrew
 
@@ -17,28 +16,14 @@ brew_install_command aws 2.7.0 awscli
 brew_install_command go 1.21.1
 brew_install_command golangci-lint 1.55.0
 brew_install_command helm 3.9.4
-brew_install_command helmfile 0.145.5
 brew_install_command jq 1.6
-brew_install_command gum 0.11.0
-brew_install_command yq 3.1.0 python-yq
 brew_install_command kubectl 1.27.2 kubernetes-cli
-brew_install_command n 9.0.0
 brew_install_command poetry 1.4.0
-brew_install_command shfmt 3.5.1
 brew_install_command tilt 0.30.13 tilt-dev/tap/tilt
+brew_install_command yq 3.1.0 python-yq
 
 brew_install_library coreutils
 
-helm_plugin diff https://github.com/databus23/helm-diff 3.5.0
-helm_plugin helm-git https://github.com/aslafy-z/helm-git 0.11.2
-helm_plugin s3 https://github.com/hypnoglow/helm-s3.git 0.12.0
-
-# n auto
-
 install_yarn
-
-# if [ ! -e ~/.tilt-dev/analytics/user/choice.txt ]; then
-#   tilt analytics opt out
-# fi
 
 success "Setup complete"

@@ -71,24 +71,6 @@ function require_repo_root() (
   fi
 )
 
-function populate_axios_services() {
-  require_repo_root
-  AXIOS_SERVICES=($(ls ${REPO_ROOT}/services | tr ' ' '\n' | sort | uniq | tr '\n' ' '))
-}
-
-function populate_axios_functions() {
-  require_repo_root
-  AXIOS_FUNCTIONS=($(ls ${REPO_ROOT}/functions | tr ' ' '\n' | sort | uniq | tr '\n' ' '))
-}
-
-function is_axios_service() {
-  populate_axios_services
-  if [[ " ${AXIOS_SERVICES[@]} " =~ " ${1} " ]]; then
-    return 0
-  fi
-  return 1
-}
-
 function git_current_branch() {
   echo "$(git rev-parse --abbrev-ref HEAD)"
 }
@@ -105,28 +87,6 @@ function git_repo_path() {
     REPO_PATH=${REPO_PATH%\.git}
   fi
   echo $REPO_PATH
-}
-
-function github_credentials_osx() {
-  if [[ $(uname -s) == "Darwin" ]]; then
-    printf "protocol=https\nhost=github.com\n" | git credential-osxkeychain get
-  fi
-}
-
-function github_username_osx() {
-  github_credentials_osx | sed -n 's/^username=\(.*\)/\1/p'
-}
-
-function github_password_osx() {
-  github_credentials_osx | sed -n 's/^password=\(.*\)/\1/p'
-}
-
-function github_access_token() {
-  if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-    echo $(github_password_osx)
-    return
-  fi
-  echo ${GITHUB_TOKEN}
 }
 
 # Install the homebrew package manager from https://brew.sh/
@@ -241,23 +201,6 @@ function brew_upgrade() {
   fi
 }
 
-function helm_plugin() {
-  local plugin=${1}
-  local source=${2}
-  local version=${3}
-
-  if ! helm plugin list | grep ${plugin} >/dev/null; then
-    info "Installing helm plugin: ${plugin}"
-    helm plugin install ${source} --version ${version}
-  fi
-
-  if ! helm plugin list | grep -E "${plugin}\s+${version}" >/dev/null; then
-    info "Upgrading helm plugin: ${plugin}"
-    helm plugin uninstall ${plugin}
-    helm plugin install ${source} --version ${version}
-  fi
-
-}
 
 function install_yarn() {
   if ! which yarn &>/dev/null; then
@@ -266,49 +209,14 @@ function install_yarn() {
   fi
 }
 
-# Requires that a repository be cloned into the parent directory of this repo
-# If the repo exists and the current checkout matches the default branch, update the branch to the latest
-function require_repo() {
-  local name dir
-
-  require_repo_root
-
-  name=${1}
-  dir="${REPO_ROOT}/../${name}"
-
-  if [[ ! -d "${dir}" || ! -d "${dir}/.git" ]]; then
-    warning "A local clone of ${name} is required, cloning now..."
-    git_clone ${name} ${dir}
-    return
-  fi
-
-  default_branch=$(git -C "${dir}" symbolic-ref refs/remotes/origin/HEAD | awk -F / '{print $NF}')
-  current_branch=$(git -C "${dir}" symbolic-ref HEAD | awk -F / '{print $NF}' || echo "")
-
-  if [[ "${current_branch}" == "${default_branch}" ]]; then
-    info "Repo ${name}: Updating to latest ${current_branch}"
-    git -C "${dir}" pull --quiet origin "${current_branch}" || error "Error pulling repo: ${name}"
-  elif [[ -z "${current_branch}" ]]; then
-    warning "Repo ${name}: Unknown branch or detatched HEAD"
-  else
-    warning "Repo ${name}: Feature branch checkout: ${current_branch}"
-  fi
-}
 
 # In CI clone with https and GITHUB_TOKEN
 # Otherwise use ssh since it never asks for a password, and doesen't store the token in .git/config
 function git_clone() {
-  if [[ "${CI:-}" != "" ]]; then
-    (
-      set -x
-      git clone https://${GITHUB_TOKEN}@github.com/axioscode/${1}.git ${2}
-    )
-  else
-    (
-      set -x
-      git clone git@github.com:axioscode/${1} ${2}
-    )
-  fi
+  (
+    set -x
+    git clone git@github.com:axioscode/${1} ${2}
+  )
 }
 
 # kubectl with context and namespace
@@ -323,55 +231,6 @@ function kx() (
   set -x
   # shellcheck disable=SC2068
   kubectl --context=dev --namespace="${ns}" $@
-)
-
-function ensure_twingate() (
-
-  # Don't check twingate if in circleCI
-  if [ -n "${CI:-}" ]; then
-    return
-  fi
-
-  if [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
-    warning "WSL detected, unable to verify Twingate is running; Please ensure Twingate is running for connectivity to AWS resources"
-    return
-  fi
-
-  case $(uname -s) in
-  Darwin)
-
-    # Start Twingate
-    /Applications/Twingate.app/Contents/Library/LoginItems/Twingate\ Launcher.app/Contents/MacOS/Twingate\ Launcher
-
-    for i in {1..10}; do
-      if launchctl list | grep twingate | grep -v launcher &>/dev/null; then
-        return
-      fi
-      info "Waiting for twingate to start... (${i}/10)"
-      sleep 5
-    done
-
-    error "Please ensure Twingate is running for connectivity to AWS resources"
-
-    ;;
-  Linux)
-
-    # start is idempotent
-    twingate start
-
-    for i in {1..10}; do
-
-      if [[ "$(twingate status)" == "online" ]]; then
-        return
-      fi
-
-      info "Waiting for twingate to authenticate... (${i}/10)"
-      sleep 5
-    done
-
-    error "Please ensure Twingate is running for connectivity to AWS resources"
-    ;;
-  esac
 )
 
 function ensure_docker() (
@@ -441,47 +300,6 @@ function abspath() (
   fi
 )
 
-function dev_namespace() (
-  if [[ -n "${AXIOS_TILT_FORCE_REMOTE_NAMESPACE:-}" ]]; then
-    echo "${AXIOS_TILT_REMOTE_NAMESPACE:-}"
-  else
-    echo "dev-$(aws --output=json sts get-caller-identity | jq -r .Arn | cut -d '/' -f 2)"
-  fi
-)
-
-function configure_dev_namespace() (
-  ns="$(dev_namespace)"
-
-  if [[ "${ns}" == "" || "${ns}" == "dev-" || "${ns:-}" == "dev-postlight" ]]; then
-    warning "Please ask Polaris for an AWS user account in slack channel #pt-squad-polaris"
-    warning "AWS user account: $(aws --output=json sts get-caller-identity | jq -r .Arn)"
-    error "Unexpected dev namespace: ${ns}"
-  fi
-
-  if [[ "${ns}" == "dev-axios-admin-full" ]]; then
-    warning "Are you a member of  Polaris and using AssumeRole?"
-    warning "You probably need to set:"
-    warning "  AXIOS_TILT_FORCE_REMOTE_NAMESPACE=true"
-    warning "  AXIOS_TILT_REMOTE_NAMESPACE=dev-{ username }"
-    error "Unexpected dev namespace: ${ns}"
-  fi
-
-  info "Switching to Kubernetes context: dev/${ns}"
-
-  # shellcheck disable=SC2086
-  go run ${REPO_ROOT}/lib/golang/src/scripts/kubeconfig-set-context-namespace --namespace="${ns}"
-
-  # shellcheck disable=SC2086
-  ${REPO_ROOT}/devops/scripts/ecr-login
-
-  if [[ "${CI:-}" == "" ]]; then
-    if ! k get namespace --output=name "${ns}" >/dev/null 2>&1; then
-      warning "You don't appear to have a development namespace: ${ns}"
-      error "Please ask Polaris to configure your dev namespace in slack channel #pt-squad-polaris"
-    fi
-  fi
-)
-
 # Platform independent sed -i
 function sed-i() (
   platform=$(uname -s)
@@ -503,69 +321,4 @@ function isodate() (
   elif [[ "${platform}" == "Linux" ]]; then
     date --utc --iso-8601=seconds "$@"
   fi
-)
-
-function hax_aws_rotate_keys() (
-  if [[ "${CI:-}" != "" ]]; then
-    warning "Skipping Key Rotation in CI"
-    return
-  fi
-
-  # Find profile with keys to rotate
-  profiles=(default media root)
-  rotate_profile=default
-  for profile in "${profiles[@]}"; do
-    profile_key="$(AWS_PROFILE="" aws configure get aws_access_key_id --profile "${profile}" || true)"
-    if [[ -n "$profile_key" ]]; then
-      rotate_profile="${profile}"
-      break
-    fi
-  done
-
-  require_repo_root
-
-  # How often we want to rotate (on or after)
-  rotation_interval="1week"
-
-  # aws config name
-  key="axios_last_key_rotation"
-
-  last="$(aws configure get --profile "${rotate_profile}" ${key} || echo "")"
-  now="$(isodate --date=now)"
-
-  # If now is more (after) the marked date
-  if [[ "${now}" > "${last}" ]]; then
-    info "Rotating AWS Access Keys in profile ${rotate_profile}"
-
-    # rotate keys
-    AWS_PROFILE="" "${REPO_ROOT}/../hax/bin/hax" aws:rotate-keys --yes --profiles "${rotate_profile}"
-
-    # schedule next rotation
-    next_week="$(isodate --date=now+${rotation_interval})"
-    info "Scheduling next rotation for on or after: ${next_week}"
-    aws configure set --profile "${rotate_profile}" "${key}" "${next_week}"
-  fi
-)
-
-function tilt_set_config() (
-  key="${1}"
-  value="${2}"
-  default="${3}"
-
-  current=$(yq "${key}" "${REPO_ROOT}/tilt_config.yaml")
-  if [[ "${current}" == "${default}" ]] || [[ "${current}" == "null" ]]; then
-    info "Setting Tilt Config: ${key} = ${value}"
-
-    # Need the var so we read and replace the whole file, (could have used sponge, but it's probably not available)
-    config="$(yq -y "${key} = ${value}" "${REPO_ROOT}/tilt_config.yaml")"
-    echo "${config}" >"${REPO_ROOT}/tilt_config.yaml"
-  fi
-)
-
-function tilt_enable() (
-  tilt_set_config ${1} true false
-)
-
-function tilt_disable() (
-  tilt_set_config ${1} false true
 )
