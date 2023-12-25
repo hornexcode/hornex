@@ -11,6 +11,7 @@ from lib.riot.types import (
     PlatformRoutingType,
     RegionalRoutingType,
     RegionType,
+    SummonerDTO,
     TournamentCodeV5DTO,
     TournamentGamesV5,
     UpdateTournamentCode,
@@ -314,6 +315,41 @@ class Client(Clientable):
             raise Exception("Error retrieving entries", response.json())
 
         data = response.json()
+
+        league_entries = LeagueEntryDTO.from_api_response_list(data)
+
+        return league_entries
+
+    def get_summoner_by_name(self, summoner_name: str) -> SummonerDTO:
+        url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoner_name}?api_key={self.api_key}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            logger.warning("Error retrieving summoner", response.json())
+            raise Exception("Error retrieving summoner", response.json())
+
+        data = response.json()
+
+        for k, v in data.items():
+            if v is None:
+                raise Exception(f"Summoner {summoner_name} has no {k}")
+
+        return SummonerDTO(
+            id=data["id"],
+            account_id=data["accountId"],
+            puuid=data["puuid"],
+            name=data["name"],
+        )
+
+    def get_summoner_entries_by_summoner_id(self, id: str) -> list[LeagueEntryDTO]:
+        url = f"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{id}?api_key={self.api_key}"
+        resp = requests.get(url)
+
+        if resp.status_code != 200:
+            logger.warning("Error retrieving summoner entries", resp.json())
+            raise Exception("Error retrieving summoner entries", resp.json())
+
+        data = resp.json()
 
         league_entries = LeagueEntryDTO.from_api_response_list(data)
 

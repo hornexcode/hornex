@@ -9,6 +9,8 @@ import moment from 'moment';
 import Image from 'next/image';
 import { FC } from 'react';
 import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
+import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
+import { ConnectedGameId } from '../../molecules/connected-game-id';
 
 const imageLoader = ({ src }: any) => {
   return `https://placehold.co/${src}`;
@@ -16,9 +18,11 @@ const imageLoader = ({ src }: any) => {
 
 type TournamentHeadlineProps = {
   tournament: Tournament;
+  connectedGameId?: GameID;
 };
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   tournament,
+  connectedGameId,
 }) => {
   const { openModal } = useModal();
   return (
@@ -108,6 +112,11 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                 </div>
               )}
             </div>
+            {connectedGameId && (
+              <div className="mx-4 block">
+                <ConnectedGameId gameId={connectedGameId} />
+              </div>
+            )}
             <div className="block">
               <Button
                 size="small"

@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from apps.games.models import Game, GameAccountRiot
+from apps.games.models import Game, GameID
 
-admin.site.register([Game, GameAccountRiot])
+admin.site.register([Game, GameID])

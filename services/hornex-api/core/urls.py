@@ -55,8 +55,8 @@ urlpatterns = [
     path(f"{prefix}/tournaments", include("apps.tournaments.urls")),
     # health check
     path("api/v1/health/check", health),
-    # webhooks
-    path("api/v1/riot/webhooks", include("apps.accounts.riot.urls")),
+    # oauth
+    path("api/v1/riot", include("apps.leagueoflegends.urls")),
 ]
 
 

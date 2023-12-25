@@ -19,9 +19,9 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             Tournament details
           </h4>
         </div>
-        <div className="bg-light-dark flex flex-col items-start rounded-b">
-          <div className="col-span-1 w-full p-5">
-            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+        <div className="bg-light-dark grid grid-cols-4 rounded-b">
+          <div className="col-span-1 p-5">
+            <div className="space-y-3 border-r border-gray-700 pb-4 text-center">
               <SwordsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Format</p>
               <p className="text-title text-xs font-bold">
@@ -29,8 +29,8 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
               </p>
             </div>
           </div>
-          <div className="col-span-1  w-full p-5">
-            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+          <div className="col-span-1  p-5">
+            <div className="space-y-3 border-r border-gray-700 pb-4 text-center">
               <ComputerDesktopIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Platform</p>
               <p className="text-title text-xs font-bold">
@@ -38,8 +38,8 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
               </p>
             </div>
           </div>
-          <div className="col-span-1  w-full p-5">
-            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+          <div className="col-span-1 p-5">
+            <div className="space-y-3 border-r border-gray-700 pb-4 text-center">
               <LockOpenIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Classification</p>
               <p className="text-title text-xs font-bold">
@@ -47,8 +47,8 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
               </p>
             </div>
           </div>
-          <div className="w-full p-5">
-            <div className="flex space-y-3 border-b border-gray-700 pb-4 text-center">
+          <div className="col-span-1 p-5">
+            <div className="space-y-3 border-gray-700 pb-4 text-center">
               <CoinsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
               <p className="text-sm font-bold text-cyan-500">Entry fee</p>
               <p className="text-title text-xs font-bold">

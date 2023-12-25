@@ -13,7 +13,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
 }) => {
   return (
     <div className="bg-light-dark shadow-light space-y-2 rounded-md ">
-      <div className="bg-medium-dark">
+      <div className="bg-medium-dark rounded-t">
         <div className="border-b border-gray-700 p-5">
           <h4 className="leading-2 text-title text-lg font-extrabold">
             Tournament Phases

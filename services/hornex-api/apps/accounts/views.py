@@ -1,3 +1,5 @@
+import time
+
 import requests
 from django.shortcuts import redirect
 from drf_yasg import openapi
@@ -34,15 +36,12 @@ tokenUrl = provider + "/token"
 )
 @api_view(["GET"])
 def riot_oauth_callback(request):
-    request_id = request.GET.get("request_id")
-    print(request_id)
-    access_code = request.GET.get("code")
-
-    user = request.user
-    if not user:
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    csrftoken = request.GET.get("state")
+    if csrftoken is None:
+        return redirect("http://localhost:3000")
 
     # post information as x-www-form-urlencoded
+    access_code = request.GET.get("code")
     form = {
         "grant_type": "authorization_code",
         "code": access_code,
@@ -50,21 +49,21 @@ def riot_oauth_callback(request):
     }
 
     is_new = True
-    try:
-        # It will throw an exception whenever the user does not have acc.
-        user.leagueoflegendsaccount
-        is_new = False
-    except LeagueOfLegendsAccount.DoesNotExist:
-        is_new = True
+    # try:
+    #     # It will throw an exception whenever the user does not have acc.
+    #     user.leagueoflegendsaccount
+    #     is_new = False
+    # except LeagueOfLegendsAccount.DoesNotExist:
+    #     is_new = True
 
-    if is_new:
-        account = LeagueOfLegendsAccount()
-        account.user = user
+    # if is_new:
+    #     account = LeagueOfLegendsAccount()
+    #     account.user = user
 
-        return create_or_update_leagueoflegends_account(form, account)
-    else:
-        account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
-        return create_or_update_leagueoflegends_account(form, account)
+    #     return create_or_update_leagueoflegends_account(form, account)
+    # else:
+    #     account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
+    #     return create_or_update_leagueoflegends_account(form, account)
 
 
 def create_or_update_leagueoflegends_account(
@@ -129,9 +128,8 @@ def create_or_update_leagueoflegends_account(
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def get_connect_account_link(request):
+def riot_connect_account(request):
     game = request.GET.get("game")
-
     if game == "league-of-legends":
         return Response(
             {

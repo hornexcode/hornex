@@ -11,8 +11,8 @@ import { FC } from 'react';
 const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
   const router = useRouter();
   return (
-    <div className="shadow-light bg-light-dark rounded">
-      <div className="bg-medium-dark rounded-t">
+    <div className="shadow-light bg-light-dark">
+      <div className="bg-medium-dark highlight-white-5 rounded rounded-t">
         <div className="block px-5 py-4">
           <Link
             href="/nft-details"

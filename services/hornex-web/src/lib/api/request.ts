@@ -1,6 +1,7 @@
 import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
 import { Route } from '@/lib/routes';
+import { get } from 'es-cookie';
 import { IncomingMessage } from 'http';
 import useSWR, { SWRConfiguration } from 'swr';
 
@@ -17,6 +18,11 @@ export type ParamMap = {
 };
 
 const fetcher = async (url: string, options: RequestInit = {}) => {
+  // include cookies if Client side
+  if (!isServer) {
+    options.credentials = 'include';
+  }
+
   return await fetch(url, options);
 };
 
@@ -27,28 +33,33 @@ export const dataLoader = <T, Data = unknown>(
 
   const route = new Route(`${API_ROOT}/${path}`);
 
+  const abortController = new AbortController();
+  const signal = abortController.signal;
+
   const getResponseObject = async <UDT = T>(
     res: Response
   ): Promise<FetchResponse<UDT>> => {
     let data: UDT | null | undefined = null;
     let error: FetchError | null | undefined = null;
     try {
-      if (res.ok) {
-        data = await res.json();
-      } else {
-        try {
-          const errRes = await res.json();
-          error = {
-            name: 'FetchError',
-            message: (errRes?.error || errRes?.detail) ?? 'Unable to fetch',
-            validations: errRes?.validations,
-            code: res.status,
-            response: errRes,
-          };
-        } catch (_) {
-          const errorMessage = await res.text();
-          error = new Error(errorMessage);
-          error.code = res.status;
+      if (!signal.aborted) {
+        if (res.ok) {
+          data = await res.json();
+        } else {
+          try {
+            const errRes = await res.json();
+            error = {
+              name: 'FetchError',
+              message: (errRes?.error || errRes?.detail) ?? 'Unable to fetch',
+              validations: errRes?.validations,
+              code: res.status,
+              response: errRes,
+            };
+          } catch (_) {
+            const errorMessage = await res.text();
+            error = new Error(errorMessage);
+            error.code = res.status;
+          }
         }
       }
     } catch (e: any) {
@@ -86,7 +97,10 @@ export const dataLoader = <T, Data = unknown>(
       return fetcher(url, options).then(getResponseObject);
     },
 
-    post: async (payload?: Data): Promise<FetchResponse<T>> => {
+    post: async (
+      payload?: Data,
+      options?: { abort: boolean }
+    ): Promise<FetchResponse<T>> => {
       // Client side request
 
       // get cookie from client
@@ -102,6 +116,7 @@ export const dataLoader = <T, Data = unknown>(
           Authorization: `Bearer ${token?.split('=')[1]}`,
         },
         body: payload ? JSON.stringify(payload) : '',
+        signal,
       }).then(getResponseObject);
     },
 
@@ -216,6 +231,8 @@ export const dataLoader = <T, Data = unknown>(
         // }
       );
     },
+
+    abortController,
   };
 };
 

@@ -8,7 +8,7 @@ import { AuthContextProvider } from '@/lib/auth/auth-context';
 import { NotificationContextProvider } from '@/lib/notification';
 import classnames from 'classnames';
 import { NextPage } from 'next';
-import type { AppProps } from 'next/app';
+import { AppProps, AppContext, AppInitialProps } from 'next/app';
 import { Source_Sans_3 } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
@@ -20,6 +20,7 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 };
 
 type AppPropsWithLayout = AppProps & {
+  game: string;
   Component: NextPageWithLayout;
 };
 
@@ -58,5 +59,13 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
     </NextThemesProvider>
   );
 }
+
+// App.getInitialProps = async (
+//   context: AppContext
+// ): Promise<AppPropsWithLayout & AppInitialProps> => {
+//   const ctx = await App.getInitialProps(context);
+
+//   return { ...ctx, game: 'league-of-legends' };
+// };
 
 export default App;

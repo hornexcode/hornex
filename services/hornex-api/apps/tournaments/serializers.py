@@ -24,10 +24,7 @@ class TournamentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_classifications(self, obj):
-        return [
-            "{} {}".format(classification.tier, classification.rank)
-            for classification in obj.classifications.all()
-        ]
+        return obj.get_classifications()
 
 
 class RegistrationCreateSerializer(serializers.Serializer):

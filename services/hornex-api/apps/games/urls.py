@@ -1,13 +1,13 @@
 from django.urls import path
 
-from apps.games.views import GameViewSet, create_game_account
+from apps.games.views import GameIDViewSet, GameViewSet
 
 urlpatterns = [
     path("", GameViewSet.as_view({"get": "list"}), name="game-list"),
-    path("/<str:id>", GameViewSet.as_view({"get": "retrieve"}), name="game-details"),
+    path("/game-ids", GameIDViewSet.as_view({"get": "list"}), name="game-ids-list"),
     path(
-        "/<str:id>/accounts/connect",
-        create_game_account,
-        name="game-account",
+        "/<str:id>/details",
+        GameViewSet.as_view({"get": "retrieve"}),
+        name="game-details",
     ),
 ]

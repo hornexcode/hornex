@@ -9,12 +9,22 @@ import classnames from 'classnames';
 import { FC, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import Button from '../../atoms/button/button';
+import Image from 'next/image';
+
+import LeagueOfLegendsLogoMarkBlack from '@/assets/images/games/league-of-legends/logomark-black.png';
+import { useModal } from '@/components/modal-views/context';
+import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
+import { ConnectedGameId } from '../../molecules/connected-game-id';
 
 type TournamentProps = {
   tournament: Tournament;
+  gameIds: GameID[];
 };
 
-const TournamentDetailsTemplate: FC<TournamentProps> = ({ tournament }) => {
+const TournamentDetailsTemplate: FC<TournamentProps> = ({
+  tournament,
+  gameIds,
+}) => {
   let [tabs] = useState({
     Overview: '',
     Standings: '',
@@ -24,16 +34,55 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({ tournament }) => {
   });
 
   const { toast } = useToast();
+  const { openModal } = useModal();
+
+  const gameId =
+    (gameIds.length > 0 &&
+      gameIds.find((gameId) => gameId.game === 'league-of-legends')) ||
+    undefined;
 
   return (
     <div className="p-6">
+      {/* connect account */}
+      {!gameId && (
+        <div className="bg-light-dark shadow-card mb-4 p-6">
+          <h2 className="text-title text-lg font-bold">Connect your account</h2>
+          <p className="text-title text-sm">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio,
+            nostrum!
+          </p>
+          <div className="pt-6">
+            <Button
+              shape="rounded"
+              size="small"
+              onClick={() => openModal('CONNECT_ACCOUNT_VIEW')}
+            >
+              <div className="flex items-center">
+                <Image
+                  alt="League of Legends Logo"
+                  src={LeagueOfLegendsLogoMarkBlack}
+                  width={20}
+                  height={20}
+                  className="mr-4"
+                />
+                <span>Connect account</span>
+              </div>
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* tournament details */}
       <div className="mb-4 block lg:mb-10">
-        <TournamentDetailsHeadline tournament={tournament} />
+        <TournamentDetailsHeadline
+          connectedGameId={gameId}
+          tournament={tournament}
+        />
       </div>
       <Tab.Group>
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
-            <Tab.List className="no-scrollbar flex gap-4 overflow-auto border-b border-gray-500 py-1 sm:overflow-visible md:gap-10">
+            <Tab.List className="no-scrollbar flex gap-4 overflow-auto border-b border-gray-700 py-1 sm:overflow-visible md:gap-10">
               {Object.keys(tabs).map((tab) => (
                 <Tab
                   key={tab}
@@ -69,14 +118,6 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({ tournament }) => {
           <div className="col-span-3">
             <TournamentPhasesWidget tournament={tournament} />
           </div>
-          {/* <div className="mt-4 grid grid-cols-4 gap-4">
-            <div className="col-span-1">
-            <TournamentPhasesWidget tournament={tournament} />
-            </div>
-            <div className="col-span-3">
-            <div className="bg-light-dark space-y-8 rounded-md p-4"></div>
-            </div>
-          </div> */}
         </div>
       </Tab.Group>
     </div>

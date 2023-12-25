@@ -5,12 +5,12 @@ from datetime import timedelta as td
 import faker
 
 from apps.accounts.models import LeagueOfLegendsAccount
-from apps.teams.models import Invite, Team
-from apps.tournaments.leagueoflegends.models import (
+from apps.leagueoflegends.models import (
     Classification,
-    LeagueOfLegendsTournament,
-    LeagueOfLegendsTournamentProvider,
+    Provider,
+    Tournament,
 )
+from apps.teams.models import Invite, Team
 from apps.tournaments.models import Match, Round, Tournament
 from apps.users.models import User
 
@@ -101,7 +101,7 @@ class LeagueOfLegendsTournamentFactory:
         """
         Create a new league of legends tournament with the given organizer and kwargs.
         """
-        default_provider = LeagueOfLegendsTournamentProvider.objects.create(
+        default_provider = Provider.objects.create(
             id=1, region="BR", url="https://www.hornex.gg/"
         )
 
@@ -109,7 +109,7 @@ class LeagueOfLegendsTournamentFactory:
             classification = [classification]
 
         now = dt.now(tz=UTC)
-        tmt = LeagueOfLegendsTournament.objects.create(
+        tmt = Tournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),
             organizer=organizer,
@@ -133,11 +133,9 @@ class LeagueOfLegendsTournamentFactory:
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
             provider=kwargs.get("provider", default_provider),
-            pick=kwargs.get("pick", LeagueOfLegendsTournament.PickType.DRAFT_MODE),
-            map=kwargs.get("map", LeagueOfLegendsTournament.MapType.HOWLING_ABYSS),
-            spectator=kwargs.get(
-                "spectator", LeagueOfLegendsTournament.SpectatorType.ALL
-            ),
+            pick=kwargs.get("pick", Tournament.PickType.DRAFT_MODE),
+            map=kwargs.get("map", Tournament.MapType.HOWLING_ABYSS),
+            spectator=kwargs.get("spectator", Tournament.SpectatorType.ALL),
         )
 
         tmt.classifications.set(classification) if classification is not None else None
@@ -183,7 +181,7 @@ class LeagueOfLegendsAccountFactory:
 
 class RoundFactory:
     @staticmethod
-    def new(tournament: LeagueOfLegendsTournament, **kwargs):
+    def new(tournament: Tournament, **kwargs):
         """
         Create a new round with the given kwargs.
         """
@@ -196,7 +194,7 @@ class RoundFactory:
 
 class MatchFactory:
     @staticmethod
-    def new(tournament: LeagueOfLegendsTournament, **kwargs):
+    def new(tournament: Tournament, **kwargs):
         """
         Create a new match with the given kwargs.
         """

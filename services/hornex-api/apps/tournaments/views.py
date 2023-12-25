@@ -9,13 +9,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.teams.models import Team
-from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
-from apps.tournaments.leagueoflegends.models import LeagueOfLegendsTournament
-from apps.tournaments.leagueoflegends.serializers import (
+from apps.leagueoflegends.models import Tournament
+from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
-from apps.tournaments.models import Registration, Tournament
+from apps.teams.models import Team
+from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
+from apps.tournaments.models import Registration
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.serializers import (
     RegistrationCreateSerializer,
@@ -24,7 +24,7 @@ from apps.tournaments.serializers import (
 )
 from core.route import extract_game_and_platform
 
-# from apps.tournaments.leagueoflegends.usecases import RegisterTeam
+# from apps.leagueoflegends.usecases import RegisterTeam
 
 game_qp = openapi.Parameter(
     "game",
@@ -60,7 +60,7 @@ class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
         game, _ = extract_game_and_platform(kwargs)
 
         if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.all()
+            self.queryset = Tournament.objects.all()
 
         return super().list(request, *args, **kwargs)
 
@@ -75,7 +75,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
     def get_object(self, *args, **kwargs):
         game = kwargs.get("game")
         if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.select_for_update().all()
+            self.queryset = Tournament.objects.select_for_update().all()
 
         return super().get_object()
 
@@ -83,7 +83,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
         game, _ = extract_game_and_platform(kwargs)
 
         if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.all()
+            self.queryset = Tournament.objects.all()
 
         return super().retrieve(request, *args, **kwargs)
 
@@ -98,7 +98,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     def get_object(self, *args, **kwargs):
         game = kwargs.get("game")
         if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.select_for_update().all()
+            self.queryset = Tournament.objects.select_for_update().all()
 
         return super().get_object()
 
@@ -169,7 +169,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
 
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = LeagueOfLegendsTournament.objects.all()
+    queryset = Tournament.objects.all()
     serializer_class = LeagueOfLegendsTournamentSerializer
     lookup_field = "id"
     filter_backends = (

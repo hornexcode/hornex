@@ -1,26 +1,7 @@
 from django.contrib import admin, messages
-from django.db import transaction
 from django.utils.translation import ngettext
 
-from apps.tournaments.leagueoflegends.models import (
-    Classification,
-    Code,
-    LeagueOfLegendsTournament,
-    LeagueOfLegendsTournamentProvider,
-)
-from apps.tournaments.leagueoflegends.tasks import on_brackets_generated
-from apps.tournaments.models import Match, Registration, Round, Subscription
-
-admin.site.register(
-    [
-        LeagueOfLegendsTournamentProvider,
-        Classification,
-        Subscription,
-        Match,
-        Round,
-        Code,
-    ]
-)
+from apps.tournaments.models import Registration
 
 
 class RegistrationAdmin(admin.ModelAdmin):
@@ -48,48 +29,3 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Registration, RegistrationAdmin)
-
-
-class TournamentAdmin(admin.ModelAdmin):
-    actions = ["generate_brackets"]
-    list_display = ["name", "game", "status", "prize_pool"]
-
-    @admin.action(description="Generate brackets", permissions=["change"])
-    def generate_brackets(modeladmin, request, queryset):
-        pass
-
-
-# admin.site.register(Tournament, TournamentAdmin)
-
-
-class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
-    actions = ["start_tournament"]
-
-    @admin.action(
-        description="Start selected league of legends tournament",
-        permissions=["change"],
-    )
-    @transaction.atomic
-    def start_tournament(self, request, queryset):
-        success_count = 0
-
-        for tournament in queryset:
-            try:
-                tournament.start()
-                success_count += 1
-                on_brackets_generated.delay(str(tournament.id))
-            except Exception as e:
-                return messages.error(request, str(e))
-
-        return messages.success(
-            request,
-            ngettext(
-                "%(success_count)d tournament was started successfully.",
-                "%(success_count)d tournament were started successfully.",
-                success_count,
-            )
-            % {"success_count": success_count},
-        )
-
-
-admin.site.register(LeagueOfLegendsTournament, LeagueOfLegendsTournamentAdmin)
