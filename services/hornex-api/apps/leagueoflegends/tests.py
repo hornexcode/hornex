@@ -1,6 +1,6 @@
 from datetime import timedelta as td
 from test.factories import (
-    LeagueOfLegendsAccountFactory,
+    # LeagueOfLegendsAccountFactory,
     LeagueOfLegendsTournamentFactory,
     TeamFactory,
     UserFactory,
@@ -37,10 +37,10 @@ class TestLeagueOfLegendsTournament(APITestCase):
             tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
         )
         Membership.objects.create(team=team, user=self.user)
-        LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
+        # LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
         for _ in range(0, 4):
             usr = UserFactory.new()
-            LeagueOfLegendsAccountFactory.new(user=usr, classification=classification)
+            # LeagueOfLegendsAccountFactory.new(user=usr, classification=classification)
             Membership.objects.create(team=team, user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
@@ -105,7 +105,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         classification = Classification.objects.create(
             tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
         )
-        LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
+        # LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
         self.tournament = LeagueOfLegendsTournamentFactory.new(
             organizer=self.user, classification=classification, team_size=1, max_teams=1
         )
@@ -130,7 +130,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         user_b = UserFactory.new()
         team_b = TeamFactory.new(created_by=user_b)
         Membership.objects.create(team=team_b, user=user_b)
-        LeagueOfLegendsAccountFactory.new(user=user_b, classification=classification)
+        # LeagueOfLegendsAccountFactory.new(user=user_b, classification=classification)
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(user_b)
@@ -175,7 +175,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         classification = Classification.objects.create(
             tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
         )
-        LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
+        # LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
         self.tournament = LeagueOfLegendsTournamentFactory.new(
             organizer=self.user, classification=classification, team_size=1
         )
@@ -219,14 +219,14 @@ class TestLeagueOfLegendsTournament(APITestCase):
         )
 
         Membership.objects.create(team=team, user=self.user)
-        LeagueOfLegendsAccountFactory.new(
-            user=self.user, classification=classification_gold
-        )
+        # LeagueOfLegendsAccountFactory.new(
+        #     user=self.user, classification=classification_gold
+        # )
         for _ in range(0, 4):
             usr = UserFactory.new()
-            LeagueOfLegendsAccountFactory.new(
-                user=usr, classification=classification_bronze
-            )
+            # LeagueOfLegendsAccountFactory.new(
+            #     user=usr, classification=classification_bronze
+            # )
             Membership.objects.create(team=team, user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
