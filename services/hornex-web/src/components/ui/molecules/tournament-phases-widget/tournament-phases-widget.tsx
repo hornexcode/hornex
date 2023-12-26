@@ -54,7 +54,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                       className={classnames(
                         'flex-basis mr-1 h-2 flex-grow rounded-[2px]  bg-amber-400',
                         {
-                          'bg-gray-200': index > tournament.teams.length - 1,
+                          'bg-gray-600': index > tournament.teams.length - 1,
                         }
                       )}
                     ></div>

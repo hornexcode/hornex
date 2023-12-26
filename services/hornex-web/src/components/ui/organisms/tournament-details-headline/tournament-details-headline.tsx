@@ -16,6 +16,7 @@ import { FC } from 'react';
 import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { ConnectedGameIds } from '../../molecules/connected-game-ids';
+import { useRouter } from 'next/router';
 
 const imageLoader = ({ src }: any) => {
   return `https://placehold.co/${src}`;
@@ -30,6 +31,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   connectedGameId,
 }) => {
   const { openModal } = useModal();
+  const router = useRouter();
   return (
     <>
       <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52">
@@ -78,7 +80,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
                   {!tournament.is_entry_free && (
                     <div className="text-title text-sm">
-                      R${' '}
+                      ${' '}
                       {calcPrizePool(
                         tournament.entry_fee,
                         tournament.max_teams * tournament.team_size,
@@ -128,6 +130,17 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               >
                 Registrar time
               </Button>
+              {/* <Button
+                size="small"
+                onClick={() =>
+                  router.push(
+                    `/pc/league-of-legends/tournaments/${tournament.id}/checkout`
+                  )
+                }
+                shape="rounded"
+              >
+                Registrar time
+              </Button> */}
             </div>
           </div>
         </div>

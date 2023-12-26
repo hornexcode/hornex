@@ -68,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       return {
         redirect: {
           destination: data.return_path,
-          permanent: false,
+          permanent: true,
         },
       };
     }

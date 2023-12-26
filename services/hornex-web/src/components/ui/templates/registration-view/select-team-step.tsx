@@ -8,6 +8,7 @@ import { dataLoader } from '@/lib/api';
 import { Team, Tournament } from '@/lib/proto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InfoIcon } from 'lucide-react';
+import { useRouter } from 'next/router';
 import React, { FC, FormEventHandler, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -24,6 +25,7 @@ export type SelectTeamStepProps = {};
 
 export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
   const { nextStep, setTeam, teams, tournament } = useStepContext();
+  const router = useRouter();
   // react hook form
   const {
     register,
@@ -51,7 +53,12 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
   async function submitHandler(data: SubmitRegistrationFormType) {
     setTeam(teamOption);
     console.log(data);
-    nextStep('CHECKOUT');
+    // nextStep('CHECKOUT');
+    if (tournament) {
+      router.push(
+        `/pc/league-of-legends/tournaments/${tournament.id}/checkout`
+      );
+    }
   }
 
   return (
