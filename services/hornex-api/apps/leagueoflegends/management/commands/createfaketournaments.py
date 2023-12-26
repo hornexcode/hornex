@@ -24,6 +24,11 @@ class Command(BaseCommand):
             end_date=now + td(days=4),
             start_time=now,
             end_time=now + td(hours=2),
+            feature_image="tmt-6.jpeg",
+            entry_fee=25,
+            max_teams=32,
+            team_size=5,
+            is_public=True,
         )
         tournament.allowed_league_entries.set(
             [

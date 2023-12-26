@@ -198,3 +198,24 @@ CHANNEL_LAYERS = {
 TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER = 5
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+    },
+}

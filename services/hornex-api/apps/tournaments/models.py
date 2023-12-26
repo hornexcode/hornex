@@ -76,6 +76,8 @@ class Tournament(models.Model):
 
     teams = models.ManyToManyField("teams.Team", related_name="tournaments", blank=True)
 
+    is_classification_open = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

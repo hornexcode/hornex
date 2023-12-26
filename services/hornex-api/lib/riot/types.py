@@ -247,3 +247,20 @@ class SummonerDTO:
     account_id: str
     puuid: str
     name: str
+
+
+@dataclass
+class AccessTokenDTO:
+    access_token: str
+    expires_in: int
+    id_token: str
+    refresh_token: str
+    scope: str
+    token_type: str
+
+
+@dataclass
+class AccountDTO:
+    puuid: str
+    game_name: str
+    tag_line: str

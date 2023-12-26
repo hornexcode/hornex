@@ -13,3 +13,7 @@ to run a tournament into riot's platform using their API
 - [ ] `tests.py`: contains feature tests for views
 - [ ] `serializers.py`: works as a HTTP request validator and serialize i/o data for use cases and views
 - [ ] `urls.py`: expose api endpoints to admin or to the hx app
+
+--
+
+# https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://robin-lasting-magpie.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access

@@ -8,6 +8,7 @@ import {
   UserPlus,
   Users,
   CogIcon,
+  PlusCircleIcon,
 } from 'lucide-react';
 import { Menu, Transition } from '@headlessui/react';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
@@ -16,11 +17,11 @@ import { ChevronDown } from '../../atoms/icons';
 import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
 import { LolFlatIcon } from '../../atoms/icons/lol-flat-icon';
 
-export const ConnectedGameId = ({ gameId }: { gameId: GameID }) => {
+export const ConnectedGameIds = ({ gameId }: { gameId: GameID }) => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="group-item border-title text-title flex w-full items-center justify-center rounded border-2 px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="group-item flex w-full items-center justify-center rounded border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <LolFlatIcon className="text-title mr-3 h-5 w-5" />
           <span>{gameId.nickname}</span>
           <ChevronDown className="ml-3 w-4" />
@@ -46,10 +47,15 @@ export const ConnectedGameId = ({ gameId }: { gameId: GameID }) => {
               {({ active }) => (
                 <button
                   className={`${
-                    active ? 'text-dark bg-amber-500' : 'text-title'
+                    active
+                      ? 'text-dark bg-amber-500'
+                      : 'text-title bg-medium-dark'
                   } group flex w-full items-center px-4 py-2 text-sm`}
                 >
-                  Brasil
+                  {gameId.nickname}
+                  <span className="text-dark ml-2 rounded-full bg-gray-200 px-2 text-xs">
+                    connected
+                  </span>
                 </button>
               )}
             </Menu.Item>
@@ -61,7 +67,8 @@ export const ConnectedGameId = ({ gameId }: { gameId: GameID }) => {
                     active ? 'text-dark bg-amber-500' : 'text-title'
                   } group flex w-full items-center px-4 py-2 text-sm`}
                 >
-                  Payments
+                  <PlusCircleIcon className="mr-2 h-4 w-4" />
+                  Connect another account
                 </button>
               )}
             </Menu.Item>

@@ -18,7 +18,7 @@ const CompetePage = ({
     <div className="mx-auto space-y-8 p-8">
       <section id="available-games">
         <div className="space-y-10">
-          <div className="mb-4 pb-2">
+          <div className="">
             <h2 className="text-title text-left text-xl font-bold leading-4 lg:text-xl">
               Available Games
             </h2>

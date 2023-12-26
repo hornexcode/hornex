@@ -14,7 +14,7 @@ import Image from 'next/image';
 import LeagueOfLegendsLogoMarkBlack from '@/assets/images/games/league-of-legends/logomark-black.png';
 import { useModal } from '@/components/modal-views/context';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
-import { ConnectedGameId } from '../../molecules/connected-game-id';
+import { ConnectedGameId } from '../../molecules/connected-game-ids';
 
 type TournamentProps = {
   tournament: Tournament;

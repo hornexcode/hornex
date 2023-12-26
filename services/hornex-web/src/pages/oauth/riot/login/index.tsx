@@ -1,8 +1,9 @@
 import { dataLoader } from '@/lib/api';
 import { useRouter } from 'next/router';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { useEffect } from 'react';
 
-const { useData: connectRiotAccount } = dataLoader<{ redirect_url: string }>(
+const { fetch: connectRiotAccount } = dataLoader<{ redirect_url: string }>(
   'connectRiotAccount'
 );
 const { fetch: connectRiotAccountCallback } = dataLoader<{
@@ -11,26 +12,12 @@ const { fetch: connectRiotAccountCallback } = dataLoader<{
 
 const OauthRiotLogin: InferGetServerSidePropsType<
   typeof getServerSideProps
-> = ({ return_path }: { return_path: string }) => {
-  // const returnPather = atom('');
-  // const [returnPath, setReturnPath] = useAtom(returnPather);
-
+> = ({ redirectUrl }: { redirectUrl: string }) => {
   const router = useRouter();
-  // const { code, state, return_path } = router.query;
 
-  console.log('@louise1', return_path);
-
-  // Case 1: User is not logged in and is redirected to the riot's login page
-  const { data, error } = connectRiotAccount({
-    return_path,
-  });
-  console.log('@louise2', data, error);
-
-  if (error) {
-    return <>error</>;
-  }
-
-  router.replace(data?.redirect_url || '/');
+  useEffect(() => {
+    router.replace(redirectUrl);
+  }, []);
 
   return <>authenticating...</>;
 };
@@ -40,6 +27,21 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
 }) => {
   const { code, state, return_path } = query;
+
+  if (return_path) {
+    // Case 1: User is not logged in and is redirected to the riot's login page
+    const { data, error } = await connectRiotAccount(
+      {
+        return_path,
+      },
+      req
+    );
+    return {
+      props: {
+        redirectUrl: data?.redirect_url || '/',
+      },
+    };
+  }
 
   // Case 2: User is logged in and is redirected to the callback page
   if (code !== undefined && state !== undefined) {
@@ -52,7 +54,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     );
 
     if (!data && error) {
-      console.log('error -> ', error.response?.message);
       return {
         redirect: {
           destination: '/',
@@ -60,6 +61,8 @@ export const getServerSideProps: GetServerSideProps = async ({
         },
       };
     }
+
+    console.log(data);
 
     if (data?.return_path) {
       return {

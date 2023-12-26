@@ -4,7 +4,6 @@ from django.db import models
 
 from apps.games.models import GameID
 from apps.tournaments.models import Tournament as BaseTournament
-from apps.users.models import User
 
 
 class LeagueEntry(models.Model):
@@ -47,7 +46,6 @@ class Summoner(models.Model):
     puuid = models.CharField(max_length=255)
     account_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     league_entry = models.OneToOneField(
         LeagueEntry, on_delete=models.CASCADE, blank=True, null=True
     )
@@ -161,7 +159,9 @@ class Tournament(BaseTournament):
         return f"{self.name} ({self.id})"
 
     def get_classifications(self) -> list[str]:
-        return ["1", "2"]
+        return [
+            f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()
+        ]
 
 
 class Code(models.Model):
@@ -169,3 +169,18 @@ class Code(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     match = models.ForeignKey("tournaments.Match", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Session(models.Model):
+    game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
+    scope = models.CharField(max_length=255)
+    expires_at = models.DateTimeField()
+    token_type = models.CharField(max_length=255)
+    refresh_token = models.CharField(max_length=255)
+    id_token = models.CharField(max_length=255)
+    sub_id = models.CharField(max_length=255)
+    access_token = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self) -> str:
+        return f"{self.game_id.nickname}'s Session"

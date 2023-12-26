@@ -2,8 +2,6 @@ import uuid
 
 from django.db import models
 
-from apps.users.models import User
-
 
 class Game(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -24,7 +22,8 @@ class Game(models.Model):
 
 
 class GameID(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
 
     class GameOptions(models.TextChoices):
         LEAGUE_OF_LEGENDS = "league-of-legends"
@@ -32,6 +31,9 @@ class GameID(models.Model):
 
     game = models.CharField(max_length=50, choices=GameOptions.choices)
     nickname = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=False)
+    region = models.CharField(max_length=255)
+    region_code = models.CharField(max_length=255)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

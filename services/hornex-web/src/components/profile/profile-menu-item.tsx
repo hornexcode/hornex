@@ -3,6 +3,7 @@ import { LoggedUser } from '@/domain';
 import { useAuthContext } from '@/lib/auth';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
+import { ChevronDownIcon, UserIcon } from 'lucide-react';
 import { Fragment } from 'react';
 
 export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
@@ -15,10 +16,15 @@ export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          <Avatar>
+          {/* <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
+          <div className="flex items-center rounded border-2 border-gray-200 px-4 py-2">
+            <UserIcon className="mr-2 h-4 w-4" />
+            {user.email}
+            <ChevronDownIcon className="ml-2 h-4 w-4" />
+          </div>
         </Menu.Button>
       </div>
       <Transition
@@ -30,10 +36,10 @@ export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="shadow-highlight-all absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded-md bg-slate-800 text-sm  ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="shadow-highlight-all bg-medium-dark shadow-dark absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded text-sm ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-2">
             <Menu.Item>
-              <div className="px-4 py-2 text-sm ">
+              <div className="px-4 text-sm">
                 <div className="text-semibold text-slate-200">{user.name}</div>
                 <div className="text-slate-400">{user.email}</div>
               </div>
@@ -74,7 +80,6 @@ export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
               )}
             </Menu.Item>
           </div>
-
           <div className="py-2">
             <Menu.Item>
               {({ active }) => (

@@ -61,7 +61,7 @@ module.exports = {
         'calc-358': 'calc(100% - 358px)',
       },
       fontFamily: {
-        body: ['JetBrains mono', 'monospace'],
+        body: ['__Source_Sans_3_24fffc', 'JetBrains Mono', 'monospace'],
       },
       fontSize: {
         '13px': ['13px', '18px'],

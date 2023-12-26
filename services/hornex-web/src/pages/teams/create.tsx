@@ -77,17 +77,17 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
   }, []);
 
   return (
-    <div className="flex pt-14">
-      <div className="bg-light-dark shadow-card mx-auto w-2/4 ">
-        <div className="bg-medium-dark border-b border-gray-600 p-5">
+    <div className="flex">
+      <div className="w-2/4 p-8">
+        <div className="mb-4">
           <div className="flex items-end justify-between">
-            <h2 className="text-title text-sm font-bold sm:text-xl">
+            <h2 className="text-title text-sm font-bold sm:text-lg">
               Create New Team
             </h2>
           </div>
         </div>
 
-        <div className="p-8">
+        <div className="">
           <form onSubmit={handleSubmit(submitHandler)}>
             <div className="w-full">
               <InputLabel title="Nome do time" important />
@@ -154,6 +154,16 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
               />
             </div>
             <div className="mt-10">
+              <Button
+                className="mr-4"
+                size="small"
+                color="gray"
+                variant="ghost"
+                shape="rounded"
+                type="submit"
+              >
+                Cancel
+              </Button>
               <Button size="small" shape="rounded" type="submit">
                 {isSubmitting ? <Loader /> : 'Create'}
               </Button>

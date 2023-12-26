@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from django.db import transaction
 from django.utils.translation import ngettext
 
-from apps.leagueoflegends.models import LeagueEntry, Summoner, Tournament
+from apps.leagueoflegends.models import LeagueEntry, Session, Summoner, Tournament
 from apps.leagueoflegends.tasks import on_brackets_generated
 
 
@@ -42,4 +42,4 @@ class TournamentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tournament, TournamentAdmin)
-admin.site.register([LeagueEntry, Summoner])
+admin.site.register([LeagueEntry, Summoner, Session])

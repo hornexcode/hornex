@@ -4,13 +4,18 @@ import { SwordsIcon } from '@/components/ui/atoms/icons';
 import { Tournament } from '@/lib/hx-app/types';
 import { calcPrizePool, toCurrency } from '@/lib/utils';
 import { TrophyIcon } from '@heroicons/react/20/solid';
-import { CalendarIcon, CoinsIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  CircleSlashIcon,
+  CoinsIcon,
+  DollarSign,
+} from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
 import { FC } from 'react';
 import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
-import { ConnectedGameId } from '../../molecules/connected-game-id';
+import { ConnectedGameIds } from '../../molecules/connected-game-ids';
 
 const imageLoader = ({ src }: any) => {
   return `https://placehold.co/${src}`;
@@ -44,12 +49,10 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
         <div className="flex w-full justify-between">
           <div className="block space-y-6">
             <div className="block">
-              <h4 className="text-title text-sm font-semibold">
-                {tournament.name}
-              </h4>
+              <h4 className="text-title text-sm">{tournament.name}</h4>
               {/* headline */}
               <div className="flex items-center">
-                <CalendarIcon className="w-4" />
+                <CalendarIcon className="text-title w-4" />
                 <div className="text-body ml-2 text-sm">
                   {moment(tournament.start_date).format('MMM Do YY')},{' '}
                   {tournament.start_time.substring(0, 5)} h{' '}
@@ -68,7 +71,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               {/* Prize Pool */}
               <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
                 <div>
-                  <TrophyIcon className="w-6 fill-cyan-500" />
+                  <TrophyIcon className="text-title w-6" />
                 </div>
                 <div>
                   <div className="text-md text-body">Prize Pool</div>
@@ -89,7 +92,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               {/* Classification */}
               <div className="flex items-center space-x-4 border-r-2 border-dotted border-slate-700 px-8">
                 <div>
-                  <SwordsIcon className="w-6 fill-cyan-500" />
+                  <CircleSlashIcon className="text-title w-6" />
                 </div>
                 <div>
                   <div className="text-md text-body">Classification</div>
@@ -101,7 +104,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               {!tournament.is_entry_free && (
                 <div className="flex items-center space-x-4 px-8">
                   <div>
-                    <CoinsIcon className="w-6 fill-cyan-500" />
+                    <DollarSign className="text-title w-6" />
                   </div>
                   <div>
                     <div className="text-md text-body">Entry fee</div>
@@ -114,7 +117,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </div>
             {connectedGameId && (
               <div className="mx-4 block">
-                <ConnectedGameId gameId={connectedGameId} />
+                <ConnectedGameIds gameId={connectedGameId} />
               </div>
             )}
             <div className="block">

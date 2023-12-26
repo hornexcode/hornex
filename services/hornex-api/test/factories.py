@@ -4,14 +4,14 @@ from datetime import timedelta as td
 
 import faker
 
-from apps.accounts.models import LeagueOfLegendsAccount
 from apps.leagueoflegends.models import (
     Classification,
     Provider,
     Tournament,
 )
 from apps.teams.models import Invite, Team
-from apps.tournaments.models import Match, Round, Tournament
+from apps.tournaments.models import Match, Round
+from apps.tournaments.models import Tournament as BaseTournament
 from apps.users.models import User
 
 fake = faker.Faker()
@@ -69,14 +69,14 @@ class TournamentFactory:
         Create a new tournament with the given organizer and kwargs.
         """
         now = dt.now(tz=UTC)
-        return Tournament.objects.create(
+        return BaseTournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),
             organizer=organizer,
-            game=kwargs.get("game", Tournament.GameType.LEAGUE_OF_LEGENDS),
-            platform=kwargs.get("platform", Tournament.PlatformType.PC),
+            game=kwargs.get("game", BaseTournament.GameType.LEAGUE_OF_LEGENDS),
+            platform=kwargs.get("platform", BaseTournament.PlatformType.PC),
             is_public=kwargs.get("is_public", True),
-            phase=kwargs.get("phase", Tournament.PhaseType.REGISTRATION_OPEN),
+            phase=kwargs.get("phase", BaseTournament.PhaseType.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
             registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
@@ -151,31 +151,6 @@ class ClassificationFactory:
         return Classification.objects.create(
             tier=kwargs.get("name", Classification.Tier.SILVER),
             rank=kwargs.get("rank", Classification.Rank.I),
-        )
-
-
-class LeagueOfLegendsAccountFactory:
-    @staticmethod
-    def new(user: User, **kwargs):
-        """
-        Create a new league of legends account with the given kwargs.
-        """
-        classification = kwargs.get("classification")
-        return LeagueOfLegendsAccount.objects.create(
-            summoner_id=kwargs.get("summoner_id", fake.name()),
-            account_id=kwargs.get("account_id", fake.name()),
-            puuid=kwargs.get("puuid", fake.name()),
-            summoner_name=kwargs.get("summoner_name", fake.name()),
-            profile_icon_id=kwargs.get("profile_icon_id", 123),
-            revision_date=kwargs.get("revision_date", 123),
-            summoner_level=kwargs.get("summoner_level", 123),
-            sub=kwargs.get("sub", fake.name()),
-            jti=kwargs.get("jti", fake.name()),
-            tag_line=kwargs.get("jti", LeagueOfLegendsAccount.TagLineType.BR1),
-            user=user,
-            classification=classification
-            if classification is not None
-            else ClassificationFactory.new(),
         )
 
 

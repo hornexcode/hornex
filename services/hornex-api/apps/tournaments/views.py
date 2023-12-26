@@ -128,7 +128,6 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     )
     @transaction.atomic
     def register(self, request, *args, **kwargs):
-        game, _ = extract_game_and_platform(kwargs)
         # validate request
         params = RegistrationCreateSerializer(
             data={**request.data, "tournament": kwargs["id"]},
@@ -137,7 +136,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
         if not params.is_valid():
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        tmt: Tournament = self.get_object(game=game)
+        tmt: Tournament = self.get_object()
 
         try:
             tm = Team.objects.get(id=params.data["team"])

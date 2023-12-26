@@ -20,7 +20,7 @@ export type CheckoutStepProps = {};
 
 export const CheckoutStep: FC<CheckoutStepProps> = () => {
   const { nextStep, step, tournament, team } = useStepContext();
-
+  let [paymentMethod, setPaymentMethod] = useState('pix');
   if (!tournament) {
     return (
       <div className="flex flex-col p-8 text-center">
@@ -30,7 +30,11 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
   }
 
   return (
-    <>
+    <div className="bg-dark w-[350px] rounded p-6">
+      <div className="text-body flex items-center text-sm">
+        <LongArrowLeft className="mr-2 w-4" />
+        Escolher time
+      </div>
       {/* <RegistrationStepper /> */}
       <h4 className="mb-4 text-left text-lg font-semibold">Checkout</h4>
       {/* <div className="rounded bg-blue-400 p-4 text-left text-sm text-white">
@@ -44,55 +48,60 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
         // onSubmit={handleSubmit(submitHandler)}
       >
         <div className="space-y-2 border-t border-dashed border-gray-600 pt-4">
-          <h4 className="mb-4 uppercase tracking-wider text-gray-400">
-            Payment
+          <h4 className="text-body mb-4 uppercase tracking-wider">
+            Payment Method
           </h4>
+          <div className="w-full">
+            <PaymentOptions onChange={setPaymentMethod} value={paymentMethod} />
+          </div>
         </div>
         <div className="space-y-2 border-t border-dashed border-gray-600 pt-4">
-          <h4 className="mb-4 uppercase tracking-wider text-gray-400">
-            Details
-          </h4>
+          <h4 className="text-body mb-4 uppercase tracking-wider">Details</h4>
           <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Team:</div>
-            <div className="font-semibold">{team?.name}</div>
+            <div className="">Team:</div>
+            <div className="">{team?.name}</div>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Entry fee:</div>
-            <div className="font-semibold">${tournament.entry_fee}</div>
+            <div className="">Entry fee:</div>
+            <div className="font-display">${tournament.entry_fee}</div>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <div className="font-semibold">Number of members:</div>
-            <div className="font-semibold">x{tournament.team_size}</div>
+            <div className="">Number of members:</div>
+            <div className="font-display">x{tournament.team_size}</div>
           </div>
           <div className="flex items-center justify-between border-t border-dashed border-gray-600 pt-4 text-sm">
-            <div className="font-semibold">Total</div>
-            <div className="text-2xl font-semibold">
+            <div className="">Total</div>
+            <div className="font-display text-2xl font-semibold">
               ${tournament.entry_fee * tournament.team_size}
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-end border-t border-dashed border-gray-600 pt-4">
+        <div className="flex items-center justify-between border-t border-dashed border-gray-600 pt-4">
           <Button
             color="gray"
+            variant="ghost"
             shape="rounded"
             size="small"
             className="mr-4"
             onClick={() => nextStep('SELECT_TEAM')}
           >
-            <div className="flex items-center">
-              <LongArrowLeft className="mr-2 w-5" />
-              <div className="font-semibold">Voltar</div>
-            </div>
+            Cancelar
           </Button>
-          <Button color="warning" shape="rounded" size="small" type="submit">
+          <Button
+            color="warning"
+            className="flex-1"
+            shape="rounded"
+            size="small"
+            type="submit"
+          >
             <div className="flex items-center">
-              <div className="font-semibold">Continuar</div>
+              Continuar
               <LongArrowRight className="ml-2 w-5" />
             </div>
           </Button>
         </div>
       </form>
-    </>
+    </div>
   );
 };
