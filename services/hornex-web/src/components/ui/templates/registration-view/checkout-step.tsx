@@ -95,10 +95,7 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
             size="small"
             type="submit"
           >
-            <div className="flex items-center">
-              Continuar
-              <LongArrowRight className="ml-2 w-5" />
-            </div>
+            <div className="flex items-center">Register</div>
           </Button>
         </div>
       </form>

@@ -14,7 +14,6 @@ import Image from 'next/image';
 import LeagueOfLegendsLogoMarkBlack from '@/assets/images/games/league-of-legends/logomark-black.png';
 import { useModal } from '@/components/modal-views/context';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
-import { ConnectedGameId } from '../../molecules/connected-game-ids';
 
 type TournamentProps = {
   tournament: Tournament;
@@ -88,7 +87,7 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({
                   key={tab}
                   className={({ selected }) =>
                     classnames(
-                      'font-display text-body -mb-1.5 whitespace-nowrap border-b-2 border-transparent py-4 text-xs font-medium uppercase tracking-wide outline-none transition-colors hover:text-white',
+                      'font-display text-body -mb-1.5 whitespace-nowrap border-b-2 border-transparent py-4 text-sm font-medium uppercase tracking-wide outline-none transition-colors hover:text-white',
                       selected ? ' border-white !text-white' : 'text-body'
                     )
                   }

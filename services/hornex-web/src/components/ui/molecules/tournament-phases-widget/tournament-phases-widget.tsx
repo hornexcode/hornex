@@ -41,7 +41,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                   <div className="flex items-center">
                     <UsersIcon className="mr-1 h-5 w-4 " />
                     <span className="pr-4 text-xs font-bold text-white">
-                      1/16
+                      0/16
                     </span>
                   </div>
                 </div>
@@ -54,7 +54,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                       className={classnames(
                         'flex-basis mr-1 h-2 flex-grow rounded-[2px]  bg-amber-400',
                         {
-                          'bg-gray-700': index > tournament.teams.length - 1,
+                          'bg-gray-200': index > tournament.teams.length - 1,
                         }
                       )}
                     ></div>
