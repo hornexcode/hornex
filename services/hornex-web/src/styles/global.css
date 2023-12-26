@@ -80,7 +80,7 @@ Styles for Swiper slider
 }
 
 .swiper-scrollbar {
-  @apply relative rounded bg-gray-200 dark:bg-gray-600;
+  @apply dark:bg-dark relative rounded bg-gray-200;
 }
 
 .swiper-horizontal > .swiper-scrollbar {
@@ -130,7 +130,7 @@ Styles for Swiper slider
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -138,7 +138,7 @@ Styles for Swiper slider
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--color-brand));
+  @apply bg-medium-dark;
   border-radius: 0px;
 }
 
@@ -254,4 +254,13 @@ Styles for Swiper slider
   .swiper-pagination-bullet-active {
     --swiper-pagination-bullet-width: 20px;
   }
+}
+
+/* box-shadow */
+.highlight-white-5 {
+  box-shadow: inset 0 1px 0 0 #ffffff0d;
+}
+
+.highlight-white-20 {
+  box-shadow: inset 0 1px 0 0 #fff3;
 }

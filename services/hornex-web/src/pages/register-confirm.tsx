@@ -21,8 +21,7 @@ const schema = z.object({
 type ConfirmRegisterInput = z.infer<typeof schema>;
 
 const { post: confirmRegister } = dataLoader<{}, ConfirmRegisterInput>(
-  'confirmRegister',
-  schema
+  'confirmRegister'
 );
 
 const { get: getEmailConfirmationCode } = dataLoader<{}>(
@@ -146,7 +145,6 @@ export default function RegisterPage() {
             isLoading={isLoading}
             disabled={codeEvent === 'sent' || code.length < 6 || isLoading}
             className="w-full"
-            color="secondary"
             shape="rounded"
             size="small"
             onClick={(e) => onConfirmRegister(e)}

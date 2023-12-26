@@ -6,13 +6,13 @@ const PriceOptions = [
   {
     name: 'Pix',
     value: 'fixed',
-    icon: <PixIcon className="h-5 w-5 text-white sm:h-auto sm:w-auto" />,
+    icon: <PixIcon className="h-4 w-4 text-white sm:h-auto sm:w-auto" />,
   },
 
   {
     name: 'Credit Card',
     value: 'credit-card',
-    icon: <CreditCard className="h-5 w-5 text-white sm:h-auto sm:w-auto" />,
+    icon: <CreditCard className="h-4 w-4 text-white sm:h-auto sm:w-auto" />,
   },
 ];
 
@@ -35,13 +35,13 @@ export default function PaymentOptions({
         <RadioGroup.Option value={item.value} key={index}>
           {({ checked }) => (
             <span
-              className={`shadow-card hover:shadow-large dark:bg-light-dark relative flex cursor-pointer items-center justify-center rounded-lg border-2 border-solid bg-white text-center text-sm font-medium tracking-wider transition-all ${
+              className={`shadow-card hover:shadow-large dark:bg-light-dark relative flex cursor-pointer items-center justify-center rounded border-2 border-solid bg-white text-center text-sm font-medium transition-all ${
                 checked
                   ? 'border-gray-400'
                   : 'border-light-dark dark:border-light-dark'
               }`}
             >
-              <span className="relative flex h-28 flex-col items-center justify-center gap-3 px-2 text-center text-xs uppercase sm:h-36 sm:gap-4 sm:text-sm">
+              <span className="sm:h-30 relative flex h-28 flex-col items-center justify-center gap-3 px-2 text-center text-xs uppercase sm:gap-4 sm:text-sm">
                 {item.icon}
                 {item.name}
               </span>

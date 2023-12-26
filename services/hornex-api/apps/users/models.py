@@ -1,4 +1,5 @@
 import uuid
+from enum import Enum
 
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -8,7 +9,14 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils import timezone
 
+from apps.games.models import GameID
+from apps.leagueoflegends.models import Summoner
+
 LEAGUE_OF_LEGENDS = "league-of-legends"
+
+
+class GameOptions(Enum):
+    LEAGUE_OF_LEGENDS = "league-of-legends"
 
 
 class UserManager(BaseUserManager):
@@ -57,9 +65,29 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
 
-    def can_play(self, game: str, classifications: list[str]) -> bool:
-        if game == LEAGUE_OF_LEGENDS:
-            return self.leagueoflegendsaccount.get_classification() in classifications
+    def can_play(self, game: GameOptions, classifications: list[str]) -> bool:
+        if game == GameOptions.LEAGUE_OF_LEGENDS:
+            active_gid = (
+                GameID.objects.filter(is_active=True, user=self).first() or None
+            )
+            if active_gid is None:
+                return False
+
+            summoner = (
+                Summoner.objects.filter(
+                    game_id=active_gid,
+                ).first()
+                or None
+            )
+
+            if summoner is None:
+                return False
+
+            return (
+                f"{summoner.league_entry.tier} {summoner.league_entry.rank}"
+                in classifications
+            )
+
         return False
 
     def get_game_account(self, game: str):

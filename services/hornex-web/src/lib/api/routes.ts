@@ -142,4 +142,16 @@ export const routes = {
     method: Method.PATCH,
     schema: null,
   },
+  connectRiotAccount: {
+    path: 'v1/riot/account-connect',
+    method: Method.GET,
+  },
+  connectRiotAccountCallback: {
+    path: 'v1/riot/webhooks/oauth2/callback',
+    method: Method.GET,
+  },
+  getGameIds: {
+    path: 'v1/games/game-ids',
+    method: Method.GET,
+  },
 };

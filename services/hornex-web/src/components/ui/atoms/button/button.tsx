@@ -26,13 +26,13 @@ const shapes: Record<ShapeNames, string[]> = {
 };
 const variants: Record<VariantNames, string[]> = {
   ghost: ['bg-transparent'],
-  solid: ['text-white'],
+  solid: ['text-dark'],
   transparent: ['bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800'],
 };
 const colors: Record<ColorNames, string[]> = {
   primary: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
   white: ['text-gray-900', 'bg-white', 'border-white'],
-  gray: ['text-gray-900', 'bg-gray-100', 'border-gray-100'],
+  gray: ['text-gray-300', 'bg-gray-300', 'border-gray-300'],
   success: ['text-green-500', 'bg-green-500', 'border-green-500'],
   info: ['text-blue-500', 'bg-blue-500', 'border-blue-500'],
   warning: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
@@ -104,7 +104,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     let buttonDripColor = '';
     switch (variant) {
       case 'ghost':
-        buttonColorClassNames = `border-2 border-solid ${colorClassNames[0]} ${colorClassNames[2]}`;
+        buttonColorClassNames = `${colorClassNames[0]} border-2 border-solid  ${colorClassNames[2]}`;
         buttonDripColor = 'rgba(0, 0, 0, 0.1)';
         break;
 
@@ -128,21 +128,20 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={buttonRef}
         onClick={clickHandler}
         className={cn(
-          'shadow-card relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold tracking-wide outline-none transition-all sm:text-[15px]',
+          'highlight-white-20 relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold outline-none transition-all sm:text-sm',
           !disabled
             ? buttonColorClassNames
-            : 'cursor-not-allowed bg-gray-400 text-gray-400',
+            : '!text-title bg-light-dark cursor-not-allowed',
           disabled || isLoading || variant === 'transparent'
             ? ''
             : 'hover:shadow-large focus:shadow-large hover:-translate-y-0.5 focus:-translate-y-0.5 focus:outline-none',
           isLoading && 'pointer-events-auto cursor-default focus:outline-none',
           fullWidth && 'w-full',
           color === 'white' || color === 'gray'
-            ? 'text-gray-600'
+            ? 'text-heading'
             : variants[variant],
           shapes[shape],
           shape === 'circle' ? `${sizeClassNames[1]}` : `${sizeClassNames[0]}`,
-          color === 'primary' ? '!text-gray-800' : '',
           className
         )}
         disabled={disabled}

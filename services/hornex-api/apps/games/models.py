@@ -1,14 +1,12 @@
 import uuid
-from datetime import timedelta
 
 from django.db import models
-from django.utils import timezone
 
 
 class Game(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=30)
-    slug = models.CharField(max_length=30)
+    name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255)
     platforms = models.ManyToManyField("platforms.Platform")
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -23,64 +21,23 @@ class Game(models.Model):
         super(Game, self).save(*args, **kwargs)
 
 
-class GameAccount(models.Model):
+class GameID(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    game = models.ForeignKey("games.Game", on_delete=models.CASCADE)
+    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
+
+    class GameOptions(models.TextChoices):
+        LEAGUE_OF_LEGENDS = "league-of-legends"
+        CS_GO = "cs-go"
+
+    game = models.CharField(max_length=50, choices=GameOptions.choices)
+    nickname = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=False)
+    region = models.CharField(max_length=255)
+    region_code = models.CharField(max_length=255)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
-class GameAccountRiot(GameAccount):
-    """
-    Riot Games API
-
-    https://developer.riotgames.com/apis#summoner-v4
-    """
-
-    def renew_data(self, renewer):
-        if timezone.now() - self.updated_at > timedelta(days=1):
-            updated_account = renewer(self.summoner_name, self.region)
-            self.encrypted_summoner_id = updated_account["id"]
-            self.encrypted_account_id = updated_account["accountId"]
-            self.encrypted_puuid = updated_account["puuid"]
-            self.username = updated_account["name"]
-            self.summoner_level = updated_account["summonerLevel"]
-            self.revision_date = updated_account["revisionDate"]
-            self.save()
-
-    class RegionChoicesType(models.TextChoices):
-        BR1 = "BR1"
-        EUN1 = "EUN1"
-        EUW1 = "EUW1"
-        JP1 = "JP1"
-        KR = "KR"
-        LA1 = "LA1"
-        LA2 = "LA2"
-        NA1 = "NA1"
-        OC1 = "OC1"
-        TR1 = "TR1"
-        RU = "RU"
-        PH2 = "PH2"
-        SG2 = "SG2"
-        TH2 = "TH2"
-        TW2 = "TW2"
-        VN2 = "VN2"
-
-    encrypted_summoner_id = models.CharField(max_length=63)
-    encrypted_account_id = models.CharField(max_length=30)
-    encrypted_puuid = models.CharField(max_length=78)
-    username = models.CharField(max_length=30)
-    region = models.CharField(max_length=4, choices=RegionChoicesType.choices)
-    summoner_name = models.CharField(max_length=30)  # Summoner name.
-    summoner_level = (
-        models.IntegerField()
-    )  # Summoner level associated with the summoner.
-    revision_date = models.BigIntegerField()  # Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: summoner name change, summoner level change, or profile icon change.
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.summoner_name} ({self.id})"
+        return self.nickname

@@ -1,11 +1,17 @@
-import TournamentPage from '@/components/ui/templates/tournament';
+import TournamentPage from '@/components/ui/templates/tournament-details-template';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { Tournament } from '@/lib/hx-app/types';
-import { Team } from '@/lib/proto/team';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
+export type GameID = {
+  id: string;
+  nickname: string;
+  game: string;
+};
+
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
+const { fetch: getGameIds } = dataLoader<GameID[]>('getGameIds');
 
 type TournamentProps = {
   params: {
@@ -14,11 +20,13 @@ type TournamentProps = {
     id: string;
   };
   tournament: Tournament;
+  gameIds: GameID[];
 };
 
 const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   params,
   tournament,
+  gameIds,
 }: TournamentProps) => {
   // TODO: add switch to render different types of tournament template
   // switch (params.game) {
@@ -27,7 +35,7 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   //   default:
   //     break;
   // }
-  return <TournamentPage tournament={tournament} />;
+  return <TournamentPage tournament={tournament} gameIds={gameIds} />;
 };
 
 Tournament.getLayout = (page: React.ReactElement) => {
@@ -50,10 +58,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const { data: gameIds, error: gameIdsError } = await getGameIds({}, ctx.req);
+  if (!gameIds || gameIdsError) {
+    return {
+      props: {
+        params: ctx.params,
+        tournament,
+        gameIds: [],
+      },
+    };
+  }
+
   return {
     props: {
       params: ctx.params,
       tournament,
+      gameIds,
     },
   };
 };

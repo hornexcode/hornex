@@ -10,7 +10,7 @@ ws.onopen = () => {
 };
 
 ws.onclose = (closeEvent) => {
-  console.log('WebSocket disconnected with: ', closeEvent);
+  // console.log('WebSocket disconnected with: ', closeEvent);
 };
 
 export default ws;

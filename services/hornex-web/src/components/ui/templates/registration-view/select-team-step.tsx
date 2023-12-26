@@ -36,7 +36,7 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
   });
 
   const [isFetching, setIsFetching] = useState(false);
-  let [paymentMethod, setPaymentMethod] = useState('pix');
+
   const [teamOption, setTeamOption] = useState({
     name: 'Please select a team',
     value: '',
@@ -49,30 +49,18 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
     })) || [];
 
   async function submitHandler(data: SubmitRegistrationFormType) {
-    // setIsFetching(true);
-    // const { error } = await registerTeam({
-    //   team: teamOption.value,
-    //   tournamentId: tournament.id,
-    // });
-    // if (error) {
-    //   setIsFetching(false);
-    //   return;
-    // }
-    // setIsFetching(false);
     setTeam(teamOption);
     console.log(data);
     nextStep('CHECKOUT');
   }
 
   return (
-    <>
+    <div className="bg-dark rounded p-6">
       {/* <RegistrationStepper /> */}
-      <h4 className="mb-4 text-left text-lg font-semibold">Registration</h4>
-      <div className="rounded bg-blue-400 p-4 text-left text-sm text-white">
-        <InfoIcon className="mr-2 inline-block w-4" />
-        Para registrar um time no torneio o líder do time deve realizar o
-        pagamento total da inscrição de todos os membros incluindo a sua.
-      </div>
+      <h4 className="text-title mb-4 text-left text-lg font-semibold">
+        Registration
+      </h4>
+
       <form
         action=""
         className="space-y-8"
@@ -99,28 +87,26 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
             )}
           />
         </div>
-        <div className="w-full">
-          <InputLabel title="Payment method" important />
-          <PaymentOptions onChange={setPaymentMethod} value={paymentMethod} />
-        </div>
+
         <div className="flex items-center justify-end ">
           <Button
             color="gray"
+            variant="ghost"
             shape="rounded"
             size="small"
             className="mr-4"
             type="submit"
           >
-            <div className="font-semibold">Cancelar</div>
+            Cancelar
           </Button>
           <Button color="warning" shape="rounded" size="small" type="submit">
             <div className="flex items-center">
-              <div className="font-semibold">Continuar</div>
+              Continuar
               <LongArrowRight className="ml-2 w-5" />
             </div>
           </Button>
         </div>
       </form>
-    </>
+    </div>
   );
 };

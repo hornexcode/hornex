@@ -5,12 +5,15 @@ import requests
 
 from lib.logging import logger
 from lib.riot.types import (
+    AccessTokenDTO,
+    AccountDTO,
     CreateTournamentCode,
     LeagueEntryDTO,
     LobbyEventV5DTOWrapper,
     PlatformRoutingType,
     RegionalRoutingType,
     RegionType,
+    SummonerDTO,
     TournamentCodeV5DTO,
     TournamentGamesV5,
     UpdateTournamentCode,
@@ -318,3 +321,71 @@ class Client(Clientable):
         league_entries = LeagueEntryDTO.from_api_response_list(data)
 
         return league_entries
+
+    def get_summoner_by_name(self, summoner_name: str) -> SummonerDTO:
+        url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoner_name}?api_key={self.api_key}"
+
+        resp = requests.get(url)
+        if not resp.ok:
+            logger.info("Error retrieving summoner", resp.json())
+            return None
+
+        data = resp.json()
+        return SummonerDTO(
+            id=data["id"],
+            account_id=data["accountId"],
+            puuid=data["puuid"],
+            name=data["name"],
+        )
+
+    def get_summoner_entries_by_summoner_id(self, id: str) -> list[LeagueEntryDTO]:
+        url = f"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{id}?api_key={self.api_key}"
+        resp = requests.get(url)
+
+        if resp.status_code != 200:
+            logger.warning("Error retrieving summoner entries", resp.json())
+            raise Exception("Error retrieving summoner entries", resp.json())
+
+        data = resp.json()
+
+        league_entries = LeagueEntryDTO.from_api_response_list(data)
+
+        return league_entries
+
+    def get_oauth_token(self, access_code: str):
+        client_id = "6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54"
+        client_secret = "E9wzc2eEN6Ph5bxdtbxvmef_NJriKXQ0qbgkL9i-DSC"
+        appCallbackUrl = "https://robin-lasting-magpie.ngrok-free.app/oauth/riot/login"
+        provider = "https://auth.riotgames.com"
+        tokenUrl = provider + "/token"
+        form = {
+            "grant_type": "authorization_code",
+            "code": access_code,
+            "redirect_uri": appCallbackUrl,
+        }
+
+        resp = requests.post(
+            tokenUrl,
+            data=form,
+            auth=(client_id, client_secret),
+        )
+        if not resp.ok:
+            return None
+        return AccessTokenDTO(**resp.json())
+
+    def get_account_me(self, access_token: str):
+        # TODO: implement riot get account client method
+        resp = requests.get(
+            "https://americas.api.riotgames.com/riot/account/v1/accounts/me",
+            headers={"Authorization": "Bearer " + access_token},
+        )
+        if not resp.ok:
+            # add logger
+            return None
+
+        data = resp.json()
+        return AccountDTO(
+            puuid=data["puuid"],
+            game_name=data["gameName"],
+            tag_line=data["tagLine"],
+        )

@@ -12,6 +12,9 @@ const SearchView = dynamic(() => import('@/components/search/view'));
 const RegistrationView = dynamic(
   () => import('@/components/ui/templates/registration-view')
 );
+const ConnectAccountView = dynamic(
+  () => import('@/components/ui/organisms/connect-account-view')
+);
 
 function renderModalContent(view: MODAL_VIEW) {
   switch (view) {
@@ -19,6 +22,8 @@ function renderModalContent(view: MODAL_VIEW) {
       return <SearchView />;
     case 'REGISTRATION_VIEW':
       return <RegistrationView />;
+    case 'CONNECT_ACCOUNT_VIEW':
+      return <ConnectAccountView />;
     default:
       return null;
   }

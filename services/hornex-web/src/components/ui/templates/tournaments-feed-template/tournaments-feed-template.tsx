@@ -1,7 +1,7 @@
 import { Filters } from '@/components/search/filters';
 import Button from '@/components/ui/atoms/button';
 import { OptionIcon } from '@/components/ui/atoms/icons/option';
-import TournamentCardInfo from '@/components/ui/organisms/tournament-card-info/tournament-card-info';
+import TournamentCardInfo from '@/components/ui/organisms/tournament-feed-item/tournament-feed-item';
 import { Tournament } from '@/lib/hx-app/types';
 import { FC } from 'react';
 
@@ -29,7 +29,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
         <div className="4xl:pl-10 2xl:pl-8">
           <div className="relative z-10 mb-6 flex items-center justify-between">
             <span className="text-xs font-medium text-gray-900 dark:text-white sm:text-sm">
-              5,686,066 items
+              23 items
             </span>
 
             <div className="3xl:gap-8 flex gap-6">
@@ -49,7 +49,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-4 gap-5">
             {!isLoading &&
               tournaments.results.map((tournament) => (
                 <TournamentCardInfo
@@ -61,25 +61,6 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
         </div>
       </div>
     </>
-    // <section className="mx-auto flex flex-grow p-8">
-    //   <div className="flex w-full flex-grow flex-col justify-between border-dashed border-gray-700 md:ml-auto md:pl-8 rtl:md:mr-auto rtl:md:pr-8 lg:min-h-[calc(100vh-96px)] lg:w-[280px] lg:pl-12 rtl:lg:pr-12 xl:w-[320px] xl:pl-20 rtl:xl:pr-20">
-    //     <div className="block">
-    //       <div className="block">
-    //         <h2 className="text-left text-xl font-bold leading-4 text-white lg:text-xl">
-    //           Filter
-    //         </h2>
-    //       </div>
-    //     </div>
-    //   </div>
-    //   <div className="4xl:max-w-[1760px] mx-auto flex w-full flex-grow flex-col space-y-8 transition-all xl:max-w-[1280px]">
-    //   <div className="grid grid-cols-3 gap-5">
-    //     {!isLoading &&
-    //       tournaments.results.map((tournament) => (
-    //         <TournamentCardInfo key={tournament.id} tournament={tournament} />
-    //       ))}
-    //   </div>
-    // </div>
-    // </section>
   );
 };
 

@@ -217,7 +217,6 @@ class LeagueEntryDTO:
     veteran: bool
     freshBlood: bool
     inactive: bool
-    miniSeries: MiniSeriesDTO
 
     @staticmethod
     def from_api_response(data):
@@ -235,9 +234,33 @@ class LeagueEntryDTO:
             veteran=data.get("veteran"),
             freshBlood=data.get("freshBlood"),
             inactive=data.get("inactive"),
-            miniSeries=MiniSeriesDTO.from_api_response(data.get("miniSeries", {})),
         )
 
     @staticmethod
     def from_api_response_list(data_list):
         return [LeagueEntryDTO.from_api_response(data) for data in data_list]
+
+
+@dataclass
+class SummonerDTO:
+    id: str
+    account_id: str
+    puuid: str
+    name: str
+
+
+@dataclass
+class AccessTokenDTO:
+    access_token: str
+    expires_in: int
+    id_token: str
+    refresh_token: str
+    scope: str
+    token_type: str
+
+
+@dataclass
+class AccountDTO:
+    puuid: str
+    game_name: str
+    tag_line: str

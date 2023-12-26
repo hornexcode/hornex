@@ -13,9 +13,9 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
 }) => {
   return (
     <div className="bg-light-dark shadow-light space-y-2 rounded-md ">
-      <div className="bg-medium-dark">
+      <div className="bg-medium-dark rounded-t">
         <div className="border-b border-gray-700 p-5">
-          <h4 className="leading-2 text-header text-lg font-extrabold">
+          <h4 className="leading-2 text-title text-lg font-extrabold">
             Tournament Phases
           </h4>
         </div>
@@ -41,7 +41,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                   <div className="flex items-center">
                     <UsersIcon className="mr-1 h-5 w-4 " />
                     <span className="pr-4 text-xs font-bold text-white">
-                      1/16
+                      0/16
                     </span>
                   </div>
                 </div>
@@ -54,7 +54,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                       className={classnames(
                         'flex-basis mr-1 h-2 flex-grow rounded-[2px]  bg-amber-400',
                         {
-                          'bg-gray-700': index > tournament.teams.length - 1,
+                          'bg-gray-200': index > tournament.teams.length - 1,
                         }
                       )}
                     ></div>
@@ -90,7 +90,7 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
         </ol>
       </div>
 
-      <div className="block border-t-2 border-slate-800 p-5">
+      <div className="block border-t border-dashed border-gray-600 p-5">
         <Button color="warning" fullWidth shape="rounded">
           Registrar
         </Button>

@@ -5,7 +5,6 @@ import { Logo } from '@/components/ui/atoms/logo';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { set } from 'es-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -64,8 +63,8 @@ export default function LoginPage() {
       <div className="mt-8 self-center">
         <Logo size="sm" />
       </div>
-      <div className="m-auto w-[450px]">
-        <div className="bg-medium-dark rounded border border-gray-600 p-6 sm:p-8">
+      <div className="m-auto w-full sm:w-[400px]">
+        <div className="rounded p-6 sm:p-8">
           <div className="pb-8 pt-2">
             <h1 className="text-xl font-bold text-white md:text-4xl">
               Welcome

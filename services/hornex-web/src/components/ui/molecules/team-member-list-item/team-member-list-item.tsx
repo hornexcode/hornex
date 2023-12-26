@@ -35,7 +35,7 @@ export const TeamMemberListItem = ({
           <ProfileIcon className="absolute -left-1 h-10 w-10 text-gray-400" />
         </div>
         <div className="ml-2 rtl:mr-2">
-          <span className="text-header"> {member.name}</span>
+          <span className="text-title"> {member.name}</span>
           <span className="block pt-0.5 text-xs font-normal text-gray-600 dark:text-gray-400">
             {member.email}
           </span>

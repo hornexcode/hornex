@@ -1,15 +1,12 @@
+import time
+
 import requests
+from django.shortcuts import redirect
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.accounts.models import Classification, LeagueOfLegendsAccount
 from lib.riot.client import Client
@@ -38,15 +35,13 @@ tokenUrl = provider + "/token"
     },
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication])
 def riot_oauth_callback(request):
-    access_code = request.GET.get("code")
-    user = request.user
-    if not user:
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    csrftoken = request.GET.get("state")
+    if csrftoken is None:
+        return redirect("http://localhost:3000")
 
     # post information as x-www-form-urlencoded
+    access_code = request.GET.get("code")
     form = {
         "grant_type": "authorization_code",
         "code": access_code,
@@ -54,21 +49,21 @@ def riot_oauth_callback(request):
     }
 
     is_new = True
-    try:
-        # It will throw an exception whenever the user does not have acc.
-        user.leagueoflegendsaccount
-        is_new = False
-    except LeagueOfLegendsAccount.DoesNotExist:
-        is_new = True
+    # try:
+    #     # It will throw an exception whenever the user does not have acc.
+    #     user.leagueoflegendsaccount
+    #     is_new = False
+    # except LeagueOfLegendsAccount.DoesNotExist:
+    #     is_new = True
 
-    if is_new:
-        account = LeagueOfLegendsAccount()
-        account.user = user
+    # if is_new:
+    #     account = LeagueOfLegendsAccount()
+    #     account.user = user
 
-        return create_or_update_leagueoflegends_account(form, account)
-    else:
-        account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
-        return create_or_update_leagueoflegends_account(form, account)
+    #     return create_or_update_leagueoflegends_account(form, account)
+    # else:
+    #     account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
+    #     return create_or_update_leagueoflegends_account(form, account)
 
 
 def create_or_update_leagueoflegends_account(
@@ -124,10 +119,23 @@ def create_or_update_leagueoflegends_account(
             account.classification = classification
             account.save()
 
-            return Response(data, status=status.HTTP_200_OK)
+            return redirect("https://robin-lasting-magpie.ngrok-free.app")
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     except requests.RequestException:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     except Classification.DoesNotExist:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def riot_connect_account(request):
+    game = request.GET.get("game")
+    if game == "league-of-legends":
+        return Response(
+            {
+                "link": "https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://robin-lasting-magpie.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access&request_id=1234"
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    return Response(status=status.HTTP_400_BAD_REQUEST)

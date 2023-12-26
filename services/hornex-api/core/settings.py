@@ -31,9 +31,10 @@ SECRET_KEY = "django-insecure-b=#p+ci^=crap5g$&1wos9*hk658@tqfli((9zyx$f4-15%@vo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000", "http://localhost:3000"]
+ALLOWED_HOSTS = []
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True  # dev only
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]  # dev only
 
 # Application definition
 INSTALLED_APPS = [
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     "apps.games.apps.GamesConfig",
     "apps.notifications.apps.NotificationsConfig",
     "apps.accounts.apps.AccountsConfig",
+    "apps.leagueoflegends.apps.LeagueoflegendsConfig",
 ]
 
 MIDDLEWARE = [
@@ -196,3 +198,24 @@ CHANNEL_LAYERS = {
 TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER = 5
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+    },
+}

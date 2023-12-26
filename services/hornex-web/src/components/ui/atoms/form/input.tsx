@@ -10,6 +10,7 @@ type InputProps = React.DetailedHTMLProps<
   className?: string;
   inputClassName?: string;
   useUppercaseLabel?: boolean;
+  icon?: React.ReactNode;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -52,9 +53,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             inputClassName
           )}
         />
+        {props.icon && (
+          <span className="absolute inset-y-12 right-8 top-10 flex items-center transition-all">
+            {props.icon}
+          </span>
+        )}
       </label>
       {error && (
-        <span role="alert" className="mt-2 block text-red-500 sm:mt-2.5">
+        <span role="alert" className="mt-1 block text-xs text-red-500">
           {error}
         </span>
       )}
