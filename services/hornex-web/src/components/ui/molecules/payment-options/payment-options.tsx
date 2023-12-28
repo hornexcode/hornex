@@ -5,7 +5,7 @@ import { CreditCard } from 'lucide-react';
 const PriceOptions = [
   {
     name: 'Pix',
-    value: 'fixed',
+    value: 'pix',
     icon: <PixIcon className="h-4 w-4 text-white sm:h-auto sm:w-auto" />,
   },
 

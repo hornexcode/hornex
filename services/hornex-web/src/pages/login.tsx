@@ -7,6 +7,7 @@ import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -43,17 +44,6 @@ export default function LoginPage() {
       router.push(routes.compete);
     }
   };
-
-  useEffect(() => {
-    if (state.isAuthenticated) {
-      setSuccess(true);
-      router.push(routes.compete);
-    }
-
-    return () => {
-      setSuccess(false);
-    };
-  }, [state.isAuthenticated]);
 
   // TODO: remove in production
   useEffect(() => {}, [setValue]);
@@ -142,3 +132,19 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export const getServerSideProps = async () => {
+  const { ['hx.auth.token']: token } = parseCookies();
+  console.log('login', token);
+  if (token) {
+    return {
+      redirect: {
+        destination: '/compete',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+};

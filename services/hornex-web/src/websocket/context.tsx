@@ -1,4 +1,4 @@
-import ws from './app';
+// import ws from './app';
 import { ListenerType, MessageType, WebSocketContextState } from './types';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -24,15 +24,14 @@ export const WebSocketContextProvider = ({
   });
 
   useEffect(() => {
-    ws.onmessage = (event) => {
-      if (Object.keys(listers).includes(event.type)) {
-        const messageType = event.type as MessageType;
-
-        listers[messageType].forEach((listener) => {
-          listener(event);
-        });
-      }
-    };
+    // ws.onmessage = (event) => {
+    //   if (Object.keys(listers).includes(event.type)) {
+    //     const messageType = event.type as MessageType;
+    //     listers[messageType].forEach((listener) => {
+    //       listener(event);
+    //     });
+    //   }
+    // };
   }, [listers]);
 
   const addListener = (

@@ -1,9 +1,8 @@
 import logging
-from dataclasses import dataclass
+import os
 from datetime import datetime as dt
 from datetime import timedelta as td
 
-import requests
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import (
@@ -19,56 +18,23 @@ from apps.games.models import GameID
 from apps.leagueoflegends.models import Session
 from lib.riot.client import Client
 
-client_id = "6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54"
-client_secret = "E9wzc2eEN6Ph5bxdtbxvmef_NJriKXQ0qbgkL9i-DSC"
+client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")
+client_secret = os.getenv("RIOT_RSO_CLIENT_SECRET", "")
 
-appCallbackUrl = "https://robin-lasting-magpie.ngrok-free.app/oauth/riot/login"
+appCallbackUrl = os.getenv("APP_URL", "") + "/oauth/riot/login"
 
-provider = "https://auth.riotgames.com"
+provider = os.getenv("RIOT_RSO_PROVIDER_URL", "")
 authorizeUrl = provider + "/authorize"
 tokenUrl = provider + "/token"
 
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class GetTokenResponse:
-    access_token: str
-    expires_in: int
-    id_token: str
-    refresh_token: str
-    scope: str
-    token_type: str
-
-
-def get_token(access_code: str) -> GetTokenResponse:
-    form = {
-        "grant_type": "authorization_code",
-        "code": access_code,
-        "redirect_uri": appCallbackUrl,
-    }
-
-    try:
-        resp = requests.post(
-            tokenUrl,
-            data=form,
-            auth=(client_id, client_secret),
-        )
-        if not resp.ok:
-            return Response(
-                {"message": "Error getting token."}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        return GetTokenResponse(**resp.json())
-    except Exception as e:
-        raise Exception from e
-
-
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
 @transaction.atomic
-def riot_oauth_callback(request):
+def oauth_login_callback(request):
     access_code = request.GET.get("code")
     state = request.GET.get("state", "/")
 
@@ -116,7 +82,7 @@ def riot_oauth_callback(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def riot_connect_account(request):
+def oauth_login(request):
     return Response(
         {
             "redirect_url": f"https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri={appCallbackUrl}&response_type=code&scope=openid+offline_access&state={request.GET.get('return_path', '/')}"

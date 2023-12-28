@@ -1,7 +1,7 @@
 import { TeamsList } from '../team-list';
 import Button from '@/components/ui/atoms/button';
 import routes from '@/config/routes';
-import { Team } from '@/lib/hx-app/types';
+import { Team } from '@/lib/models/types';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 

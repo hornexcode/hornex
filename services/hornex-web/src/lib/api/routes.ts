@@ -1,4 +1,4 @@
-import { getAvailableGamesResponse } from '../hx-app/types';
+import { getAvailableGamesResponse } from '../models/types';
 import { Method } from '../routes/routes';
 import z from 'zod';
 // const routes: APIRouteMap = {} as APIRouteMap;
@@ -143,15 +143,23 @@ export const routes = {
     schema: null,
   },
   connectRiotAccount: {
-    path: 'v1/riot/account-connect',
+    path: 'v1/league-of-legends/oauth/login',
     method: Method.GET,
   },
   connectRiotAccountCallback: {
-    path: 'v1/riot/webhooks/oauth2/callback',
+    path: 'v1/league-of-legends/oauth/login/callback',
     method: Method.GET,
   },
   getGameIds: {
     path: 'v1/games/game-ids',
     method: Method.GET,
+  },
+  getRegistration: {
+    path: 'v1/registrations/[id]',
+    method: Method.GET,
+  },
+  payRegistration: {
+    path: 'v1/payments/registration',
+    method: Method.POST,
   },
 };

@@ -1,5 +1,6 @@
+import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
-import { Tournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/models/types';
 import classnames from 'classnames';
 import { UsersIcon } from 'lucide-react';
 import { FC } from 'react';
@@ -11,11 +12,13 @@ type TournamentPhasesWidgetProps = {
 const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   tournament,
 }) => {
+  const { openModal } = useModal();
+
   return (
     <div className="bg-light-dark shadow-light space-y-2 rounded-md ">
       <div className="bg-medium-dark rounded-t">
-        <div className="border-b border-gray-700 p-5">
-          <h4 className="leading-2 text-title text-lg font-extrabold">
+        <div className="border-b border-gray-700 p-4">
+          <h4 className="leading-2 text-title text-sm font-extrabold">
             Tournament Phases
           </h4>
         </div>
@@ -41,24 +44,26 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                   <div className="flex items-center">
                     <UsersIcon className="mr-1 h-5 w-4 " />
                     <span className="pr-4 text-xs font-bold text-white">
-                      0/16
+                      {tournament.teams.length} / {tournament.max_teams}
                     </span>
                   </div>
                 </div>
               </div>
               <div className="col-span-2">
                 <div className={classnames('flex w-full')}>
-                  {Array.from({ length: 16 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className={classnames(
-                        'flex-basis mr-1 h-2 flex-grow rounded-[2px]  bg-amber-400',
-                        {
-                          'bg-gray-600': index > tournament.teams.length - 1,
-                        }
-                      )}
-                    ></div>
-                  ))}
+                  {Array.from({ length: tournament.max_teams }).map(
+                    (_, index) => (
+                      <div
+                        key={index}
+                        className={classnames(
+                          'flex-basis mr-1 h-2 flex-grow rounded-[2px]  bg-amber-400',
+                          {
+                            'bg-gray-600': index > tournament.teams.length - 1,
+                          }
+                        )}
+                      ></div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -91,8 +96,14 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
       </div>
 
       <div className="block border-t border-dashed border-gray-600 p-5">
-        <Button color="warning" fullWidth shape="rounded">
-          Registrar
+        <Button
+          onClick={() => openModal(`REGISTRATION_VIEW`)}
+          color="warning"
+          size="small"
+          fullWidth
+          shape="rounded"
+        >
+          Registrar time
         </Button>
       </div>
     </div>

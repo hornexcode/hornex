@@ -1,36 +1,29 @@
 import TournamentCheckoutTemplate from '@/components/ui/templates/tournament-checkout-template';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
-import { Tournament } from '@/lib/hx-app/types';
+import { Registration, Team, Tournament } from '@/lib/models';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-export type GameID = {
-  id: string;
-  nickname: string;
-  game: string;
-};
-
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
-const { fetch: getGameIds } = dataLoader<GameID[]>('getGameIds');
+const { fetch: getTeam } = dataLoader<Team>('getTeam');
+const { fetch: getRegistration } = dataLoader<Registration>('getRegistration');
 
-type TournamentCheckoutPageProps = {
+type TournamentRegistrationCheckoutPageProps = {
   params: {
     platform: string;
     game: string;
     id: string;
   };
   tournament: Tournament;
-  gameIds: GameID[];
+  team: Team;
 };
 
 const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   params,
   tournament,
-  gameIds,
-}: TournamentCheckoutPageProps) => {
-  return (
-    <TournamentCheckoutTemplate tournament={tournament} gameIds={gameIds} />
-  );
+  team,
+}: TournamentRegistrationCheckoutPageProps) => {
+  return <TournamentCheckoutTemplate tournament={tournament} />;
 };
 
 Tournament.getLayout = (page: React.ReactElement) => {
@@ -38,11 +31,26 @@ Tournament.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  // check user is authenticated
+  const { data: registration, error: registrationError } =
+    await getRegistration(
+      {
+        id: ctx.query.id || '',
+      },
+      ctx.req
+    );
+
+  if (!registration || registrationError) {
+    return {
+      notFound: true,
+    };
+  }
+
   const { data: tournament, error: tournamentError } = await getTournament(
     {
-      tournamentId: ctx.query.id || '',
-      platform: ctx.query.platform || '',
-      game: ctx.query.game || '',
+      platform: registration.platform_slug,
+      game: registration.game_slug,
+      tournamentId: registration.tournament,
     },
     ctx.req
   );
@@ -53,22 +61,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const { data: gameIds, error: gameIdsError } = await getGameIds({}, ctx.req);
-  if (!gameIds || gameIdsError) {
-    return {
-      props: {
-        params: ctx.params,
-        tournament,
-        gameIds: [],
-      },
-    };
-  }
+  const { data: team, error: teamError } = await getTeam(
+    {
+      teamId: registration?.team,
+    },
+    ctx.req
+  );
 
   return {
     props: {
       params: ctx.params,
       tournament,
-      gameIds,
+      team,
     },
   };
 };

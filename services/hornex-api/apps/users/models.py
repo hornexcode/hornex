@@ -1,5 +1,4 @@
 import uuid
-from enum import Enum
 
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -10,13 +9,8 @@ from django.db import models
 from django.utils import timezone
 
 from apps.games.models import GameID
-from apps.leagueoflegends.models import Summoner
-
-LEAGUE_OF_LEGENDS = "league-of-legends"
-
-
-class GameOptions(Enum):
-    LEAGUE_OF_LEGENDS = "league-of-legends"
+from apps.tournaments.models import Tournament
+from lib.riot.client import Client
 
 
 class UserManager(BaseUserManager):
@@ -65,32 +59,31 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
 
-    def can_play(self, game: GameOptions, classifications: list[str]) -> bool:
-        if game == GameOptions.LEAGUE_OF_LEGENDS:
+    def can_play(self, game: Tournament.GameType, classifications: list[str]) -> bool:
+        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
             active_gid = (
                 GameID.objects.filter(is_active=True, user=self).first() or None
             )
             if active_gid is None:
                 return False
 
-            summoner = (
-                Summoner.objects.filter(
-                    game_id=active_gid,
-                ).first()
-                or None
-            )
+            riot = Client()
+            # summoner.name = game_id.nickname
+            summoner = riot.get_summoner_by_name(active_gid.nickname)
 
             if summoner is None:
                 return False
 
-            return (
-                f"{summoner.league_entry.tier} {summoner.league_entry.rank}"
-                in classifications
-            )
+            league_entry = riot.get_entries_by_summoner_id(summoner.id)
+
+            if not league_entry:
+                return False
+
+            return f"{league_entry[0].tier} {league_entry[0].rank}" in classifications
 
         return False
 
     def get_game_account(self, game: str):
-        if game == LEAGUE_OF_LEGENDS:
+        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
             return self.leagueoflegendsaccount
         return None

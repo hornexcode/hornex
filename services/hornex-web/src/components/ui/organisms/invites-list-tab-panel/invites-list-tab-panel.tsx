@@ -1,5 +1,5 @@
 import { InvitesList } from '../invites-list';
-import { Invite } from '@/lib/hx-app/types';
+import { Invite } from '@/lib/models/types';
 import { FC } from 'react';
 
 type InvitesListTabPanelProps = {

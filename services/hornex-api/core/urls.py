@@ -24,7 +24,6 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-prefix = "api/v1/<str:platform>/<str:game>"
 
 urlpatterns = [
     # swagger
@@ -51,14 +50,14 @@ urlpatterns = [
     path("api/v1/games", include("apps.games.urls")),
     path("api/v1/payments", include("apps.payments.urls")),
     path("api/v1/notifications", include("apps.notifications.urls")),
-    # api/v1/<platform>/<game>
-    path(f"{prefix}/tournaments", include("apps.tournaments.urls")),
+    path("api/v1/league-of-legends", include("apps.leagueoflegends.urls")),
+    # webhooks
+    path("v1/webhooks", include("apps.webhooks.urls")),
     # health check
     path("api/v1/health/check", health),
-    # oauth
-    path("api/v1/riot", include("apps.leagueoflegends.urls")),
+    #
+    path("api/v1", include("apps.tournaments.urls")),
 ]
-
 
 websocket_urlpatterns = [
     path("ws/notifications", NotificationConsumer.as_asgi()),

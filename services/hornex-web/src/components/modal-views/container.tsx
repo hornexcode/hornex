@@ -15,6 +15,9 @@ const RegistrationView = dynamic(
 const ConnectAccountView = dynamic(
   () => import('@/components/ui/organisms/connect-account-view')
 );
+const ModalErrorView = dynamic(
+  () => import('@/components/ui/organisms/modal-error-view')
+);
 
 function renderModalContent(view: MODAL_VIEW) {
   switch (view) {
@@ -24,6 +27,8 @@ function renderModalContent(view: MODAL_VIEW) {
       return <RegistrationView />;
     case 'CONNECT_ACCOUNT_VIEW':
       return <ConnectAccountView />;
+    case 'ERROR_VIEW':
+      return <ModalErrorView />;
     default:
       return null;
   }

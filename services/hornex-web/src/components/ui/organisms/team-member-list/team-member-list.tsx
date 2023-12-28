@@ -1,5 +1,5 @@
 import { TeamMemberListItem } from '../../molecules/team-member-list-item';
-import { Team, TeamMember } from '@/lib/hx-app/types';
+import { Team, TeamMember } from '@/lib/models/types';
 import classnames from 'classnames';
 
 export type TeamMemberListProps = {

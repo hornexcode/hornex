@@ -77,7 +77,10 @@ export const AuthContextProvider = ({
     setFetching(true);
     setError(undefined);
 
-    const { data: token, error } = await authenticateUser({ email, password });
+    const { data: token, error } = await authenticateUser(undefined, {
+      email,
+      password,
+    });
     if (!error && token) {
       saveTokenWithCookies(token);
       loadCurrentUser();

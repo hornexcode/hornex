@@ -1,6 +1,6 @@
 import Button from '@/components/ui/atoms/button';
 import { ProfileIcon } from '@/components/ui/atoms/icons';
-import { TeamMember } from '@/lib/hx-app/types';
+import { TeamMember } from '@/lib/models/types';
 import classnames from 'classnames';
 import { Crown, CrownIcon, LucideCrown } from 'lucide-react';
 

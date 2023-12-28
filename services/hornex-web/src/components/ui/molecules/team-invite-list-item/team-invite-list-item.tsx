@@ -1,6 +1,6 @@
 import Button from '@/components/ui/atoms/button';
 import { ProfileIcon } from '@/components/ui/atoms/icons';
-import { TeamInvite, User } from '@/lib/hx-app/types';
+import { TeamInvite, User } from '@/lib/models/types';
 
 export type TeamInviteListItemProps = {
   isReadOnly?: boolean;

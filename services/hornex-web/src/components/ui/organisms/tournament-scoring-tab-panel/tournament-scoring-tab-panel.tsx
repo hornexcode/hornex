@@ -1,7 +1,7 @@
 import { Star } from '@/components/ui/atoms/icons/star';
 import TournamentScoreTable from '@/components/ui/molecules/tournament-score-table';
 import { CoinPriceData } from '@/data/static/coin-market-data';
-import { Tournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/models/types';
 import React, { FC } from 'react';
 
 type TournamentScoringTabPanelProps = {

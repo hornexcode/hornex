@@ -46,7 +46,7 @@ class Summoner(models.Model):
     puuid = models.CharField(max_length=255)
     account_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    league_entry = models.OneToOneField(
+    league_entry = models.ForeignKey(
         LeagueEntry, on_delete=models.CASCADE, blank=True, null=True
     )
 
@@ -173,13 +173,13 @@ class Code(models.Model):
 
 class Session(models.Model):
     game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
-    scope = models.CharField(max_length=255)
+    scope = models.CharField(max_length=500)
+    token_type = models.CharField(max_length=50)
+    refresh_token = models.CharField(max_length=500)
+    id_token = models.CharField(max_length=500)
+    sub_id = models.CharField(max_length=500)
+    access_token = models.CharField(max_length=500)
     expires_at = models.DateTimeField()
-    token_type = models.CharField(max_length=255)
-    refresh_token = models.CharField(max_length=255)
-    id_token = models.CharField(max_length=255)
-    sub_id = models.CharField(max_length=255)
-    access_token = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:

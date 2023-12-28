@@ -1,16 +1,106 @@
-# run django app and postgresql
-
-version: "3"
+version: "3.8"
 
 services:
-  db:
-    image: postgres
+  hornex-postgres:
+    container_name: hornex-postgres
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=hornex
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
-  web:
-    build: .
-    command: python manage.py runserver
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  hornex-api:
+    container_name: hornex-api
+    command: python manage.py runserver 0.0.0.0:8000
+    restart: always
+    build:
+      context: ./services/hornex-api
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./services/hornex-api:/src
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./services/hornex-api/env/dev.env
+    depends_on:
+      hornex-postgres:
+        condition: service_healthy
+  # hornex-redis:
+  #   container_name: hornex-redis
+  #   image: redis:6.2.5
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  hornex-celery:
+    container_name: hornex-celery
+    build:
+      context: ./services/hornex-api
+      dockerfile: Dockerfile
+      target: development
+    command: celery -A core worker -l info
+    volumes:
+      - ./services/hornex-api:/usr/src/app
+    env_file:
+      - ./services/hornex-api/env/dev.env
+  hornex-celery-beat:
+    container_name: hornex-celery-beat
+    build:
+      context: ./services/hornex-api
+      dockerfile: Dockerfile
+      target: development
+    command: celery -A core beat -l info
+    volumes:
+      - ./services/hornex-api:/usr/src/app
+    env_file:
+      - ./services/hornex-api/env/dev.env
+    depends_on:
+      - hornex-rabbitmq
+  # hornex-celery-flower:
+  #   container_name: hornex-celery-flower
+  #   build:
+  #     context: ./services/hornex-api
+  #     dockerfile: Dockerfile
+  #     target: development
+  #   command: celery -A hornex flower
+  #   volumes:
+  #     - ./services/hornex-api:/usr/src/app
+  #   env_file:
+  #     - ./services/hornex-api/env/dev.env
+  #   ports:
+  #     - "5555:5555"
+  #   depends_on:
+  #     - hornex-postgres
+  #     - hornex-redis
+  # hornex-nginx:
+  #   container_name: hornex-nginx
+  #   build:
+  #     context: ./services/hornex-nginx
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - hornex-api
+  hornex-rabbitmq:
+    container_name: hornex-rabbitmq
+    image: rabbitmq:3.9.7-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=hornex
+      - RABBITMQ_DEFAULT_PASS=hornex
+volumes:
+  postgres_data:
+  rabbitmq_data:

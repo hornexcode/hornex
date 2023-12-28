@@ -6,8 +6,8 @@ import { ProfileIcon } from '@/components/ui/atoms/icons/profile-icon';
 import { SearchIcon } from '@/components/ui/atoms/icons/search';
 import { XMarkIcon } from '@/components/ui/atoms/icons/x-mark-icon';
 import { dataLoader } from '@/lib/api';
-import { User } from '@/lib/hx-app/types';
-import { GetUsersResponse } from '@/lib/hx-app/types/rest/get-users';
+import { User } from '@/lib/models/types';
+import { GetUsersResponse } from '@/lib/models/types/rest/get-users';
 import cn from 'classnames';
 import { useMemo, useState } from 'react';
 

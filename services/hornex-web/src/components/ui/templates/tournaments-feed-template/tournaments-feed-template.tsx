@@ -2,7 +2,7 @@ import { Filters } from '@/components/search/filters';
 import Button from '@/components/ui/atoms/button';
 import { OptionIcon } from '@/components/ui/atoms/icons/option';
 import TournamentCardInfo from '@/components/ui/organisms/tournament-feed-item/tournament-feed-item';
-import { Tournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/models/types';
 import { FC } from 'react';
 
 export type TournamentsPageTemplateProps = {

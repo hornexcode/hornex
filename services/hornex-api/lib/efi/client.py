@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -7,9 +8,11 @@ from pathlib import Path
 
 import requests
 
-from lib.logging import logger
-
 BASE_DIR = Path(__file__).resolve().parent
+CERT_NAME = "cert.pem"
+
+
+logger = logging.getLogger("django")
 
 
 @dataclass
@@ -26,12 +29,12 @@ class Clientable(ABC):
         pass
 
 
-class Client(Clientable):
+class Efi(Clientable):
     def __init__(self) -> None:
-        self.base_url = os.getenv("EFI_BASE_URL")
-        self.client_id = os.getenv("EFI_CLIENT_ID")
-        self.client_secret = os.getenv("EFI_CLIENT_ID")
-        self.certificate = os.getenv("EFI_CERTIFICATE_PATH")
+        self.base_url = os.getenv("EFI_BASE_URL", None)
+        self.client_id = os.getenv("EFI_CLIENT_ID", None)
+        self.client_secret = os.getenv("EFI_CLIENT_SECRET", None)
+        self.certificate = f"{BASE_DIR}/{CERT_NAME}"
 
         if (
             not self.base_url
@@ -49,16 +52,17 @@ class Client(Clientable):
         }
 
     def get_oauth_token(self) -> OAuthToken:
+        print(self.certificate, self.base_url, self.client_id, self.client_secret)
         auth = base64.b64encode(
             (f"{self.client_id}:{self.client_secret}").encode()
         ).decode()
 
-        uri = f"{self.base_url}/oauth/token"
+        url = f"{self.base_url}/oauth/token"
         payload = json.dumps({"grant_type": "client_credentials"})
         headers = {"Authorization": f"Basic {auth}", "Content-Type": "application/json"}
 
         resp = requests.post(
-            uri, headers=headers, data=payload, cert=self.certificate, timeout=5
+            url, headers=headers, data=payload, cert=self.certificate, timeout=5
         )
 
         data = resp.json()
@@ -79,12 +83,11 @@ class Client(Clientable):
             uri,
             headers=self.headers,
             data=json.dumps(payload),
-            cert=f"{BASE_DIR}/certificado_prod.pem",
+            cert=f"{BASE_DIR}/{CERT_NAME}",
             timeout=5,
         )
 
         if resp.status_code != 201:
-            logger.warning("Error on create order", resp.json())
             raise Exception("Error on create order", resp.json())
 
         return resp.json()
@@ -94,12 +97,11 @@ class Client(Clientable):
         resp = requests.get(
             uri,
             headers=self.headers,
-            cert=f"{BASE_DIR}/certificado_prod.pem",
+            cert=f"{BASE_DIR}/{CERT_NAME}",
             timeout=5,
         )
 
         if resp.status_code != 200:
-            logger.warning("Error on create qrcode", resp.json())
             raise Exception("Error on create qrcode", resp.json())
 
         return resp.json()
@@ -109,12 +111,16 @@ class Client(Clientable):
         resp = requests.get(
             uri,
             headers=self.headers,
-            cert=f"{BASE_DIR}/certificado_prod.pem",
+            cert=f"{BASE_DIR}/{CERT_NAME}",
             timeout=5,
         )
 
         if resp.status_code != 200:
-            logger.warning("Error on list orders", resp.json())
             raise Exception("Error on list orders", resp.json())
 
         return resp.json()
+
+    def charge(self, txid, payload):
+        order = self.create_order_with_transaction_id(txid, payload)
+        qrcode = self.create_qrcode(order.get("loc").get("id"))
+        return qrcode

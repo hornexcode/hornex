@@ -1,8 +1,11 @@
+import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
+import { ConnectedGameIds } from '../../molecules/connected-game-ids';
 import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
 import { SwordsIcon } from '@/components/ui/atoms/icons';
-import { Tournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/models/types';
 import { calcPrizePool, toCurrency } from '@/lib/utils';
+import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { TrophyIcon } from '@heroicons/react/20/solid';
 import {
   CalendarIcon,
@@ -12,11 +15,8 @@ import {
 } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
-import { FC } from 'react';
-import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
-import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
-import { ConnectedGameIds } from '../../molecules/connected-game-ids';
 import { useRouter } from 'next/router';
+import { FC } from 'react';
 
 const imageLoader = ({ src }: any) => {
   return `https://placehold.co/${src}`;
@@ -68,50 +68,31 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               {/*  */}
               {/* Game */}
               <div className="border-r-2 border-dotted border-slate-700 px-8">
-                <LeagueOfLegendsLogo className="text-title w-14" />
+                <LeagueOfLegendsLogo className="text-title w-16" />
               </div>
               {/* Prize Pool */}
               <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
                 <div>
-                  <TrophyIcon className="text-title w-6" />
-                </div>
-                <div>
                   <div className="text-md text-body">Prize Pool</div>
-
                   {!tournament.is_entry_free && (
-                    <div className="text-title text-sm">
-                      ${' '}
+                    <div className="text-title font-display text-lg">
+                      $
                       {calcPrizePool(
                         tournament.entry_fee,
                         tournament.max_teams * tournament.team_size,
                         0.7
-                      )}
-                      ,00
+                      )}{' '}
+                      BRL
                     </div>
                   )}
                 </div>
               </div>
-              {/* Classification */}
-              <div className="flex items-center space-x-4 border-r-2 border-dotted border-slate-700 px-8">
-                <div>
-                  <CircleSlashIcon className="text-title w-6" />
-                </div>
-                <div>
-                  <div className="text-md text-body">Classification</div>
-                  <div className="text-title text-xs">
-                    {tournament.classifications.join(', ')}
-                  </div>
-                </div>
-              </div>
               {!tournament.is_entry_free && (
-                <div className="flex items-center space-x-4 px-8">
-                  <div>
-                    <DollarSign className="text-title w-6" />
-                  </div>
+                <div className="flex items-center space-x-4 border-r-2  border-dotted border-gray-700 px-8">
                   <div>
                     <div className="text-md text-body">Entry fee</div>
-                    <div className="text-title text-sm">
-                      {toCurrency(tournament.entry_fee)}
+                    <div className="text-title font-display text-lg">
+                      ${toCurrency(tournament.entry_fee)} BRL
                     </div>
                   </div>
                 </div>
@@ -130,17 +111,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               >
                 Registrar time
               </Button>
-              {/* <Button
-                size="small"
-                onClick={() =>
-                  router.push(
-                    `/pc/league-of-legends/tournaments/${tournament.id}/checkout`
-                  )
-                }
-                shape="rounded"
-              >
-                Registrar time
-              </Button> */}
             </div>
           </div>
         </div>

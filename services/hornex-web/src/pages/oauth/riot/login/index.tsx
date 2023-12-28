@@ -1,6 +1,6 @@
 import { dataLoader } from '@/lib/api';
-import { useRouter } from 'next/router';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 const { fetch: connectRiotAccount } = dataLoader<{ redirect_url: string }>(
@@ -14,6 +14,8 @@ const OauthRiotLogin: InferGetServerSidePropsType<
   typeof getServerSideProps
 > = ({ redirectUrl }: { redirectUrl: string }) => {
   const router = useRouter();
+
+  console.log(redirectUrl);
 
   useEffect(() => {
     router.replace(redirectUrl);
@@ -61,8 +63,6 @@ export const getServerSideProps: GetServerSideProps = async ({
         },
       };
     }
-
-    console.log(data);
 
     if (data?.return_path) {
       return {

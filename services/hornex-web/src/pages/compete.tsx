@@ -3,7 +3,7 @@ import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legen
 import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
 import { AppLayout } from '@/layouts';
 import { dataLoader as dataLoader } from '@/lib/api';
-import { Game, GetAvailableGamesResponse } from '@/lib/hx-app/types';
+import { Game, GetAvailableGamesResponse } from '@/lib/models/types';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';

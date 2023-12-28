@@ -95,12 +95,16 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def get_object(self, *args, **kwargs):
-        game = kwargs.get("game")
-        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = Tournament.objects.select_for_update().all()
-
+    def get_object(self):
+        self.serializer_class = RegistrationReadSerializer
         return super().get_object()
+
+    # def get_object(self, *args, **kwargs):
+    #     game = kwargs.get("game")
+    #     if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
+    #         self.queryset = Tournament.objects.select_for_update().all()
+
+    #     return super().get_object()
 
     @swagger_auto_schema(
         operation_description="POST /api/v1/tournaments/<str:id>/register",
@@ -136,7 +140,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
         if not params.is_valid():
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        tmt: Tournament = self.get_object()
+        tmt = Tournament.objects.get(id=params.data.get("tournament"))
 
         try:
             tm = Team.objects.get(id=params.data["team"])

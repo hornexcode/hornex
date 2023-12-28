@@ -1,7 +1,7 @@
 import TournamentPage from '@/components/ui/templates/tournament-details-template';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
-import { Tournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/models/types';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 export type GameID = {

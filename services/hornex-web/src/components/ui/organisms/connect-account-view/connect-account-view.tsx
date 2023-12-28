@@ -1,13 +1,12 @@
 import InputLabel from '../../atoms/form/input-label';
-import { useState } from 'react';
-import Listbox, { ListboxOption } from '../../atoms/list-box';
-import Image from 'next/image';
-
-import RiotLogoFullBlackWhite from '@/assets/images/games/league-of-legends/riot-logo-full-black-white.png';
-import Link from 'next/link';
-import { ArrowUpRightIcon } from 'lucide-react';
 import { LolFlatIcon } from '../../atoms/icons/lol-flat-icon';
+import Listbox, { ListboxOption } from '../../atoms/list-box';
+import RiotLogoFullBlackWhite from '@/assets/images/games/league-of-legends/riot-logo-full-black-white.png';
+import { ArrowUpRightIcon } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const regionOptions: ListboxOption[] = [
   { name: 'Brasil', value: 'br1' },

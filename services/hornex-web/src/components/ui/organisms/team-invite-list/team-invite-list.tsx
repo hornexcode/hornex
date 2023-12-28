@@ -1,5 +1,5 @@
 import { TeamInviteListItem } from '../../molecules/team-invite-list-item';
-import { TeamInvite } from '@/lib/hx-app/types';
+import { TeamInvite } from '@/lib/models/types';
 
 export type TeamInviteListProps = {
   isReadOnly?: boolean;

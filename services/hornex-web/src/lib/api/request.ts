@@ -98,6 +98,7 @@ export const dataLoader = <T, Data = unknown>(
     },
 
     post: async (
+      params: ParamMap = {},
       payload?: Data,
       options?: { abort: boolean }
     ): Promise<FetchResponse<T>> => {
@@ -109,7 +110,7 @@ export const dataLoader = <T, Data = unknown>(
       // TODO: this is a hack, we need to find a better way to get the cookie
       const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
 
-      return fetcher(`${API_ROOT}/${path}`, {
+      return fetcher(route.href(params), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
