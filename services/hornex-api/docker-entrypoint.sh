@@ -20,7 +20,7 @@ function run_setup() (
   printf "\n\n"
   echo "Seeding database..."
   echo "====================="
-  python manage.py migrate
+  python ./bin/seed_database.py
   echo "Done!"
 
   printf "\n\n"

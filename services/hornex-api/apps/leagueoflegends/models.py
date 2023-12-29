@@ -173,12 +173,12 @@ class Code(models.Model):
 
 class Session(models.Model):
     game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
-    scope = models.CharField(max_length=500)
+    scope = models.TextField()
     token_type = models.CharField(max_length=50)
-    refresh_token = models.CharField(max_length=500)
-    id_token = models.CharField(max_length=500)
-    sub_id = models.CharField(max_length=500)
-    access_token = models.CharField(max_length=500)
+    refresh_token = models.TextField()
+    id_token = models.TextField()
+    sub_id = models.TextField()
+    access_token = models.TextField()
     expires_at = models.DateTimeField()
     is_active = models.BooleanField(default=True)
 

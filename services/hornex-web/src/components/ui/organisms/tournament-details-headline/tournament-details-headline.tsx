@@ -31,7 +31,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   connectedGameId,
 }) => {
   const { openModal } = useModal();
-  const router = useRouter();
   return (
     <>
       <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52">

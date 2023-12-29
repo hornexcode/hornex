@@ -8,9 +8,8 @@ export const saveTokenWithCookies = (token: Token) => {
     exp: number;
   };
 
-  console.log(payload);
-  // set('hx.auth.token', token.access, { expires: payload.exp * 1000 });
   setCookie(null, 'hx.auth.token', token.access, {
     expires: new Date(payload.exp * 1000),
+    path: '/',
   });
 };

@@ -8,7 +8,7 @@ from apps.leagueoflegends.tasks import on_brackets_generated
 
 class TournamentAdmin(admin.ModelAdmin):
     actions = ["generate_brackets"]
-    list_display = ["name", "game", "prize_pool"]
+    list_display = ["name", "game", "phase", "created_at", "updated_at"]
 
     @admin.action(
         description="Start selected league of legends tournament",

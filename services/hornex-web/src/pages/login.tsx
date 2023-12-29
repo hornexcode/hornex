@@ -22,6 +22,7 @@ type LoginForm = z.infer<typeof form>;
 
 export default function LoginPage() {
   const [success, setSuccess] = useState(false);
+  const [fetching, setFetching] = useState(false);
 
   const router = useRouter();
   const {
@@ -33,16 +34,21 @@ export default function LoginPage() {
     resolver: zodResolver(form),
   });
 
-  const { login, fetching, error, state } = useAuthContext();
+  const { login, error, state } = useAuthContext();
   const handleOnSubmit = async (data: LoginForm) => {
-    await login({
+    setFetching(true);
+    const ok = await login({
       email: data.email,
       password: data.password,
     });
 
-    if (state.isAuthenticated) {
-      router.push(routes.compete);
+    if (ok) {
+      setSuccess(true);
+      setTimeout(() => {
+        router.push('/compete');
+      }, 1000);
     }
+    setFetching(false);
   };
 
   // TODO: remove in production
