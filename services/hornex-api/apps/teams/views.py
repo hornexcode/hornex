@@ -1,3 +1,4 @@
+import structlog
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django_filters import rest_framework as filters
@@ -29,6 +30,8 @@ from apps.teams.serializers import (
     UserInviteSerializer,
 )
 from core.route import extract_game_and_platform
+
+logger = structlog.get_logger(__name__)
 
 
 class TeamViewSet(viewsets.ModelViewSet):

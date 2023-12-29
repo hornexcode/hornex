@@ -1,3 +1,4 @@
+import structlog
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
@@ -24,6 +25,7 @@ from apps.tournaments.serializers import (
 )
 from core.route import extract_game_and_platform
 
+logger = structlog.get_logger(__name__)
 # from apps.leagueoflegends.usecases import RegisterTeam
 
 game_qp = openapi.Parameter(
@@ -132,6 +134,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     )
     @transaction.atomic
     def register(self, request, *args, **kwargs):
+        logger.info(request.data, user=request.user)
         # validate request
         params = RegistrationCreateSerializer(
             data={**request.data, "tournament": kwargs["id"]},

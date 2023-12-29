@@ -7,7 +7,17 @@ function main() (
 
   python wait_for_postgres.py
 
-  run_setup
+  command="${1:-}"
+
+  case "$command" in
+    "runsetup")
+      run_setup
+      ;;
+    *)
+      python manage.py $@
+      exit 1
+      ;;
+  esac
 )
 
 function run_setup() (
@@ -29,4 +39,4 @@ function run_setup() (
   python manage.py runserver 0.0.0.0:8000
 )
 
-main
+main $@

@@ -5,9 +5,9 @@ import { Logo } from '@/components/ui/atoms/logo';
 import routes from '@/config/routes';
 import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -139,17 +139,7 @@ export default function LoginPage() {
   );
 }
 
-export const getServerSideProps = async () => {
-  const { ['hx.auth.token']: token } = parseCookies();
-  console.log('login', token);
-  if (token) {
-    return {
-      redirect: {
-        destination: '/compete',
-        permanent: false,
-      },
-    };
-  }
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {},
   };

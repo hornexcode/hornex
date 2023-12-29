@@ -23,7 +23,7 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   tournament,
   team,
 }: TournamentRegistrationCheckoutPageProps) => {
-  return <TournamentCheckoutTemplate tournament={tournament} />;
+  return <TournamentCheckoutTemplate team={team} tournament={tournament} />;
 };
 
 Tournament.getLayout = (page: React.ReactElement) => {

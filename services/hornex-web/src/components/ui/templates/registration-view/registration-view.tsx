@@ -45,7 +45,11 @@ const RegistrationView = () => {
   // get params
   const router = useRouter();
 
-  const { data: teams, error: teamsError } = getTeams({
+  const {
+    data: teams,
+    error: teamsError,
+    isLoading,
+  } = getTeams({
     platform: router.query.platform || '',
     game: router.query.game || '',
   });
@@ -56,13 +60,7 @@ const RegistrationView = () => {
     game: router.query.game || '',
   });
 
-  if (teams?.length === 0 || !tournament?.id) {
-    return (
-      <div className="flex flex-col p-8 text-center">
-        <p>Something went wrong</p>
-      </div>
-    );
-  }
+  const teamsList = teams && teams?.length > 0 ? teams : [];
 
   return (
     <div className="">
@@ -76,10 +74,10 @@ const RegistrationView = () => {
       <RegistrationContext.Provider
         value={{
           step,
-          teams,
+          teams: teamsList,
           team,
           tournament,
-          isFetching: false,
+          isFetching: true,
           nextStep,
           setTeam,
         }}

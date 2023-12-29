@@ -9,7 +9,7 @@ type TournamentPhasesWidgetProps = {
   tournament: Tournament;
 };
 
-const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
+export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   tournament,
 }) => {
   const { openModal } = useModal();
@@ -109,5 +109,3 @@ const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
     </div>
   );
 };
-
-export default TournamentPhasesWidget;

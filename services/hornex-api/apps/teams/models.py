@@ -41,6 +41,9 @@ class Team(models.Model):
             raise Exception(f"Team {self.name} does not have {amount} members.")
         return True
 
+    def add_member(self, user, is_admin=False):
+        self.members.add(user)
+
 
 class Membership(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

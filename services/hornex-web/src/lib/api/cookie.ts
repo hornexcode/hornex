@@ -1,7 +1,5 @@
 import { parse as parseCookie } from 'es-cookie';
 import { IncomingMessage } from 'http';
-import { NextApiRequestCookies } from 'next/dist/server/api-utils';
-import { parseCookies } from 'nookies';
 
 /**
  * getCookieFromRequest accepts a CookieNames enum to get the cookie from the request. If the value is present it is returned as a string.

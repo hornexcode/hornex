@@ -16,9 +16,10 @@ import django  # noqa: E402
 
 django.setup()
 
-from apps.games.models import Game  # noqa: E402
+from apps.games.models import Game, GameID  # noqa: E402
 from apps.leagueoflegends.models import LeagueEntry, Tournament  # noqa: E402
 from apps.platforms.models import Platform  # noqa: E402
+from apps.teams.models import Team  # noqa: E402
 from apps.users.models import User  # noqa: E402
 
 fake = faker.Faker()
@@ -94,7 +95,26 @@ def create_tournaments():
     t.allowed_league_entries.set([bronze_tier, silver_tier])
 
 
+def create_teams():
+    Team.objects.all().delete()
+    logger.info("Creating teams...")
+    now = dt.now(tz=tz.utc)  # noqa
+
+    admin = User.objects.get(email="admin@hornexcode.com")
+    team = Team.objects.create(
+        name="Hornex HX",
+        description="Team 1 description",
+        game=Team.GameType.LEAGUE_OF_LEGENDS,
+        platform=Team.PlatformType.PC,
+        created_by=admin,
+    )
+
+    for user in User.objects.exclude(email="admin@hornexcode.com").all()[:4]:
+        team.add_member(user)
+
+
 create_superuser()
 create_platforms()
 create_games()
-# create_tournaments()
+create_teams()
+create_tournaments()

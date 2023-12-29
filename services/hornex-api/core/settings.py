@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "channels",  # websockets
     "django_celery_results",
     "corsheaders",  # dev only
+    "django_crontab",
     # apps
     "apps.payments.apps.PaymentsConfig",
     "apps.users.apps.UsersConfig",
@@ -247,3 +248,5 @@ structlog.configure(
     logger_factory=structlog.PrintLoggerFactory(),
     cache_logger_on_first_use=False,
 )
+
+CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]

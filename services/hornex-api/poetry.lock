@@ -667,6 +667,19 @@ asgiref = ">=3.6"
 Django = ">=3.2"
 
 [[package]]
+name = "django-crontab"
+version = "0.7.1"
+description = "dead simple crontab powered job scheduling for django"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-crontab-0.7.1.tar.gz", hash = "sha256:1201810a212460aaaa48eb6a766738740daf42c1a4f6aafecfb1525036929236"},
+]
+
+[package.dependencies]
+Django = ">=1.8"
+
+[[package]]
 name = "django-filter"
 version = "23.4"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
@@ -1909,4 +1922,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6d7a05f5cc616c5193a73a028f34689dddde2e066c8e02c44c271452447f27a7"
+content-hash = "4f82d05b569f78f94d259c9b7ff2e7ff552788602df47ca474d097842e9d6368"

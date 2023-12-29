@@ -99,8 +99,7 @@ export const dataLoader = <T, Data = unknown>(
 
     post: async (
       params: ParamMap = {},
-      payload?: Data,
-      options?: { abort: boolean }
+      payload?: Data
     ): Promise<FetchResponse<T>> => {
       // Client side request
 
@@ -202,12 +201,8 @@ export const dataLoader = <T, Data = unknown>(
       headers: Record<string, string> = {}
     ) => {
       if (!isServer) {
-        // get cookie from client
         const cookie = document.cookie;
-
-        // TODO: this is a hack, we need to find a better way to get the cookie
         const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-
         headers = {
           ...headers,
           Authorization: `Bearer ${token?.split('=')[1]}`,

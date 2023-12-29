@@ -26,7 +26,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             height="600"
             frameBorder={0}
             scrolling="auto"
-            allowTransparency={true}
+            // allowTransparency={true}
           ></iframe>
         </div>
         <div className="bg-light-dark grid grid-cols-4 rounded-b">

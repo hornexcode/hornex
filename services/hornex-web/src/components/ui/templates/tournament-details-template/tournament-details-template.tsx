@@ -1,7 +1,7 @@
 import Button from '../../atoms/button/button';
 import LeagueOfLegendsLogoMarkBlack from '@/assets/images/games/league-of-legends/logomark-black.png';
 import { useModal } from '@/components/modal-views/context';
-import TournamentPhasesWidget from '@/components/ui/molecules/tournament-phases-widget';
+import { TournamentPhasesWidget } from '@/components/ui/molecules';
 import TournamentDetailsHeadline from '@/components/ui/organisms/tournament-details-headline';
 import TournamentOverviewTabPanel from '@/components/ui/organisms/tournament-overview-tab-panel/tournament-overview-tab-panel';
 import TournamentScoringTabPanel from '@/components/ui/organisms/tournament-scoring-tab-panel';

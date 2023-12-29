@@ -3,7 +3,6 @@ import uuid
 from django.db import models
 
 from apps.tournaments.models import Registration
-from apps.users.models import User
 
 
 class RegistrationPayment(models.Model):
@@ -14,9 +13,8 @@ class RegistrationPayment(models.Model):
         CANCELLED = "cancelled"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     registration = models.ForeignKey(
-        Registration, on_delete=models.DO_NOTHING, related_name="payments"
+        Registration, on_delete=models.CASCADE, related_name="payments"
     )
     status = (
         models.CharField(choices=Status.choices, max_length=12, default=Status.PENDING),
@@ -31,3 +29,15 @@ class RegistrationPayment(models.Model):
     def confirm_payment(self):
         self.status = self.Status.PAID
         self.save()
+
+
+class PixTransaction(models.Model):
+    txid = models.CharField(primary_key=True, editable=False, max_length=35)
+    registration_payment = models.ForeignKey(
+        RegistrationPayment,
+        on_delete=models.CASCADE,
+        related_name="pix_transactions",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

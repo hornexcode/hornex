@@ -7,3 +7,4 @@ TeamMemberIsNotAllowedToRegistrate = (
 BracketGenerationNotAllowedError = "Bracket generation is not allowed"
 TournamentHasNoStartDateTime = "Tournament has neither start date or time"
 NotWeekend = "Tournaments should start on weekends"
+ConfirmeTeamWithoutRegistration = "This team is not registered"

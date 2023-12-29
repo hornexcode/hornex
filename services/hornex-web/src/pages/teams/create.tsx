@@ -5,6 +5,7 @@ import Listbox, { ListboxOption } from '@/components/ui/atoms/list-box';
 import Loader from '@/components/ui/atoms/loader';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
+import { Team } from '@/lib/models';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
@@ -37,9 +38,7 @@ const createTeamFormSchema = z.object({
 
 type CreateTeamForm = z.infer<typeof createTeamFormSchema>;
 
-const { post: createTeam } = dataLoader<undefined, CreateTeamForm>(
-  'createTeam'
-);
+const { post: createTeam } = dataLoader<Team, CreateTeamForm>('createTeam');
 
 const TeamCreate = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -63,9 +62,11 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
 
   const submitHandler: SubmitHandler<CreateTeamForm> = async (form) => {
     setIsSubmitting(true);
-    const { error } = await createTeam(form);
-    if (!error) {
-      toast.success('Team created successfully');
+    const { error } = await createTeam({}, form);
+    if (error) {
+      toast.error(error.message);
+      setIsSubmitting(false);
+      return;
     }
     setIsSubmitting(false);
     route.push('/teams');
@@ -77,7 +78,7 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
   }, []);
 
   return (
-    <div className="flex">
+    <div className="container mx-auto">
       <div className="w-2/4 p-8">
         <div className="mb-4">
           <div className="flex items-end justify-between">

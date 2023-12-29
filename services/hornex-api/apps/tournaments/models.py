@@ -173,13 +173,11 @@ class Tournament(models.Model):
         regi = Registration.objects.get(tournament=self, team=team)
         regi.cancel()
 
-    def subscribe(self, team, payment_date: datetime):
-        Subscription.objects.create(
-            tournament=self,
-            entry_fee=self.entry_fee,
-            team=team,
-            payment_date=payment_date,
-        )
+    def confirm_registration(self, team: Team):
+        if self._is_full():
+            raise ValidationError(detail=errors.TournamentFullError)
+        if not self._check_team_has_registration(team):
+            raise ValidationError(detail=errors.ConfirmeTeamWithoutRegistration)
 
         self.teams.add(team)
         self.save()
@@ -241,10 +239,14 @@ class Tournament(models.Model):
             raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
         if not self._check_team_has_enough_members(team):
             raise ValidationError(detail=errors.EnoughMembersError)
-        if not self._check_team_members_can_play(team):
+        if not self.is_classification_open and not self._check_team_members_can_play(
+            team
+        ):
             raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
 
-        return Registration.objects.create(tournament=self, team=team)
+        return Registration.objects.create(
+            tournament=self, team=team, game_slug=self.game, platform_slug=self.platform
+        )
 
     def _is_full(self):
         now = datetime.now(tz=UTC)
@@ -327,7 +329,7 @@ class Registration(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"Registratrion at {self.tournament.name}-{self.team.name} ({self.id.__str__()})"
+        return f"{self.team.name} registratrion at {self.tournament.name} ({self.id.__str__()})"
 
     def accept(self):
         self.status = Registration.RegistrationStatusType.ACCEPTED

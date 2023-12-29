@@ -43,7 +43,7 @@ RUN chmod +x /docker-entrypoint.sh
 
 COPY . .
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh", "runsetup"]
 
 # -------------------------------------------------------------------------------
 # Runtime prod/stage/etc

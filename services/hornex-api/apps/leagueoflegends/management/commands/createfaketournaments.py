@@ -1,6 +1,5 @@
 from datetime import datetime as dt
 from datetime import timedelta as td
-from datetime import timezone as tz
 
 from django.core.management.base import BaseCommand
 
@@ -14,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user = User.objects.first()
 
-        now = dt.now(tz=tz.utc)
+        now = dt.utcnow()
         tournament = Tournament.objects.create(
             name="Torneio de League of Legends",
             organizer=user,

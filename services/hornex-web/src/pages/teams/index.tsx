@@ -1,13 +1,13 @@
 import TeamsTemplate from '@/components/ui/templates/teams';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
+import { makeClientReqObj } from '@/lib/api/util';
 import { GetInvitesResponse } from '@/lib/models/types';
 import {
   GetTeamsOutput,
   getTeamsSchemaOutput as schema,
 } from '@/services/hx-core/get-teams';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { parseCookies } from 'nookies';
 
 const { useData: useGetTeams } = dataLoader<GetTeamsOutput>('getTeams');
 const { useData: useGetInvites } =
@@ -45,17 +45,6 @@ TeamsPage.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // const token = ctx.req.cookies['hx.auth.token'];
-  // const token = console.log(token);
-  const { ['hx.auth.token']: token } = parseCookies(ctx);
-  if (!token) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
   return {
     props: {},
   };

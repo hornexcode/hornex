@@ -1,4 +1,4 @@
-import TournamentPage from '@/components/ui/templates/tournament-details-template';
+import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
 import { Tournament } from '@/lib/models/types';
@@ -35,7 +35,9 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   //   default:
   //     break;
   // }
-  return <TournamentPage tournament={tournament} gameIds={gameIds} />;
+  return (
+    <TournamentDetailsTemplate tournament={tournament} gameIds={gameIds} />
+  );
 };
 
 Tournament.getLayout = (page: React.ReactElement) => {
