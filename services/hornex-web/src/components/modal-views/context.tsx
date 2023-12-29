@@ -3,7 +3,8 @@ import { atom, useAtom } from 'jotai';
 export type MODAL_VIEW =
   | 'SEARCH_VIEW'
   | 'REGISTRATION_VIEW'
-  | 'CONNECT_ACCOUNT_VIEW';
+  | 'CONNECT_ACCOUNT_VIEW'
+  | 'ERROR_VIEW';
 
 interface ModalTypes {
   isOpen: boolean;

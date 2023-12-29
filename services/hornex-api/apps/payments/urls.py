@@ -1,7 +1,11 @@
 from django.urls import path
 
-from .views import create_order
+from apps.payments.views import create_payment_registration
 
 urlpatterns = [
-    path("/pix", create_order, name="payment-pix"),
+    path(
+        "/registration",
+        create_payment_registration,
+        name="payment-registration",
+    ),
 ]

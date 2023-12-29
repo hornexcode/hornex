@@ -4,16 +4,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@/websocket/app'; // websocket
 
 import ModalsContainer from '@/components/modal-views/container';
+import { Toaster } from '@/components/ui/sonner';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
 import { NotificationContextProvider } from '@/lib/notification';
 import classnames from 'classnames';
 import { NextPage } from 'next';
-import { AppProps, AppContext, AppInitialProps } from 'next/app';
+import { AppContext, AppInitialProps, AppProps } from 'next/app';
 import { Source_Sans_3 } from 'next/font/google';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Toaster } from '@/components/ui/sonner';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;

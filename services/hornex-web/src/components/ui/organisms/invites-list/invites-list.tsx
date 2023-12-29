@@ -1,5 +1,5 @@
 import { InvitesListItem } from '../../molecules/invites-list-item';
-import { Invite } from '@/lib/hx-app/types';
+import { Invite } from '@/lib/models/types';
 import { FC } from 'react';
 
 type InvitesListProps = {

@@ -1,5 +1,5 @@
 import { dataLoader } from '@/lib/api';
-import { GetNotificationsResponse } from '@/lib/hx-app/types/rest/get-notifications';
+import { GetNotificationsResponse } from '@/lib/models/types/rest/get-notifications';
 
 const { useData: useGetNotifications } =
   dataLoader<GetNotificationsResponse>('getNotifications');

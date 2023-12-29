@@ -94,7 +94,7 @@ class Tournament(models.Model):
         return all(
             [
                 member.can_play(
-                    game=Tournament.GameType.LEAGUE_OF_LEGENDS,
+                    game=self.game,
                     classifications=self.get_classifications(),  # ["1","4","5"]
                 )
                 for member in team.members.all()
@@ -258,7 +258,7 @@ class Tournament(models.Model):
         pending_registrations = Registration.objects.filter(
             tournament=self,
             status=Registration.RegistrationStatusType.PENDING,
-            created_at__gt=now - timedelta(hours=2),
+            created_at__gt=now - timedelta(hours=1),
         ).count()
 
         return accepted_registrations + pending_registrations >= self.max_teams
@@ -316,7 +316,8 @@ class Registration(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
-
+    game_slug = models.CharField(max_length=255)
+    platform_slug = models.CharField(max_length=255)
     status = models.CharField(
         max_length=50,
         choices=RegistrationStatusType.choices,
@@ -326,9 +327,7 @@ class Registration(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.tournament.name} \
-            | team: {self.team.name} ({self.id}) \
-            | entry fee: ${self.tournament.entry_fee}"
+        return f"Registratrion at {self.tournament.name}-{self.team.name} ({self.id.__str__()})"
 
     def accept(self):
         self.status = Registration.RegistrationStatusType.ACCEPTED

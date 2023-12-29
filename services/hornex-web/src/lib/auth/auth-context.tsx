@@ -21,13 +21,15 @@ const initialState: AuthContextState = {
 
 export const AuthContext = createContext<{
   state: AuthContextState;
-  login: (params: { email: string; password: string }) => Promise<void>;
+  login: (params: { email: string; password: string }) => Promise<boolean>;
   logout: () => Promise<void>;
   fetching: boolean;
   error?: string;
 }>({
   state: initialState,
-  login: async () => {},
+  login: async () => {
+    return true;
+  },
   logout: async () => {},
   fetching: false,
 });
@@ -77,16 +79,21 @@ export const AuthContextProvider = ({
     setFetching(true);
     setError(undefined);
 
-    const { data: token, error } = await authenticateUser({ email, password });
+    const { data: token, error } = await authenticateUser(undefined, {
+      email,
+      password,
+    });
     if (!error && token) {
       saveTokenWithCookies(token);
       loadCurrentUser();
     } else {
       setError(error?.message || 'Error authenticating user');
       dispatch({ type: 'LOGIN_FAILED' });
+      return false;
     }
 
     setFetching(false);
+    return true;
   };
 
   const logout = async () => {

@@ -7,6 +7,7 @@ import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -21,6 +22,7 @@ type LoginForm = z.infer<typeof form>;
 
 export default function LoginPage() {
   const [success, setSuccess] = useState(false);
+  const [fetching, setFetching] = useState(false);
 
   const router = useRouter();
   const {
@@ -32,28 +34,22 @@ export default function LoginPage() {
     resolver: zodResolver(form),
   });
 
-  const { login, fetching, error, state } = useAuthContext();
+  const { login, error, state } = useAuthContext();
   const handleOnSubmit = async (data: LoginForm) => {
-    await login({
+    setFetching(true);
+    const ok = await login({
       email: data.email,
       password: data.password,
     });
 
-    if (state.isAuthenticated) {
-      router.push(routes.compete);
-    }
-  };
-
-  useEffect(() => {
-    if (state.isAuthenticated) {
+    if (ok) {
       setSuccess(true);
-      router.push(routes.compete);
+      setTimeout(() => {
+        router.push('/compete');
+      }, 1000);
     }
-
-    return () => {
-      setSuccess(false);
-    };
-  }, [state.isAuthenticated]);
+    setFetching(false);
+  };
 
   // TODO: remove in production
   useEffect(() => {}, [setValue]);
@@ -142,3 +138,19 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export const getServerSideProps = async () => {
+  const { ['hx.auth.token']: token } = parseCookies();
+  console.log('login', token);
+  if (token) {
+    return {
+      redirect: {
+        destination: '/compete',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+};

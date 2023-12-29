@@ -24,7 +24,7 @@ class Team(models.Model):
     platform = models.CharField(
         choices=PlatformType.choices, max_length=50, default=PlatformType.PC
     )
-    created_by = models.ForeignKey("users.User", on_delete=models.RESTRICT)
+    created_by = models.ForeignKey("users.User", on_delete=models.DO_NOTHING)
     members = models.ManyToManyField(
         "users.User", through="Membership", related_name="teams"
     )
@@ -53,9 +53,9 @@ class Membership(models.Model):
     def __str__(self) -> str:
         return f"{self.user.email} :: ({self.team.name})"
 
-    def can_play(self, classifications):
+    def can_play(self, game, classifications):
         u = self.user
-        return u.can_play(classifications)
+        return u.can_play(game, classifications)
 
 
 class Invite(models.Model):

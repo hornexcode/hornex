@@ -1,5 +1,4 @@
 from test.factories import (
-    LeagueOfLegendsAccountFactory,
     LeagueOfLegendsTournamentFactory,
     MatchFactory,
     UserFactory,
@@ -33,7 +32,8 @@ class TestCreateTournamentCodes(TestCase):
             team.members.set(users)
             members = team.members.all()
             for member in members:
-                LeagueOfLegendsAccountFactory.new(member)
+                pass
+                # LeagueOfLegendsAccountFactory.new(member)
 
         mock_response = MagicMock()
         mock_response.status_code = 200

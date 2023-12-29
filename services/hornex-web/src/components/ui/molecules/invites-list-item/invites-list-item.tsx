@@ -1,8 +1,8 @@
 import Button from '@/components/ui/atoms/button';
 import { dataLoader } from '@/lib/api';
-import { Invite } from '@/lib/hx-app/types';
-import { AcceptInviteRequestParams } from '@/lib/hx-app/types/rest/accept-invite';
-import { DeclineInviteRequestParams } from '@/lib/hx-app/types/rest/decline-invite';
+import { Invite } from '@/lib/models/types';
+import { AcceptInviteRequestParams } from '@/lib/models/types/rest/accept-invite';
+import { DeclineInviteRequestParams } from '@/lib/models/types/rest/decline-invite';
 import { FC } from 'react';
 import { toast } from 'react-toastify';
 

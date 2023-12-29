@@ -5,7 +5,7 @@ import {
 } from '@/components/ui/atoms/icons';
 import routes from '@/config/routes';
 import { dataLoader } from '@/lib/api';
-import { GetInvitesResponse } from '@/lib/hx-app/types';
+import { GetInvitesResponse } from '@/lib/models/types';
 import { useNotification } from '@/lib/notification';
 import { useWebSocketContext } from '@/websocket/context';
 import {

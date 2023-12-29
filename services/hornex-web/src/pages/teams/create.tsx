@@ -160,7 +160,8 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
                 color="gray"
                 variant="ghost"
                 shape="rounded"
-                type="submit"
+                type="button"
+                onClick={() => route.back()}
               >
                 Cancel
               </Button>

@@ -1,21 +1,10 @@
-import {
-  Cloud,
-  CreditCard,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-  CogIcon,
-  PlusCircleIcon,
-} from 'lucide-react';
-import { Menu, Transition } from '@headlessui/react';
-import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
-import { Fragment } from 'react';
 import { ChevronDown } from '../../atoms/icons';
 import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
 import { LolFlatIcon } from '../../atoms/icons/lol-flat-icon';
+import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
+import { Menu, Transition } from '@headlessui/react';
+import { CogIcon, PlusCircleIcon } from 'lucide-react';
+import { Fragment } from 'react';
 
 export const ConnectedGameIds = ({ gameId }: { gameId: GameID }) => {
   return (

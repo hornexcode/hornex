@@ -1,5 +1,5 @@
 import { SwordsIcon } from '@/components/ui/atoms/icons';
-import { Tournament } from '@/lib/hx-app/types';
+import { Tournament } from '@/lib/models/types';
 import { ComputerDesktopIcon, LockOpenIcon } from '@heroicons/react/20/solid';
 import { CoinsIcon } from 'lucide-react';
 import { FC } from 'react';
@@ -14,10 +14,20 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
   return (
     <>
       <div className="bg-medium-dark rounded shadow-md">
-        <div className="border-b border-gray-700 p-5">
-          <h4 className="leading-2 text-title text-lg font-extrabold">
+        <div className="border-b border-gray-700 p-4">
+          <h4 className="leading-2 text-title text-sm font-extrabold">
             Tournament details
           </h4>
+        </div>
+        <div className="bg-light-dark">
+          <iframe
+            src="https://challonge.com/quz6flp4/module?show_live_status=0"
+            width="100%"
+            height="600"
+            frameBorder={0}
+            scrolling="auto"
+            allowTransparency={true}
+          ></iframe>
         </div>
         <div className="bg-light-dark grid grid-cols-4 rounded-b">
           <div className="col-span-1 p-5">

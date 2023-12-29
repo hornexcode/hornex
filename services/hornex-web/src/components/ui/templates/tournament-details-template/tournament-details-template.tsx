@@ -1,19 +1,18 @@
+import Button from '../../atoms/button/button';
+import LeagueOfLegendsLogoMarkBlack from '@/assets/images/games/league-of-legends/logomark-black.png';
+import { useModal } from '@/components/modal-views/context';
 import TournamentPhasesWidget from '@/components/ui/molecules/tournament-phases-widget';
 import TournamentDetailsHeadline from '@/components/ui/organisms/tournament-details-headline';
 import TournamentOverviewTabPanel from '@/components/ui/organisms/tournament-overview-tab-panel/tournament-overview-tab-panel';
 import TournamentScoringTabPanel from '@/components/ui/organisms/tournament-scoring-tab-panel';
 import TournamentStandingTabPanel from '@/components/ui/organisms/tournament-standing-tab-panel';
-import { Tournament } from '@/lib/hx-app/types';
+import { useToast } from '@/components/ui/use-toast';
+import { Tournament } from '@/lib/models/types';
+import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { Tab } from '@headlessui/react';
 import classnames from 'classnames';
-import { FC, useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
-import Button from '../../atoms/button/button';
 import Image from 'next/image';
-
-import LeagueOfLegendsLogoMarkBlack from '@/assets/images/games/league-of-legends/logomark-black.png';
-import { useModal } from '@/components/modal-views/context';
-import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
+import { FC, useState } from 'react';
 
 type TournamentProps = {
   tournament: Tournament;
@@ -41,7 +40,7 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({
     undefined;
 
   return (
-    <div className="p-6">
+    <div className="p-8">
       {/* connect account */}
       {!gameId && (
         <div className="bg-light-dark shadow-card mb-4 p-6">

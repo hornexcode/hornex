@@ -331,6 +331,7 @@ class Client(Clientable):
             return None
 
         data = resp.json()
+
         return SummonerDTO(
             id=data["id"],
             account_id=data["accountId"],
