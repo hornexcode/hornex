@@ -18,8 +18,6 @@ from apps.tournaments.models import Registration
 
 logger = structlog.get_logger(__name__)
 
-# Do not initialize directly on the view, otherwise the mock will not work
-
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -43,15 +41,12 @@ def create_payment_registration(request):
             registration=registration,
             amount=registration.tournament.entry_fee,
         )
-        # PixTransaction.objects.create(
-        #     txid=txid, registration_payment=payment_registration
-        # )
     except Exception as e:
         logger.error("Error on creating payment", error=e)
         return Response({"error": "Error on creating payment"}, status=500)
 
     payment_registration = RegistrationPaymentDTO(
-        id=payment_registration.id.__str__(),
+        id=payment_registration.id.hex,
         name=form.data["name"],
         cpf=form.data["cpf"],
         amount=registration.tournament.entry_fee,
@@ -60,7 +55,6 @@ def create_payment_registration(request):
     payment_gateway = get_payment_gateway()
 
     try:
-        logger.info(payment_gateway.__class__)
         resp = payment_gateway.charge(payment_registration)
     except Exception as e:
         logger.error("Error on charging user", error=e)
