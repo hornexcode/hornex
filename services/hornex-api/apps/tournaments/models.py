@@ -326,6 +326,10 @@ class Registration(models.Model):
         default=RegistrationStatusType.PENDING,
     )
 
+    @property
+    def pk(self):
+        return self.id.__str__()
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

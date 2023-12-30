@@ -6,6 +6,6 @@ urlpatterns = [
     path(
         "/registration",
         create_payment_registration,
-        name="payment-registration",
+        name="create-payment-registration",
     ),
 ]

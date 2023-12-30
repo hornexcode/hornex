@@ -77,7 +77,6 @@ class TestUnitTournamentModel(TestCase):
         self.tournament.teams.set(teams)
         self.tournament.save()
         self.tournament.refresh_from_db()
-
         self.tournament.start()
 
         self.assertEqual(self.tournament.phase, Tournament.PhaseType.RESULTS_TRACKING)

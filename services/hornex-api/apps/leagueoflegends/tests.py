@@ -37,10 +37,8 @@ class TestLeagueOfLegendsTournament(APITestCase):
             tier=Classification.Tier.BRONZE, rank=Classification.Rank.I
         )
         Membership.objects.create(team=team, user=self.user)
-        # LeagueOfLegendsAccountFactory.new(user=self.user, classification=classification)
         for _ in range(0, 4):
             usr = UserFactory.new()
-            # LeagueOfLegendsAccountFactory.new(user=usr, classification=classification)
             Membership.objects.create(team=team, user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(

@@ -1,7 +1,4 @@
-import hashlib
-import logging
-import os
-
+import structlog
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import (
@@ -13,12 +10,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.payments.models import PixTransaction, RegistrationPayment
+from apps.payments.dto import RegistrationPaymentDTO
+from apps.payments.gateway import get_payment_gateway
+from apps.payments.models import RegistrationPayment
 from apps.payments.serializers import CreatePaymentRegistrationSerializer
 from apps.tournaments.models import Registration
-from lib.efi.client import Efi
 
-logger = logging.getLogger("django")
+logger = structlog.get_logger(__name__)
+
+# Do not initialize directly on the view, otherwise the mock will not work
 
 
 @api_view(["POST"])
@@ -31,42 +31,38 @@ def create_payment_registration(request):
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        reg = Registration.objects.get(id=form.data["registration"])
+        registration = Registration.objects.get(id=form.data["registration"])
     except Registration.DoesNotExist:
         return Response({"error": "Registration does not exist"}, status=404)
 
-    if reg.status != Registration.RegistrationStatusType.PENDING:
+    if registration.status != Registration.RegistrationStatusType.PENDING:
         return Response({"error": "Registration is not pending"}, status=400)
-
-    efi = Efi()
-
-    txid = hashlib.sha256(str(form.data["registration"]).encode()).hexdigest()[:35]
 
     try:
         payment_registration = RegistrationPayment.objects.create(
-            registration=reg,
-            amount=reg.tournament.entry_fee,
+            registration=registration,
+            amount=registration.tournament.entry_fee,
         )
-        PixTransaction.objects.create(
-            txid=txid, registration_payment=payment_registration
-        )
+        # PixTransaction.objects.create(
+        #     txid=txid, registration_payment=payment_registration
+        # )
     except Exception as e:
-        logger.info(e)
+        logger.error("Error on creating payment", error=e)
         return Response({"error": "Error on creating payment"}, status=500)
 
-    pix_config = {
-        "calendario": {"expiracao": int(os.getenv("PIX_EXPIRATION", 3600))},
-        "devedor": {"cpf": form.data.get("cpf"), "nome": form.data.get("name")},
-        # "valor": {"original": "%.2f" % reg.tournament.entry_fee},
-        "valor": {"original": "2.32"},
-        "chave": os.getenv("PIX_KEY"),
-        "solicitacaoPagador": f"Cobrança de registro em torneio: {reg.tournament.name}",
-    }
+    payment_registration = RegistrationPaymentDTO(
+        id=payment_registration.id.__str__(),
+        name=form.data["name"],
+        cpf=form.data["cpf"],
+        amount=registration.tournament.entry_fee,
+    )
+
+    payment_gateway = get_payment_gateway()
 
     try:
-        qrcode = efi.charge(txid, pix_config)
+        logger.info(payment_gateway.__class__)
+        resp = payment_gateway.charge(payment_registration)
     except Exception as e:
-        logger.info(e)
-        return Response({"error": "Error on creating pix charge"}, status=500)
-
-    return Response(qrcode, status=status.HTTP_201_CREATED)
+        logger.error("Error on charging user", error=e)
+        return Response({"error": "Error on creating payment"}, status=500)
+    return Response(resp, status=status.HTTP_201_CREATED)
