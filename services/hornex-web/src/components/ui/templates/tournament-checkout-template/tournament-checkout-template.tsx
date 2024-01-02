@@ -15,6 +15,7 @@ import {
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
+import { TimerIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useCallback, useState } from 'react';
@@ -89,98 +90,85 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
               Checkout to complete your registration and play the tournament
             </p>
           </div>
-          {!pix ? (
-            <>
-              <div className="">
-                <div className="w-full">
-                  <InputLabel title="Payment Method" important />
-                  <PaymentOptions
-                    onChange={setPaymentMethod}
-                    value={paymentMethod}
-                  />
-                </div>
-                {paymentMethod === 'pix' && (
-                  <div className="mt-8 space-y-8">
-                    <div className="">
-                      <InputLabel title="Nome no PIX" important />
-                      <Input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        inputClassName={classnames(
-                          inputErrors.name ? 'focus:ring-red-500' : ''
-                        )}
-                        placeholder="Nome no PIX"
-                        error={inputErrors.name}
-                      />
-                    </div>
-                    <div className="">
-                      <InputLabel title="CPF no PIX" important />
-                      <Input
-                        value={cpf}
-                        onChange={(e) => {
-                          setCpf(e.target.value);
-                          if (!/^\d{11}$/.test(e.target.value))
-                            setInputErrors((prev) => ({
-                              ...prev,
-                              cpf: 'CPF inválido',
-                            }));
-                          else setInputErrors((prev) => ({ ...prev, cpf: '' }));
-                        }}
-                        inputClassName={classnames(
-                          inputErrors ? 'focus:ring-red-500' : ''
-                        )}
-                        placeholder="CPF no PIX"
-                        error={inputErrors.cpf}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-end">
-                <Button
-                  onClick={() => router.back()}
-                  color="gray"
-                  shape="rounded"
-                  className="mr-3"
-                  variant="ghost"
-                >
-                  <div className="flex items-center">
-                    <LongArrowLeft className="mr-4 h-5 w-4" />
-                    <span>Back</span>
-                  </div>
-                </Button>
-                <Button
-                  onClick={() => handlePayment()}
-                  className="flex-1"
-                  shape="rounded"
-                >
-                  Registrate
-                  <span className="font-display ml-2">
-                    ${tournament.entry_fee * tournament.team_size}
-                  </span>
-                </Button>
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center">
-              <span className="text-body text-lg">Scan the QrCode</span>
-              <div className="space-y-4 rounded border border-gray-700 p-4 text-center">
-                <Image
-                  width={256}
-                  height={256}
-                  src={pix.imagemQrcode}
-                  alt="qrcode"
+
+          <>
+            <div className="">
+              <div className="w-full">
+                <InputLabel title="Payment Method" important />
+                <PaymentOptions
+                  onChange={setPaymentMethod}
+                  value={paymentMethod}
                 />
               </div>
+              {paymentMethod === 'pix' && (
+                <div className="mt-8 space-y-8">
+                  <div className="">
+                    <InputLabel title="Nome no PIX" important />
+                    <Input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      inputClassName={classnames(
+                        inputErrors.name ? 'focus:ring-red-500' : ''
+                      )}
+                      placeholder="Nome no PIX"
+                      error={inputErrors.name}
+                    />
+                  </div>
+                  <div className="">
+                    <InputLabel title="CPF no PIX" important />
+                    <Input
+                      value={cpf}
+                      onChange={(e) => {
+                        setCpf(e.target.value);
+                        if (!/^\d{11}$/.test(e.target.value))
+                          setInputErrors((prev) => ({
+                            ...prev,
+                            cpf: 'CPF inválido',
+                          }));
+                        else setInputErrors((prev) => ({ ...prev, cpf: '' }));
+                      }}
+                      inputClassName={classnames(
+                        inputErrors ? 'focus:ring-red-500' : ''
+                      )}
+                      placeholder="CPF no PIX"
+                      error={inputErrors.cpf}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+            <div className="flex justify-end">
+              <Button
+                onClick={() => router.back()}
+                color="gray"
+                shape="rounded"
+                className="mr-3"
+                variant="ghost"
+              >
+                <div className="flex items-center">
+                  <LongArrowLeft className="mr-4 h-5 w-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
+              <Button
+                onClick={() => handlePayment()}
+                className="flex-1"
+                shape="rounded"
+              >
+                Registrate
+                <span className="font-display ml-2">
+                  ${tournament.entry_fee * tournament.team_size}
+                </span>
+              </Button>
+            </div>
+          </>
         </div>
         <div className="col-span-2 pl-8">
           <div className="space-y-6">
             <div className="text-title text-lg tracking-wide">
               Purchase Details
             </div>
-            <div className="flex space-x-5 rounded border border-gray-700 p-2">
+            <div className="bg-medium-dark highlight-white-5 flex space-x-5 rounded p-2">
               <div className="block">
                 <Image
                   className="shadow-card overflow-hidden rounded"
@@ -198,10 +186,10 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                   <div className="text-title text-sm">{tournament.name}</div>
                 </div>
               </div>
-              <TrashIcon className="text-title ml-2 h-4 w-4 cursor-pointer hover:text-red-500" />
+              {/* <TrashIcon className="text-title ml-2 h-4 w-4 cursor-pointer hover:text-red-500" /> */}
             </div>
 
-            <div className="font-display space-y-5 border-y border-dashed border-gray-700 px-4 py-4">
+            <div className="font-display space-y-5 px-4 py-4">
               <div className="text-title flex justify-between text-lg">
                 <div className="pr-2 leading-4">Team</div>
                 <div className="flex-1 border-b border-dashed border-gray-600"></div>
@@ -227,6 +215,35 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const PixContent = () => {
+  const router = useRouter();
+  return (
+    <div className="flex flex-col items-center justify-center space-y-8">
+      <span className="text-title text-lg">PIX</span>
+      <div className="bg-light-dark p-4 text-center">
+        <Image width={256} height={256} src={pix.imagemQrcode} alt="qrcode" />
+      </div>
+      <Button
+        shape="rounded"
+        color="gray"
+        variant="ghost"
+        fullWidth
+        onClick={() => router.back()}
+        className="mt-4"
+      >
+        Copiar código
+      </Button>
+      <div className="bg-light-dark flex w-full items-center justify-center rounded p-10">
+        <TimerIcon className="text-body mr-4 h-20 w-20" />
+        <span className="text-body text-lg font-extralight">
+          You have 15 minutes to complete the payment. Once the payment is done,
+          you will be redirected to the tournament page.
+        </span>
       </div>
     </div>
   );

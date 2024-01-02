@@ -69,11 +69,9 @@ const TournamentStandingTabPanel: FC<TournamentStandingTabPanelProps> = ({
   const columns = React.useMemo(() => COLUMNS, []);
 
   return (
-    <div className="bg-light-dark rounded-lg shadow-md">
-      <div className="border-b-2 border-gray-800 p-5">
-        <h4 className="leading-2 text-sm font-medium uppercase text-gray-200">
-          leader board
-        </h4>
+    <div className="bg-medium-dark rounded shadow-md">
+      <div className="border-b border-gray-700 p-4">
+        <h4 className="leading-2 text-title text-sm font-bold">leader board</h4>
       </div>
       <TournamentLeaderBoardTable columns={columns} data={data} />
     </div>

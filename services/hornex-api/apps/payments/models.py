@@ -32,19 +32,20 @@ class RegistrationPayment(models.Model):
         self.save()
 
 
-class PixTransaction(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    txid = models.CharField(unique=True, editable=False, max_length=35)
-    registration_payment = models.ForeignKey(
-        RegistrationPayment,
-        on_delete=models.CASCADE,
-        related_name="pix_transactions",
-    )
+# class PixTransaction(models.Model):
+#     id = models.CharField(
+#         primary_key=True, default=uuid.uuid4, editable=False, max_length=35
+#     )
+#     registration_payment = models.ForeignKey(
+#         RegistrationPayment,
+#         on_delete=models.CASCADE,
+#         related_name="pix_transactions",
+#     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kargs) -> None:
-        if not self.txid:
-            self.txid = uuid.uuid4().hex
-        return super().save(*args, **kargs)
+#     def save(self, *args, **kargs) -> None:
+#         if not self.txid:
+#             self.txid = uuid.uuid4().hex
+#         return super().save(*args, **kargs)

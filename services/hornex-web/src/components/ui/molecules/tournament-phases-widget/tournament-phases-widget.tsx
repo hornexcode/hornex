@@ -16,7 +16,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
 
   return (
     <div className="bg-light-dark shadow-light space-y-2 rounded-md ">
-      <div className="bg-medium-dark rounded-t">
+      <div className="bg-medium-dark highlight-white-5 rounded-t">
         <div className="border-b border-gray-700 p-4">
           <h4 className="leading-2 text-title text-sm font-extrabold">
             Tournament Phases

@@ -75,13 +75,13 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                   <div className="text-md text-body">Prize Pool</div>
                   {!tournament.is_entry_free && (
                     <div className="text-title font-display text-lg">
-                      $
-                      {calcPrizePool(
-                        tournament.entry_fee,
-                        tournament.max_teams * tournament.team_size,
-                        0.7
-                      )}{' '}
-                      BRL
+                      R${' '}
+                      {toCurrency(
+                        tournament.entry_fee *
+                          tournament.max_teams *
+                          tournament.team_size *
+                          0.7
+                      )}
                     </div>
                   )}
                 </div>
@@ -91,7 +91,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                   <div>
                     <div className="text-md text-body">Entry fee</div>
                     <div className="text-title font-display text-lg">
-                      ${toCurrency(tournament.entry_fee)} BRL
+                      R$ {toCurrency(tournament.entry_fee)}
                     </div>
                   </div>
                 </div>

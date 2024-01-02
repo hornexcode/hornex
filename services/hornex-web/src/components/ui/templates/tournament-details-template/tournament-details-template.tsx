@@ -8,8 +8,10 @@ import TournamentScoringTabPanel from '@/components/ui/organisms/tournament-scor
 import TournamentStandingTabPanel from '@/components/ui/organisms/tournament-standing-tab-panel';
 import { useToast } from '@/components/ui/use-toast';
 import { Tournament } from '@/lib/models/types';
+import { toCurrency } from '@/lib/utils';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { Tab } from '@headlessui/react';
+import { GiftIcon, TrophyIcon } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
 import Image from 'next/image';
 import { FC, useState } from 'react';
@@ -27,7 +29,7 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({
     Overview: '',
     Standings: '',
     'Prize Pool': '',
-    Scoring: '',
+    Brackets: '',
     Rules: '',
   });
 
@@ -106,10 +108,107 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({
                 <TournamentStandingTabPanel tournament={tournament} />
               </Tab.Panel>
               <Tab.Panel>
-                <TournamentScoringTabPanel tournament={tournament} />
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="col-span-1">
+                    <div className="bg-medium-dark highlight-white-5 shadow-button l-0 relative flex items-center rounded p-4 bg-blend-hard-light">
+                      <div className="absolute right-0 h-2/3 w-2 bg-gray-200"></div>
+                      <div className="highlight-white-20 shadow-card rounded bg-gray-200 p-4">
+                        <TrophyIcon className="text-dark h-7 w-7" />
+                      </div>
+                      <div className="flex flex-col px-4">
+                        <h4 className="text-title text-sm font-light tracking-wide">
+                          Potential Prize Pool
+                        </h4>
+                        <div className="text-title font-display text-xl font-extrabold ">
+                          R${' '}
+                          <span className="">
+                            {toCurrency(
+                              tournament.team_size *
+                                tournament.max_teams *
+                                tournament.entry_fee *
+                                0.7
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-span-1">
+                    <p className="text-lg font-light text-gray-400">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Quia odit labore nihil laudantium officia iure esse
+                      deleniti sunt distinctio nostrum!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex-space-y-4 mt-4">
+                  <div className="bg-medium-dark highlight-white-5 shadow-button l-0 relative flex items-center rounded p-4 bg-blend-hard-light">
+                    <div className="absolute right-0 h-2/3 w-1 bg-amber-400"></div>
+                    <div className="highlight-white-20 shadow-card h-10 w-10 rounded bg-amber-400 text-center ">
+                      <span className="text-dark text-4xl font-extrabold">
+                        1
+                      </span>
+                    </div>
+                    <div className="flex flex-col px-4">
+                      <h4 className="text-body text-sm font-bold tracking-wide">
+                        st
+                      </h4>
+                      <div className="text-title font-display text-xl font-extrabold ">
+                        R$ <span className="">28.00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-space-y-4 mt-1">
+                  <div className="bg-medium-dark/80 highlight-white-5 shadow-button l-0 relative flex items-center rounded p-4 bg-blend-hard-light">
+                    <div className="absolute right-0 h-2/3 w-1 bg-cyan-400"></div>
+                    <div className="highlight-white-20 shadow-card font-display h-10 w-10 rounded bg-cyan-400 text-center">
+                      <span className="text-dark text-4xl font-extrabold">
+                        2
+                      </span>
+                    </div>
+                    <div className="flex flex-col px-4">
+                      <h4 className="text-body text-sm font-bold tracking-wide">
+                        nd
+                      </h4>
+                      <div className="text-title font-display text-xl font-extrabold ">
+                        R$ <span className="">12.00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-space-y-4 mt-1">
+                  <div className="bg-medium-dark/60 highlight-white-5 shadow-button l-0 relative flex items-center rounded p-4 bg-blend-hard-light">
+                    <div className="absolute right-0 h-2/3 w-1 bg-green-400"></div>
+                    <div className="highlight-white-20 shadow-card font-display h-10 w-10 rounded bg-green-400 text-center">
+                      <span className="text-dark text-4xl font-extrabold">
+                        3
+                      </span>
+                    </div>
+                    <div className="flex flex-col px-4">
+                      <h4 className="text-body text-sm font-bold tracking-wide">
+                        rd
+                      </h4>
+                      <div className="text-title font-display text-xl font-extrabold ">
+                        R$ <span className="">8.00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </Tab.Panel>
               <Tab.Panel>
-                <TournamentScoringTabPanel tournament={tournament} />
+                <div className="bg-light-dark">
+                  <iframe
+                    src="https://challonge.com/quz6flp4/module?show_live_status=0"
+                    width="100%"
+                    height="600"
+                    frameBorder={0}
+                    scrolling="auto"
+                    // allowTransparency={true}
+                  ></iframe>
+                </div>
               </Tab.Panel>
             </Tab.Panels>
           </div>

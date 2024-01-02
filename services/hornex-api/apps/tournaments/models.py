@@ -64,14 +64,10 @@ class Tournament(models.Model):
     feature_image = models.CharField(max_length=255, null=True, blank=True)
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
-    is_prize_pool_fixed = models.BooleanField(
-        default=True, help_text="Fixed prize pool"
-    )
+    entry_fee = models.IntegerField(default=0, null=True, blank=True)  # in cents
+    prize_pool = models.IntegerField(default=0, null=True, blank=True)  # in centes
 
-    prize_pool = models.IntegerField(default=0, null=True, blank=True)
-    entry_fee = models.IntegerField(default=0, null=True, blank=True)
-
-    max_teams = models.IntegerField(default=0)
+    max_teams = models.IntegerField(default=32)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
     teams = models.ManyToManyField("teams.Team", related_name="tournaments", blank=True)

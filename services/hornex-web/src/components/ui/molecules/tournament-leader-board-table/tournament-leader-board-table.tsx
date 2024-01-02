@@ -51,7 +51,7 @@ function TeamLeaderBoardTable({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative z-20 flex flex-col overflow-hidden rounded-lg lg:flex-row">
+    <div className="relative z-20 flex flex-col overflow-hidden lg:flex-row">
       <div className="w-full transform transition duration-300 ease-in">
         <div className="shadow-card -mx-0.5 dark:[&_.os-scrollbar_.os-scrollbar-track_.os-scrollbar-handle:before]:!bg-white/50">
           <Scrollbar style={{ width: '100%' }} autoHide="never">

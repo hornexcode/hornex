@@ -71,8 +71,6 @@ class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
     lookup_field = "id"
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [JWTAuthentication]
 
     def get_object(self, *args, **kwargs):
         game = kwargs.get("game")

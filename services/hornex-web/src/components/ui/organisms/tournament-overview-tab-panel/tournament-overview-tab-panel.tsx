@@ -19,16 +19,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             Tournament details
           </h4>
         </div>
-        <div className="bg-light-dark">
-          <iframe
-            src="https://challonge.com/quz6flp4/module?show_live_status=0"
-            width="100%"
-            height="600"
-            frameBorder={0}
-            scrolling="auto"
-            // allowTransparency={true}
-          ></iframe>
-        </div>
+
         <div className="bg-light-dark grid grid-cols-4 rounded-b">
           <div className="col-span-1 p-5">
             <div className="space-y-3 border-r border-gray-700 pb-4 text-center">

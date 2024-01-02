@@ -52,7 +52,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             href={`/${routes.compete}`}
             className="group flex h-[45px] w-[45px] cursor-pointer items-center justify-center rounded bg-amber-500 text-center shadow-lg transition-all hover:bg-slate-700"
           >
-            <HomeIcon className="h-5 w-5 text-white shadow-xl group-hover:text-white" />
+            <HomeIcon className="text-dark h-5 w-5 shadow-xl group-hover:text-white" />
           </Link>
         </li>
         <li>

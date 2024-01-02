@@ -10,9 +10,9 @@ export function calcPrizePool(
   players: number,
   rake: number
 ): number {
-  return Math.floor(buyIn * players * (1 - rake));
+  return buyIn * players * (1 - rake);
 }
 
 export function toCurrency(num: number): string {
-  return `${num.toLocaleString()}`;
+  return `${(num / 100).toFixed(2)}`;
 }

@@ -27,7 +27,6 @@ class Efi(Clientable):
     client: EfiDial = None
 
     def __new__(cls):
-        logger.info("Creating new Efi instance", instance=cls.instance)
         if cls.instance is None:
             cls.instance = super().__new__(cls)
             cls.instance.client = EfiDial()

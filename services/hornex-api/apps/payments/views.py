@@ -49,7 +49,7 @@ def create_payment_registration(request):
         id=payment_registration.id.hex,
         name=form.data["name"],
         cpf=form.data["cpf"],
-        amount=registration.tournament.entry_fee,
+        amount=registration.tournament.entry_fee / 100,
     )
 
     payment_gateway = get_payment_gateway()
