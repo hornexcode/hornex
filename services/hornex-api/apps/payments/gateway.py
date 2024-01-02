@@ -9,7 +9,7 @@ logger = structlog.get_logger(__name__)
 
 class PaymentGateway(ABC):
     @abstractmethod
-    def charge(self, registration_payment: RegistrationPaymentDTO):
+    def charge(self, payment_registration: RegistrationPaymentDTO):
         raise NotImplementedError
 
 

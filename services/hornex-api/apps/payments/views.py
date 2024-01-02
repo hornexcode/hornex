@@ -12,7 +12,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.payments.dto import RegistrationPaymentDTO
 from apps.payments.gateway import get_payment_gateway
-from apps.payments.models import RegistrationPayment
+from apps.payments.models import PaymentRegistration
 from apps.payments.serializers import CreatePaymentRegistrationSerializer
 from apps.tournaments.models import Registration
 
@@ -37,7 +37,7 @@ def create_payment_registration(request):
         return Response({"error": "Registration is not pending"}, status=400)
 
     try:
-        payment_registration = RegistrationPayment.objects.create(
+        payment_registration = PaymentRegistration.objects.create(
             registration=registration,
             amount=registration.tournament.entry_fee,
         )

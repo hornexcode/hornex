@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from apps.payments.models import RegistrationPayment
+from apps.payments.models import PaymentRegistration
 
 logger = structlog.get_logger(__name__)
 
@@ -54,8 +54,8 @@ def efi_controller(request):
         logger.error("Error on parsing pix data", error=e)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    registration_payment = RegistrationPayment.objects.get(id=pix.txid)
-    logger.info("registration_payment -> ", obj=registration_payment)
+    payment_registration = PaymentRegistration.objects.get(id=pix.txid)
+    logger.info("payment_registration -> ", obj=payment_registration)
 
     logger.info("Efi webhook received and processed")
     return Response(status=status.HTTP_200_OK)

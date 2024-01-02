@@ -32,15 +32,15 @@ class Efi(Clientable):
             cls.instance.client = EfiDial()
         return cls.instance
 
-    def charge(self, registration_payment: RegistrationPaymentDTO):
+    def charge(self, payment_registration: RegistrationPaymentDTO):
         payload = CreatePixChargeData.new(
-            registration_payment.name,
-            registration_payment.cpf,
-            registration_payment.amount,
+            payment_registration.name,
+            payment_registration.cpf,
+            payment_registration.amount,
         ).to_dict()
 
         order = self.client.create_order_with_transaction_id(
-            registration_payment.id, payload
+            payment_registration.id, payload
         )
         qrcode = self.client.create_qrcode(order.get("loc").get("id"))
         return qrcode

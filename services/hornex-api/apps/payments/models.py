@@ -5,7 +5,7 @@ from django.db import models
 from apps.tournaments.models import Registration
 
 
-class RegistrationPayment(models.Model):
+class PaymentRegistration(models.Model):
     class Status(models.TextChoices):
         PENDING = "pending"
         PAID = "paid"
