@@ -12,6 +12,7 @@ import {
   PayRegistrationParams,
   payRegistrationParams,
 } from '@/lib/models/types/rest/pay-registration';
+import { toCurrency } from '@/lib/utils';
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
@@ -50,10 +51,13 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
   const [inputErrors, setInputErrors] = useState({ name: '', cpf: '' });
   const [pix, setPix] = useState<PixResponse | null>();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const registrationId = router.query.id as string;
 
   const handlePayment = useCallback(async () => {
+    setLoading(true);
+
     if (!cpf) {
       setInputErrors((prev) => ({ ...prev, cpf: 'CPF inválido' }));
     }
@@ -75,6 +79,8 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
       return toast({ title: 'error', description: error.response.message });
     }
 
+    setLoading(false);
+
     // router.push(`/registration/${registrationId}/success`);
   }, [name, cpf, registrationId]);
 
@@ -91,7 +97,12 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
             </p>
           </div>
 
-          <>
+          <div className="bg-medium-dark space-y-8 rounded p-5">
+            <div>
+              <InputLabel title="Team" important />
+              <Input value={team.name} disabled />
+            </div>
+
             <div className="">
               <div className="w-full">
                 <InputLabel title="Payment Method" important />
@@ -137,6 +148,7 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                 </div>
               )}
             </div>
+
             <div className="flex justify-end">
               <Button
                 onClick={() => router.back()}
@@ -154,6 +166,7 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                 onClick={() => handlePayment()}
                 className="flex-1"
                 shape="rounded"
+                disabled={loading}
               >
                 Registrate
                 <span className="font-display ml-2">
@@ -161,56 +174,63 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                 </span>
               </Button>
             </div>
-          </>
+          </div>
         </div>
         <div className="col-span-2 pl-8">
           <div className="space-y-6">
             <div className="text-title text-lg tracking-wide">
               Purchase Details
             </div>
-            <div className="bg-medium-dark highlight-white-5 flex space-x-5 rounded p-2">
-              <div className="block">
+            <div className="bg-medium-dark highlight-white-5 flex items-center justify-between space-x-5 rounded p-2">
+              <div className="flex items-center">
                 <Image
-                  className="shadow-card overflow-hidden rounded"
+                  className="shadow-card mr-4 overflow-hidden rounded"
                   src={`/images/tournaments/${tournament.feature_image}`}
                   width={64}
                   height={64}
                   alt="Cover Image"
                 />
-              </div>
-
-              {/* details */}
-              <div className="flex-1">
                 <div className="">
                   <div className="text-body text-xs">Tournament</div>
                   <div className="text-title text-sm">{tournament.name}</div>
+                </div>
+              </div>
+              {/* details */}
+
+              <div className="pr-4">
+                <div className="text-title font-display text-sm">
+                  ${toCurrency(tournament.entry_fee * tournament.team_size)}
                 </div>
               </div>
               {/* <TrashIcon className="text-title ml-2 h-4 w-4 cursor-pointer hover:text-red-500" /> */}
             </div>
 
             <div className="font-display space-y-5 px-4 py-4">
-              <div className="text-title flex justify-between text-lg">
-                <div className="pr-2 leading-4">Team</div>
-                <div className="flex-1 border-b border-dashed border-gray-600"></div>
-                <div className="pl-2 leading-4">{team.name}</div>
-              </div>
-              <div className="text-body flex items-end justify-between text-sm">
+              <div className="text-body flex items-end justify-between text-xs">
                 <p className="leading-0 pr-2">Entry fee</p>
                 <div className="flex-1 border-b border-dashed border-gray-600"></div>
-                <div className="leading-2 pl-2">${tournament.entry_fee}</div>
+                <div className="leading-2 pl-2">
+                  ${tournament.entry_fee / 100}
+                </div>
               </div>
-              <div className="text-body flex items-center justify-between text-sm">
-                <div>Teams qty</div>
+              <div className="text-body flex items-end justify-between text-xs">
+                <div className="pr-2">Teams qty</div>
+                <div className="flex-1 border-b border-dashed border-gray-600"></div>
                 <div>x{tournament.team_size}</div>
               </div>
-              <div className="text-body flex items-center justify-between text-sm">
-                <div>Subtotal</div>
-                <div>${tournament.entry_fee * tournament.team_size}</div>
+              <div className="text-body flex items-center justify-between text-xs">
+                <div className="pr-2">Subtotal</div>
+                <div className="flex-1 border-b border-dashed border-gray-600"></div>
+                <div className="leading-2 pl-2">
+                  ${(tournament.entry_fee * tournament.team_size) / 100}
+                </div>
               </div>
               <div className="text-title flex items-center justify-between text-xl">
                 <div>TOTAL</div>
-                <div>${tournament.entry_fee * tournament.team_size}</div>
+                <div>
+                  <span className="text-body">BRL</span> $
+                  {toCurrency(tournament.entry_fee * tournament.team_size)}
+                </div>
               </div>
             </div>
           </div>
@@ -220,7 +240,11 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
   );
 };
 
-const PixContent = () => {
+type PixContentProps = {
+  pix: PixResponse;
+};
+
+const PixContent = ({ pix }: PixContentProps) => {
   const router = useRouter();
   return (
     <div className="flex flex-col items-center justify-center space-y-8">

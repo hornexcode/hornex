@@ -1,5 +1,4 @@
 import uuid
-from collections.abc import Iterable
 
 from django.db import models
 
@@ -30,22 +29,3 @@ class RegistrationPayment(models.Model):
     def confirm_payment(self):
         self.status = self.Status.PAID
         self.save()
-
-
-# class PixTransaction(models.Model):
-#     id = models.CharField(
-#         primary_key=True, default=uuid.uuid4, editable=False, max_length=35
-#     )
-#     registration_payment = models.ForeignKey(
-#         RegistrationPayment,
-#         on_delete=models.CASCADE,
-#         related_name="pix_transactions",
-#     )
-
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     def save(self, *args, **kargs) -> None:
-#         if not self.txid:
-#             self.txid = uuid.uuid4().hex
-#         return super().save(*args, **kargs)

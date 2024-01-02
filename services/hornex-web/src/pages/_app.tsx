@@ -65,6 +65,7 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
 
 HornexApp.getInitialProps = async (context: AppContext) => {
   const props = await App.getInitialProps(context);
+  // check if user has token set on document.cookie
   return {
     ...props,
     pageProps: {
