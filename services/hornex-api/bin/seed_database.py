@@ -84,12 +84,12 @@ def create_tournaments():
         end_time=now + td(days=7, hours=2),
         registration_start_date=now,
         registration_end_date=now + td(days=7),
-        feature_image="/tmt-6.jpeg",
+        feature_image="tmt-6.jpeg",
         is_public=True,  # change to is_published
         entry_fee=15,
         max_teams=32,
         team_size=5,
-        is_prize_pool_fixed=False,
+        # is_prize_pool_fixed=False,
         is_classification_open=False,
     )
     t.allowed_league_entries.set([bronze_tier, silver_tier])

@@ -202,12 +202,12 @@ export const dataLoader = <T, Data = unknown>(
     ) => {
       if (!isServer) {
         const cookie = document.cookie;
-        console.log(cookie);
         const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
         headers = {
           ...headers,
           Authorization: `Bearer ${token?.split('=')[1]}`,
         };
+        console.log(cookie);
       }
 
       return useSWR<UDT>(
