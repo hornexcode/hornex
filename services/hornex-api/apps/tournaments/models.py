@@ -170,8 +170,6 @@ class Tournament(models.Model):
         regi.cancel()
 
     def confirm_registration(self, team: Team):
-        if self._is_full():
-            raise ValidationError(detail=errors.TournamentFullError)
         if not self._check_team_has_registration(team):
             raise ValidationError(detail=errors.ConfirmeTeamWithoutRegistration)
 
@@ -334,6 +332,7 @@ class Registration(models.Model):
     def accept(self):
         self.status = Registration.RegistrationStatusType.ACCEPTED
         self.save()
+        self.tournament.confirm_registration(self)
 
     def cancel(self):
         self.status = Registration.RegistrationStatusType.CANCELLED

@@ -32,6 +32,12 @@ def verify_ip(view_func):
         ip = request.META["REMOTE_ADDR"]
         allowed_ips = os.getenv("EFI_AUTHORIZED_IPS")
         if ip not in allowed_ips:
+            logger.warn(
+                {
+                    "message": "Unauthorized IP tried to access the webhook",
+                    "ip": ip,
+                }
+            )
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return view_func(request, *args, **kwargs)
 
@@ -42,10 +48,12 @@ def verify_hmac_decorator(view_func):
     def _wrapped_view(request, *args, **kwargs):
         secret_key = os.getenv("EFI_HMAC_SECRET_KEY")
         secret_msg = os.getenv("EFI_HMAC_SECRET_MESSAGE")
-        print(secret_key, secret_msg)
         if not secret_key or not secret_msg:
             logger.warn("The hmac secret key or/and message are missing")
-            return Response({"error": "HMAC secrets are missing"}, status=500)
+            return Response(
+                {"error": "HMAC secrets are missing"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
         try:
             verify_hmac(request.GET, secret_key, secret_msg)
@@ -56,7 +64,7 @@ def verify_hmac_decorator(view_func):
                     "message": "Error verifying received from Efi",
                 }
             )
-            return Response({"error": str(e)}, status=400)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return view_func(request, *args, **kwargs)
 
@@ -96,9 +104,22 @@ def efi_controller(request):
     payment_registration = PaymentRegistration.objects.get(id=pix.txid)
     logger.info("payment_registration -> ", obj=payment_registration)
 
+    if pix.valor != str(payment_registration.amount):
+        logger.debug("payment_registration.amount -> ", obj=payment_registration.amount)
+        logger.debug("pix.valor -> ", obj=pix.valor)
+        logger.error("Error: payment_registration amount does not match")
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     if payment_registration.status != PaymentRegistration.Status.PENDING:
         logger.error("Error: registration already paid, responding 200 to stop webhook")
         return Response(status=status.HTTP_200_OK)
+
+    try:
+        registration = payment_registration.registration
+        registration.accept()
+    except Exception as e:
+        logger.error("Error on accepting registration", error=e)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     logger.info("Efi webhook received and processed")
     return Response(status=status.HTTP_200_OK)

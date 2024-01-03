@@ -40,6 +40,6 @@ This code can be used inside http EfiDial to register the PIX key webhook:
 from lib.efi.http import EfiDial
 efi = EfiDial()
 efi.get_webhooks()
-efi.register_webhook("https://feasible-thoroughly-flea.ngrok-free.app/v1/webhooks/efi/pix?hmac=f5f156101f6162341d1f536469bc0dfda3c27ac37569664b68429522aa692d65&ignorar=")
+efi.register_webhook("https://robin-lasting-magpie.ngrok-free.app/v1/webhooks/efi/pix?hmac=f5f156101f6162341d1f536469bc0dfda3c27ac37569664b68429522aa692d65&ignorar=")
 """
 ```
