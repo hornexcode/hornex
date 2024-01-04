@@ -145,9 +145,17 @@ class TournamentGamesV5:
 
     @staticmethod
     def from_api_response(data):
+        winning_team = [
+            TournamentTeamV5(puuid=player.get("puuid"))
+            for player in data.get("winningTeam")
+        ]
+        losingTeam = [
+            TournamentTeamV5(puuid=player.get("puuid"))
+            for player in data.get("losingTeam")
+        ]
         return TournamentGamesV5(
-            winningTeam=data.get("winningTeam"),
-            losingTeam=data.get("losingTeam"),
+            winningTeam=winning_team,
+            losingTeam=losingTeam,
             shortCode=data.get("shortCode"),
             metaData=data.get("metaData"),
             gameId=data.get("gameId"),

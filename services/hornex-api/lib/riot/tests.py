@@ -258,6 +258,8 @@ class ClientTest(TestCase):
         self.assertIsNotNone(data)
         self.assertEqual(len(data), 2)
         self.assertEqual(data[0].gameId, 1)
+        self.assertEqual(data[0].winningTeam[0].puuid, "fake-puuid")
+        self.assertEqual(data[0].losingTeam[0].puuid, "fake-puuid")
 
     @patch("requests.get")
     def test_get_games_by_code_500(self, mock_get):
