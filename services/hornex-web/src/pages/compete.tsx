@@ -31,21 +31,24 @@ const CompetePage = ({
                   href={`/pc/${game.slug}/tournaments`}
                   className="group"
                 >
-                  <div className="shadow-card">
+                  <div className="">
                     {/* header */}
-                    <div className="bg-medium-dark highlight-white-5 flex items-center rounded-t p-4">
-                      <LolFlatIcon className="text-title mr-4 h-10 w-10" />
-                      <h4 className="text-title text-lg font-bold">
-                        {game.name}
-                      </h4>
+
+                    <div className="shadow-card h-[200px] w-full rounded-lg bg-[url('/images/jinks.jpg')] bg-cover bg-center bg-no-repeat">
+                      <div className="p-4">
+                        <LolFlatIcon className="text-title mr-4 h-10 w-10" />
+                      </div>
                     </div>
-                    <div className="h-[300px] w-full bg-[url('/images/jinks.jpg')] bg-cover bg-center bg-no-repeat"></div>
+                    <div className="flex items-center p-2">
+                      <div className="">
+                        <LolFlatIcon className="text-title mr-4 h-6 w-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-title text-sm">{game.name}</h4>
+                        <p className="text-body">Jogar</p>
+                      </div>
+                    </div>
                     {/* bottom */}
-                    <div className="bg-light-dark flex rounded-b p-4">
-                      <Button fullWidth shape="rounded" size="small">
-                        Play
-                      </Button>
-                    </div>
                   </div>
                 </Link>
               ))}

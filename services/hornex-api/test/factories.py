@@ -5,7 +5,7 @@ from datetime import timedelta as td
 import faker
 
 from apps.leagueoflegends.models import (
-    Classification,
+    LeagueEntry,
     Provider,
     Tournament,
 )
@@ -88,7 +88,7 @@ class TournamentFactory:
             end_time=kwargs.get("end_time", now + td(hours=18)),
             feature_image=kwargs.get("feature_image", "https://fakeimg.pl/300/"),
             is_entry_free=kwargs.get("is_entry_free", False),
-            is_prize_pool_fixed=kwargs.get("is_prize_pool_fixed", True),
+            # is_prize_pool_fixed=kwargs.get("is_prize_pool_fixed", True),
             prize_pool=kwargs.get("prize_pool", 999),
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
@@ -97,16 +97,13 @@ class TournamentFactory:
 
 class LeagueOfLegendsTournamentFactory:
     @staticmethod
-    def new(organizer: User, classification=None, **kwargs):
+    def new(organizer: User, allowed_league_entries=None, **kwargs):
         """
         Create a new league of legends tournament with the given organizer and kwargs.
         """
         default_provider = Provider.objects.create(
             id=1, region="BR", url="https://www.hornex.gg/"
         )
-
-        if classification is not None and isinstance(classification, Classification):
-            classification = [classification]
 
         now = dt.now(tz=UTC)
         tmt = Tournament.objects.create(
@@ -137,19 +134,24 @@ class LeagueOfLegendsTournamentFactory:
             spectator=kwargs.get("spectator", Tournament.SpectatorType.ALL),
         )
 
-        tmt.classifications.set(classification) if classification is not None else None
+        if not allowed_league_entries:
+            allowed_league_entries = LeagueEntryFactory.new()
+        if not isinstance(allowed_league_entries, list):
+            allowed_league_entries = [allowed_league_entries]
+        tmt.allowed_league_entries.set(allowed_league_entries)
+
         return tmt
 
 
-class ClassificationFactory:
+class LeagueEntryFactory:
     @staticmethod
     def new(**kwargs):
         """
-        Create a new classification with the given kwargs.
+        Create a new LeagueEntry with the given kwargs.
         """
-        return Classification.objects.create(
-            tier=kwargs.get("name", Classification.Tier.SILVER),
-            rank=kwargs.get("rank", Classification.Rank.I),
+        return LeagueEntry.objects.create(
+            tier=kwargs.get("name", LeagueEntry.TierOptions.SILVER),
+            rank=kwargs.get("rank", LeagueEntry.RankOptions.I),
         )
 
 

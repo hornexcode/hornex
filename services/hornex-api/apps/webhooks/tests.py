@@ -35,7 +35,7 @@ class TestWebhooks(APITestCase):
             amount=100,
         )
 
-    @patch("apps.webhooks.views.check_signature")
+    @patch("apps.webhooks.decorators.check_signature")
     def test_efi_callback_success(self, mocked_check_signature):
         mocked_check_signature.return_value = True
 
@@ -72,7 +72,7 @@ class TestWebhooks(APITestCase):
         )
         self.assertEqual(Tournament.objects.first().teams.count(), 1)
 
-    @patch("apps.webhooks.views.check_signature")
+    @patch("apps.webhooks.decorators.check_signature")
     def test_efi_callback_empty_payload(self, mocked_check_signature):
         mocked_check_signature.return_value = True
 
@@ -89,7 +89,7 @@ class TestWebhooks(APITestCase):
             {"message": "Invalid payload"},
         )
 
-    @patch("apps.webhooks.views.check_signature")
+    @patch("apps.webhooks.decorators.check_signature")
     def test_efi_callback_payment_not_found_error(self, mocked_check_signature):
         mocked_check_signature.return_value = True
 
@@ -117,7 +117,7 @@ class TestWebhooks(APITestCase):
             {"message": "Payment registration not found"},
         )
 
-    @patch("apps.webhooks.views.check_signature")
+    @patch("apps.webhooks.decorators.check_signature")
     def test_efi_callback_amount_not_match_error(self, mocked_check_signature):
         mocked_check_signature.return_value = True
 
@@ -145,7 +145,7 @@ class TestWebhooks(APITestCase):
             {"message": "Amount paid does not match with current registration amount"},
         )
 
-    @patch("apps.webhooks.views.check_signature")
+    @patch("apps.webhooks.decorators.check_signature")
     @patch("apps.payments.models.PaymentRegistration.confirm_payment")
     def test_efi_callback_confirm_payment_fail(
         self, mocked_confirm_payment, mocked_check_signature
@@ -178,7 +178,7 @@ class TestWebhooks(APITestCase):
                 {"message": "Something went wrong while confirming the payment"},
             )
 
-    @patch("apps.webhooks.views.check_signature")
+    @patch("apps.webhooks.decorators.check_signature")
     @patch("apps.tournaments.models.Registration.confirm_registration")
     def test_efi_callback_confirm_registration_fail(
         self, mocked_confirm_registration, mocked_check_signature
