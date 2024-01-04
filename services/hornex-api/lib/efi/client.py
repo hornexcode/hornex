@@ -66,10 +66,10 @@ class CreatePixChargeData:
     @classmethod
     def new(cls, payer_name: str, payer_cpf: str, amount: float):
         return cls(
-            calendario={"expiracao": int(os.getenv("PIX_EXPIRATION", 3600))},
+            calendario={"expiracao": int(os.getenv("HORNEX_PIX_EXPIRATION", 3600))},
             devedor={"cpf": payer_cpf, "nome": payer_name},
             valor="%.2f" % amount,
-            chave=os.getenv("PIX_KEY"),
+            chave=os.getenv("HORNEX_PIX_KEY"),
             solicitacaoPagador="Tournament registration",
         )
 

@@ -167,6 +167,8 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                 className="flex-1"
                 shape="rounded"
                 disabled={loading}
+                isLoading={loading}
+                loaderVariant="scaleUp"
               >
                 Registrate
                 <span className="font-display ml-2">

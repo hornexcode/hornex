@@ -48,29 +48,26 @@ const RegistrationView = () => {
   const {
     data: teams,
     error: teamsError,
-    isLoading,
+    isLoading: loadingTeams,
   } = getTeams({
     platform: router.query.platform || '',
     game: router.query.game || '',
   });
 
-  const { data: tournament, error: tournamentError } = getTournament({
+  const {
+    data: tournament,
+    error: tournamentError,
+    isLoading: loadingTournament,
+  } = getTournament({
     tournamentId: router.query.id || '',
     platform: router.query.platform || '',
     game: router.query.game || '',
   });
 
   const teamsList = teams && teams?.length > 0 ? teams : [];
-
+  console.log(tournament, teams);
   return (
     <div className="">
-      {/* {isFetching && (
-        <div className="flex flex-col p-8 text-center">
-          <p>Aguarde enquanto conferimos sua inscrição no torneio.</p>
-          <Loader className="mx-auto mt-10" variant="blink" />
-        </div>
-      )} */}
-      {/*  */}
       <RegistrationContext.Provider
         value={{
           step,
@@ -82,12 +79,15 @@ const RegistrationView = () => {
           setTeam,
         }}
       >
-        {tournament && teams && renderStep(step)}
-        {(!teams || !tournament) && (
+        {(loadingTeams || loadingTournament) && (
+          <Loader className="mx-auto mt-10" variant="blink" />
+        )}
+        {(tournamentError || teamsError) && (
           <p className="mt-8 text-center text-sm text-gray-400">
             failed to load step
           </p>
         )}
+        {tournament && teams && renderStep(step)}
       </RegistrationContext.Provider>
     </div>
   );

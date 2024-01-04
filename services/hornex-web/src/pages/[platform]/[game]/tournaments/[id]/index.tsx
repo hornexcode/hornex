@@ -1,6 +1,7 @@
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
 import { AppLayout } from '@/layouts';
 import { dataLoader } from '@/lib/api';
+import { Registration } from '@/lib/models';
 import { Tournament } from '@/lib/models/types';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
@@ -12,6 +13,8 @@ export type GameID = {
 
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
 const { fetch: getGameIds } = dataLoader<GameID[]>('getGameIds');
+const { fetch: getRegistrations } =
+  dataLoader<Registration>('getRegistrations');
 
 type TournamentProps = {
   params: {
@@ -70,6 +73,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+
+  const { data: registrations, error: registrationError } =
+    await getRegistrations(
+      {
+        status: 'accepted',
+      },
+      ctx.req
+    );
 
   return {
     props: {

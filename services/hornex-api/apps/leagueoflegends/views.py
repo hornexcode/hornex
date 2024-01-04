@@ -18,8 +18,8 @@ from apps.games.models import GameID
 from apps.leagueoflegends.models import Session
 from lib.riot.client import Client
 
-client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")
-client_secret = os.getenv("RIOT_RSO_CLIENT_SECRET", "")
+client_id = os.getenv("HORNEX_RIOT_RSO_CLIENT_ID", "")
+client_secret = os.getenv("HORNEX_RIOT_RSO_CLIENT_SECRET", "")
 
 appCallbackUrl = os.getenv("APP_URL", "") + "/oauth/riot/login"
 

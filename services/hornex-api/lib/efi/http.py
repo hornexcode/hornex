@@ -25,8 +25,8 @@ class OAuthToken:
 class EfiDial:
     def __init__(self) -> None:
         self.base_url = os.getenv("EFI_BASE_URL", None)
-        self.client_id = os.getenv("EFI_CLIENT_ID", None)
-        self.client_secret = os.getenv("EFI_CLIENT_SECRET", None)
+        self.client_id = os.getenv("HORNEX_EFI_CLIENT_ID", None)
+        self.client_secret = os.getenv("HORNEX_EFI_CLIENT_SECRET", None)
         self.certificate = f"{BASE_DIR}/{CERT_NAME}"
 
     def authenticate(self):

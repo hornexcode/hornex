@@ -154,6 +154,10 @@ export const routes = {
     path: 'v1/games/game-ids',
     method: Method.GET,
   },
+  getRegistrations: {
+    path: 'v1/registrations',
+    method: Method.GET,
+  },
   getRegistration: {
     path: 'v1/registrations/[id]',
     method: Method.GET,

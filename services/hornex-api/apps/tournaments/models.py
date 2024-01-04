@@ -169,9 +169,9 @@ class Tournament(models.Model):
         regi = Registration.objects.get(tournament=self, team=team)
         regi.cancel()
 
-    def confirm_registration(self, team: Team):
+    def add_team(self, team: Team):
         if not self._check_team_has_registration(team):
-            raise ValidationError(detail=errors.ConfirmeTeamWithoutRegistration)
+            return
 
         self.teams.add(team)
         self.save()
@@ -321,7 +321,7 @@ class Registration(models.Model):
     )
 
     @property
-    def pk(self):
+    def pk(self) -> str:
         return self.id.__str__()
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -329,12 +329,13 @@ class Registration(models.Model):
     def __str__(self) -> str:
         return f"{self.team.name} registratrion at {self.tournament.name} ({self.id.__str__()})"
 
-    def accept(self):
+    def confirm_registration(self):
+        self.tournament.add_team(self.team)
         self.status = Registration.RegistrationStatusType.ACCEPTED
         self.save()
-        self.tournament.confirm_registration(self)
 
     def cancel(self):
+        self.tournament.teams.remove(self.team)
         self.status = Registration.RegistrationStatusType.CANCELLED
         self.save()
 

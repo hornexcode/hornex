@@ -53,7 +53,6 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
   const { closeModal } = useModal();
   // react hook form
   const {
-    register,
     handleSubmit,
     control,
     setValue,
@@ -62,6 +61,7 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
     resolver: zodResolver(submitRegistrationFormSchema),
   });
 
+  // TODO: use context
   const [teamOption, setTeamOption] = useState({
     name: 'Please select a team',
     value: '',

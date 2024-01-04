@@ -16,12 +16,15 @@ class PaymentRegistration(models.Model):
     registration = models.ForeignKey(
         Registration, on_delete=models.CASCADE, related_name="payments"
     )
-    status = (
-        models.CharField(choices=Status.choices, max_length=12, default=Status.PENDING),
+    status = models.CharField(
+        choices=Status.choices, max_length=12, default=Status.PENDING
     )
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_total_amount(self):
+        return float(self.amount / 100)
 
     class Meta:
         ordering = ["-created_at"]
@@ -29,3 +32,6 @@ class PaymentRegistration(models.Model):
     def confirm_payment(self):
         self.status = self.Status.PAID
         self.save()
+
+    def is_paid(self):
+        return self.status == self.Status.PAID

@@ -14,7 +14,7 @@ from apps.leagueoflegends.models import Tournament
 from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
-from apps.teams.models import Team
+from apps.teams.models import Membership, Team
 from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
 from apps.tournaments.models import Registration
 from apps.tournaments.pagination import TournamentPagination
@@ -90,21 +90,23 @@ class TournamentViewSet(viewsets.ModelViewSet):
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all()
-    serializer_class = RegistrationCreateSerializer
+    serializer_class = RegistrationReadSerializer
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def get_object(self):
-        self.serializer_class = RegistrationReadSerializer
-        return super().get_object()
+    def get_queryset(self):
+        members = Membership.objects.filter(user=self.request.user)
+        teams = [member.team for member in members]
 
-    # def get_object(self, *args, **kwargs):
-    #     game = kwargs.get("game")
-    #     if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-    #         self.queryset = Tournament.objects.select_for_update().all()
-
-    #     return super().get_object()
+        self.queryset = Registration.objects.filter(team__in=teams)
+        status = self.request.GET.get("status", "")
+        if (
+            "status" in self.request.GET
+            and status in Registration.RegistrationStatusType.values
+        ):
+            self.queryset = self.queryset.filter(status=status)
+        return self.queryset
 
     @swagger_auto_schema(
         operation_description="POST /api/v1/tournaments/<str:id>/register",
