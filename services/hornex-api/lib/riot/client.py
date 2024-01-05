@@ -327,7 +327,6 @@ class Client(Clientable):
 
         resp = requests.get(url)
         if not resp.ok:
-            logger.info("Error retrieving summoner", resp.json())
             return None
 
         data = resp.json()
