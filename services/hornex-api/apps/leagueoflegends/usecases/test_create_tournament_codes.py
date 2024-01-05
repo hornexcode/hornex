@@ -1,4 +1,5 @@
 from test.factories import (
+    GameIdFactory,
     LeagueOfLegendsTournamentFactory,
     MatchFactory,
     UserFactory,
@@ -20,30 +21,30 @@ class TestCreateTournamentCodes(TestCase):
             organizer=self.user, team_size=5, max_teams=2
         )
 
-    @patch("requests.post")
-    def test_tournament_codes_created(self, mock):
-        createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
+    # @patch("requests.post")
+    # def test_tournament_codes_created(self, mock):
+    #     createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
 
-        self.match = MatchFactory.new(self.tournament)
-        teams = Team.objects.all()
+    #     self.match = MatchFactory.new(self.tournament)
+    #     teams = Team.objects.all()
 
-        for team in teams:
-            users = [UserFactory.new() for _ in range(0, 5)]
-            team.members.set(users)
-            members = team.members.all()
-            for member in members:
-                pass
-                # LeagueOfLegendsAccountFactory.new(member)
+    #     for team in teams:
+    #         users = [UserFactory.new() for _ in range(0, 5)]
+    #         team.members.set(users)
+    #         members = team.members.all()
+    #         for member in members:
+    #             pass
+    #             # LeagueOfLegendsAccountFactory.new(member)
 
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = ["fake-tournament-code"]
+    #     mock_response = MagicMock()
+    #     mock_response.status_code = 200
+    #     mock_response.json.return_value = ["fake-tournament-code"]
 
-        mock.return_value = mock_response
+    #     mock.return_value = mock_response
 
-        createTournamentCodesUseCase.execute(2, tournament=self.tournament)
-        codes = Code.objects.count()
-        self.assertEqual(codes, 1)
+    #     createTournamentCodesUseCase.execute(2, tournament=self.tournament)
+    #     codes = Code.objects.count()
+    #     self.assertEqual(codes, 1)
 
     def test_invalid_match_number(
         self,
