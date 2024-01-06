@@ -1,0 +1,8 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hornex-api
+  name: hornex-api
+spec:
+  replicas: 2

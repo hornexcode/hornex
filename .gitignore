@@ -5,3 +5,7 @@ node_modules/
 *.pyc
 __pycache__/
 */**/__pycache__/
+
+# rendered helm charts
+kustomize/base/cluster/external-secrets/charts
+kustomize/base/cluster/traefik/charts/

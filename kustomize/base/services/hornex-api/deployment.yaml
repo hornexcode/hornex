@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hornex-api
+  name: hornex-api
+spec:
+  selector:
+    matchLabels:
+      app: hornex-api
+  template:
+    metadata:
+      labels:
+        app: hornex-api
+    spec:
+      containers:
+      - image: hornex-api:latest
+        name: hornex-api
