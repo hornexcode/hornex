@@ -83,17 +83,23 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
     }
   };
 
+  const resolver =
+    paymentMethod === 'pix'
+      ? zodResolver(createPixPaymentForm)
+      : zodResolver(createStripePaymentForm);
+
   const methods = useForm<
     | z.infer<typeof createPixPaymentForm>
     | z.infer<typeof createStripePaymentForm>
   >({
-    resolver: zodResolver(createPixPaymentForm),
+    resolver,
   });
 
   const stripe = useStripe();
   const elements = useElements();
 
   const onSubmit = async (data: any) => {
+    console.log(data);
     switch (paymentMethod) {
       case 'pix':
         const pixFormData = data as z.infer<typeof createPixPaymentForm>;
@@ -168,6 +174,7 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
         }
 
         setLoading(false);
+        console.log('success!');
         break;
       default:
         break;
@@ -298,7 +305,12 @@ const PixPaymentForm = () => {
 const StripePaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const { register } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+
+  console.log(errors);
 
   if (!stripe || !elements) {
     return null;
