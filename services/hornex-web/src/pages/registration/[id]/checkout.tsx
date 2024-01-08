@@ -1,14 +1,16 @@
 import TournamentCheckoutTemplate from '@/components/ui/templates/tournament-checkout-template';
 import { AppLayout } from '@/layouts';
-import { dataLoader } from '@/lib/api';
 import { Registration, Team, Tournament } from '@/lib/models';
+import { dataLoader } from '@/lib/request';
+import getStripe from '@/utils/get-stripejs';
+import { Elements } from '@stripe/react-stripe-js';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
 const { fetch: getTeam } = dataLoader<Team>('getTeam');
 const { fetch: getRegistration } = dataLoader<Registration>('getRegistration');
 
-type TournamentRegistrationCheckoutPageProps = {
+type RegistrationCheckoutProps = {
   params: {
     platform: string;
     game: string;
@@ -18,15 +20,17 @@ type TournamentRegistrationCheckoutPageProps = {
   team: Team;
 };
 
-const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
-  params,
-  tournament,
-  team,
-}: TournamentRegistrationCheckoutPageProps) => {
-  return <TournamentCheckoutTemplate team={team} tournament={tournament} />;
+const RegistrationCheckout: InferGetServerSidePropsType<
+  typeof getServerSideProps
+> = ({ params, tournament, team }: RegistrationCheckoutProps) => {
+  return (
+    <Elements stripe={getStripe()}>
+      <TournamentCheckoutTemplate team={team} tournament={tournament} />
+    </Elements>
+  );
 };
 
-Tournament.getLayout = (page: React.ReactElement) => {
+RegistrationCheckout.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
@@ -77,4 +81,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default Tournament;
+export default RegistrationCheckout;

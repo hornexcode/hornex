@@ -1,4 +1,5 @@
-import { PixIcon } from '../../atoms/icons/pix-icon';
+import { PixIcon } from '@/components/ui/atoms/icons/pix-icon';
+import { PaymentMethod } from '@/components/ui/templates/tournament-checkout-template/tournament-checkout-template.types';
 import { RadioGroup } from '@headlessui/react';
 import { CreditCard } from 'lucide-react';
 
@@ -18,7 +19,7 @@ const PriceOptions = [
 
 type PaymentOptionsProps = {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: PaymentMethod) => void;
 };
 
 export default function PaymentOptions({
@@ -29,14 +30,14 @@ export default function PaymentOptions({
     <RadioGroup
       value={value}
       onChange={onChange}
-      className="grid grid-cols-2 gap-3"
+      className="grid grid-cols-2 gap-4"
     >
       {PriceOptions.map((item, index) => (
         <RadioGroup.Option value={item.value} key={index}>
           {({ checked }) => (
             <span
-              className={`shadow-card hover:shadow-large dark:bg-dark relative flex cursor-pointer items-center justify-center rounded  border-2 border-transparent bg-white text-center text-sm font-medium transition-all ${
-                checked ? 'border-cyan-400 ring-2' : ''
+              className={`dark:bg-dark relative flex cursor-pointer items-center justify-center rounded border border-gray-500  bg-white text-center text-sm font-medium transition-all ${
+                checked ? 'ring' : ''
               }`}
             >
               <span className="sm:h-30 relative flex h-28 flex-col items-center justify-center gap-3 px-2 text-center text-xs uppercase sm:gap-4 sm:text-sm">

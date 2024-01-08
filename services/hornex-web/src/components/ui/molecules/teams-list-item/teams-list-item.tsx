@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/atoms/dropdown-menu';
 import { Team } from '@/domain/team';
-import { dataLoader } from '@/lib/api';
+import { dataLoader } from '@/lib/request';
 import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
 import {
   Cloud,

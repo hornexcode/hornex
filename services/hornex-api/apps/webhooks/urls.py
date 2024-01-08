@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.webhooks.views import efi_controller
+from apps.webhooks.views import efi_controller, stripe_controller
 
 urlpatterns = [
     # IMPORTANT: this path is used by efi to send callbacks
@@ -10,5 +10,10 @@ urlpatterns = [
         "/efi/pix",
         efi_controller,
         name="efi-callback",
+    ),
+    path(
+        "/stripe",
+        stripe_controller,
+        name="stripe-webhook",
     ),
 ]

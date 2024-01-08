@@ -18,11 +18,7 @@ class OAuthToken:
     expires_in: int
 
 
-class Clientable(PaymentGateway):
-    ...
-
-
-class Efi(Clientable):
+class Efi(PaymentGateway):
     instance: "Efi" = None
     client: EfiDial = None
 
@@ -46,7 +42,7 @@ class Efi(Clientable):
         return qrcode
 
 
-class Mock(Clientable):
+class Mock(PaymentGateway):
     def charge(self, _: RegistrationPaymentDTO):
         return {
             "imagemQrcode": "test-imagemQrCode",
@@ -66,10 +62,10 @@ class CreatePixChargeData:
     @classmethod
     def new(cls, payer_name: str, payer_cpf: str, amount: float):
         return cls(
-            calendario={"expiracao": int(os.getenv("HORNEX_PIX_EXPIRATION", 3600))},
+            calendario={"expiracao": int(os.getenv("EFI_PIX_EXPIRATION", 3600))},
             devedor={"cpf": payer_cpf, "nome": payer_name},
-            valor="%.2f" % amount,
-            chave=os.getenv("HORNEX_PIX_KEY"),
+            valor="%.2f" % amount / 100,
+            chave=os.getenv("EFI_PIX_KEY"),
             solicitacaoPagador="Tournament registration",
         )
 

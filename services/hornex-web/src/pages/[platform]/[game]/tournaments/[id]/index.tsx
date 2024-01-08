@@ -1,8 +1,8 @@
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
 import { AppLayout } from '@/layouts';
-import { dataLoader } from '@/lib/api';
 import { Registration } from '@/lib/models';
 import { Tournament } from '@/lib/models/types';
+import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 export type GameID = {

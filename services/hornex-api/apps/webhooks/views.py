@@ -1,5 +1,7 @@
+import os
 from dataclasses import dataclass
 
+import stripe
 import structlog
 from django.db import transaction
 from rest_framework import status
@@ -11,6 +13,9 @@ from apps.payments.serializers import PixReceivedSerializer
 from apps.webhooks.decorators import verify_hmac, verify_ip
 
 logger = structlog.get_logger(__name__)
+
+stripe.api_key = os.getenv("STRIPE_API_KEY")
+stripe_endpoint_secret = "whsec_SBK7tKkjmCsWxXaAg3HHg9Ji9ZL0FKVT"
 
 
 @dataclass
@@ -68,6 +73,35 @@ def efi_controller(request):
             {"message": "Something went wrong while confirming the registration"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
+    return Response(
+        {"message": "Successfully confirmed the payment"},
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["POST", "GET", "PUT", "PATCH", "DELETE"])
+def stripe_controller(request):
+    event = None
+    payload = request.body
+    sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, stripe_endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
+
+    # Handle the event
+    if event.type == "payment_intent.succeeded":
+        payment_intent = event.data.object  # contains a stripe.PaymentIntent
+        logger.info("PaymentIntent was successful!", payment_intent=payment_intent)
+    else:
+        print(f"Unhandled event type {event.type}")
 
     return Response(
         {"message": "Successfully confirmed the payment"},

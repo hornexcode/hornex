@@ -1,7 +1,7 @@
 import TournamentsFeedPage from '@/components/ui/templates/tournaments-feed-template/tournaments-feed-template';
 import { AppLayout } from '@/layouts';
-import { dataLoader } from '@/lib/api';
 import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments';
+import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const { useData: getTournaments } =
@@ -44,7 +44,7 @@ const Tournaments = ({
   });
 
   return (
-    <div className="p-8">
+    <div className="min-h-[100vh] p-8">
       <TournamentsFeedPage
         isLoading={isLoading}
         tournaments={

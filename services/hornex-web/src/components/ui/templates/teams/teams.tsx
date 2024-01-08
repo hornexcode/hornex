@@ -1,8 +1,8 @@
 import { InvitesListTabPanel } from '@/components/ui/organisms/invites-list-tab-panel';
 import { TeamsListTabPanel } from '@/components/ui/organisms/teams-list-tab-panel';
-import { dataLoader } from '@/lib/api';
 import { Invite, Team } from '@/lib/models/types';
 import { GetNotificationsResponse } from '@/lib/models/types/rest/get-notifications';
+import { dataLoader } from '@/lib/request';
 import { Tab } from '@headlessui/react';
 import classnames from 'classnames';
 import { FC, useCallback, useState } from 'react';

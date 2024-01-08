@@ -1,4 +1,4 @@
-import { ParamMap } from '@/lib/api';
+import { ParamMap } from '@/lib/request';
 
 enum Method {
   GET = 'GET',

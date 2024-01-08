@@ -1,5 +1,5 @@
-import { dataLoader as dataLoader } from '../api/request';
-import { makeClientReqObj } from '../api/util';
+import { dataLoader as dataLoader } from '../request/api';
+import { makeClientReqObj } from '../request/util';
 import { get, set } from 'es-cookie';
 import React, { createContext, useEffect, useReducer, useState } from 'react';
 

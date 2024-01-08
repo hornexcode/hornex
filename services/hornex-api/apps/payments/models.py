@@ -19,7 +19,7 @@ class PaymentRegistration(models.Model):
     status = models.CharField(
         choices=Status.choices, max_length=12, default=Status.PENDING
     )
-    amount = models.DecimalField(max_digits=6, decimal_places=2)
+    amount = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

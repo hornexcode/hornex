@@ -2,7 +2,7 @@ import Button from '@/components/ui/atoms/button/button';
 import Input from '@/components/ui/atoms/form/input';
 import InputLabel from '@/components/ui/atoms/form/input-label';
 import { Logo } from '@/components/ui/atoms/logo';
-import { dataLoader } from '@/lib/api';
+import { dataLoader } from '@/lib/request';
 import {
   RegisterInput,
   RegisterOutput,

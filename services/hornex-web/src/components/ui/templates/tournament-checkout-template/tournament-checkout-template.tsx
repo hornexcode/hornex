@@ -1,249 +1,392 @@
-import Button from '../../atoms/button/button';
-import Input from '../../atoms/form/input';
-import InputLabel from '../../atoms/form/input-label';
-import { LongArrowLeft } from '../../atoms/icons/long-arrow-left';
-import PaymentOptions from '../../molecules/payment-options/payment-options';
-import { useModal } from '@/components/modal-views/context';
-import { useToast } from '@/components/ui/use-toast';
-import { dataLoader } from '@/lib/api';
-import { Team } from '@/lib/models';
-import { Tournament } from '@/lib/models/types';
 import {
-  PayRegistrationParams,
-  payRegistrationParams,
-} from '@/lib/models/types/rest/pay-registration';
+  PaymentMethod,
+  PixContentProps,
+  PixResponse,
+  TournamentCheckoutProps,
+} from './tournament-checkout-template.types';
+import Button from '@/components/ui/atoms/button/button';
+import Input from '@/components/ui/atoms/form/input';
+import InputLabel from '@/components/ui/atoms/form/input-label';
+import PaymentOptions from '@/components/ui/molecules/payment-options/payment-options';
+import { dataLoader } from '@/lib/request';
 import { toCurrency } from '@/lib/utils';
-import { TrashIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import classnames from 'classnames';
-import { TimerIcon } from 'lucide-react';
+import {
+  CardCvcElement,
+  CardExpiryElement,
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js';
+import { AlertCircle, TimerIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FC, useCallback, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FC, useState } from 'react';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { z } from 'zod';
 
-type PixResponse = {
-  qrcode: string;
-  imagemQrcode: string;
-  linkVisualizacao: string;
-};
+export const PayRegistrationParams = z.object({
+  registration: z.string().uuid(),
+  name: z.string(),
+  cpf: z.string().regex(/^\d{11}$/, { message: 'CPF inválido' }),
+});
+export type payRegistrationParams = z.infer<typeof PayRegistrationParams>;
 
-const { post: payRegistration } = dataLoader<
+const { post: createPixPayment } = dataLoader<
   PixResponse,
   payRegistrationParams
 >('payRegistration');
 
-type TournamentCheckoutProps = {
-  tournament: Tournament;
-  team: Team;
+export const createStripePaymentIntentParams = z.object({
+  registration: z.string().uuid(),
+});
+
+type StripePaymentIntent = {
+  id: string;
+  client_secret: string;
 };
+const { post: createStripePaymentIntent } = dataLoader<
+  StripePaymentIntent,
+  z.infer<typeof createStripePaymentIntentParams>
+>('payRegistration');
+
+const createPixPaymentForm = z.object({
+  name: z.string(),
+  cpf: z.string(),
+});
+
+const createStripePaymentForm = z.object({
+  cep: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+});
 
 const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
   tournament,
   team,
 }) => {
-  const { toast } = useToast();
-  const { openModal } = useModal();
-  const [paymentMethod, setPaymentMethod] = useState('pix');
-  const [name, setName] = useState('');
-  const [cpf, setCpf] = useState('');
-  const [inputErrors, setInputErrors] = useState({ name: '', cpf: '' });
-  const [pix, setPix] = useState<PixResponse | null>();
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>('credit-card');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const registrationId = router.query.id as string;
 
-  const handlePayment = useCallback(async () => {
-    setLoading(true);
-
-    if (!cpf) {
-      setInputErrors((prev) => ({ ...prev, cpf: 'CPF inválido' }));
+  const mountPaymentForm = (paymentMethod: string) => {
+    switch (paymentMethod) {
+      case 'pix':
+        return <PixPaymentForm />;
+      case 'credit-card':
+        return <StripePaymentForm />;
+      default:
+        break;
     }
+  };
 
-    if (!name) {
-      setInputErrors((prev) => ({ ...prev, name: 'Nome inválido' }));
+  const methods = useForm<
+    | z.infer<typeof createPixPaymentForm>
+    | z.infer<typeof createStripePaymentForm>
+  >({
+    resolver: zodResolver(createPixPaymentForm),
+  });
+
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const onSubmit = async (data: any) => {
+    switch (paymentMethod) {
+      case 'pix':
+        const pixFormData = data as z.infer<typeof createPixPaymentForm>;
+        setLoading(true);
+        const { error } = await createPixPayment(
+          {},
+          {
+            registration: registrationId,
+            name: pixFormData.name,
+            cpf: pixFormData.cpf,
+          }
+        );
+        setLoading(false);
+        if (error) {
+          console.log(error);
+        } else {
+          // router.push(`/tournaments/${tournament.id}`);
+          console.log('success');
+        }
+        break;
+      case 'credit-card':
+        const stripeFormData = data as z.infer<typeof createStripePaymentForm>;
+        setLoading(true);
+
+        if (!stripe || !elements) {
+          return null;
+        }
+
+        const cardElement = elements.getElement(CardNumberElement);
+        if (!cardElement) {
+          setLoading(false);
+          return null;
+        }
+
+        const cardholder = `${stripeFormData.firstName} ${stripeFormData.lastName}`;
+
+        const { data: paymentIntent, error: stripeError } =
+          await createStripePaymentIntent(
+            {
+              credit_card: '1',
+            },
+            {
+              registration: registrationId,
+            }
+          );
+
+        if (stripeError || !paymentIntent) {
+          console.log(stripeError);
+          setLoading(false);
+          return null;
+        }
+
+        const { error: stripePaymentError } = await stripe.confirmCardPayment(
+          paymentIntent.client_secret,
+          {
+            payment_method: {
+              card: cardElement,
+              billing_details: {
+                name: cardholder,
+                address: {
+                  postal_code: stripeFormData.cep,
+                },
+              },
+            },
+          }
+        );
+
+        if (stripePaymentError) {
+          console.log(stripePaymentError);
+          setLoading(false);
+          return null;
+        }
+
+        setLoading(false);
+        break;
+      default:
+        break;
     }
-
-    if (inputErrors.cpf || inputErrors.name) return;
-
-    const { error, data } = await payRegistration(
-      {},
-      { registration: registrationId, name, cpf }
-    );
-
-    setPix(data);
-
-    if (error?.response) {
-      return toast({ title: 'error', description: error.response.message });
-    }
-
-    setLoading(false);
-
-    // router.push(`/registration/${registrationId}/success`);
-  }, [name, cpf, registrationId]);
+  };
 
   return (
-    <div className="container mx-auto space-y-8 sm:space-y-16 sm:pt-16">
-      <div className="grid grid-cols-4 gap-8 divide-x divide-dashed divide-gray-700">
-        <div className="col-span-2 space-y-12">
-          <div>
-            <h2 className="text-title text-2xl font-bold">
-              Complete your registration
-            </h2>
-            <p className="text-body text-lg font-normal">
-              Checkout to complete your registration and play the tournament
-            </p>
-          </div>
-
-          <div className="bg-medium-dark space-y-8 rounded p-5">
-            <div>
-              <InputLabel title="Team" important />
-              <Input value={team.name} disabled />
+    <div className="pace-y-8 container sm:space-y-16 sm:pt-8">
+      <div className="grid grid-cols-2 gap-8">
+        {/* Summary */}
+        <div className="col-span-1">
+          <div className="bg-medium-dark shadow-card flex items-center rounded p-6">
+            <div className="block">
+              <AlertCircle className="text-body mr-4" />
             </div>
-
-            <div className="">
-              <div className="w-full">
-                <InputLabel title="Payment Method" important />
-                <PaymentOptions
-                  onChange={setPaymentMethod}
-                  value={paymentMethod}
-                />
-              </div>
-              {paymentMethod === 'pix' && (
-                <div className="mt-8 space-y-8">
-                  <div className="">
-                    <InputLabel title="Nome no PIX" important />
-                    <Input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      inputClassName={classnames(
-                        inputErrors.name ? 'focus:ring-red-500' : ''
-                      )}
-                      placeholder="Nome no PIX"
-                      error={inputErrors.name}
-                    />
-                  </div>
-                  <div className="">
-                    <InputLabel title="CPF no PIX" important />
-                    <Input
-                      value={cpf}
-                      onChange={(e) => {
-                        setCpf(e.target.value);
-                        if (!/^\d{11}$/.test(e.target.value))
-                          setInputErrors((prev) => ({
-                            ...prev,
-                            cpf: 'CPF inválido',
-                          }));
-                        else setInputErrors((prev) => ({ ...prev, cpf: '' }));
-                      }}
-                      inputClassName={classnames(
-                        inputErrors ? 'focus:ring-red-500' : ''
-                      )}
-                      placeholder="CPF no PIX"
-                      error={inputErrors.cpf}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-end">
-              <Button
-                onClick={() => router.back()}
-                color="gray"
-                shape="rounded"
-                className="mr-3"
-                variant="ghost"
-              >
-                <div className="flex items-center">
-                  <LongArrowLeft className="mr-4 h-5 w-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
-              <Button
-                onClick={() => handlePayment()}
-                className="flex-1"
-                shape="rounded"
-                disabled={loading}
-                isLoading={loading}
-                loaderVariant="scaleUp"
-              >
-                Registrate
-                <span className="font-display ml-2">
-                  ${tournament.entry_fee * tournament.team_size}
-                </span>
-              </Button>
+            <div className="block">
+              <h2 className="text-title text-xl">Confirmação de inscrição</h2>
+              <p className="text-body text-sm font-light tracking-wide">
+                Sua inscrição foi criada porém ainda não foi paga. Para garantir
+                sua vaga no torneio, realize o pagamento.
+              </p>
             </div>
           </div>
         </div>
-        <div className="col-span-2 pl-8">
-          <div className="space-y-6">
-            <div className="text-title text-lg tracking-wide">
-              Purchase Details
-            </div>
-            <div className="bg-medium-dark highlight-white-5 flex items-center justify-between space-x-5 rounded p-2">
-              <div className="flex items-center">
-                <Image
-                  className="shadow-card mr-4 overflow-hidden rounded"
-                  src={`/images/tournaments/${tournament.feature_image}`}
-                  width={64}
-                  height={64}
-                  alt="Cover Image"
-                />
-                <div className="">
-                  <div className="text-body text-xs">Tournament</div>
-                  <div className="text-title text-sm">{tournament.name}</div>
-                </div>
-              </div>
-              {/* details */}
 
-              <div className="pr-4">
-                <div className="text-title font-display text-sm">
-                  ${toCurrency(tournament.entry_fee * tournament.team_size)}
-                </div>
-              </div>
-              {/* <TrashIcon className="text-title ml-2 h-4 w-4 cursor-pointer hover:text-red-500" /> */}
-            </div>
-
-            <div className="font-display space-y-5 px-4 py-4">
-              <div className="text-body flex items-end justify-between text-xs">
-                <p className="leading-0 pr-2">Entry fee</p>
-                <div className="flex-1 border-b border-dashed border-gray-600"></div>
-                <div className="leading-2 pl-2">
-                  ${tournament.entry_fee / 100}
-                </div>
-              </div>
-              <div className="text-body flex items-end justify-between text-xs">
-                <div className="pr-2">Teams qty</div>
-                <div className="flex-1 border-b border-dashed border-gray-600"></div>
-                <div>x{tournament.team_size}</div>
-              </div>
-              <div className="text-body flex items-center justify-between text-xs">
-                <div className="pr-2">Subtotal</div>
-                <div className="flex-1 border-b border-dashed border-gray-600"></div>
-                <div className="leading-2 pl-2">
-                  ${(tournament.entry_fee * tournament.team_size) / 100}
-                </div>
-              </div>
-              <div className="text-title flex items-center justify-between text-xl">
-                <div>TOTAL</div>
-                <div>
-                  <span className="text-body">BRL</span> $
-                  {toCurrency(tournament.entry_fee * tournament.team_size)}
-                </div>
-              </div>
-            </div>
+        <div className="bg-medium-dark shadow-card col-span-1 rounded p-6">
+          <div className="mb-4">
+            <h2 className="text-title text-xl">Purchase Resume</h2>
           </div>
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(onSubmit)}>
+              <div className="space-y-8">
+                <div className="space-y-4 rounded border border-gray-600">
+                  {/* tournament name */}
+                  <div className="block border-b border-gray-600 p-6">
+                    <div className="text-title text-sm font-light">
+                      Inscrição para torneio de{' '}
+                      <span className="text-body font-bold">
+                        League of Legends
+                      </span>
+                      : <span className="font-bold">{tournament.name}</span>
+                    </div>
+                  </div>
+                  {/* team name */}
+                  <div className="text-body flex items-center justify-between px-6 text-sm font-light">
+                    <div className="">Team</div>
+                    <div className="">{team.name} </div>
+                  </div>
+                  <div className="text-body flex items-center justify-between px-6 text-sm font-light">
+                    <div className="">
+                      {tournament.team_size} x{' '}
+                      <span className="font-semibold">
+                        {tournament.name} inscrições
+                      </span>{' '}
+                    </div>
+                    <div className="flex items-center">
+                      ${' '}
+                      <span className="font-display">
+                        {toCurrency(
+                          tournament.entry_fee * tournament.team_size
+                        )}
+                      </span>
+                      <span className="ml-2 text-xs">BRL</span>
+                    </div>
+                  </div>
+                  <div className="text-title flex items-center justify-between px-6 pb-6 text-sm font-extrabold">
+                    <div className="">Total Charge</div>
+                    <div className="flex items-center">
+                      ${' '}
+                      <span className="font-display">
+                        {toCurrency(
+                          tournament.entry_fee * tournament.team_size
+                        )}
+                      </span>
+                      <span className="ml-2 text-xs">BRL</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="">
+                  <div>
+                    <InputLabel title="Payment Method" important />
+                    <PaymentOptions
+                      onChange={setPaymentMethod}
+                      value={paymentMethod}
+                    />
+                  </div>
+                  {mountPaymentForm(paymentMethod)}
+                </div>
+
+                <div className="flex justify-end">
+                  <Button
+                    type="submit"
+                    shape="rounded"
+                    fullWidth
+                    disabled={loading}
+                    isLoading={loading}
+                    loaderVariant="scaleUp"
+                  >
+                    {paymentMethod === 'pix' ? 'Pay with PIX' : 'Pay with Card'}
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </FormProvider>
         </div>
       </div>
     </div>
   );
 };
 
-type PixContentProps = {
-  pix: PixResponse;
+const PixPaymentForm = () => {
+  const { register } = useFormContext();
+  return (
+    <div className="mt-8 space-y-8">
+      <div className="">
+        <InputLabel title="Nome" important />
+        <Input {...register('name')} placeholder="Nome" />
+      </div>
+      <div className="">
+        <InputLabel title="CPF" important />
+        <Input {...register('cpf')} />
+      </div>
+    </div>
+  );
+};
+
+const StripePaymentForm = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const { register } = useFormContext();
+
+  if (!stripe || !elements) {
+    return null;
+  }
+
+  return (
+    <div className="mt-8 space-y-8">
+      <div className="grid w-full grid-cols-2 gap-4">
+        <div>
+          <InputLabel title="First Name" important />
+          <Input {...register('firstName')} placeholder="First Name" />
+        </div>
+        <div>
+          <InputLabel title="Last Name" important />
+          <Input {...register('lastName')} placeholder="Last Name" />
+        </div>
+      </div>
+      <div className="w-full">
+        <InputLabel title="Card Number" important />
+        <CardNumberElement
+          options={{
+            style: {
+              base: {
+                lineHeight: '24px',
+                padding: '10px 12px',
+                color: '#fff',
+                '::placeholder': {
+                  color: 'rgb(107, 114, 128)',
+                },
+              },
+              invalid: {
+                color: '#9e2146',
+              },
+            },
+          }}
+          className="dark:bg-dark mt-1 block h-8 w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm  placeholder-gray-400 transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-500 dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:h-10 sm:rounded"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="w-full">
+          <InputLabel title="Expiration" important />
+          <CardExpiryElement
+            options={{
+              style: {
+                base: {
+                  lineHeight: '24px',
+                  padding: '10px 12px',
+                  color: '#fff',
+                  '::placeholder': {
+                    color: 'rgb(107, 114, 128)',
+                  },
+                },
+                invalid: {
+                  color: '#9e2146',
+                },
+              },
+            }}
+            className="dark:bg-dark mt-1 block h-8 w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm  placeholder-gray-400 transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-500 dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:h-10 sm:rounded"
+          />
+        </div>
+        <div className="w-full">
+          <InputLabel title="CVC" important />
+          <CardCvcElement
+            options={{
+              style: {
+                base: {
+                  lineHeight: '24px',
+                  padding: '10px 12px',
+                  color: '#fff',
+                  '::placeholder': {
+                    color: 'rgb(107, 114, 128)',
+                  },
+                },
+                invalid: {
+                  color: '#9e2146',
+                },
+              },
+            }}
+            className="dark:bg-dark mt-1 block h-8 w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm  placeholder-gray-400 transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-500 dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:h-10 sm:rounded"
+          />
+        </div>
+      </div>
+      <div className="w-full">
+        <InputLabel title="Postal Code" important />
+        <Input {...register('cep')} placeholder="Postal Code" />
+      </div>
+    </div>
+  );
 };
 
 const PixContent = ({ pix }: PixContentProps) => {

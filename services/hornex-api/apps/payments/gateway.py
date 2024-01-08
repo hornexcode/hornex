@@ -13,7 +13,12 @@ class PaymentGateway(ABC):
         raise NotImplementedError
 
 
-def get_payment_gateway() -> PaymentGateway:
+def get_payment_gateway(*args, **kwargs) -> PaymentGateway:
+    if "credit_card" in kwargs:
+        from lib.stripe.client import Stripe
+
+        return Stripe()
+
     from lib.efi.client import Efi
 
     return Efi()

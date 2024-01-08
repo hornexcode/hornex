@@ -1,5 +1,5 @@
-import { dataLoader } from '@/lib/api';
 import { GetNotificationsResponse } from '@/lib/models/types/rest/get-notifications';
+import { dataLoader } from '@/lib/request';
 
 const { useData: useGetNotifications } =
   dataLoader<GetNotificationsResponse>('getNotifications');

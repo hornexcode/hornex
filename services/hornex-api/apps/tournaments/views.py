@@ -169,7 +169,11 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
                 {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        Resend.send("Tournament registration", "Your team was registered successfully")
+        Resend.send(
+            "Tournament registration",
+            "Your team was registered successfully",
+            reg.team.created_by.email,
+        )
 
         return Response(
             RegistrationReadSerializer(reg).data,

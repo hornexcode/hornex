@@ -6,7 +6,7 @@ import '@/websocket/app'; // websocket
 import ModalsContainer from '@/components/modal-views/container';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
-import { NotificationContextProvider } from '@/lib/notification';
+import { NotificationContextProvider } from '@/lib/websocket';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';

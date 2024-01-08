@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Tab, TabItem, TabPanel, TabPanels } from '@/components/ui/atoms/tab';
-import { useBreakpoint } from '@/lib/hooks/use-breakpoint';
-import { useClickAway } from '@/lib/hooks/use-click-away';
-import { useIsMounted } from '@/lib/hooks/use-is-mounted';
+import { useBreakpoint } from '@/hooks/use-breakpoint';
+import { useClickAway } from '@/hooks/use-click-away';
+import { useIsMounted } from '@/hooks/use-is-mounted';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import cn from 'classnames';
 import { useRouter } from 'next/router';

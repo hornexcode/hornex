@@ -1,8 +1,8 @@
 import TeamsTemplate from '@/components/ui/templates/teams';
 import { AppLayout } from '@/layouts';
-import { dataLoader } from '@/lib/api';
-import { makeClientReqObj } from '@/lib/api/util';
 import { GetInvitesResponse } from '@/lib/models/types';
+import { dataLoader } from '@/lib/request';
+import { makeClientReqObj } from '@/lib/request/util';
 import {
   GetTeamsOutput,
   getTeamsSchemaOutput as schema,

@@ -1,10 +1,16 @@
 from rest_framework import serializers
 
 
-class CreatePaymentRegistrationSerializer(serializers.Serializer):
+class CreatePixPaymentRegistrationSerializer(serializers.Serializer):
     registration = serializers.UUIDField()
     name = serializers.CharField()
     cpf = serializers.CharField()
+    # amount = serializers.IntegerField()
+
+
+class CreateStripePaymentRegistrationSerializer(serializers.Serializer):
+    registration = serializers.UUIDField()
+    # amount = serializers.IntegerField()
 
 
 class PixSerializer(serializers.Serializer):

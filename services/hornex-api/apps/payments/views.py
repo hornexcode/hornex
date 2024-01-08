@@ -13,7 +13,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from apps.payments.dto import RegistrationPaymentDTO
 from apps.payments.gateway import get_payment_gateway
 from apps.payments.models import PaymentRegistration
-from apps.payments.serializers import CreatePaymentRegistrationSerializer
+from apps.payments.serializers import (
+    CreatePixPaymentRegistrationSerializer,
+    CreateStripePaymentRegistrationSerializer,
+)
 from apps.tournaments.models import Registration
 
 logger = structlog.get_logger(__name__)
@@ -24,22 +27,30 @@ logger = structlog.get_logger(__name__)
 @authentication_classes([JWTAuthentication])
 @transaction.atomic
 def create_payment_registration(request):
-    form = CreatePaymentRegistrationSerializer(data=request.data)
+    kwargs = {}
+    if "credit_card" in request.GET:
+        kwargs["credit_card"] = 1
+        form = CreateStripePaymentRegistrationSerializer(data=request.data)
+    else:
+        form = CreatePixPaymentRegistrationSerializer(data=request.data)
+        kwargs["cpf"] = form.data["cpf"]
+        kwargs["name"] = form.data["name"]
+
     if not form.is_valid():
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         registration = Registration.objects.get(id=form.data["registration"])
+        if registration.status != Registration.RegistrationStatusType.PENDING:
+            return Response({"error": "Registration is not pending"}, status=400)
     except Registration.DoesNotExist:
         return Response({"error": "Registration does not exist"}, status=404)
-
-    if registration.status != Registration.RegistrationStatusType.PENDING:
-        return Response({"error": "Registration is not pending"}, status=400)
 
     try:
         payment_registration = PaymentRegistration.objects.create(
             registration=registration,
-            amount=registration.tournament.entry_fee,
+            amount=registration.tournament.entry_fee
+            * registration.tournament.team_size,
         )
     except Exception as e:
         logger.error("Error on creating payment", error=e)
@@ -47,12 +58,12 @@ def create_payment_registration(request):
 
     payment_registration = RegistrationPaymentDTO(
         id=payment_registration.id.hex,
-        name=form.data["name"],
-        cpf=form.data["cpf"],
-        amount=registration.tournament.entry_fee / 100,
+        amount=payment_registration.amount,
+        email=request.user.email,
+        **kwargs,
     )
 
-    payment_gateway = get_payment_gateway()
+    payment_gateway = get_payment_gateway(**kwargs)
 
     try:
         resp = payment_gateway.charge(payment_registration)

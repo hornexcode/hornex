@@ -1,4 +1,4 @@
-import { dataLoader } from '@/lib/api';
+import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';

@@ -5,7 +5,7 @@ import resend
 import structlog
 
 logger = structlog.get_logger(__name__)
-resend.api_key = os.getenv("HORNEX_RESEND_API_KEY")
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 
 class Clientable(ABCMeta):
@@ -18,7 +18,7 @@ class Resend(Clientable):
         r = resend.Emails.send(
             {
                 "from": "onboarding@resend.dev",
-                "to": recipient,
+                "to": "pedro357bm@gmail.com",
                 "subject": subject,
                 "html": f"<p>{message}</p>",
             }

@@ -1,5 +1,5 @@
 import { extractParams, toQueryString } from './utils';
-import { ParamMap } from '@/lib/api';
+import { ParamMap } from '@/lib/request';
 
 /**
  * Route is a representation of route.

@@ -1420,6 +1420,21 @@ doc = ["sphinx"]
 test = ["pytest", "pytest-cov"]
 
 [[package]]
+name = "stripe"
+version = "7.11.0"
+description = "Python bindings for the Stripe API"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "stripe-7.11.0-py2.py3-none-any.whl", hash = "sha256:400a6c76497c19fa58ac295ba3d37f6e03bbefa7fd97bdbaa75a092f0e013d50"},
+    {file = "stripe-7.11.0.tar.gz", hash = "sha256:bdff0827f8d9368a4c5e838876ff9dc1d5e1615b05ac98ab450c81eb9f3d3035"},
+]
+
+[package.dependencies]
+requests = {version = ">=2.20", markers = "python_version >= \"3.0\""}
+typing-extensions = {version = ">=4.5.0", markers = "python_version >= \"3.7\""}
+
+[[package]]
 name = "structlog"
 version = "23.2.0"
 description = "Structured Logging for Python"
@@ -1936,4 +1951,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d2e7d5d4cf9eadadf13b5e35a39836ec934948be0c064f2266b5e078d4183066"
+content-hash = "a8bbe62c37a0b70d2110dc7fce7895677e6a92b95b97187045ce2980550d1112"

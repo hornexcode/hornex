@@ -2,7 +2,7 @@
 
 import { ChevronDown } from '@/components/ui/atoms/icons/chevron-down';
 import ActiveLink from '@/components/ui/atoms/links/active-link';
-import { useMeasure } from '@/lib/hooks/use-measure';
+import { useMeasure } from '@/hooks/use-measure';
 import cn from 'classnames';
 import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
