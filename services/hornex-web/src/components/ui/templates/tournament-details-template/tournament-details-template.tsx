@@ -7,23 +7,25 @@ import TournamentOverviewTabPanel from '@/components/ui/organisms/tournament-ove
 import TournamentScoringTabPanel from '@/components/ui/organisms/tournament-scoring-tab-panel';
 import TournamentStandingTabPanel from '@/components/ui/organisms/tournament-standing-tab-panel';
 import { useToast } from '@/components/ui/use-toast';
-import { Tournament } from '@/lib/models/types';
+import { Registration, Tournament } from '@/lib/models';
 import { toCurrency } from '@/lib/utils';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { Tab } from '@headlessui/react';
-import { GiftIcon, TrophyIcon } from '@heroicons/react/20/solid';
+import { TrophyIcon } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
 import Image from 'next/image';
 import { FC, useState } from 'react';
 
-type TournamentProps = {
+type TournamentDetailsTemplateProps = {
   tournament: Tournament;
   gameIds: GameID[];
+  registrations: Registration[];
 };
 
-const TournamentDetailsTemplate: FC<TournamentProps> = ({
+const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   tournament,
   gameIds,
+  registrations,
 }) => {
   let [tabs] = useState({
     Overview: '',
@@ -40,6 +42,11 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({
     (gameIds.length > 0 &&
       gameIds.find((gameId) => gameId.game === 'league-of-legends')) ||
     undefined;
+
+  // TODO: create a new endpoint to check if user is registered
+  const isRegistrated = registrations.some(
+    (registration) => registration.tournament === tournament.id
+  );
 
   return (
     <div className="p-8">
@@ -77,6 +84,7 @@ const TournamentDetailsTemplate: FC<TournamentProps> = ({
         <TournamentDetailsHeadline
           connectedGameId={gameId}
           tournament={tournament}
+          isRegistrated={isRegistrated}
         />
       </div>
       <Tab.Group>

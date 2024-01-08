@@ -2,20 +2,12 @@ import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
 import { ConnectedGameIds } from '../../molecules/connected-game-ids';
 import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
-import { SwordsIcon } from '@/components/ui/atoms/icons';
 import { Tournament } from '@/lib/models/types';
-import { calcPrizePool, toCurrency } from '@/lib/utils';
+import { toCurrency } from '@/lib/utils';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
-import { TrophyIcon } from '@heroicons/react/20/solid';
-import {
-  CalendarIcon,
-  CircleSlashIcon,
-  CoinsIcon,
-  DollarSign,
-} from 'lucide-react';
+import { CalendarIcon, CheckCircle2 } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { FC } from 'react';
 
 const imageLoader = ({ src }: any) => {
@@ -25,10 +17,12 @@ const imageLoader = ({ src }: any) => {
 type TournamentHeadlineProps = {
   tournament: Tournament;
   connectedGameId?: GameID;
+  isRegistrated?: boolean;
 };
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   tournament,
   connectedGameId,
+  isRegistrated,
 }) => {
   const { openModal } = useModal();
   return (
@@ -72,7 +66,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               {/* Prize Pool */}
               <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
                 <div>
-                  <div className="text-md text-body">Prize Pool</div>
+                  <div className="text-md text-body">Potential Prize Pool</div>
                   {!tournament.is_entry_free && (
                     <div className="text-title font-display text-sm">
                       R${' '}
@@ -102,15 +96,22 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                 <ConnectedGameIds gameId={connectedGameId} />
               </div>
             )}
-            <div className="block">
-              <Button
-                size="small"
-                onClick={() => openModal('REGISTRATION_VIEW')}
-                shape="rounded"
-              >
-                Registrar time
-              </Button>
-            </div>
+            {!isRegistrated ? (
+              <div className="block">
+                <Button
+                  size="small"
+                  onClick={() => openModal('REGISTRATION_VIEW')}
+                  shape="rounded"
+                >
+                  Registrar time
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center rounded border-2 border-slate-200 bg-slate-200 px-4 py-1.5">
+                <CheckCircle2 className="fill-dark w-6 text-slate-200" />
+                <div className="text-dark ml-2 text-sm">Registrado</div>
+              </div>
+            )}
           </div>
         </div>
       </div>

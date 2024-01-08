@@ -1,7 +1,6 @@
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
 import { AppLayout } from '@/layouts';
-import { Registration } from '@/lib/models';
-import { Tournament } from '@/lib/models/types';
+import { Registration, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
@@ -24,12 +23,14 @@ type TournamentProps = {
   };
   tournament: Tournament;
   gameIds: GameID[];
+  registrations: Registration[];
 };
 
 const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   params,
   tournament,
   gameIds,
+  registrations = [],
 }: TournamentProps) => {
   // TODO: add switch to render different types of tournament template
   // switch (params.game) {
@@ -39,7 +40,11 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   //     break;
   // }
   return (
-    <TournamentDetailsTemplate tournament={tournament} gameIds={gameIds} />
+    <TournamentDetailsTemplate
+      registrations={registrations}
+      tournament={tournament}
+      gameIds={gameIds}
+    />
   );
 };
 
@@ -82,11 +87,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ctx.req
     );
 
+  if (!registrations || registrationError) {
+    console.log('error', registrationError);
+  }
+
   return {
     props: {
       params: ctx.params,
       tournament,
       gameIds,
+      registrations,
     },
   };
 };

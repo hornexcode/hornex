@@ -1,5 +1,6 @@
 import { SwordsIcon } from '@/components/ui/atoms/icons';
 import { Tournament } from '@/lib/models/types';
+import { toCurrency } from '@/lib/utils';
 import { ComputerDesktopIcon, LockOpenIcon } from '@heroicons/react/20/solid';
 import { CoinsIcon } from 'lucide-react';
 import { FC } from 'react';
@@ -12,104 +13,71 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
   tournament,
 }) => {
   return (
-    <>
-      <div className="bg-medium-dark rounded shadow-md">
-        <div className="border-b border-gray-700 p-4">
-          <h4 className="leading-2 text-title text-sm font-extrabold">
-            Tournament details
+    <div className="box">
+      <div className="flex flex-wrap items-center">
+        <div className="block border-r border-gray-700 pr-6">
+          <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
+            Game
           </h4>
+          <span className="rounded-md bg-slate-600 px-2 text-sm font-light text-slate-400">
+            League of Legends
+          </span>
         </div>
-
-        <div className="bg-light-dark grid grid-cols-4 rounded-b">
-          <div className="col-span-1 p-5">
-            <div className="space-y-3 border-r border-gray-700 pb-4 text-center">
-              <SwordsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
-              <p className="text-sm font-bold text-cyan-500">Format</p>
-              <p className="text-title text-xs font-bold">
-                {tournament.team_size}v{tournament.team_size}
-              </p>
-            </div>
-          </div>
-          <div className="col-span-1  p-5">
-            <div className="space-y-3 border-r border-gray-700 pb-4 text-center">
-              <ComputerDesktopIcon className="mx-auto h-5 w-5 fill-cyan-500" />
-              <p className="text-sm font-bold text-cyan-500">Platform</p>
-              <p className="text-title text-xs font-bold">
-                {tournament.platform}
-              </p>
-            </div>
-          </div>
-          <div className="col-span-1 p-5">
-            <div className="space-y-3 border-r border-gray-700 pb-4 text-center">
-              <LockOpenIcon className="mx-auto h-5 w-5 fill-cyan-500" />
-              <p className="text-sm font-bold text-cyan-500">Classification</p>
-              <p className="text-title text-xs font-bold">
-                {tournament.classifications.join(', ')}
-              </p>
-            </div>
-          </div>
-          <div className="col-span-1 p-5">
-            <div className="space-y-3 border-gray-700 pb-4 text-center">
-              <CoinsIcon className="mx-auto h-5 w-5 fill-cyan-500" />
-              <p className="text-sm font-bold text-cyan-500">Entry fee</p>
-              <p className="text-title text-xs font-bold">
-                {tournament.entry_fee}
-              </p>
-            </div>
-          </div>
+        <div className="block border-r border-gray-700 px-6">
+          <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
+            Platform
+          </h4>
+          <span className="rounded-md bg-slate-600 px-2 text-sm font-light text-slate-400">
+            PC
+          </span>
+        </div>
+        <div className="block border-r border-gray-700 px-6">
+          <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
+            Format
+          </h4>
+          <span className="text-sm font-light text-slate-400">
+            {tournament.team_size}x{tournament.team_size}
+          </span>
+        </div>
+        <div className="block border-r border-gray-700 px-6">
+          <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
+            Entry Fee
+          </h4>
+          <span className="text-sm font-light text-slate-400">
+            ${' '}
+            <span className="font-display">
+              {toCurrency(tournament.entry_fee)}
+            </span>{' '}
+            <span className="text-xs">BRL</span>
+          </span>
+        </div>
+        <div className="block border-r border-gray-700 px-6">
+          <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
+            Potential Prize Pool
+          </h4>
+          <span className="text-sm font-light text-slate-400">
+            ${' '}
+            <span className="font-display">
+              {toCurrency(
+                tournament.entry_fee *
+                  tournament.max_teams *
+                  tournament.team_size *
+                  0.7
+              )}
+            </span>{' '}
+            <span className="text-xs">BRL</span>
+          </span>
+        </div>
+        <div className="block px-6">
+          <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
+            Map
+          </h4>
+          <span className="text-sm font-light text-slate-400">
+            Summoner Rift
+          </span>
         </div>
       </div>
-    </>
-    // <div className="box">
-    //   <div className="block space-y-8">
-    //     <div className="block">
-    //       <div className="text-heading-style mb-2 uppercase text-gray-200">
-    //         Informações Gerais
-    //       </div>
-    //       <p className="text-sm ">{tournament.description}</p>
-    //     </div>
-    //     <div className="block">
-    //       <div className="text-heading-style mb-2 uppercase text-gray-200">
-    //         Format
-    //       </div>
-    //       <span className="text-sm font-semibold">Single elimination</span>
-    //     </div>
-
-    //     <div className="block">
-    //       <div className="text-heading-style mb-2 uppercase text-gray-200">
-    //         Team Size
-    //       </div>
-    //       <div className="text-sm">{tournament.team_size}</div>
-    //     </div>
-    //     <div className="block">
-    //       <div className="text-heading-style mb-2 uppercase text-gray-200">
-    //         Max Teams
-    //       </div>
-    //       <div className="text-sm">{tournament.max_teams}</div>
-    //     </div>
-    //     <div className="block">
-    //       <div className="text-heading-style mb-2 uppercase text-gray-200">
-    //         Game
-    //       </div>
-    //       <div className="text-sm">{tournament.game}</div>
-    //     </div>
-    //     <div className="block">
-    //       <div className="text-heading-style mb-2 uppercase text-gray-200">
-    //         Platform
-    //       </div>
-    //       <div className="text-sm">{tournament.platform}</div>
-    //     </div>
-    //     <div className="block">
-    //       <div className="text-heading-style mb-2 uppercase text-gray-200">
-    //         Organizer
-    //       </div>
-    //       <div className="text-sm">
-    //         <UserIcon className="w-4" />
-    //         {tournament.organizer}
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
+    </div>
   );
 };
 

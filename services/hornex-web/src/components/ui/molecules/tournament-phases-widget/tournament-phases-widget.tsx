@@ -1,8 +1,14 @@
 import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
-import { Tournament } from '@/lib/models/types';
+import { Tournament } from '@/lib/models';
 import classnames from 'classnames';
-import { UsersIcon } from 'lucide-react';
+import {
+  ArrowBigRightDash,
+  ArrowRightToLineIcon,
+  CheckCircle2,
+  UsersIcon,
+} from 'lucide-react';
+import moment from 'moment';
 import { FC } from 'react';
 
 type TournamentPhasesWidgetProps = {
@@ -15,7 +21,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   const { openModal } = useModal();
 
   return (
-    <div className="bg-light-dark shadow-light space-y-2 rounded-md ">
+    <div className="bg-light-dark shadow-card space-y-2 rounded-md ">
       <div className="bg-medium-dark highlight-white-5 rounded-t">
         <div className="border-b border-gray-700 p-4">
           <h4 className="leading-2 text-title text-sm font-extrabold">
@@ -26,17 +32,22 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
       <div className="block p-5">
         <ol className="relative border-l border-gray-200 dark:border-gray-700">
           <li className="mb-10 border-l pl-4 dark:border-amber-400">
-            <div className="dark:border-light-dark absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-white bg-gray-200 dark:bg-amber-400"></div>
-            <time className="mb-1 text-xs font-normal leading-none text-gray-400 dark:text-gray-500">
-              February 2022
+            {/* <div className="dark:border-light-dark absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-white bg-gray-200 dark:bg-amber-400"></div> */}
+            <div className="absolute -left-2 mt-3.5 rounded-full">
+              <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
+            </div>
+            <time className="text-body mb-1 text-xs font-normal leading-none">
+              Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
+              {/* <ArrowRightToLineIcon className="mx-2 w-4 text-slate-400" />{' '}
+              {moment(tournament.end_date).format('MMM Do')} */}
             </time>
 
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-              Registration
+            <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+              Registration Open
             </h3>
-            <p className="mb-4 text-xs font-normal text-gray-500 dark:text-gray-400">
+            {/* <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
               Register your team so you can get paid to play.
-            </p>
+            </p> */}
 
             <div className="mb-4 block space-y-2">
               <div className="col-span-2">
@@ -49,7 +60,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="col-span-2">
+              {/* <div className="col-span-2">
                 <div className={classnames('flex w-full')}>
                   {Array.from({ length: tournament.max_teams }).map(
                     (_, index) => (
@@ -65,32 +76,35 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                     )
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
           </li>
           <li className="mb-10 ml-4">
-            <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div>
-            <time className="mb-1 text-xs font-normal leading-none text-gray-400 dark:text-gray-500">
+            {/* <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div> */}
+            <div className="absolute -left-2 mt-3.5 rounded-full">
+              <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
+            </div>
+            <time className="text-body mb-1 text-xs font-normal leading-none">
               to be defined
             </time>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
               Results tracking
             </h3>
-            <p className="text-xs font-normal text-gray-500 dark:text-gray-400">
+            {/* <p className="text-xs font-normal text-gray-500 dark:text-gray-400">
               Coleta de dados
-            </p>
+            </p> */}
           </li>
           <li className="ml-4">
             <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div>
-            <time className="mb-1 text-xs font-normal leading-none text-gray-400 dark:text-gray-500">
+            <time className="text-body mb-1 text-xs font-normal leading-none">
               to be defined
             </time>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
               Payment
             </h3>
-            <p className="text-xs font-normal text-gray-500 dark:text-gray-400">
+            {/* <p className="text-xs font-normal text-gray-500 dark:text-gray-400">
               Lorem ipsum dolor sit.
-            </p>
+            </p> */}
           </li>
         </ol>
       </div>

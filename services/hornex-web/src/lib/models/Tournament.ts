@@ -7,6 +7,8 @@ export const tournament = z.object({
   is_public: z.boolean(),
   status: z.string(),
   start_date: z.string(),
+  registration_start_date: z.date(),
+  registration_end_date: z.date(),
   end_date: z.string(),
   start_time: z.string(),
   end_time: z.string(),
