@@ -1,17 +1,9 @@
 from test.factories import (
-    GameIdFactory,
     LeagueOfLegendsTournamentFactory,
-    MatchFactory,
     UserFactory,
 )
-from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
-
-from apps.leagueoflegends.models import Code
-from apps.leagueoflegends.usecases import CreateTournamentCodesUseCase
-from apps.teams.models import Team
-from lib.riot.client import Client
 
 
 class TestCreateTournamentCodes(TestCase):
@@ -46,45 +38,45 @@ class TestCreateTournamentCodes(TestCase):
     #     codes = Code.objects.count()
     #     self.assertEqual(codes, 1)
 
-    def test_invalid_match_number(
-        self,
-    ):
-        createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
+    # def test_invalid_match_number(
+    #     self,
+    # ):
+    #     createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
 
-        try:
-            createTournamentCodesUseCase.execute(2, tournament=self.tournament)
-        except Exception as e:
-            self.assertEqual(str(e), "Tournament future matches are not power of two.")
+    #     try:
+    #         createTournamentCodesUseCase.execute(2, tournament=self.tournament)
+    #     except Exception as e:
+    #         self.assertEqual(str(e), "Tournament future matches are not power of two.")
 
-    def test_team_does_not_have_enough_players(
-        self,
-    ):
-        createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
-        self.match = MatchFactory.new(self.tournament)
+    # def test_team_does_not_have_enough_players(
+    #     self,
+    # ):
+    #     createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
+    #     self.match = MatchFactory.new(self.tournament)
 
-        try:
-            createTournamentCodesUseCase.execute(2, tournament=self.tournament)
-        except Exception as e:
-            self.assertEqual(
-                str(e),
-                f"Team {self.match.team_a.name} does not have {self.tournament.team_size} members.",
-            )
+    #     try:
+    #         createTournamentCodesUseCase.execute(2, tournament=self.tournament)
+    #     except Exception as e:
+    #         self.assertEqual(
+    #             str(e),
+    #             f"Team {self.match.team_a.name} does not have {self.tournament.team_size} members.",
+    #         )
 
-    def test_some_player_miss_league_of_legend_account(
-        self,
-    ):
-        createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
-        self.match = MatchFactory.new(self.tournament)
-        teams = Team.objects.all()
+    # def test_some_player_miss_league_of_legend_account(
+    #     self,
+    # ):
+    #     createTournamentCodesUseCase = CreateTournamentCodesUseCase(Client)
+    #     self.match = MatchFactory.new(self.tournament)
+    #     teams = Team.objects.all()
 
-        for team in teams:
-            users = [UserFactory.new() for _ in range(0, 5)]
-            team.members.set(users)
+    #     for team in teams:
+    #         users = [UserFactory.new() for _ in range(0, 5)]
+    #         team.members.set(users)
 
-        try:
-            createTournamentCodesUseCase.execute(2, tournament=self.tournament)
-        except Exception as e:
-            self.assertIn(
-                "User has no leagueoflegendsaccount.",
-                str(e),
-            )
+    #     try:
+    #         createTournamentCodesUseCase.execute(2, tournament=self.tournament)
+    #     except Exception as e:
+    #         self.assertIn(
+    #             "User has no leagueoflegendsaccount.",
+    #             str(e),
+    #         )

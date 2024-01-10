@@ -1,9 +1,9 @@
 from datetime import datetime as dt
 
 import faker
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from apps.leagueoflegends.models import GameID, LeagueEntry, Summoner, Tournament
+from apps.leagueoflegends.models import GameID, LeagueEntry, Summoner
 from apps.teams.models import Membership, Team
 from apps.users.models import User
 

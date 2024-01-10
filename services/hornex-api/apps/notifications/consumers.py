@@ -1,9 +1,6 @@
 import json
 
-import jwt
 from channels.generic.websocket import AsyncWebsocketConsumer
-
-from core import settings
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):

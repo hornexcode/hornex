@@ -68,7 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                 return False
 
             riot = Client()
-            # summoner.name = game_id.nickname
+
             summoner = riot.get_summoner_by_name(active_gid.nickname)
 
             if summoner is None:

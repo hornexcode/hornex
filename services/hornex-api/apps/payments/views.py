@@ -31,13 +31,16 @@ def create_payment_registration(request):
     if "credit_card" in request.GET:
         kwargs["credit_card"] = 1
         form = CreateStripePaymentRegistrationSerializer(data=request.data)
+
+        if not form.is_valid():
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         form = CreatePixPaymentRegistrationSerializer(data=request.data)
+
+        if not form.is_valid():
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
         kwargs["cpf"] = form.data["cpf"]
         kwargs["name"] = form.data["name"]
-
-    if not form.is_valid():
-        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         registration = Registration.objects.get(id=form.data["registration"])

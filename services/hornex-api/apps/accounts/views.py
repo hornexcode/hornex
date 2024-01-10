@@ -1,5 +1,3 @@
-import time
-
 import requests
 from django.shortcuts import redirect
 from drf_yasg import openapi
@@ -37,6 +35,7 @@ tokenUrl = provider + "/token"
 @api_view(["GET"])
 def riot_oauth_callback(request):
     csrftoken = request.GET.get("state")
+    user = request.user
     if csrftoken is None:
         return redirect("http://localhost:3000")
 
@@ -49,21 +48,21 @@ def riot_oauth_callback(request):
     }
 
     is_new = True
-    # try:
-    #     # It will throw an exception whenever the user does not have acc.
-    #     user.leagueoflegendsaccount
-    #     is_new = False
-    # except LeagueOfLegendsAccount.DoesNotExist:
-    #     is_new = True
+    try:
+        # It will throw an exception whenever the user does not have acc.
+        user.leagueoflegendsaccount
+        is_new = False
+    except LeagueOfLegendsAccount.DoesNotExist:
+        is_new = True
 
-    # if is_new:
-    #     account = LeagueOfLegendsAccount()
-    #     account.user = user
+    if is_new:
+        account = LeagueOfLegendsAccount()
+        account.user = user
 
-    #     return create_or_update_leagueoflegends_account(form, account)
-    # else:
-    #     account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
-    #     return create_or_update_leagueoflegends_account(form, account)
+        return create_or_update_leagueoflegends_account(form, account)
+    else:
+        account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
+        return create_or_update_leagueoflegends_account(form, account)
 
 
 def create_or_update_leagueoflegends_account(

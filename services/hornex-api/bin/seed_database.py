@@ -16,7 +16,7 @@ import django  # noqa: E402
 
 django.setup()
 
-from apps.games.models import Game, GameID  # noqa: E402
+from apps.games.models import Game  # noqa: E402
 from apps.leagueoflegends.models import LeagueEntry, Tournament  # noqa: E402
 from apps.platforms.models import Platform  # noqa: E402
 from apps.teams.models import Team  # noqa: E402

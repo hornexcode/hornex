@@ -5,6 +5,7 @@ from datetime import timedelta as td
 import faker
 
 from apps.leagueoflegends.models import (
+    GameID,
     LeagueEntry,
     Provider,
     Tournament,
@@ -189,4 +190,21 @@ class MatchFactory:
             loser_id=kwargs.get("loser_id"),
             is_wo=kwargs.get("is_wo", False),
             status=kwargs.get("status", Match.StatusType.FUTURE),
+        )
+
+
+class GameIdFactory:
+    @staticmethod
+    def new(user: User, **kwargs):
+        """
+        Create a new GameId with the given kwargs.
+        """
+
+        return GameID.objects.create(
+            user=user,
+            game=kwargs.get("game", GameID.GameOptions.LEAGUE_OF_LEGENDS),
+            nickname=fake.name(),
+            is_active=kwargs.get("is_active", True),
+            region=kwargs.get("region", "BR"),
+            region_code=kwargs.get("region_code", "BR"),
         )

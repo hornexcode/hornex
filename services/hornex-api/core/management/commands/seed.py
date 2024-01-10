@@ -1,6 +1,6 @@
 import faker
 import structlog
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from apps.games.models import Game
 from apps.users.models import User
