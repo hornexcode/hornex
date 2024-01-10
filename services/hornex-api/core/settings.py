@@ -114,12 +114,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 # }
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.getenv("SQL_USER", "user"),
-        "PASSWORD": os.getenv("SQL_PASSWORD", "password"),
-        "HOST": os.getenv("SQL_HOST", "localhost"),
-        "PORT": os.getenv("SQL_PORT", "5432"),
+        "ENGINE": os.getenv("HORNEX_SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.getenv("HORNEX_SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.getenv("HORNEX_SQL_USER", "user"),
+        "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
+        "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
+        "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
     },
 }
 

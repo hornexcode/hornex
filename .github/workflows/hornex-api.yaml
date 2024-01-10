@@ -9,8 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-
-
     # Enable this when we can use Postgres in Django Settings
     # services:
     #   postgres:
@@ -43,7 +41,35 @@ jobs:
 
       - run: poetry run python manage.py test
         env:
-          RIOT_API_KEY: example
+          EFI_CLIENT_ID: your_test_efi_client_id
+          EFI_CLIENT_SECRET: your_test_efi_client_secret
+          EFI_BASE_URL: https://test.pix-h.api.efipay.com.br
+          EFI_AUTHORIZED_IPS: 127.0.0.1, localhost
+          EFI_PIX_KEY: your_test_pix_key
+          EFI_PIX_EXPIRATION: 3600
+          EFI_HMAC_SECRET_MESSAGE: your_test_hornex
+          EFI_HMAC_SECRET_KEY: your_test_hornex_api_hmac_secret_gg
+
+          RIOT_RSO_CLIENT_ID: your_test_riot_rso_client_id
+          RIOT_RSO_CLIENT_SECRET: your_test_riot_rso_client_secret
+          RIOT_RSO_PROVIDER_URL: https://test.auth.riotgames.com
+          RIOT_API_KEY: your_test_riot_api_key
+          DJANGO_ALLOWED_HOSTS: localhost, 127.0.0.1, your_test_ngrok_app_domain
+
+          APP_URL: https://your_test_ngrok_app_domain
+
+          HORNEX_SQL_ENGINE: django.db.backends.postgresql
+          HORNEX_SQL_DATABASE: your_test_hornex
+          HORNEX_SQL_USER: your_test_postgres_user
+          HORNEX_SQL_PASSWORD: your_test_postgres_password
+          HORNEX_SQL_HOST: your_test_hornex_postgres_host
+          HORNEX_SQL_PORT: 5432
+
+          CELERY_BROKER_URL: amqp://your_test_hornex:your_test_hornex@your_test_hornex_rabbitmq:5672/
+
+          RESEND_API_KEY: your_test_resend_api_key
+
+          STRIPE_API_KEY: your_test_stripe_api_key
 
       - run: poetry run ruff check .
 
