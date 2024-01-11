@@ -8,12 +8,13 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     # Enable this when we can use Postgres in Django Settings
     services:
       postgres:
         image: postgres
         env:
+          POSTGRES_DB: hornex
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
