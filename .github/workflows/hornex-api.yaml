@@ -59,12 +59,7 @@ jobs:
 
           APP_URL: https://your_test_ngrok_app_domain
 
-          HORNEX_SQL_ENGINE: django.db.backends.postgresql
-          HORNEX_SQL_DATABASE: hornex
-          HORNEX_SQL_USER: postgres
-          HORNEX_SQL_PASSWORD: postgres
-          HORNEX_SQL_HOST: postgres
-          HORNEX_SQL_PORT: 5432
+          HORNEX_SQL_ENGINE: django.db.backends.sqlite3
 
           CELERY_BROKER_URL: amqp://your_test_hornex:your_test_hornex@your_test_hornex_rabbitmq:5672/
 

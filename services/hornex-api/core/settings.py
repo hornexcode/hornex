@@ -103,22 +103,24 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("HORNEX_SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("HORNEX_SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.getenv("HORNEX_SQL_USER", "user"),
-        "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
-        "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
-        "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
-    },
-}
+if os.getenv("HORNEX_SQL_ENGINE") == "django.db.backends.postgresql":
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("HORNEX_SQL_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.getenv("HORNEX_SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+            "USER": os.getenv("HORNEX_SQL_USER", "user"),
+            "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
+            "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
+            "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
+        },
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
