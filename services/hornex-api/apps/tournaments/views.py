@@ -24,7 +24,6 @@ from apps.tournaments.serializers import (
     TournamentSerializer,
 )
 from core.route import extract_game_and_platform
-from lib.resend.client import Resend
 
 logger = structlog.get_logger(__name__)
 # from apps.leagueoflegends.usecases import RegisterTeam
@@ -168,12 +167,6 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
             return Response(
                 {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-        Resend.send(
-            "Tournament registration",
-            "Your team was registered successfully",
-            reg.team.created_by.email,
-        )
 
         return Response(
             RegistrationReadSerializer(reg).data,
