@@ -9,17 +9,15 @@ from rest_framework.response import Response
 logger = structlog.get_logger(__name__)
 
 
+def is_ip_authorized(ip):
+    allowed_ips = os.getenv("EFI_AUTHORIZED_IPS", [])
+    return ip in allowed_ips
+
+
 def verify_ip(view_func):
     def _wrapped_view(request, *args, **kwargs):
         ip = request.META["REMOTE_ADDR"]
-        allowed_ips = os.getenv("EFI_AUTHORIZED_IPS")
-        if ip not in allowed_ips:
-            logger.warn(
-                {
-                    "message": "Unauthorized IP tried to access the webhook",
-                    "ip": ip,
-                }
-            )
+        if not is_ip_authorized(ip):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return view_func(request, *args, **kwargs)
 

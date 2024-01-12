@@ -16,7 +16,6 @@ from datetime import timedelta
 from pathlib import Path
 
 import structlog
-from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,9 +32,7 @@ def get_settings(name, default=None):
 SECRET_KEY = "django-insecure-b=#p+ci^=crap5g$&1wos9*hk658@tqfli((9zyx$f4-15%@vo"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-if DEBUG:
-    load_dotenv()
+DEBUG = bool(int(os.getenv("DEBUG", "1")))
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 CORS_ALLOW_CREDENTIALS = True
@@ -106,22 +103,24 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.getenv("SQL_USER", "user"),
-        "PASSWORD": os.getenv("SQL_PASSWORD", "password"),
-        "HOST": os.getenv("SQL_HOST", "localhost"),
-        "PORT": os.getenv("SQL_PORT", "5432"),
-    },
-}
+if os.getenv("HORNEX_SQL_ENGINE") == "django.db.backends.postgresql":
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("HORNEX_SQL_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.getenv("HORNEX_SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+            "USER": os.getenv("HORNEX_SQL_USER", "user"),
+            "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
+            "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
+            "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
+        },
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
