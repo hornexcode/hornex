@@ -63,8 +63,6 @@ jobs:
 
           CELERY_BROKER_URL: amqp://your_test_hornex:your_test_hornex@your_test_hornex_rabbitmq:5672/
 
-          RESEND_API_KEY: your_test_resend_api_key
-
           STRIPE_API_KEY: your_test_stripe_api_key
 
       - run: poetry run ruff check .

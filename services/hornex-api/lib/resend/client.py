@@ -1,20 +1,18 @@
 import os
-from abc import ABCMeta
 
 import resend
 import structlog
 
 logger = structlog.get_logger(__name__)
-resend.api_key = os.getenv("RESEND_API_KEY")
+resend.api_key = os.getenv("RESEND_API_KEY", "")
 
 
-class Clientable(ABCMeta):
-    ...
+class Resend:
+    @classmethod
+    def send(cls, subject: str, message: str, recipient: str) -> None:
+        if not resend.api_key:
+            return
 
-
-class Resend(Clientable):
-    @staticmethod
-    def send(subject: str, message: str, recipient: str) -> None:
         r = resend.Emails.send(
             {
                 "from": "onboarding@resend.dev",
