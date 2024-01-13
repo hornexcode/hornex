@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Unpack,
     cast,
 )
@@ -8,47 +7,45 @@ from lib.challonge._api_request import APIRequest
 
 
 class Tournament(APIRequest):
-    api_key: Optional[str]
+    api_key: str | None
 
     class CreateParams:
         name: str
         tournament_type: str = "single elimination"
-        url: Optional[str]
-        subdomain: Optional[str]
-        description: Optional[str]
-        open_signup: Optional[bool]
-        hold_third_place_match: Optional[bool] = False
-        pts_for_match_win: Optional[float]
-        pts_for_match_tie: Optional[float]
-        pts_for_game_win: Optional[float]
-        pts_for_game_tie: Optional[float]
-        pts_for_bye: Optional[float]
-        swiss_rounds: Optional[int]
-        ranked_by: Optional[str]
-        rr_pts_for_match_win: Optional[float]
-        rr_pts_for_match_tie: Optional[float]
-        rr_pts_for_game_win: Optional[float]
-        rr_pts_for_game_tie: Optional[float]
-        accept_attachments: Optional[bool] = False
-        hide_forum: Optional[bool] = False
-        show_rounds: Optional[bool] = False
-        private: Optional[bool] = False
-        notify_users_when_matches_open: Optional[bool] = False
-        notify_users_when_the_tournament_ends: Optional[bool] = False
-        sequential_pairings: Optional[bool] = False
-        signup_cap: Optional[int]
-        start_at: Optional[str]
-        check_in_duration: Optional[int]
-        grand_finals_modifier: Optional[str]
+        url: str | None
+        subdomain: str | None
+        description: str | None
+        open_signup: bool
+        hold_third_place_match: bool = False
+        pts_for_match_win: float | None
+        pts_for_match_tie: float | None
+        pts_for_game_win: float | None
+        pts_for_game_tie: float | None
+        pts_for_bye: float | None
+        swiss_rounds: int | None
+        ranked_by: str | None
+        rr_pts_for_match_win: float | None
+        rr_pts_for_match_tie: float | None
+        rr_pts_for_game_win: float | None
+        rr_pts_for_game_tie: float | None
+        accept_attachments: bool = False
+        hide_forum: bool = False
+        show_rounds: bool = False
+        private: bool = False
+        notify_users_when_matches_open: bool = False
+        notify_users_when_the_tournament_ends: bool = False
+        sequential_pairings: bool = False
+        signup_cap: int | None
+        start_at: str | None
+        check_in_duration: int | None
+        grand_finals_modifier: str | None
 
     @classmethod
-    def create(
-        cls, api_key: Optional[str], **params: Unpack["Tournament.CreateParams"]
-    ) -> "Tournament":
+    def create(cls, **params: Unpack["Tournament.CreateParams"]) -> "Tournament":
         """
         Creates a new tournament
         """
         return cast(
-            Tournament,
-            cls._request("post", "tournaments.json", api_key, params),
+            "Tournament",
+            cls._request("post", "tournaments.json", params),
         )

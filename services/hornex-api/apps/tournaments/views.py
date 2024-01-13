@@ -1,5 +1,8 @@
+import resend
 import structlog
 from django.db import transaction
+from django.template import Context, Template
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -134,8 +137,6 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     )
     @transaction.atomic
     def register(self, request, *args, **kwargs):
-        logger.info(request.data, user=request.user)
-        # validate request
         params = RegistrationCreateSerializer(
             data={**request.data, "tournament": kwargs["id"]},
             context={"request": request},
@@ -143,24 +144,24 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
         if not params.is_valid():
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        tmt = Tournament.objects.get(id=params.data.get("tournament"))
-
         try:
-            tm = Team.objects.get(id=params.data["team"])
-        except Team.DoesNotExist:
+            tournament = Tournament.objects.get(id=params.data.get("tournament"))
+        except Tournament.DoesNotExist:
             return Response(
-                {"error": f"Invalid team: {params.data['team']}"},
+                {"error": f"Tournament not found for id: {params.data['tournament']}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if tm.created_by != request.user:
+        try:
+            team = Team.objects.get(id=params.data["team"])
+        except Team.DoesNotExist:
             return Response(
-                {"error": "You are not a allowed to register a team"},
-                status=status.HTTP_403_FORBIDDEN,
+                {"error": f"Invalid team for id: {params.data['team']}"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
-            reg = tmt.register(tm)
+            registration = tournament.register(team)
         except ValidationError as e:
             return Response({"error": e.detail[0]}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -168,8 +169,18 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
                 {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+        t = Template(render_to_string("registration-success.html"))
+        resend.Emails.send(
+            {
+                "from": "onboarding@resend.dev",
+                "to": "pedro357bm@gmail.com",
+                "subject": "Tournament registration",
+                "html": t.render(Context({"tournament": tournament})),
+            }
+        )
+
         return Response(
-            RegistrationReadSerializer(reg).data,
+            RegistrationReadSerializer(registration).data,
             status=status.HTTP_201_CREATED,
         )
 

@@ -3,14 +3,15 @@ import os
 import structlog
 from requests import request
 
+import lib.challonge as challonge
+
 logger = structlog.get_logger(__name__)
 
 
 class APIRequest:
     @classmethod
-    def _request(cls, method_, endpoint_, api_key=None, params=None):
-        print("_request ________ CALLED ***")
-        url = f"{os.getenv('CHALLONGE_API_BASE_URL')}/{endpoint_}?api_key={api_key}"
+    def _request(cls, method_, endpoint_, params=None):
+        url = f"{os.getenv('CHALLONGE_API_BASE_URL')}/{endpoint_}?api_key={challonge.api_key}"
 
         resp = request(
             method_,
