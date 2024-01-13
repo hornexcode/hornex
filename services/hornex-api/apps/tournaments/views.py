@@ -13,13 +13,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.leagueoflegends.models import Tournament
+from apps.leagueoflegends.models import Provider
+from apps.leagueoflegends.models import Tournament as LeagueOfLegendsTournament
 from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
 from apps.teams.models import Membership, Team
 from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
 from apps.tournaments.models import Registration
+from apps.tournaments.models import Tournament as BaseTournament
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.serializers import (
     RegistrationCreateSerializer,
@@ -27,9 +29,13 @@ from apps.tournaments.serializers import (
     TournamentSerializer,
 )
 from core.route import extract_game_and_platform
+from lib.challonge import Tournament as ChallongeTournament
+from lib.riot import Tournament as RiotTournament
 
 logger = structlog.get_logger(__name__)
 # from apps.leagueoflegends.usecases import RegisterTeam
+
+MINIMUM_PARTICIPANTS = 20
 
 game_qp = openapi.Parameter(
     "game",
@@ -46,7 +52,7 @@ platform_qp = openapi.Parameter(
 
 
 class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Tournament.objects.all()
+    queryset = LeagueOfLegendsTournament.objects.all()
     serializer_class = TournamentSerializer
     lookup_field = "id"
     filter_backends = (
@@ -64,31 +70,53 @@ class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         game, _ = extract_game_and_platform(kwargs)
 
-        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = Tournament.objects.all()
+        if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
+            self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().list(request, *args, **kwargs)
 
 
 class TournamentViewSet(viewsets.ModelViewSet):
-    queryset = Tournament.objects.all()
+    queryset = BaseTournament.objects.all()
     serializer_class = TournamentSerializer
     lookup_field = "id"
 
     def get_object(self, *args, **kwargs):
         game = kwargs.get("game")
-        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = Tournament.objects.select_for_update().all()
+
+        # league of legends
+        self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().get_object()
 
     def retrieve(self, request, *args, **kwargs):
         game, _ = extract_game_and_platform(kwargs)
 
-        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = Tournament.objects.all()
+        if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
+            self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().retrieve(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        methods=["get"],
+    )
+    def checkin(self, request, *args, **kwargs):
+        tournament = self.construct_object()
+        tournament.checkin()
+        return Response(
+            {"message": "Checkin successful"},
+            status=status.HTTP_200_OK,
+        )
+
+    def construct_object(self) -> BaseTournament:
+        """
+        Returns the tournament object based on the game type
+        """
+        obj = self.get_object()
+        if obj.game == BaseTournament.GameType.LEAGUE_OF_LEGENDS:
+            return LeagueOfLegendsTournament.objects.get(id=obj.id)
+        return obj
 
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):
@@ -145,8 +173,10 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
             return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            tournament = Tournament.objects.get(id=params.data.get("tournament"))
-        except Tournament.DoesNotExist:
+            tournament = LeagueOfLegendsTournament.objects.get(
+                id=params.data.get("tournament")
+            )
+        except LeagueOfLegendsTournament.DoesNotExist:
             return Response(
                 {"error": f"Tournament not found for id: {params.data['tournament']}"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -186,7 +216,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
 
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Tournament.objects.all()
+    queryset = LeagueOfLegendsTournament.objects.all()
     serializer_class = LeagueOfLegendsTournamentSerializer
     lookup_field = "id"
     filter_backends = (

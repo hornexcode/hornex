@@ -1,9 +1,20 @@
-import uuid
-
+import structlog
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 from apps.games.models import GameID
 from apps.tournaments.models import Tournament as BaseTournament
+from lib.challonge import Tournament as ChallongeTournamentResourceAPI
+from lib.riot import (
+    Provider as RiotProviderResourceAPI,
+)
+from lib.riot import (
+    Tournament as RiotTournamentResourceAPI,
+)
+
+logger = structlog.get_logger(__name__)
+
+MINIMUM_PARTICIPANTS = 0
 
 
 class LeagueEntry(models.Model):
@@ -85,38 +96,6 @@ class Provider(models.Model):
         return f"League of Legends Provider ({self.id})"
 
 
-class Classification(models.Model):
-    class Meta:
-        unique_together = ["tier", "rank"]
-        ordering = ["tier", "rank"]
-
-    class Tier(models.TextChoices):
-        IRON = "IRON"
-        BRONZE = "BRONZE"
-        SILVER = "SILVER"
-        GOLD = "GOLD"
-        PLATINUM = "PLATINUM"
-        EMERALD = "EMERALD"
-        DIAMOND = "DIAMOND"
-        MASTER = "MASTER"
-        GRANDMASTER = "GRANDMASTER"
-        CHALLENGER = "CHALLENGER"
-
-    class Rank(models.TextChoices):
-        # ruff: noqa: E741
-        I = "I"
-        II = "II"
-        III = "III"
-        IV = "IV"
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    tier = models.CharField(max_length=50, choices=Tier.choices, default=Tier.SILVER)
-    rank = models.CharField(max_length=50, choices=Rank.choices, default=Rank.I)
-
-    def __str__(self) -> str:
-        return f"{self.tier} {self.rank} ({self.id})"
-
-
 class Tournament(BaseTournament):
     class PickType(models.TextChoices):
         BLIND_PICK = "BLIND_PICK"
@@ -151,17 +130,97 @@ class Tournament(BaseTournament):
         max_length=50, choices=SpectatorType.choices, default=SpectatorType.LOBBYONLY
     )
     allowed_league_entries = models.ManyToManyField(LeagueEntry)
+    riot_tournament_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
-
-    def __str__(self) -> str:
-        return f"{self.name} ({self.id})"
 
     def get_classifications(self) -> list[str]:
         return [
             f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()
         ]
+
+    def checkin(self):
+        participants_total = 0
+        for team in self.teams.all():
+            for _ in team.members.all():
+                participants_total += 1
+
+        if participants_total >= MINIMUM_PARTICIPANTS:
+            # 1. create tournament in challonge
+            try:
+                cll_tournament: ChallongeTournamentResourceAPI = (
+                    ChallongeTournamentResourceAPI.create(
+                        name=self.name[:60],
+                        description=self.description,
+                        tournament_type="single elimination",
+                        start_at=self.registration_start_date.isoformat(),
+                        check_in_duration=15,
+                    )
+                )
+            except Exception as e:
+                logger.error("ChallongeTournamentResourceAPI.create", error=e)
+                raise ValidationError(
+                    {"error": "Failed to create tournament in Challonge"}
+                )
+
+            # 2. register tournament in our database
+            self.challonge_id = cll_tournament.id
+            self.challonge_url = cll_tournament.full_challonge_url
+            self.save()
+
+            # 3. retrieve latest provider
+            try:
+                Provider.objects.get(region=Provider.RegionType.BR)
+                logger.info("Provider.objects.get successfully")
+            except Provider.DoesNotExist:
+                riot_provider_id = RiotProviderResourceAPI.create(
+                    region=Provider.RegionType.BR,
+                    url="https://robin-lasting-magpie.ngrok-free.app/v1/webhooks/lol",
+                )
+                logger.info(
+                    "RiotProviderResourceAPI.create",
+                    riot_provider_id=riot_provider_id,
+                )
+                Provider.objects.create(
+                    id=riot_provider_id,
+                    region=Provider.RegionType.BR,
+                )
+                logger.info("Provider.objects.create successfully")
+            except Exception as e:
+                logger.error("Provider.objects.get", error=e)
+                raise ValidationError(
+                    {"error": "Failed to retrieve and create provider"}
+                )
+
+            try:
+                # 4. create tournament in riot
+                riot_tournament_id = RiotTournamentResourceAPI.create(
+                    name=self.name[:60],
+                    provider_id=riot_provider_id,
+                )
+                logger.info(
+                    "RiotTournamentResourceAPI.create",
+                    riot_tournament_id=riot_tournament_id,
+                )
+            except Exception as e:
+                logger.error("RiotTournamentResourceAPI.create", error=e)
+                raise ValidationError({"error": "Failed to create tournament in Riot"})
+
+            # 5. register tournament in our database
+            self.riot_tournament_id = riot_tournament_id
+            self.save()
+
+        else:
+            raise ValidationError(
+                {
+                    "error": f"Minimum participants is {MINIMUM_PARTICIPANTS},"
+                    f" but only {participants_total} registered"
+                }
+            )
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.id})"
 
 
 class Code(models.Model):
@@ -169,6 +228,9 @@ class Code(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     match = models.ForeignKey("tournaments.Match", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.code} ({self.tournament.name})"
 
 
 class Session(models.Model):

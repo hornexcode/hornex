@@ -21,7 +21,9 @@ export default async function TournamentPage() {
   return (
     <div className="container mx-auto py-10 space-y-4">
       <PageHeader title="Tournament name" />
-
+      <div className="w-[400px]">
+        <ProgressBar steps={5} currentStep={3} />
+      </div>
       <div className="">
         <div className="flex items-center">
           <div className="pr-5">
@@ -97,3 +99,55 @@ export default async function TournamentPage() {
     </div>
   );
 }
+
+type ProgressBarProps = {
+  steps: number;
+  currentStep: number;
+};
+const ProgressBar: React.FC<ProgressBarProps> = ({ steps, currentStep }) => {
+  const progressWidth = `${((currentStep - 1) / (steps - 1)) * 100}%`;
+
+  return (
+    <div className="relative pt-1">
+      <div className="flex mb-2 items-center justify-between">
+        {Array.from({ length: steps }).map((_, index) => (
+          <div
+            key={index}
+            className={`w-1/4 ${
+              index + 1 === currentStep ? 'text-green-600' : 'text-gray-400'
+            }`}
+          >
+            <div
+              className={`flex-1 h-2 ${
+                index + 1 < currentStep ? 'bg-green-600' : 'bg-gray-200'
+              } rounded-full`}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex mb-2 items-center justify-between">
+        {Array.from({ length: steps - 1 }).map((_, index) => (
+          <div key={index} className="w-1/4" />
+        ))}
+      </div>
+      <div className="flex items-center justify-between">
+        {Array.from({ length: steps }).map((_, index) => (
+          <div
+            key={index}
+            className={`w-1/4 ${
+              index + 1 <= currentStep ? 'text-green-600' : 'text-gray-400'
+            }`}
+          >
+            {index + 1}
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex items-center justify-between">
+        <div className="text-left text-xs text-gray-600">
+          Step {currentStep} of {steps}
+        </div>
+        <div className="text-right text-xs text-gray-600">{progressWidth}</div>
+      </div>
+    </div>
+  );
+};

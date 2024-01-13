@@ -31,9 +31,12 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
       </div>
       <div className="block p-5">
         <ol className="relative border-l border-gray-200 dark:border-gray-700">
-          <li className="mb-10 border-l pl-4 dark:border-amber-400">
+          <div className="absolute -left-1 top-0 h-[100%] w-[4px] rounded bg-slate-700"></div>
+          <div className="absolute -left-1 top-0 h-[66%] w-[4px] rounded bg-amber-500"></div>
+
+          <li className="mb-10 pl-4">
             {/* <div className="dark:border-light-dark absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-white bg-gray-200 dark:bg-amber-400"></div> */}
-            <div className="absolute -left-2 mt-3.5 rounded-full">
+            <div className="absolute -left-2.5 mt-3.5 rounded-full">
               <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
             </div>
             <time className="text-body mb-1 text-xs font-normal leading-none">
@@ -81,7 +84,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
           </li>
           <li className="mb-10 ml-4">
             {/* <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div> */}
-            <div className="absolute -left-2 mt-3.5 rounded-full">
+            <div className="absolute -left-2.5 mt-3.5 rounded-full">
               <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
             </div>
             <time className="text-body mb-1 text-xs font-normal leading-none">
@@ -94,17 +97,28 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
               Coleta de dados
             </p> */}
           </li>
-          <li className="ml-4">
-            <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div>
+          <li className="mb-10 ml-4">
+            {/* <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div> */}
+            <div className="absolute -left-2.5 mt-3.5 rounded-full">
+              <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
+            </div>
             <time className="text-body mb-1 text-xs font-normal leading-none">
               to be defined
             </time>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
               Payment
             </h3>
-            {/* <p className="text-xs font-normal text-gray-500 dark:text-gray-400">
-              Lorem ipsum dolor sit.
-            </p> */}
+          </li>
+          <li className="ml-4">
+            <div className="absolute -left-2.5 mt-3.5 rounded-full">
+              <CheckCircle2 className="h-4 w-4 rounded-full bg-slate-600 text-slate-200" />
+            </div>
+            <time className="text-body mb-1 text-xs font-normal leading-none">
+              to be defined
+            </time>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+              Paid
+            </h3>
           </li>
         </ol>
       </div>
