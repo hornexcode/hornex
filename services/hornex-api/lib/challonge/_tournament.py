@@ -34,17 +34,17 @@ class Tournament(dict[str, any]):
         description: NotRequired[str]
         open_signup: bool
         hold_third_place_match: bool
-        pts_for_match_win: float | None
-        pts_for_match_tie: float | None
-        pts_for_game_win: float | None
-        pts_for_game_tie: float | None
-        pts_for_bye: float | None
-        swiss_rounds: int | None
-        ranked_by: str | None
-        rr_pts_for_match_win: float | None
-        rr_pts_for_match_tie: float | None
-        rr_pts_for_game_win: float | None
-        rr_pts_for_game_tie: float | None
+        pts_for_match_win: NotRequired[float]
+        pts_for_match_tie: NotRequired[float]
+        pts_for_game_win: NotRequired[float]
+        pts_for_game_tie: NotRequired[float]
+        pts_for_bye: NotRequired[float]
+        swiss_rounds: NotRequired[int]
+        ranked_by: NotRequired[str]
+        rr_pts_for_match_win: NotRequired[float]
+        rr_pts_for_match_tie: NotRequired[float]
+        rr_pts_for_game_win: NotRequired[float]
+        rr_pts_for_game_tie: NotRequired[float]
         accept_attachments: bool
         hide_forum: bool
         show_rounds: bool
@@ -52,10 +52,14 @@ class Tournament(dict[str, any]):
         notify_users_when_matches_open: bool
         notify_users_when_the_tournament_ends: bool
         sequential_pairings: bool
-        signup_cap: int | None
-        start_at: str | None
-        check_in_duration: int | None
-        grand_finals_modifier: str | None
+        signup_cap: NotRequired[int]
+        start_at: NotRequired[str]
+        check_in_duration: NotRequired[int]
+        grand_finals_modifier: NotRequired[str]
+        teams: bool
+
+    class AddParticipantsParams(TypedDict):
+        participants: list[dict[str, str]]
 
     accept_attachments: bool
     allow_participant_match_reporting: bool
@@ -147,16 +151,15 @@ class Tournament(dict[str, any]):
 
     @classmethod
     def handle_error(cls, resp):
-        logger.warn(
-            "Failed to request",
-            status=resp.status_code,
-            resp=resp,
-            error=resp.json(),
-        )
-        errors = resp.json().get("errors", [])
-        if errors:
-            return Exception(errors)
-        return Exception("Internal Server Error")
+        # TODO: handle errors raising error
+        try:
+            errors = resp.json().get("errors", [])
+            if errors:
+                return Exception(errors)
+            return Exception("Internal Server Error")
+        except Exception as e:
+            logger.error("Failed to handle error", error=e)
+            return Exception("Internal Server Error")
 
     @classmethod
     def create(cls, **params: Unpack["Tournament.CreateParams"]) -> "Tournament":
@@ -193,3 +196,22 @@ class Tournament(dict[str, any]):
         return [
             cls.construct_from(tournament[cls.OBJECT_NAME]) for tournament in results
         ]
+
+    @classmethod
+    def add_participants(
+        cls, tournament: int, **params: Unpack["Tournament.AddParticipantsParams"]
+    ):
+        """
+        Adds participants and/or seeds to a tournament (up until it is started)
+        """
+
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants/bulk_add.json?api_key={challonge.api_key}",
+            headers=headers,
+            json=params,
+        )
+
+        if not resp.ok:
+            raise cls.handle_error(resp)
+        return

@@ -1,3 +1,5 @@
+import os
+
 import structlog
 from django.db import models
 from rest_framework.exceptions import ValidationError
@@ -18,10 +20,6 @@ MINIMUM_PARTICIPANTS = 0
 
 
 class LeagueEntry(models.Model):
-    class Meta:
-        unique_together = ["tier", "rank"]
-        ordering = ["tier", "rank"]
-
     class TierOptions(models.TextChoices):
         IRON = "IRON"
         BRONZE = "BRONZE"
@@ -44,11 +42,15 @@ class LeagueEntry(models.Model):
 
     rank = models.CharField(max_length=25, choices=RankOptions.choices)
 
-    def __str__(self) -> str:
-        return f"{self.tier} {self.rank}"
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ["tier", "rank"]
+        ordering = ["tier", "rank"]
+
+    def __str__(self) -> str:
+        return f"{self.tier} {self.rank}"
 
 
 class Summoner(models.Model):
@@ -141,42 +143,127 @@ class Tournament(BaseTournament):
         ]
 
     def checkin(self):
-        participants_total = 0
-        for team in self.teams.all():
-            for _ in team.members.all():
-                participants_total += 1
+        def has_enough_participants():
+            participants_total = 0
+            for team in self.teams.all():
+                for _ in team.members.all():
+                    participants_total += 1
 
-        if participants_total >= MINIMUM_PARTICIPANTS:
-            # 1. create tournament in challonge
+            return self.teams.count() >= MINIMUM_PARTICIPANTS
+
+        def add_participants_to_challonge_tournament(tournament: str):
             try:
-                cll_tournament: ChallongeTournamentResourceAPI = (
+                ChallongeTournamentResourceAPI.add_participants(
+                    tournament=tournament,
+                    participants=[
+                        {
+                            "name": "Team 1",
+                            "seed": 1,
+                        },
+                        {
+                            "name": "Team 2",
+                            "seed": 2,
+                        },
+                        {
+                            "name": "Team 3",
+                            "seed": 3,
+                        },
+                        {
+                            "name": "Team 4",
+                            "seed": 4,
+                        },
+                        {
+                            "name": "Team 5",
+                            "seed": 5,
+                        },
+                        {
+                            "name": "Team 6",
+                            "seed": 6,
+                        },
+                        {
+                            "name": "Team 7",
+                            "seed": 7,
+                        },
+                        {
+                            "name": "Team 8",
+                            "seed": 8,
+                        },
+                        {
+                            "name": "Team 9",
+                            "seed": 9,
+                        },
+                        {
+                            "name": "Team 10",
+                            "seed": 10,
+                        },
+                        {
+                            "name": "Team 11",
+                            "seed": 11,
+                        },
+                        {
+                            "name": "Team 12",
+                            "seed": 12,
+                        },
+                        {
+                            "name": "Team 13",
+                            "seed": 13,
+                        },
+                        {
+                            "name": "Team 14",
+                            "seed": 14,
+                        },
+                        {
+                            "name": "Team 15",
+                            "seed": 15,
+                        },
+                        {
+                            "name": "Team 16",
+                            "seed": 16,
+                        },
+                    ],
+                )
+            except Exception as e:
+                logger.error("ChallongeTournamentResourceAPI.add_participants", error=e)
+                raise ValidationError(
+                    {"error": "Failed to create participants in Challonge"}
+                )
+
+        def create_challonge_tournament():
+            try:
+                chllng_trnmnt: ChallongeTournamentResourceAPI = (
                     ChallongeTournamentResourceAPI.create(
                         name=self.name[:60],
                         description=self.description,
                         tournament_type="single elimination",
                         start_at=self.registration_start_date.isoformat(),
                         check_in_duration=15,
+                        participants_total=self.max_teams,
+                        teams=True,
                     )
                 )
+                self.challonge_id = chllng_trnmnt.id
+                self.challonge_url = chllng_trnmnt.full_challonge_url
+                self.save()
+
+                add_participants_to_challonge_tournament(chllng_trnmnt.id)
+
+                return chllng_trnmnt
             except Exception as e:
                 logger.error("ChallongeTournamentResourceAPI.create", error=e)
                 raise ValidationError(
                     {"error": "Failed to create tournament in Challonge"}
                 )
 
-            # 2. register tournament in our database
-            self.challonge_id = cll_tournament.id
-            self.challonge_url = cll_tournament.full_challonge_url
-            self.save()
-
-            # 3. retrieve latest provider
+        def create_leagueoflegends_tournament():
             try:
-                Provider.objects.get(region=Provider.RegionType.BR)
+                riot_provider_id = Provider.objects.get(
+                    region=Provider.RegionType.BR
+                ).id
                 logger.info("Provider.objects.get successfully")
             except Provider.DoesNotExist:
                 riot_provider_id = RiotProviderResourceAPI.create(
                     region=Provider.RegionType.BR,
-                    url="https://robin-lasting-magpie.ngrok-free.app/v1/webhooks/lol",
+                    url=os.getenv("HORNEX_API_BASE_URL"),
                 )
                 logger.info(
                     "RiotProviderResourceAPI.create",
@@ -199,24 +286,22 @@ class Tournament(BaseTournament):
                     name=self.name[:60],
                     provider_id=riot_provider_id,
                 )
-                logger.info(
-                    "RiotTournamentResourceAPI.create",
-                    riot_tournament_id=riot_tournament_id,
-                )
+
             except Exception as e:
                 logger.error("RiotTournamentResourceAPI.create", error=e)
                 raise ValidationError({"error": "Failed to create tournament in Riot"})
 
-            # 5. register tournament in our database
             self.riot_tournament_id = riot_tournament_id
             self.save()
 
+        # -
+        # TODO: turn this into a celery task
+        if has_enough_participants():
+            create_challonge_tournament()
+            create_leagueoflegends_tournament()
         else:
             raise ValidationError(
-                {
-                    "error": f"Minimum participants is {MINIMUM_PARTICIPANTS},"
-                    f" but only {participants_total} registered"
-                }
+                {"error": "Minimum number of participants not reached"}
             )
 
     def __str__(self) -> str:
