@@ -17,9 +17,6 @@ class RegistrationError(Exception):
 
 
 class Tournament(models.Model):
-    class Meta:
-        ordering = ["-created_at"]
-
     class GameType(models.TextChoices):
         LEAGUE_OF_LEGENDS = "league-of-legends"
 
@@ -37,7 +34,7 @@ class Tournament(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     game = models.CharField(
         choices=GameType.choices, max_length=50, default=GameType.LEAGUE_OF_LEGENDS
@@ -61,7 +58,7 @@ class Tournament(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
 
-    feature_image = models.CharField(max_length=255, null=True, blank=True)
+    feature_image = models.CharField(max_length=255, blank=True)
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
     entry_fee = models.IntegerField(default=0, null=True, blank=True)  # in cents
@@ -76,6 +73,12 @@ class Tournament(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    challonge_id = models.IntegerField(null=True, blank=True)
+    challonge_url = models.URLField(max_length=500, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
@@ -200,7 +203,8 @@ class Tournament(models.Model):
         num_of_teams = len(teams)
         if num_of_teams not in self._get_allowed_number_of_teams():
             raise ValueError(
-                f"Number of teams must be in {self._get_allowed_number_of_teams().__str__()}"
+                "Number of teams must be in "
+                f"{self._get_allowed_number_of_teams().__str__()}"
             )
         for i in range(0, int(num_of_teams / 2)):
             Match.objects.create(
@@ -267,6 +271,9 @@ class Tournament(models.Model):
     def get_classifications(self) -> list[str]:
         raise NotImplementedError
 
+    def checkin(self):
+        raise NotImplementedError
+
 
 class Subscription(models.Model):
     class StatusOptions(models.TextChoices):
@@ -307,8 +314,6 @@ class Registration(models.Model):
         REJECTED = "rejected"
         CANCELLED = "cancelled"
 
-    objects = RegistrationManager()
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
@@ -319,15 +324,16 @@ class Registration(models.Model):
         choices=RegistrationStatusType.choices,
         default=RegistrationStatusType.PENDING,
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = RegistrationManager()
+
+    def __str__(self) -> str:
+        return f"{self.team.name} registration at {self.tournament.name} ({self.id})"
 
     @property
     def pk(self) -> str:
-        return self.id.__str__()
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self) -> str:
-        return f"{self.team.name} registratrion at {self.tournament.name} ({self.id.__str__()})"
+        return str(self.id)
 
     def confirm_registration(self):
         self.tournament.add_team(self.team)
@@ -400,6 +406,9 @@ class MatchRound(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return f"MatchRound ({self.id}) | {self.match}"
+
 
 class Round(models.Model):
     tournament = models.ForeignKey(
@@ -409,11 +418,11 @@ class Round(models.Model):
     key = models.ForeignKey("Key", on_delete=models.CASCADE, related_name="rounds")
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) -> str:
-        return f"Round ({self.id}) | {self.tournament.name}"
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"Round ({self.id}) | {self.tournament.name}"
 
     def get_winners(self) -> QuerySet[Team]:
         return Team.objects.filter(id__in=self.get_winner_ids())
@@ -426,3 +435,6 @@ class Key(models.Model):
     tournament = models.ForeignKey(
         Tournament, on_delete=models.CASCADE, related_name="keys"
     )
+
+    def __str__(self) -> str:
+        return f"Key ({self.id}) | {self.tournament.name}"

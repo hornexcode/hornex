@@ -32,7 +32,7 @@ def create_games():
     Game.objects.create(
         name="League of Legends",
         slug="league-of-legends",
-        description="League of Legends is a team-based game with over 140 champions to make epic plays with.",
+        description="League of Legends is a team-based game with over 140 champions to make epic plays with.",  # noqa
         thumbail_url="/static/images/games/league-of-legends.png",
     )
     logger.info("Games created!")

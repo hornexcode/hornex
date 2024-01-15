@@ -6,7 +6,8 @@ from lib.riot.client import Client
 
 
 class Command(BaseCommand):
-    help = "Register an league of tournament provider for managing tournaments and receive its information"
+    help = "Register an league of tournament provider for "
+    " managing tournaments and receive its information"
 
     def add_arguments(self, parser):
         parser.add_argument("region", type=Provider.RegionType)

@@ -17,4 +17,4 @@ class Platform(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.name.lower().replace(" ", "-")
-        super(Platform, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)

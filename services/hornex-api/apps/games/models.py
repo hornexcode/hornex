@@ -19,7 +19,7 @@ class Game(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.name.lower().replace(" ", "-")
-        super(Game, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class GameID(models.Model):

@@ -32,4 +32,8 @@ urlpatterns = [
         TournamentRegistrationViewSet.as_view({"get": "retrieve"}),
         name="tournament-registration-details",
     ),
+    path(
+        "/tournaments/<str:id>/checkin",
+        TournamentViewSet.as_view({"get": "checkin"}),
+    ),
 ]

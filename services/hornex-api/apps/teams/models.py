@@ -17,7 +17,7 @@ class Team(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30, unique=True)
-    description = models.CharField(max_length=100, null=True, blank=True)
+    description = models.CharField(max_length=100, blank=True)
     game = models.CharField(
         choices=GameType.choices, max_length=50, default=GameType.LEAGUE_OF_LEGENDS
     )
@@ -92,5 +92,5 @@ class Invite(models.Model):
         self.expired_at = dt.now(tz=UTC)
         self.save()
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa
         return f"Invite from {self.team.name} to {self.user.name} - ({self.status()})"

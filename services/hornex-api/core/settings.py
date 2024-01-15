@@ -84,7 +84,9 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "lib/mail/templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -128,7 +130,7 @@ else:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -248,4 +250,4 @@ structlog.configure(
     cache_logger_on_first_use=False,
 )
 
-CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]
+# CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]

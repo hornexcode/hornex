@@ -39,7 +39,7 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
       <NextThemesProvider attribute="class" defaultTheme="dark">
         <div
           className={classnames(
-            'bg-dark text-xs font-semibold text-slate-500 antialiased',
+            'bg-dark font-semibold text-slate-500 antialiased',
             source_Sans_3.className
           )}
         >

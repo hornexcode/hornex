@@ -127,8 +127,6 @@ class Clientable(ABC):
         GET /lol/tournament/v5/games/by-code/{tournamentCode}
 
         IMPLEMENTATION NOTES
-
-        Additional endpoint to get tournament games. From this endpoint, you are able to get participants PUUID (the callback doesn't contain this info). You can also use it to check if the game was recorded and validate callbacks. If the endpoint returns the game, it means a callback was attempted. This will only work for tournament codes created after November 10, 2023.
         """
         raise NotImplementedError
 

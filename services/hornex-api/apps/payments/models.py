@@ -23,11 +23,14 @@ class PaymentRegistration(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def get_total_amount(self):
-        return float(self.amount / 100)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.registration.team.name} ({self.id})"
+
+    def get_total_amount(self):
+        return float(self.amount / 100)
 
     def confirm_payment(self):
         self.status = self.Status.PAID
