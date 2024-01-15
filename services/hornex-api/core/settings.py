@@ -250,4 +250,4 @@ structlog.configure(
     cache_logger_on_first_use=False,
 )
 
-CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]
+# CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]

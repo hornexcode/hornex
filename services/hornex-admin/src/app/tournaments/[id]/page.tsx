@@ -21,37 +21,46 @@ export default async function TournamentPage() {
   return (
     <div className="container mx-auto py-10 space-y-4">
       <PageHeader title="Tournament name" />
-      <div className="w-[400px]">
-        <ProgressBar steps={5} currentStep={3} />
-      </div>
-      <div className="">
-        <div className="flex items-center">
-          <div className="pr-5">
-            <div className="font-medium text-sm">Status</div>
-            <div className="text-sm">Registration Open</div>
-          </div>
-          <div className="px-5">
-            <div className="font-medium text-sm">Teams registered</div>
-            <div className="text-sm">10/32</div>
-          </div>
-          <div className="px-5">
-            <div className="font-medium text-sm">Teams confirmed</div>
-            <div className="text-sm">6/32</div>
-          </div>
-          <div className="px-5">
-            <div className="font-medium text-sm">Potential Prize Pool</div>
-            <div className="text-sm">$400</div>
-          </div>
-          <div className="px-5">
-            <div className="font-medium text-sm">Current Prize Pool</div>
-            <div className="text-sm">$200</div>
-          </div>
-          <div className="px-5">
-            <div className="font-medium text-sm">Round</div>
-            <div className="text-sm">0/5</div>
+
+      <div className="grid grid-cols-12 py-6">
+        <div className="col-span-8">
+          <div className="flex items-center">
+            <div className="pr-5">
+              <div className="font-medium text-sm">Teams registered</div>
+              <div className="text-sm">10/32</div>
+            </div>
+            <div className="px-5">
+              <div className="font-medium text-sm">Teams confirmed</div>
+              <div className="text-sm">6/32</div>
+            </div>
+            <div className="px-5">
+              <div className="font-medium text-sm">Potential Prize Pool</div>
+              <div className="text-sm">$400</div>
+            </div>
+            <div className="px-5">
+              <div className="font-medium text-sm">Current Prize Pool</div>
+              <div className="text-sm">$200</div>
+            </div>
+            <div className="px-5">
+              <div className="font-medium text-sm">Round</div>
+              <div className="text-sm">0/5</div>
+            </div>
           </div>
         </div>
+        <div className="col-span-4">
+          <span className="text-sm">Tournament status</span>
+          <div className="flex items-center justify-between pb-2">
+            <span className="text-green-500 font-semibold">
+              Results tracking
+            </span>
+            <div className="bg-gray-200 rounded text-gray-500 text-xs px-2 py-1">
+              step 3 / 4
+            </div>
+          </div>
+          <ProgressBar steps={5} currentStep={3} />
+        </div>
       </div>
+
       <div className="actions pt-5 flex items-center space-x-2">
         <Button disabled>
           {/* <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> */}
@@ -105,48 +114,21 @@ type ProgressBarProps = {
   currentStep: number;
 };
 const ProgressBar: React.FC<ProgressBarProps> = ({ steps, currentStep }) => {
-  const progressWidth = `${((currentStep - 1) / (steps - 1)) * 100}%`;
-
   return (
-    <div className="relative pt-1">
-      <div className="flex mb-2 items-center justify-between">
-        {Array.from({ length: steps }).map((_, index) => (
-          <div
-            key={index}
-            className={`w-1/4 ${
-              index + 1 === currentStep ? 'text-green-600' : 'text-gray-400'
-            }`}
-          >
-            <div
-              className={`flex-1 h-2 ${
-                index + 1 < currentStep ? 'bg-green-600' : 'bg-gray-200'
-              } rounded-full`}
-            />
-          </div>
-        ))}
-      </div>
-      <div className="flex mb-2 items-center justify-between">
-        {Array.from({ length: steps - 1 }).map((_, index) => (
-          <div key={index} className="w-1/4" />
-        ))}
-      </div>
-      <div className="flex items-center justify-between">
-        {Array.from({ length: steps }).map((_, index) => (
-          <div
-            key={index}
-            className={`w-1/4 ${
-              index + 1 <= currentStep ? 'text-green-600' : 'text-gray-400'
-            }`}
-          >
-            {index + 1}
-          </div>
-        ))}
-      </div>
-      <div className="mt-2 flex items-center justify-between">
-        <div className="text-left text-xs text-gray-600">
-          Step {currentStep} of {steps}
-        </div>
-        <div className="text-right text-xs text-gray-600">{progressWidth}</div>
+    <div className="flex relative items-center w-[100%] h-[12px]">
+      {/* gray bar */}
+      <div
+        role="progressbar"
+        className="absolute bg-gray-100 items-center flex justify-between left-[2px] h-[2px] w-[calc(100%-2px)]"
+      ></div>
+      {/* green bar */}
+      <div className="flex items-center justify-between h-[100%] absolute top-0 w-[calc(75%+1px)] rounded-lg bg-green-400"></div>
+      <div className="relative flex items-center justify-between w-[calc(100%-4px)]">
+        <div></div>
+        <div className="relative h-2 w-2 bg-black/15 rounded-full"></div>
+        <div className="relative h-2 w-2 bg-black/15 rounded-full"></div>
+        <div className="relative h-2 w-2 bg-black/15 rounded-full"></div>
+        <div className="relative h-2 w-2 bg-gray-100 ring ring-white rounded-full"></div>
       </div>
     </div>
   );

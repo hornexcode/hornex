@@ -102,6 +102,8 @@ class TournamentViewSet(viewsets.ModelViewSet):
         methods=["get"],
     )
     def checkin(self, request, *args, **kwargs):
+        # Need to call this method in order to get the
+        # tournament object with the correct type
         tournament = self.construct_object()
         tournament.checkin()
         return Response(
@@ -199,15 +201,16 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
                 {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        t = Template(render_to_string("registration-success.html"))
-        resend.Emails.send(
-            {
-                "from": "onboarding@resend.dev",
-                "to": "pedro357bm@gmail.com",
-                "subject": "Tournament registration",
-                "html": t.render(Context({"tournament": tournament})),
-            }
-        )
+        # Create a mailer interface to do this
+        # t = Template(render_to_string("registration-success.html"))
+        # resend.Emails.send(
+        #     {
+        #         "from": "onboarding@resend.dev",
+        #         "to": "pedro357bm@gmail.com",
+        #         "subject": "Tournament registration",
+        #         "html": t.render(Context({"tournament": tournament})),
+        #     }
+        # )
 
         return Response(
             RegistrationReadSerializer(registration).data,

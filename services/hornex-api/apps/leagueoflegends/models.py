@@ -245,8 +245,6 @@ class Tournament(BaseTournament):
                 self.challonge_url = chllng_trnmnt.full_challonge_url
                 self.save()
 
-                add_participants_to_challonge_tournament(chllng_trnmnt.id)
-
                 return chllng_trnmnt
             except Exception as e:
                 logger.error("ChallongeTournamentResourceAPI.create", error=e)
@@ -254,7 +252,7 @@ class Tournament(BaseTournament):
                     {"error": "Failed to create tournament in Challonge"}
                 )
 
-        def create_leagueoflegends_tournament():
+        def register_leagueoflegends_tournament():
             try:
                 riot_provider_id = Provider.objects.get(
                     region=Provider.RegionType.BR
@@ -296,13 +294,23 @@ class Tournament(BaseTournament):
 
         # -
         # TODO: turn this into a celery task
-        if has_enough_participants():
-            create_challonge_tournament()
-            create_leagueoflegends_tournament()
-        else:
+        if not has_enough_participants():
             raise ValidationError(
                 {"error": "Minimum number of participants not reached"}
             )
+
+        chllng_trnmnt = create_challonge_tournament()
+        add_participants_to_challonge_tournament(chllng_trnmnt.id)
+        register_leagueoflegends_tournament()
+
+    def start(self):
+        def start_challonge_tournament():
+            ...
+
+        def create_leagueoflegeds_tournament_codes():
+            ...
+
+        # -
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
