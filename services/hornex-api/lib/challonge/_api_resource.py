@@ -15,7 +15,8 @@ T = TypeVar("T", bound=ChallongeObject)
 
 headers = {
     "Content-Type": "application/json",
-    "User-Agent": "Mozilla/5.0 (Platform; Security; OS-or-CPU; Localization; rv:1.4) Gecko/20030624 Netscape/7.1 (ax)",  # need to include a user agent or challonge will return a 520
+    "User-Agent": "Mozilla/5.0 (Platform; Security; OS-or-CPU; Localization; rv:1.4) Gecko/20030624 Netscape/7.1 (ax)",  # noqa
+    # need to include a user agent or challonge will return a 520
 }
 
 

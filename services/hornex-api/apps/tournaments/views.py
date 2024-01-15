@@ -1,8 +1,5 @@
-import resend
 import structlog
 from django.db import transaction
-from django.template import Context, Template
-from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -13,7 +10,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.leagueoflegends.models import Provider
 from apps.leagueoflegends.models import Tournament as LeagueOfLegendsTournament
 from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
@@ -29,8 +25,6 @@ from apps.tournaments.serializers import (
     TournamentSerializer,
 )
 from core.route import extract_game_and_platform
-from lib.challonge import Tournament as ChallongeTournament
-from lib.riot import Tournament as RiotTournament
 
 logger = structlog.get_logger(__name__)
 # from apps.leagueoflegends.usecases import RegisterTeam
@@ -82,7 +76,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
 
     def get_object(self, *args, **kwargs):
-        game = kwargs.get("game")
+        # game = kwargs.get("game")
 
         # league of legends
         self.queryset = LeagueOfLegendsTournament.objects.all()

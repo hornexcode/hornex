@@ -78,7 +78,7 @@ class Tournament(models.Model):
     challonge_url = models.URLField(max_length=500, blank=True)
 
     class Meta:
-        ordering = ["-created_at"]  # noqa: RUF012
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
@@ -406,6 +406,9 @@ class MatchRound(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return f"MatchRound ({self.id}) | {self.match}"
+
 
 class Round(models.Model):
     tournament = models.ForeignKey(
@@ -415,11 +418,11 @@ class Round(models.Model):
     key = models.ForeignKey("Key", on_delete=models.CASCADE, related_name="rounds")
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) -> str:
-        return f"Round ({self.id}) | {self.tournament.name}"
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"Round ({self.id}) | {self.tournament.name}"
 
     def get_winners(self) -> QuerySet[Team]:
         return Team.objects.filter(id__in=self.get_winner_ids())
@@ -432,3 +435,6 @@ class Key(models.Model):
     tournament = models.ForeignKey(
         Tournament, on_delete=models.CASCADE, related_name="keys"
     )
+
+    def __str__(self) -> str:
+        return f"Key ({self.id}) | {self.tournament.name}"

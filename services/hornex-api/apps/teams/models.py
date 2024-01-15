@@ -92,5 +92,5 @@ class Invite(models.Model):
         self.expired_at = dt.now(tz=UTC)
         self.save()
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa
         return f"Invite from {self.team.name} to {self.user.name} - ({self.status()})"

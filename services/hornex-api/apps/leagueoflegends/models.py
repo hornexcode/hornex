@@ -35,7 +35,7 @@ class LeagueEntry(models.Model):
     tier = models.CharField(max_length=25, choices=TierOptions.choices)
 
     class RankOptions(models.TextChoices):
-        I = "I"
+        I = "I"  # noqa
         II = "II"
         III = "III"
         IV = "IV"
