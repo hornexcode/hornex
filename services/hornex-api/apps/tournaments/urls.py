@@ -16,27 +16,27 @@ urlpatterns = [
     path(
         "/<str:platform>/<str:game>/tournaments",
         TournamentReadOnlyViewSet.as_view({"get": "list"}),
-        name="tournament-list",
+        name="list",
     ),
     path(
         "/<str:platform>/<str:game>/tournaments/<str:id>/details",
         TournamentViewSet.as_view({"get": "retrieve"}),
-        name="tournament-details",
+        name="details",
     ),
     path(
         "/<str:platform>/<str:game>/tournaments/<str:id>/register",
         TournamentRegistrationViewSet.as_view({"post": "register"}),
-        name="tournament-register",
+        name="register",
     ),
     path(
         "/registrations",
         TournamentRegistrationViewSet.as_view({"get": "list"}),
-        name="tournament-registration-list",
+        name="registration-list",
     ),
     path(
         "/registrations/<str:id>",
         TournamentRegistrationViewSet.as_view({"get": "retrieve"}),
-        name="tournament-registration-details",
+        name="registration-details",
     ),
     path(
         "/tournaments/<str:tournament>/teams/<str:team>/check-in",
