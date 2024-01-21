@@ -21,7 +21,7 @@ pre-commit:
 
     api-install:
       glob: "services/hornex-api/**"
-      run: poetry install
+      run: poetry install --no-root
       root: services/hornex-api
     api-lint:
       glob: "services/hornex-api/**"
