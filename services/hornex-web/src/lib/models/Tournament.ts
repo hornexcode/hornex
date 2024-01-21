@@ -9,6 +9,8 @@ export const tournament = z.object({
   start_date: z.string(),
   registration_start_date: z.date(),
   registration_end_date: z.date(),
+  check_in_opens_at: z.string(),
+  check_in_duration: z.number(),
   end_date: z.string(),
   start_time: z.string(),
   end_time: z.string(),

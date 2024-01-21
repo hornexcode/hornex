@@ -78,7 +78,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         )
 
         url = reverse(
-            "tournament-register",
+            "tournaments:register",
             kwargs={
                 "platform": "pc",
                 "game": "league-of-legends",
@@ -113,7 +113,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         )
 
         url = reverse(
-            "tournament-register",
+            "tournaments:register",
             kwargs={
                 "platform": "pc",
                 "game": "league-of-legends",
@@ -144,7 +144,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         )
 
         url = reverse(
-            "tournament-register",
+            "tournaments:register",
             kwargs={
                 "platform": "pc",
                 "game": "league-of-legends",
@@ -168,7 +168,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         )
 
         url = reverse(
-            "tournament-register",
+            "tournaments:register",
             kwargs={
                 "platform": "pc",
                 "game": "league-of-legends",
@@ -197,7 +197,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         )
 
         url = reverse(
-            "tournament-register",
+            "tournaments:register",
             kwargs={
                 "platform": "pc",
                 "game": "league-of-legends",
@@ -264,7 +264,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
         )
 
         url = reverse(
-            "tournament-register",
+            "tournaments:register",
             kwargs={
                 "platform": "pc",
                 "game": "league-of-legends",

@@ -14,7 +14,7 @@ class Command(BaseCommand):
     help = "Create fake teams"
 
     def handle(self, *args, **options):
-        superuser = User.objects.get(email="admin@hornexcode.com")
+        superuser = User.objects.get(email="admin@hornex.gg")
         Team.objects.all().delete()
 
         users = [superuser]
@@ -25,7 +25,7 @@ class Command(BaseCommand):
             user = User.objects.create_user(
                 email=fake.email().split("@")[0]
                 + f"+{round(dt.now().timestamp() * 1000)}"
-                + "@hornexcode.com",
+                + "@hornex.gg",
                 name=fake.name(),
                 password="admin",
             )

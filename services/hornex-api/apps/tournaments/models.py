@@ -7,25 +7,13 @@ from django.db import models
 from django.db.models.query import QuerySet
 from rest_framework.exceptions import ValidationError
 
+from apps.common.models import BaseModel
 from apps.teams.models import Team
 from apps.tournaments import errors
 from apps.tournaments.validators import validate_team_size
 
 
-class RegistrationError(Exception):
-    pass
-
-
-class Tournament(models.Model):
-    class GameType(models.TextChoices):
-        LEAGUE_OF_LEGENDS = "league-of-legends"
-
-    class PlatformType(models.TextChoices):
-        PC = "pc"
-        PS4 = "ps4"
-        XBOX = "xbox"
-        MOBILE = "mobile"
-
+class Tournament(BaseModel):
     class PhaseType(models.TextChoices):
         REGISTRATION_OPEN = "registration_open"
         RESULTS_TRACKING = "results_tracking"
@@ -36,14 +24,7 @@ class Tournament(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
-    game = models.CharField(
-        choices=GameType.choices, max_length=50, default=GameType.LEAGUE_OF_LEGENDS
-    )
-    platform = models.CharField(
-        choices=PlatformType.choices, max_length=50, default=PlatformType.PC
-    )
     is_public = models.BooleanField(default=False)
-
     phase = models.CharField(
         max_length=50,
         choices=PhaseType.choices,
@@ -52,6 +33,8 @@ class Tournament(models.Model):
 
     registration_start_date = models.DateTimeField()
     registration_end_date = models.DateTimeField()
+    check_in_opens_at = models.DateTimeField(null=True, blank=True)
+    check_in_duration = models.IntegerField(null=True, blank=True)
 
     start_date = models.DateField()
     end_date = models.DateField()
@@ -172,13 +155,6 @@ class Tournament(models.Model):
         regi = Registration.objects.get(tournament=self, team=team)
         regi.cancel()
 
-    def add_team(self, team: Team):
-        if not self._check_team_has_registration(team):
-            return
-
-        self.teams.add(team)
-        self.save()
-
     def generate_brackets(self, print_brackets=False):
         key = self._get_key()
 
@@ -246,6 +222,12 @@ class Tournament(models.Model):
             tournament=self, team=team, game_slug=self.game, platform_slug=self.platform
         )
 
+    def add_team(self, team):
+        if not self._check_team_has_registration(team):
+            raise ValidationError(detail=errors.TeamNotRegisteredError)
+        self.teams.add(team)
+        self.save()
+
     def _is_full(self):
         now = datetime.now(tz=UTC)
 
@@ -302,11 +284,6 @@ class Subscription(models.Model):
         return f"{self.tournament.name} :: {self.team.name} ({self.id})"
 
 
-class RegistrationManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(status__in=["accepted", "pending"])
-
-
 class Registration(models.Model):
     class RegistrationStatusType(models.TextChoices):
         PENDING = "pending"
@@ -326,8 +303,6 @@ class Registration(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    objects = RegistrationManager()
-
     def __str__(self) -> str:
         return f"{self.team.name} registration at {self.tournament.name} ({self.id})"
 
@@ -336,7 +311,8 @@ class Registration(models.Model):
         return str(self.id)
 
     def confirm_registration(self):
-        self.tournament.add_team(self.team)
+        self.tournament.teams.add(self.team)
+        self.tournament.save()
         self.status = Registration.RegistrationStatusType.ACCEPTED
         self.save()
 
@@ -438,3 +414,15 @@ class Key(models.Model):
 
     def __str__(self) -> str:
         return f"Key ({self.id}) | {self.tournament.name}"
+
+
+class Checkin(models.Model):
+    tournament = models.ForeignKey(
+        Tournament, on_delete=models.CASCADE, related_name="checkins"
+    )
+    team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"Checkin ({self.id}) | {self.tournament.name}"

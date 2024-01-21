@@ -11,7 +11,7 @@ class Command(BaseCommand):
         for _ in range(20):
             u = User.objects.create(
                 name=f"{fake.first_name()} {fake.last_name()}",
-                email=f"{fake.email()}",
+                email=f"{fake.email()}".split("@")[0] + "@hornex.gg",
             )
             u.set_password("test")
             u.save()

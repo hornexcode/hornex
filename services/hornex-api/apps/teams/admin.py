@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.utils.html import format_html
 from django.utils.translation import ngettext
 
 from apps.teams.models import Invite, Membership, Team
@@ -30,5 +31,25 @@ class InviteAdmin(admin.ModelAdmin):
 
 admin.site.register(Invite, InviteAdmin)
 
-admin.site.register(Team)
+
+class TeamAdmin(admin.ModelAdmin):
+    readonly_fields = ("memberships",)
+    list_display = (
+        "name",
+        "game",
+        "platform",
+        "created_at",
+        "updated_at",
+        "memberships",
+    )
+
+    @admin.display(description="Memberhips")
+    def memberships(self, obj):
+        content = ""
+        for member in obj.members.all():
+            content += f"<li>{member.email}</li>"
+        return format_html(f"<ul>{content}</ul>")
+
+
+admin.site.register(Team, TeamAdmin)
 admin.site.register(Membership)

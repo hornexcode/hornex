@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.utils.translation import ngettext
 
-from apps.tournaments.models import Registration
+from apps.tournaments.models import Checkin, Registration
 
 
 class RegistrationAdmin(admin.ModelAdmin):
@@ -29,3 +29,4 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Registration, RegistrationAdmin)
+admin.site.register(Checkin)

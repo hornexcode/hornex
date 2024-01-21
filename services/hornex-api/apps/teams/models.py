@@ -4,26 +4,13 @@ from datetime import datetime as dt
 
 from django.db import models
 
+from apps.common.models import BaseModel
 
-class Team(models.Model):
-    class GameType(models.TextChoices):
-        LEAGUE_OF_LEGENDS = "league-of-legends"
 
-    class PlatformType(models.TextChoices):
-        PC = "pc"
-        PS4 = "ps4"
-        XBOX = "xbox"
-        MOBILE = "mobile"
-
+class Team(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100, blank=True)
-    game = models.CharField(
-        choices=GameType.choices, max_length=50, default=GameType.LEAGUE_OF_LEGENDS
-    )
-    platform = models.CharField(
-        choices=PlatformType.choices, max_length=50, default=PlatformType.PC
-    )
     created_by = models.ForeignKey("users.User", on_delete=models.DO_NOTHING)
     members = models.ManyToManyField(
         "users.User", through="Membership", related_name="teams"
@@ -31,7 +18,7 @@ class Team(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    deactivated_at = models.DateTimeField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"

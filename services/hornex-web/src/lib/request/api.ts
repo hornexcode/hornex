@@ -207,7 +207,6 @@ export const dataLoader = <T, Data = unknown>(
           ...headers,
           Authorization: `Bearer ${token?.split('=')[1]}`,
         };
-        console.log(cookie);
       }
 
       return useSWR<UDT>(

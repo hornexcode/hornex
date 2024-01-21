@@ -1,33 +1,187 @@
-import { LeagueOfLegendsLogo } from '../../atoms/icons/league-of-legends-icon';
-import { ConnectedGameIds } from '../../molecules/connected-game-ids';
+import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
-import { Tournament } from '@/lib/models/types';
-import { toCurrency } from '@/lib/utils';
-import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
-import { CalendarIcon, CheckCircle2 } from 'lucide-react';
+import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
+import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
+import { TeamCheckInStatus, Tournament } from '@/lib/models';
+import { dataLoader } from '@/lib/request';
+import {
+  getCheckInCountdownValue,
+  isCheckInClosed,
+  isCheckInOpen,
+  toCurrency,
+} from '@/lib/utils';
+import classnames from 'classnames';
+import { CheckCheckIcon, RefreshCcw } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
-import { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import Countdown from 'react-countdown';
 
-const imageLoader = ({ src }: any) => {
-  return `https://placehold.co/${src}`;
-};
+const { useData: useTournament } = dataLoader<Tournament>('getTournament');
+const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
+  'getTeamCheckInStatus'
+);
+const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
 
-type TournamentHeadlineProps = {
-  tournament: Tournament;
-  connectedGameId?: GameID;
-  isRegistrated?: boolean;
-};
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
-  tournament,
+  tournament: initialTournament,
   connectedGameId,
-  isRegistrated,
+  registration,
+  isCheckedIn: initialIsCheckedIn,
 }) => {
+  // remove
+  console.log('🚀 initial rendering...', {
+    initialTournament,
+    connectedGameId,
+    registration,
+    initialIsCheckedIn,
+  });
+
   const { openModal } = useModal();
+  const [checkInOpen, setCheckInOpen] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
+
+  let tournament: Tournament = initialTournament;
+  const { data: tournamentData, error } = useTournament({
+    tournamentId: tournament.id,
+    platform: 'pc',
+    game: 'league-of-legends',
+  });
+
+  if (tournamentData && !error) {
+    // remove
+    console.log('🚀 updating touranment...');
+    tournament = tournamentData;
+  }
+
+  // Controll the check in state
+  useEffect(() => {
+    // remove
+    console.log('👻 useEffect...');
+    const isOpen = isCheckInOpen(tournament) && !isCheckInClosed(tournament);
+    setCheckInOpen(isOpen);
+
+    const now = +new Date();
+    // if check in is not open and the check in opens in the future
+    if (!isOpen && now < +new Date(tournament.check_in_duration * 60 * 1000)) {
+      // remove
+      console.log('⏳ setTimeout...');
+      // set a timeout to update the state when the check in opens
+      const interval = setTimeout(() => {
+        setCheckInOpen(isOpen);
+      }, +new Date(tournament.check_in_opens_at) - now);
+      // avoid memory leak
+      return () => clearTimeout(interval);
+    }
+  }, [tournament]);
+
+  const {
+    data: checkInStatusData,
+    error: checkInError,
+    isLoading: checkInStatusIsLoading,
+    mutate: checkInStatusMutate,
+  } = useTeamCheckIns({
+    tournamentId: tournament.id,
+    teamId: registration?.team,
+  });
+
+  const renderCheckInStatus = (checkedInTotal: number, teamSize: number) => {
+    return (
+      <div className="flex flex-col justify-between space-y-2">
+        <div className="font-body text-xs text-gray-400">Check-in status</div>
+        <div
+          className={classnames(
+            'flex w-20 items-center justify-between',
+            { block: isCheckedIn },
+            { hidden: !isCheckedIn }
+          )}
+        >
+          {Array.from({ length: checkedInTotal }).map((_, i) => (
+            <div
+              key={i}
+              className="ring-medium-dark h-2 w-2 rounded-full bg-green-500 p-1 ring "
+            ></div>
+          ))}
+          {Array.from({ length: teamSize - checkedInTotal }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-dark ring-medium-dark h-2 w-2 rounded-full ring"
+            ></div>
+          ))}
+        </div>
+        <div className="text-title flex justify-between text-sm">
+          <div className="font-display text-xs">
+            {checkedInTotal}/{teamSize}
+          </div>
+          <div
+            className="hover:pointer"
+            onClick={(e) => checkInStatusMutate(checkInStatusData)}
+          >
+            <RefreshCcw className="h-3 w-3" />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const handleCheckIn = async () => {
+    setLoading(true);
+    const { error } = await createUserCheckIn({
+      tournamentId: tournament.id,
+      teamId: registration?.team,
+    });
+    // remove
+    console.log('❌ Error cehecking-in user', { error });
+
+    if (!error) {
+      setCheckedIn(true);
+      checkInStatusMutate(checkInStatusData);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
-      <div className="3xl:h-[448px] relative h-36 w-full overflow-hidden sm:h-44 md:h-64 xl:h-52">
+      {/* debugger */}
+      <div className="bg-light-dark mb-4 block p-5 text-sm text-amber-500">
+        <div className="text-bold mb-2 text-white">[ Debug ]</div>
+        <table className="">
+          <tr>
+            <td>registered:</td>
+            <td className="px-2 text-cyan-400">
+              {registration ? 'true' : 'false'}
+            </td>
+          </tr>
+          <tr>
+            <td>check-in open:</td>
+            <td className="px-2 text-cyan-400">
+              {isCheckInOpen(tournament) ? 'true' : 'false'}
+            </td>
+          </tr>
+          <tr>
+            <td>check-in closed:</td>
+            <td className="px-2 text-cyan-400">
+              {isCheckInClosed(tournament) ? 'true' : 'false'}
+            </td>
+          </tr>
+          <tr>
+            <td>user checked-in:</td>
+            <td className="px-2 text-cyan-400">
+              {isCheckedIn ? 'true' : 'false'}
+            </td>
+          </tr>
+          <tr>
+            <td>team checked-in:</td>
+            <td className="px-2 text-cyan-400">
+              {isCheckedIn ? 'true' : 'false'}
+            </td>
+          </tr>
+        </table>
+      </div>
+      {/* end debugger */}
+      <div className="3xl:h-[448px] relative h-36 w-full sm:h-44 md:h-64 xl:h-52">
         <Image
           // loader={imageLoader}
           // src="1920x1080/232f48/jpg"
@@ -39,34 +193,48 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           className="!h-full w-full !object-cover"
           alt="Cover Image"
         />
-      </div>
-      <div className="bg-medium-dark shadow-card  flex rounded-b p-4">
-        <div className="flex w-full justify-between">
-          <div className="block space-y-6">
-            <div className="block">
-              <h4 className="text-title text-sm">{tournament.name}</h4>
-              {/* headline */}
-              <div className="flex items-center">
-                <CalendarIcon className="text-title w-4" />
-                <div className="text-body ml-2 text-sm">
-                  {moment(tournament.start_date).format('MMM Do YY')},{' '}
-                  {tournament.start_time.substring(0, 5)} h{' '}
-                </div>
-              </div>
+        <div className="bg-dark/60 absolute top-0 h-full w-full"></div>
+        <div className="absolute right-0 top-4">
+          {connectedGameId && (
+            <div className="mx-4 block">
+              <ConnectedGameIds gameId={connectedGameId} />
             </div>
+          )}
+        </div>
+      </div>
+      <div className="from-light-dark shadow-card to-medium-dark flex rounded-b bg-gradient-to-t p-4">
+        <div className="i flex w-full justify-between">
+          {/* Tournament name */}
+          <div className="flex items-start">
+            <h4 className="text-title text-xl font-extrabold">
+              {tournament.name}
+              <div className="text-body text-xs">
+                Organized by <span className="text-title">@hornex</span>
+              </div>
+            </h4>
           </div>
+
+          {/* right */}
           <div className="flex items-center self-start">
             {/* TODO: make this a molecule component */}
             <div className="flex items-center">
-              {/*  */}
               {/* Game */}
               <div className="border-r-2 border-dotted border-slate-700 px-8">
                 <LeagueOfLegendsLogo className="text-title w-16" />
               </div>
+
+              {/* Classification */}
+              <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">
+                <div className="text-body text-xs">Classification</div>
+                <div className="text-title font-display text-sm">
+                  {tournament.classifications.map((c) => c).join(', ')}
+                </div>
+              </div>
+
               {/* Prize Pool */}
-              <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
+              <div className="flex items-center border-r-2 border-dotted border-gray-700 px-8">
                 <div>
-                  <div className="text-md text-body">Potential Prize Pool</div>
+                  <div className="text-body text-xs">Potential Prize Pool</div>
                   {!tournament.is_entry_free && (
                     <div className="text-title font-display text-sm">
                       R${' '}
@@ -80,23 +248,20 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                   )}
                 </div>
               </div>
+
+              {/* Entry fee */}
               {!tournament.is_entry_free && (
-                <div className="flex items-center space-x-4 border-r-2  border-dotted border-gray-700 px-8">
-                  <div>
-                    <div className="text-md text-body">Entry fee</div>
-                    <div className="text-title font-display text-sm">
-                      R$ {toCurrency(tournament.entry_fee)}
-                    </div>
+                <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
+                  <div className="text-body text-xs">Entry fee</div>
+                  <div className="text-title font-display text-sm">
+                    R$ {toCurrency(tournament.entry_fee)}
                   </div>
                 </div>
               )}
             </div>
-            {connectedGameId && (
-              <div className="mx-4 block">
-                <ConnectedGameIds gameId={connectedGameId} />
-              </div>
-            )}
-            {!isRegistrated ? (
+
+            {/* Register button */}
+            {!registration && (
               <div className="block">
                 <Button
                   size="small"
@@ -106,12 +271,73 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                   Registrar time
                 </Button>
               </div>
-            ) : (
-              <div className="flex items-center rounded border-2 border-slate-200 bg-slate-200 px-4 py-1.5">
-                <CheckCircle2 className="fill-dark w-6 text-slate-200" />
-                <div className="text-dark ml-2 text-sm">Registrado</div>
+            )}
+
+            {/* Registered Status */}
+            {registration && !checkInOpen && (
+              <div className="pl-4">
+                <div className="flex items-center rounded bg-green-500 px-4 py-1.5">
+                  <div className="text-dark text-sm">Time Registrado</div>
+                </div>
               </div>
             )}
+
+            {/* Check-in button */}
+            {registration &&
+              checkInOpen &&
+              (checkInStatusData || { total: 0 }).total != 5 && (
+                <div className="flex items-center space-x-4 pl-4">
+                  <div
+                    className={classnames(
+                      { block: !isCheckedIn },
+                      { hidden: isCheckedIn }
+                    )}
+                  >
+                    <div className="text-body text-xs">Check-in ends in:</div>
+                    <div className="mb-1 mr-2 flex items-center">
+                      <div className="text-title font-display text-sm">
+                        <Countdown
+                          date={getCheckInCountdownValue(tournament)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className={classnames(
+                      { block: !isCheckedIn },
+                      { hidden: isCheckedIn }
+                    )}
+                  >
+                    <Button
+                      color="danger"
+                      onClick={handleCheckIn}
+                      size="mini"
+                      shape="rounded"
+                      isLoading={checkInStatusIsLoading}
+                      loaderSize="small"
+                      loaderVariant="blink"
+                    >
+                      Check-in
+                    </Button>
+                  </div>
+                  {/*  */}
+                  {isCheckedIn &&
+                    renderCheckInStatus(
+                      (checkInStatusData || { total: 0 }).total,
+                      tournament.team_size
+                    )}
+                </div>
+              )}
+
+            {/* If all members has registered successsfully */}
+            {registration &&
+              checkInOpen &&
+              (checkInStatusData || { total: 0 }).total == 5 && (
+                <div className="flex items-center space-x-2 pl-4 text-sm text-green-500">
+                  <CheckCheckIcon className="h-4 w-4 " />
+                  <span>Team checked-in</span>
+                </div>
+              )}
           </div>
         </div>
       </div>

@@ -31,7 +31,7 @@ def create_superuser():
     logger.info("Creating admin superuser...")
     try:
         user = User.objects.create_superuser(
-            email="admin@hornexcode.com", name="Admin", password="admin"
+            email="admin@hornex.gg", name="Admin", password="admin"
         )
         logger.info("Admin superuser created!", email=user.email, password="admin")
         return user
@@ -64,6 +64,9 @@ def create_games():
 
 
 def create_tournaments():
+    if Tournament.objects.count() > 0:
+        return
+
     logger.info("Creating tournaments...")
     now = dt.now(tz=tz.utc)  # noqa
 
@@ -77,11 +80,13 @@ def create_tournaments():
         name="Torneio do Hornex",
         description="Torneio de League of Legends do Hornex",
         game=Tournament.GameType.LEAGUE_OF_LEGENDS,
-        organizer=User.objects.get(email="admin@hornexcode.com"),
+        organizer=User.objects.get(email="admin@hornex.gg"),
         start_date=now + td(days=7),
-        end_date=now + td(days=7, hours=2),
+        end_date=now + td(days=14),
         start_time=now + td(days=7),
-        end_time=now + td(days=7, hours=2),
+        end_time=now + td(days=14),
+        check_in_opens_at=now + td(days=7, minutes=-15),
+        check_in_closes_at=now + td(days=7),
         registration_start_date=now,
         registration_end_date=now + td(days=7),
         feature_image="tmt-6.jpeg",
@@ -98,9 +103,8 @@ def create_tournaments():
 def create_teams():
     Team.objects.all().delete()
     logger.info("Creating teams...")
-    now = dt.now(tz=tz.utc)  # noqa
 
-    admin = User.objects.get(email="admin@hornexcode.com")
+    admin = User.objects.get(email="admin@hornex.gg")
     team = Team.objects.create(
         name="Hornex HX",
         description="Team 1 description",
@@ -109,12 +113,14 @@ def create_teams():
         created_by=admin,
     )
 
-    for user in User.objects.exclude(email="admin@hornexcode.com").all()[:4]:
+    for user in User.objects.exclude(email="admin@hornex.gg").all()[:4]:
         team.add_member(user)
+
+    logger.info("Teams created!")
 
 
 create_superuser()
 create_platforms()
 create_games()
 create_teams()
-# create_tournaments()
+create_tournaments()

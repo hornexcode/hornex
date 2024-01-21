@@ -1,5 +1,6 @@
 export * from './arrow-long-left-icon';
 export * from './cellphone-icon';
+export * from './check-circle-icon';
 export * from './check-icon';
 export * from './chevron-down';
 export * from './cs-logo-icon';

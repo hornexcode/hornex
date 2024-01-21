@@ -22,7 +22,7 @@ class TestPaymentRegistration(
 ):
     def setUp(self) -> None:
         self.credentials = {
-            "email": "test.user@hornexcode.com",
+            "email": "test.user@hornex.gg",
             "name": "test-user",
             "password": "testpass",
         }
