@@ -4,7 +4,13 @@ from apps.tournaments.views import (
     TournamentReadOnlyViewSet,
     TournamentRegistrationViewSet,
     TournamentViewSet,
+    check_in,
+    pariticipant_checked_in,
+    team_check_in_status,
 )
+
+# set namespace
+app_name = "tournaments"
 
 urlpatterns = [
     path(
@@ -33,7 +39,18 @@ urlpatterns = [
         name="tournament-registration-details",
     ),
     path(
-        "/tournaments/<str:id>/checkin",
-        TournamentViewSet.as_view({"get": "checkin"}),
+        "/tournaments/<str:tournament>/teams/<str:team>/check-in",
+        check_in,
+        name="check-in",
+    ),
+    path(
+        "/tournaments/<str:tournament>/teams/<str:team>/check-in/status",
+        team_check_in_status,
+        name="check-in-status",
+    ),
+    path(
+        "/tournaments/<str:tournament>/participant/checked-in",
+        pariticipant_checked_in,
+        name="participant-checked-in",
     ),
 ]

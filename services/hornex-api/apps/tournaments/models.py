@@ -52,6 +52,8 @@ class Tournament(models.Model):
 
     registration_start_date = models.DateTimeField()
     registration_end_date = models.DateTimeField()
+    check_in_opens_at = models.DateTimeField()
+    check_in_closes_at = models.DateTimeField()
 
     start_date = models.DateField()
     end_date = models.DateField()
@@ -172,13 +174,6 @@ class Tournament(models.Model):
         regi = Registration.objects.get(tournament=self, team=team)
         regi.cancel()
 
-    def add_team(self, team: Team):
-        if not self._check_team_has_registration(team):
-            return
-
-        self.teams.add(team)
-        self.save()
-
     def generate_brackets(self, print_brackets=False):
         key = self._get_key()
 
@@ -245,6 +240,12 @@ class Tournament(models.Model):
         return Registration.objects.create(
             tournament=self, team=team, game_slug=self.game, platform_slug=self.platform
         )
+
+    def add_team(self, team):
+        if not self._check_team_has_registration(team):
+            raise ValidationError(detail=errors.TeamNotRegisteredError)
+        self.teams.add(team)
+        self.save()
 
     def _is_full(self):
         now = datetime.now(tz=UTC)
@@ -336,7 +337,8 @@ class Registration(models.Model):
         return str(self.id)
 
     def confirm_registration(self):
-        self.tournament.add_team(self.team)
+        self.tournament.teams.add(self.team)
+        self.tournament.save()
         self.status = Registration.RegistrationStatusType.ACCEPTED
         self.save()
 
@@ -438,3 +440,15 @@ class Key(models.Model):
 
     def __str__(self) -> str:
         return f"Key ({self.id}) | {self.tournament.name}"
+
+
+class Checkin(models.Model):
+    tournament = models.ForeignKey(
+        Tournament, on_delete=models.CASCADE, related_name="checkins"
+    )
+    team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"Checkin ({self.id}) | {self.tournament.name}"

@@ -46,7 +46,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         className
       )}
     >
-      <ul className="flex flex-col items-center space-y-3 py-2">
+      <ul className="flex flex-col items-center space-y-3 py-2 text-xs">
         <li>
           <Link
             href={`/${routes.compete}`}

@@ -150,7 +150,7 @@ class Tournament(dict[str, any]):
         return self
 
     @classmethod
-    def handle_error(cls, resp):
+    def on_response_error(cls, resp):
         # TODO: handle errors raising error
         try:
             errors = resp.json().get("errors", [])
@@ -174,7 +174,7 @@ class Tournament(dict[str, any]):
         )
 
         if not resp.ok:
-            raise cls.handle_error(resp)
+            raise cls.on_response_error(resp)
 
         return cast("Tournament", cls.construct_from(resp.json()[cls.OBJECT_NAME]))
 
@@ -190,7 +190,7 @@ class Tournament(dict[str, any]):
         )
 
         if not resp.ok:
-            raise cls.handle_error(resp)
+            raise cls.on_response_error(resp)
 
         results = resp.json()
         return [
@@ -213,5 +213,39 @@ class Tournament(dict[str, any]):
         )
 
         if not resp.ok:
-            raise cls.handle_error(resp)
+            raise cls.on_response_error(resp)
         return
+
+    @classmethod
+    def list_participants(cls, tournament: int):
+        """
+        Retrieve a set of participants created with your account.
+        """
+        resp = request(
+            "get",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants.json?api_key={challonge.api_key}",
+            headers=headers,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+
+        results = resp.json()
+        return results
+
+    @classmethod
+    def get_participant(cls, tournament: int, participant: int):
+        """
+        Retrieve a participant created with your account.
+        """
+        resp = request(
+            "get",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants/{participant}.json?api_key={challonge.api_key}",
+            headers=headers,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+
+        results = resp.json()
+        return results

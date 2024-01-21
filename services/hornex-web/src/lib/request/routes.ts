@@ -1,6 +1,5 @@
 import { getAvailableGamesResponse } from '../models/types';
 import { Method } from '../routes/routes';
-import z from 'zod';
 // const routes: APIRouteMap = {} as APIRouteMap;
 
 export const routes = {
@@ -165,5 +164,20 @@ export const routes = {
   payRegistration: {
     path: 'v1/payments/registration',
     method: Method.POST,
+  },
+  createUserCheckIn: {
+    path: 'v1/tournaments/[tournamentId]/teams/[teamId]/check-in',
+    method: Method.POST,
+    schema: null,
+  },
+  getTeamCheckInStatus: {
+    path: 'v1/tournaments/[tournamentId]/teams/[teamId]/check-in/status',
+    method: Method.GET,
+    schema: null,
+  },
+  getParticipantCheckedInStatus: {
+    path: 'v1/tournaments/[tournamentId]/participant/checked-in',
+    method: Method.GET,
+    schema: null,
   },
 };

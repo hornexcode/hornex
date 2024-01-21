@@ -19,31 +19,47 @@ export default async function TournamentPage() {
   const [loading, setLoading] = React.useState(false);
 
   return (
-    <div className="container mx-auto py-10 space-y-4">
-      <PageHeader title="Tournament name" />
+    <div className="container mx-auto space-y-4">
+      <div className="flex justify-between items-end border-b border-gray-100 pb-4">
+        <PageHeader title="Tournament name" />
+        <div className="actions pt-5 flex items-center space-x-2">
+          <Button disabled>
+            {/* <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> */}
+            Publish
+          </Button>
+          <Button>Start</Button>
+          <Button>
+            <CheckCircle2 className="mr-2 w-4 h-4" />
+            Check-in
+          </Button>
+        </div>
+      </div>
 
       <div className="grid grid-cols-12 py-6">
         <div className="col-span-8">
-          <div className="flex items-center">
-            <div className="pr-5">
-              <div className="font-medium text-sm">Teams registered</div>
-              <div className="text-sm">10/32</div>
-            </div>
-            <div className="px-5">
-              <div className="font-medium text-sm">Teams confirmed</div>
-              <div className="text-sm">6/32</div>
-            </div>
-            <div className="px-5">
-              <div className="font-medium text-sm">Potential Prize Pool</div>
-              <div className="text-sm">$400</div>
-            </div>
-            <div className="px-5">
-              <div className="font-medium text-sm">Current Prize Pool</div>
-              <div className="text-sm">$200</div>
-            </div>
-            <div className="px-5">
-              <div className="font-medium text-sm">Round</div>
-              <div className="text-sm">0/5</div>
+          <div className="block">
+            <span className="font-semibold">Info</span>
+            <div className="flex items-center">
+              <div className="pr-5">
+                <div className="font-medium text-sm">Teams registered</div>
+                <div className="text-sm">10/32</div>
+              </div>
+              <div className="px-5">
+                <div className="font-medium text-sm">Teams confirmed</div>
+                <div className="text-sm">6/32</div>
+              </div>
+              <div className="px-5">
+                <div className="font-medium text-sm">Potential Prize Pool</div>
+                <div className="text-sm">$400</div>
+              </div>
+              <div className="px-5">
+                <div className="font-medium text-sm">Current Prize Pool</div>
+                <div className="text-sm">$200</div>
+              </div>
+              <div className="px-5">
+                <div className="font-medium text-sm">Round</div>
+                <div className="text-sm">0/5</div>
+              </div>
             </div>
           </div>
         </div>
@@ -61,17 +77,6 @@ export default async function TournamentPage() {
         </div>
       </div>
 
-      <div className="actions pt-5 flex items-center space-x-2">
-        <Button disabled>
-          {/* <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> */}
-          Publish
-        </Button>
-        <Button>Start</Button>
-        <Button>
-          <CheckCircle2 className="mr-2 w-4 h-4" />
-          Check-in
-        </Button>
-      </div>
       <div className="">
         <div className="border rounded shadow">
           <div className="border-b p-4">Logs</div>

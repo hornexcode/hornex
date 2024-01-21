@@ -4,7 +4,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import (
+    action,
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,8 +20,9 @@ from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
 from apps.teams.models import Membership, Team
+from apps.tournaments import errors
 from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
-from apps.tournaments.models import Registration
+from apps.tournaments.models import Checkin, Registration, Tournament
 from apps.tournaments.models import Tournament as BaseTournament
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.serializers import (
@@ -91,20 +97,6 @@ class TournamentViewSet(viewsets.ModelViewSet):
 
         return super().retrieve(request, *args, **kwargs)
 
-    @action(
-        detail=True,
-        methods=["get"],
-    )
-    def checkin(self, request, *args, **kwargs):
-        # Need to call this method in order to get the
-        # tournament object with the correct type
-        tournament = self.construct_object()
-        tournament.checkin()
-        return Response(
-            {"message": "Checkin successful"},
-            status=status.HTTP_200_OK,
-        )
-
     def construct_object(self) -> BaseTournament:
         """
         Returns the tournament object based on the game type
@@ -113,6 +105,107 @@ class TournamentViewSet(viewsets.ModelViewSet):
         if obj.game == BaseTournament.GameType.LEAGUE_OF_LEGENDS:
             return LeagueOfLegendsTournament.objects.get(id=obj.id)
         return obj
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def team_check_in_status(request, *args, **kwargs):
+    if request.method == "GET":
+        try:
+            tournament = Tournament.objects.get(id=kwargs["tournament"])
+            team = Team.objects.get(id=kwargs["team"])
+
+            # check if user belongs to team
+            if not Membership.objects.filter(user=request.user, team=team).exists():
+                return Response(
+                    {"error": errors.UserDoesNotBelongToTeamError},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            check_ins = Checkin.objects.filter(
+                team=team,
+                tournament=tournament,
+            )
+
+            return Response(
+                {
+                    "tournament": tournament.id,
+                    "team": team.id,
+                    "checked_in": check_ins.filter(user=request.user).exists(),
+                    "total": check_ins.count(),
+                    "users": check_ins.values_list("user__id", flat=True),
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Tournament.DoesNotExist:
+            return Response(
+                {"error": f"Invalid tournament for id: {kwargs['tournament']}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Team.DoesNotExist:
+            return Response(
+                {"error": f"Invalid team for id: {kwargs['team']}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def pariticipant_checked_in(request, *args, **kwargs):
+    if request.method == "GET":
+        try:
+            tournament = Tournament.objects.get(id=kwargs["tournament"])
+
+            checked_in = Checkin.objects.filter(
+                tournament=tournament,
+                user=request.user,
+            ).exists()
+
+            return Response(
+                {"checked_in": checked_in},
+                status=status.HTTP_200_OK,
+            )
+        except Tournament.DoesNotExist:
+            return Response(
+                {"error": f"Invalid tournament for id: {kwargs['tournament']}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def check_in(request, *args, **kwargs):
+    if request.method == "POST":
+        try:
+            tournament = Tournament.objects.get(id=kwargs["tournament"])
+            team = Team.objects.get(id=kwargs["team"])
+        except Tournament.DoesNotExist:
+            return Response(
+                {"error": f"Invalid tournament for id: {kwargs['tournament']}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Team.DoesNotExist:
+            return Response(
+                {"error": f"Invalid team for id: {kwargs['team']}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = request.user
+        if user not in team.members.all():
+            raise ValidationError({"error": errors.UserDoesNotBelongToTeamError})
+        if tournament.teams.filter(id=team.id).count() == 0:
+            raise ValidationError({"error": errors.TeamNotRegisteredError})
+        if Checkin.objects.filter(tournament=tournament, team=team, user=user).exists():
+            raise ValidationError({"error": errors.UserAlreadyCheckedInError})
+
+        Checkin.objects.create(tournament=tournament, team=team, user=user)
+        return Response(
+            {"message": "Checkin successful"},
+            status=status.HTTP_200_OK,
+        )
 
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):

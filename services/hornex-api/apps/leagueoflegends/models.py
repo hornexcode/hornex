@@ -5,6 +5,7 @@ from django.db import models
 from rest_framework.exceptions import ValidationError
 
 from apps.games.models import GameID
+from apps.tournaments.models import Checkin
 from apps.tournaments.models import Tournament as BaseTournament
 from lib.challonge import Tournament as ChallongeTournamentResourceAPI
 from lib.riot import (
@@ -303,14 +304,15 @@ class Tournament(BaseTournament):
         add_participants_to_challonge_tournament(chllng_trnmnt.id)
         register_leagueoflegends_tournament()
 
-    def start(self):
-        def start_challonge_tournament():
-            ...
+    def member_checkin(self, user, team) -> Checkin:
+        try:
+            checkin = Checkin.objects.get(user=user, team=team, tournament=self)
+            print("Already checked in")
+            if checkin:
+                raise ValidationError("Already checked in")
 
-        def create_leagueoflegeds_tournament_codes():
-            ...
-
-        # -
+        except Checkin.DoesNotExist:
+            return Checkin.objects.create(user=user, team=team, tournament=self)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"

@@ -19,7 +19,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
           <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
             Game
           </h4>
-          <span className="rounded-md bg-slate-600 px-2 text-sm font-light text-slate-400">
+          <span className="text-title rounded-md bg-slate-600 px-2 text-sm font-light">
             League of Legends
           </span>
         </div>
@@ -27,7 +27,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
           <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
             Platform
           </h4>
-          <span className="rounded-md bg-slate-600 px-2 text-sm font-light text-slate-400">
+          <span className="text-title rounded-md bg-slate-600 px-2 text-sm font-light">
             PC
           </span>
         </div>
@@ -35,7 +35,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
           <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
             Format
           </h4>
-          <span className="text-sm font-light text-slate-400">
+          <span className="text-title text-sm font-light">
             {tournament.team_size}x{tournament.team_size}
           </span>
         </div>
@@ -43,7 +43,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
           <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
             Entry Fee
           </h4>
-          <span className="text-sm font-light text-slate-400">
+          <span className="text-title text-sm font-light">
             ${' '}
             <span className="font-display">
               {toCurrency(tournament.entry_fee)}
@@ -55,7 +55,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
           <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
             Potential Prize Pool
           </h4>
-          <span className="text-sm font-light text-slate-400">
+          <span className="text-title text-sm font-light">
             ${' '}
             <span className="font-display">
               {toCurrency(
@@ -72,9 +72,7 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
           <h4 className="text-body mb-2 text-sm leading-none tracking-wide">
             Map
           </h4>
-          <span className="text-sm font-light text-slate-400">
-            Summoner Rift
-          </span>
+          <span className="text-title text-sm font-light">Summoner Rift</span>
         </div>
       </div>
     </div>

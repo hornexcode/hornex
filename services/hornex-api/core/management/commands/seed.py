@@ -21,7 +21,7 @@ class Command(BaseCommand):
 def create_superuser():
     logger.info("Creating admin superuser...")
     user = User.objects.create_superuser(
-        email="admin@hornexcode.com", name="Admin", password="admin"
+        email="admin@hornex.gg", name="Admin", password="admin"
     )
     logger.info("Admin superuser created!", email=user.email, password="admin")
     return user
