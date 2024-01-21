@@ -28,12 +28,8 @@
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-simple-import-sort": "10.0.0",
-    "husky": "7.0.4",
     "prettier": "2.5.0",
     "prettier-eslint": "13.0.0",
     "typescript": "5.0.2"
-  },
-  "dependencies": {
-    "@react-email/components": "^0.0.12"
   }
 }
