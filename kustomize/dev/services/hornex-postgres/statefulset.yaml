@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hornex-postgres
+spec:
+  serviceName: hornex-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hornex-postgres
+  template:
+    metadata:
+      labels:
+        app: hornex-postgres
+    spec:
+      containers:
+      - name: hornex-postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+          name: sql
+        volumeMounts:
+        - name: postgres
+          mountPath: /data
+        env:
+        - name: PGDATA
+          value: /data
+        - name: POSTGRES_DB
+          value: hornex
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
