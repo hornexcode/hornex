@@ -1,11 +1,16 @@
+import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
 import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
-import { Registration, TeamCheckInStatus, Tournament } from '@/lib/models';
+import { TeamCheckInStatus, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import { isCheckInClosed, toCurrency } from '@/lib/utils';
-import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
+import {
+  getCheckInCountdownValue,
+  isCheckInClosed,
+  isCheckInOpen,
+  toCurrency,
+} from '@/lib/utils';
 import classnames from 'classnames';
 import { CheckCheckIcon, RefreshCcw } from 'lucide-react';
 import moment from 'moment';
@@ -19,24 +24,20 @@ const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
 );
 const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
 
-const imageLoader = ({ src }: any) => {
-  return `https://placehold.co/${src}`;
-};
-
-type TournamentHeadlineProps = {
-  tournament: Tournament;
-  connectedGameId?: GameID;
-  registration?: Registration;
-  isCheckedIn?: boolean;
-};
-
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   tournament: initialTournament,
   connectedGameId,
   registration,
   isCheckedIn: initialIsCheckedIn,
 }) => {
-  console.log('🚀 initial rendering...');
+  // remove
+  console.log('🚀 initial rendering...', {
+    initialTournament,
+    connectedGameId,
+    registration,
+    initialIsCheckedIn,
+  });
+
   const { openModal } = useModal();
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -50,30 +51,26 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   });
 
   if (tournamentData && !error) {
+    // remove
     console.log('🚀 updating touranment...');
     tournament = tournamentData;
   }
 
-  function isCheckInOpen(tournament: Tournament): boolean {
-    const checkInOpensAt = +new Date(tournament.check_in_opens_at);
-    const checkInClosesAt = +new Date(tournament.check_in_closes_at);
-    const now = +new Date();
-    return now > checkInOpensAt && now < checkInClosesAt;
-  }
-
   // Controll the check in state
   useEffect(() => {
+    // remove
     console.log('👻 useEffect...');
-    const isOpen = isCheckInOpen(tournament);
-    setCheckInOpen(isOpen); // async
+    const isOpen = isCheckInOpen(tournament) && !isCheckInClosed(tournament);
+    setCheckInOpen(isOpen);
 
     const now = +new Date();
     // if check in is not open and the check in opens in the future
-    if (!isOpen && now < +new Date(tournament.check_in_closes_at)) {
+    if (!isOpen && now < +new Date(tournament.check_in_duration * 60 * 1000)) {
+      // remove
       console.log('⏳ setTimeout...');
       // set a timeout to update the state when the check in opens
       const interval = setTimeout(() => {
-        setCheckInOpen(isCheckInOpen(tournament));
+        setCheckInOpen(isOpen);
       }, +new Date(tournament.check_in_opens_at) - now);
       // avoid memory leak
       return () => clearTimeout(interval);
@@ -135,6 +132,9 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
       tournamentId: tournament.id,
       teamId: registration?.team,
     });
+    // remove
+    console.log('❌ Error cehecking-in user', { error });
+
     if (!error) {
       setCheckedIn(true);
       checkInStatusMutate(checkInStatusData);
@@ -297,7 +297,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                     <div className="mb-1 mr-2 flex items-center">
                       <div className="text-title font-display text-sm">
                         <Countdown
-                          date={new Date(tournament.check_in_closes_at)}
+                          date={getCheckInCountdownValue(tournament)}
                         />
                       </div>
                     </div>

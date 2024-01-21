@@ -24,16 +24,23 @@ export function stringToDate(date: string): Date {
 
 export function isCheckInOpen(tournament: Tournament): boolean {
   const now = +new Date();
-  return (
-    +new Date(tournament.check_in_opens_at) < now &&
-    +new Date(tournament.check_in_closes_at) > now
-  );
+  const checkInOpensAt = +new Date(tournament.check_in_opens_at);
+  const checkInClosesAt =
+    checkInOpensAt + tournament.check_in_duration * 60 * 1000;
+  return checkInOpensAt < now && checkInClosesAt > now;
 }
 
 export function isCheckInClosed(tournament: Tournament): boolean {
   const now = +new Date();
-  return (
-    +new Date(tournament.check_in_opens_at) < now &&
-    +new Date(tournament.check_in_closes_at) < now
+  const checkInOpensAt = +new Date(tournament.check_in_opens_at);
+  const checkInClosesAt =
+    checkInOpensAt + tournament.check_in_duration * 60 * 1000;
+  return checkInOpensAt < now && checkInClosesAt < now;
+}
+
+export function getCheckInCountdownValue(tournament: Tournament): Date {
+  return new Date(
+    +new Date(tournament.check_in_opens_at) +
+      tournament.check_in_duration * 60 * 1000
   );
 }
