@@ -1,12 +1,7 @@
-from datetime import datetime as dt
-from datetime import timedelta as td
-from datetime import timezone
-
-from django.urls import include, path, reverse
+from django.urls import include, path
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.tournaments.models import Tournament
 from apps.users.models import User
 
 
