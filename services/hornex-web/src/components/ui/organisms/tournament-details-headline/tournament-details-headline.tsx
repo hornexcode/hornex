@@ -61,16 +61,16 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
     // remove
     console.log('👻 useEffect...');
     const isOpen = isCheckInOpen(tournament) && !isCheckInClosed(tournament);
-    setCheckInOpen(isOpen);
+    // setCheckInOpen(isOpen);
 
     const now = +new Date();
     // if check in is not open and the check in opens in the future
-    if (!isOpen && now < +new Date(tournament.check_in_duration * 60 * 1000)) {
+    if (!isOpen) {
       // remove
       console.log('⏳ setTimeout...');
       // set a timeout to update the state when the check in opens
       const interval = setTimeout(() => {
-        setCheckInOpen(isOpen);
+        setCheckInOpen(true);
       }, +new Date(tournament.check_in_opens_at) - now);
       // avoid memory leak
       return () => clearTimeout(interval);
