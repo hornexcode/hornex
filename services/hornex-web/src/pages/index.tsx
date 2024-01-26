@@ -167,7 +167,7 @@ export default function HomePage() {
           <div className="mb-8 flex flex-col items-center">
             <Image src={BullHorn} alt="horn" width={128} height={128} />
           </div>
-          <h1 className="mb-4 text-4xl font-extrabold uppercase leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-5xl">
+          <h1 className="text-body mb-4 text-4xl font-extrabold uppercase leading-none tracking-tight dark:text-white md:text-5xl lg:text-5xl">
             <span className="text-amber-400">get paid</span> playing your
             favorite games
           </h1>
@@ -196,7 +196,7 @@ export default function HomePage() {
             </Link>
             {/* <a
               href="#"
-              className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-center text-base font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+              className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-center text-base font-medium text-body hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-800"
             >
               <svg
                 className="-ml-1 mr-2 h-5 w-5"
@@ -213,7 +213,7 @@ export default function HomePage() {
       </section>
 
       <section id="supported-games" className="md:py-15 bg-light-dark py-14">
-        <div className="container">
+        <div className="container mx-auto">
           <div className="px-4 text-center md:text-left">
             <h2 className="text-3xl font-extrabold leading-none tracking-tight dark:text-slate-200 md:text-2xl">
               {' '}
@@ -246,7 +246,7 @@ export default function HomePage() {
             {/* csgo */}
             <Link href={routes.compete} className="group">
               <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('/images/cs-go/ct-bot.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
-                <div className="absolute inset-0 rounded-md bg-purple-600/60"></div>
+                <div className="absolute inset-0 rounded-md bg-gray-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
                     src={CsGoLogo}
@@ -255,8 +255,8 @@ export default function HomePage() {
                     alt="League of Legends"
                   />
                 </div>
-                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-purple-600/70 p-4 text-center">
-                  <h4 className="text-xl font-bold text-white">Jogar</h4>
+                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-gray-600/70 p-4 text-center">
+                  <h4 className="text-xl font-bold text-white">Em breve</h4>
                 </div>
               </div>
             </Link>
@@ -264,7 +264,7 @@ export default function HomePage() {
             {/* free fire */}
             <Link href={routes.compete} className="group">
               <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('/images/free-fire/battle-royale.jpg')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
-                <div className="absolute inset-0 rounded-md bg-red-600/60"></div>
+                <div className="absolute inset-0 rounded-md bg-gray-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
                     src={FreeFireLogo}
@@ -273,8 +273,8 @@ export default function HomePage() {
                     alt="League of Legends"
                   />
                 </div>
-                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-red-600/70 p-4 text-center">
-                  <h4 className="text-xl font-bold text-white">Jogar</h4>
+                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-gray-600/70 p-4 text-center">
+                  <h4 className="text-xl font-bold text-white">Em breve</h4>
                 </div>
               </div>
             </Link>
@@ -282,7 +282,7 @@ export default function HomePage() {
             {/* rocket league */}
             <Link href={routes.compete} className="group">
               <div className="shadow-main relative h-[400px] w-full rounded-lg bg-[url('/images/bg-rocket-league.webp')] bg-cover bg-center bg-no-repeat transition-all group-hover:scale-105">
-                <div className="absolute inset-0 rounded-md bg-green-600/60"></div>
+                <div className="absolute inset-0 rounded-md bg-gray-600/60"></div>
                 <div className="absolute bottom-0 top-0 mx-0 my-auto h-full w-full text-center">
                   <Image
                     src={RocketLeagueLogo}
@@ -291,8 +291,8 @@ export default function HomePage() {
                     alt="League of Legends"
                   />
                 </div>
-                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-green-600/70 p-4 text-center">
-                  <h4 className="text-xl font-bold text-white">Jogar</h4>
+                <div className="absolute bottom-0 mx-auto w-full rounded-b bg-gray-600/70 p-4 text-center">
+                  <h4 className="text-xl font-bold text-white">Em breve</h4>
                 </div>
               </div>
             </Link>
@@ -423,7 +423,7 @@ export default function HomePage() {
               <input
                 type="email"
                 id="email"
-                className="dark:shadow-sm-light dark:white block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-sky-500 dark:focus:ring-sky-500"
+                className="dark:shadow-sm-light dark:white block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-body shadow-sm outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-sky-500 dark:focus:ring-sky-500"
                 placeholder="name@hornex.com"
                 required
               />
@@ -453,7 +453,7 @@ export default function HomePage() {
               <textarea
                 id="message"
                 rows={6}
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500 dark:border-sky-400 dark:bg-white dark:text-white dark:placeholder-gray-400 dark:focus:border-sky-500 dark:focus:ring-sky-500"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-body shadow-sm outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500 dark:border-sky-400 dark:bg-white dark:text-white dark:placeholder-gray-400 dark:focus:border-sky-500 dark:focus:ring-sky-500"
                 placeholder="Leave a comment..."
               ></textarea>
             </div>
@@ -467,11 +467,11 @@ export default function HomePage() {
         </div>
       </section> */}
 
-      <footer className="mx-auto border-t border-gray-800 bg-white p-6 dark:bg-gray-900 md:p-14">
+      <footer className="dark:bg-dark mx-auto border-t border-gray-800 bg-white p-6 md:p-14">
         <div className="mx-auto w-full max-w-screen-xl">
           <div className="grid grid-cols-2 gap-6 py-6 md:grid-cols-6">
             <div className="col-span-2">
-              <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
+              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
                 Hornex
               </h2>
               <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -507,7 +507,7 @@ export default function HomePage() {
             </div>
 
             <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
+              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
                 Help center
               </h2>
               <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -524,7 +524,7 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
+              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
                 Account
               </h2>
               <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -541,7 +541,7 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
+              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
                 Legal
               </h2>
               <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -561,7 +561,7 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase text-gray-900 dark:text-white">
+              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
                 Company
               </h2>
               <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -582,7 +582,7 @@ export default function HomePage() {
             <div className="mt-4 flex items-center space-x-5 sm:justify-center md:mt-0">
               <a
                 href="#"
-                className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="hover:text-body text-gray-400 dark:hover:text-white"
               >
                 <svg
                   className="h-4 w-4"
@@ -598,7 +598,7 @@ export default function HomePage() {
               <a
                 href="https://twitter.com/hornexgg"
                 target="_blank"
-                className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="hover:text-body text-gray-400 dark:hover:text-white"
               >
                 <svg
                   className="h-4 w-4"
@@ -618,7 +618,7 @@ export default function HomePage() {
               <a
                 href="https://www.instagram.com/hornexgg/"
                 target="_blank"
-                className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="hover:text-body text-gray-400 dark:hover:text-white"
               >
                 <svg
                   className="h-4 w-4"

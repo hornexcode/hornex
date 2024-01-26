@@ -61,16 +61,16 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
     // remove
     console.log('👻 useEffect...');
     const isOpen = isCheckInOpen(tournament) && !isCheckInClosed(tournament);
-    setCheckInOpen(isOpen);
+    // setCheckInOpen(isOpen);
 
     const now = +new Date();
     // if check in is not open and the check in opens in the future
-    if (!isOpen && now < +new Date(tournament.check_in_duration * 60 * 1000)) {
+    if (!isOpen) {
       // remove
       console.log('⏳ setTimeout...');
       // set a timeout to update the state when the check in opens
       const interval = setTimeout(() => {
-        setCheckInOpen(isOpen);
+        setCheckInOpen(true);
       }, +new Date(tournament.check_in_opens_at) - now);
       // avoid memory leak
       return () => clearTimeout(interval);
@@ -144,7 +144,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
   return (
     <>
-      {/* debugger */}
+      {/* debugger
       <div className="bg-light-dark mb-4 block p-5 text-sm text-amber-500">
         <div className="text-bold mb-2 text-white">[ Debug ]</div>
         <table className="">
@@ -179,9 +179,9 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </td>
           </tr>
         </table>
-      </div>
+      </div> */}
       {/* end debugger */}
-      <div className="3xl:h-[448px] relative h-36 w-full sm:h-44 md:h-64 xl:h-52">
+      <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image
           // loader={imageLoader}
           // src="1920x1080/232f48/jpg"
