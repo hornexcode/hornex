@@ -57,7 +57,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   );
 
   return (
-    <div className="p-8">
+    <div className="container mx-auto pt-8">
       {/* connect account */}
       {!gameId && (
         <div className="bg-light-dark shadow-card mb-4 p-6">
