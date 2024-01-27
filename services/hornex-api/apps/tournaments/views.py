@@ -19,6 +19,7 @@ from apps.leagueoflegends.models import Tournament as LeagueOfLegendsTournament
 from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
+from apps.leagueoflegends.tasks import check_in_challonge_participant
 from apps.teams.models import Membership, Team
 from apps.tournaments import errors
 from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
@@ -193,6 +194,9 @@ def check_in(request, *args, **kwargs):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if not tournament.is_checkin_open():
+            raise ValidationError({"error": errors.CheckinNotOpenError})
+
         user = request.user
         if user not in team.members.all():
             raise ValidationError({"error": errors.UserDoesNotBelongToTeamError})
@@ -202,6 +206,14 @@ def check_in(request, *args, **kwargs):
             raise ValidationError({"error": errors.UserAlreadyCheckedInError})
 
         Checkin.objects.create(tournament=tournament, team=team, user=user)
+
+        if Checkin.objects.filter(tournament=tournament, team=team).count() == 5:
+            check_in_challonge_participant.delay(
+                challonge_tournament_id=tournament.challonge_id,
+                tournament_id=tournament.id,
+                team_id=team.id,
+            )
+
         return Response(
             {"message": "Checkin successful"},
             status=status.HTTP_200_OK,

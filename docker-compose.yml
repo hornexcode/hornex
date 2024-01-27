@@ -44,7 +44,7 @@ services:
   hornex-celery:
     container_name: hornex-celery
     build:
-      context: ./services/hornex-api
+      context: ./services/hornex-api/cmd/celery
       dockerfile: Dockerfile
       target: development
     command: celery -A core worker -l info

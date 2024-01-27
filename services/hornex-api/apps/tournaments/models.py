@@ -245,6 +245,20 @@ class Tournament(BaseModel):
 
         return accepted_registrations + pending_registrations >= self.max_teams
 
+    def is_checkin_open(self) -> bool:
+        if self.phase != Tournament.PhaseType.REGISTRATION_OPEN:
+            return False
+
+        now = datetime.now(tz=UTC)
+
+        if not self.check_in_opens_at or not self.check_in_duration:
+            return False
+
+        return (
+            now > self.check_in_opens_at
+            and now < self.check_in_opens_at + timedelta(minutes=self.check_in_duration)
+        )
+
     @abstractmethod
     def validate_participants(self):
         raise NotImplementedError
