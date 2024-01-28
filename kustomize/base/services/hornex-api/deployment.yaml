@@ -16,3 +16,5 @@ spec:
       containers:
       - image: hornex-api:latest
         name: hornex-api
+        args:
+        - runsetup

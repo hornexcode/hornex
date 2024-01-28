@@ -1,0 +1,10 @@
+# https://www.rabbitmq.com/kubernetes/operator/install-operator.html
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: rabbitmq
+    repo: https://charts.bitnami.com/bitnami
+    # version: v26.0.0
+    releaseName: rabbitmq-cluster-operator
+    namespace: default
+    valuesFile: values.yaml

@@ -1,8 +1,10 @@
 import os
+from collections.abc import Iterable
 from typing import (
     ClassVar,
     NotRequired,
     Optional,
+    Self,
     TypedDict,
     Unpack,
     cast,
@@ -23,7 +25,49 @@ headers = {
 }
 
 
-class Tournament(dict[str, any]):
+class ValueObject(dict[str, any]):
+    @classmethod
+    def contruct_from(cls, values: dict[str, any]) -> Self:
+        klass = cls()
+        for key, value in values.items():
+            klass.__setitem__(key, value)
+            klass.__setattr__(key, value)
+
+        return cast(ValueObject, klass)
+
+
+class Participant(ValueObject):
+    active: bool
+    checked_in_at: str | None
+    created_at: str
+    final_rank: str | None
+    group_id: str | None
+    icon: str | None
+    id: int
+    invitation_id: str | None
+    invite_email: str | None
+    misc: str | None
+    name: str
+    on_waiting_list: bool
+    seed: int
+    tournament_id: int
+    updated_at: str
+    challonge_username: str | None
+    challonge_email_address_verified: str | None
+    removable: bool
+    participatable_or_invitation_attached: bool
+    confirm_remove: bool
+    invitation_pending: bool
+    display_name_with_invitation_email_address: str
+    email_hash: str | None
+    username: str | None
+    attached_participatable_portrait_url: str | None
+    can_check_in: bool
+    checked_in: bool
+    reactivatable: bool
+
+
+class Tournament(ValueObject):
     OBJECT_NAME: ClassVar[str] = "tournament"
 
     class CreateParams(TypedDict):
@@ -179,7 +223,7 @@ class Tournament(dict[str, any]):
         return cast("Tournament", cls.construct_from(resp.json()[cls.OBJECT_NAME]))
 
     @classmethod
-    def list(cls) -> list["Tournament"]:
+    def list(cls) -> Iterable["Tournament"]:
         """
         Retrieve a set of tournaments created with your account.
         """
@@ -193,9 +237,25 @@ class Tournament(dict[str, any]):
             raise cls.on_response_error(resp)
 
         results = resp.json()
-        return [
-            cls.construct_from(tournament[cls.OBJECT_NAME]) for tournament in results
-        ]
+        return cast(
+            Iterable["Tournament"],
+            [cls.construct_from(tournament[cls.OBJECT_NAME]) for tournament in results],
+        )
+
+    @classmethod
+    def checkin_participant(cls, tournament: int, participant: int):
+        """
+        Checks a participant in, setting checked_in_at to the current time.
+        """
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants/{participant}/check_in.json?api_key={challonge.api_key}",
+            headers=headers,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+        return
 
     @classmethod
     def add_participants(
@@ -217,7 +277,7 @@ class Tournament(dict[str, any]):
         return
 
     @classmethod
-    def list_participants(cls, tournament: int):
+    def list_participants(cls, tournament: int) -> Iterable[Participant]:
         """
         Retrieve a set of participants created with your account.
         """
@@ -231,7 +291,10 @@ class Tournament(dict[str, any]):
             raise cls.on_response_error(resp)
 
         results = resp.json()
-        return results
+        return cast(
+            Iterable["Participant"],
+            [Participant.contruct_from(participant) for participant in results],
+        )
 
     @classmethod
     def get_participant(cls, tournament: int, participant: int):

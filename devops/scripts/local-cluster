@@ -16,6 +16,12 @@ function main() (
         --registry-create=registry:0.0.0.0:5432 \
         --port="8000:80@loadbalancer" \
         --timeout=1m
+
+      # Install Traefik Resource Definitions:
+      kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+
+      # Install RBAC for Traefik:
+      kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
       ;;
 
     down)

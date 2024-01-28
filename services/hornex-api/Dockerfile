@@ -10,11 +10,13 @@ ENV \
   POETRY_NO_INTERACTION=true \
   POETRY_VERSION=1.7.1 \
   PYTHONDONTWRITEBYTECODE=1 \
-  POETRY_VIRTUALENVS_CREATE=false \
+  POETRY_VIRTUALENVS_IN_PROJECT=true \
+  PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus_multiproc_dir \
   PYTHONUNBUFFERED=1
 
-# POETRY_VIRTUALENVS_IN_PROJECT=true \
-# RUN mkdir --mode=777 ${PROMETHEUS_MULTIPROC_DIR}
+RUN mkdir --mode=777 ${PROMETHEUS_MULTIPROC_DIR}
+
+ENTRYPOINT ["./docker-entry.sh"]
 
 RUN pip install "poetry==${POETRY_VERSION}"
 
@@ -22,7 +24,7 @@ RUN pip install "poetry==${POETRY_VERSION}"
 # Used for development in Tilt
 FROM base as development
 
-WORKDIR /src
+WORKDIR /src/
 
 ENV \
   PATH=/src/.venv/bin:${PATH} \
@@ -36,13 +38,7 @@ RUN ln -s /src/static /static
 
 COPY ./pyproject.toml ./poetry.lock /src/
 
-RUN poetry install
-
-COPY ./docker-entrypoint.sh /docker-entrypoint.sh
-
 COPY . .
-
-ENTRYPOINT ["/docker-entrypoint.sh", "runsetup"]
 
 # -------------------------------------------------------------------------------
 # Runtime prod/stage/etc
@@ -52,7 +48,7 @@ WORKDIR /app/
 
 ENV PATH=/app/.venv/bin:${PATH}
 
-COPY services/hornex-api/pyproject.toml services/hornex-api/poetry.lock /app/
+COPY ./pyproject.toml ./poetry.lock /app/
 RUN poetry install --only=main
 
 COPY services/hornex-api /app/

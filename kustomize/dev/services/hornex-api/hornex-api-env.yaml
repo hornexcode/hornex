@@ -10,6 +10,8 @@ spec:
       containers:
       - name: hornex-api
         env:
+          - name: CELERY_BROKER_URL
+            value: amqp://hornex:hornex@rabbitmq-cluster-operator:5672
           - name: DJANGO_ALLOWED_HOSTS
             value: localhost
           - name: HORNEX_SQL_HOST

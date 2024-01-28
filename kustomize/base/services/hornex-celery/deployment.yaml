@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hornex-celery
+  name: hornex-celery
+spec:
+  selector:
+    matchLabels:
+      app: hornex-celery
+  template:
+    metadata:
+      labels:
+        app: hornex-celery
+    spec:
+      containers:
+      - image: hornex-api:latest
+        name: hornex-celery
+        args:
+        - celery

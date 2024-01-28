@@ -1,0 +1,7 @@
+auth:
+  username: hornex
+  password: hornex
+
+extraEnvVars:
+  - name: RABBITMQ_ERLANG_COOKIE
+    value: hornex
