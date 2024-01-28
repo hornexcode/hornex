@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: hornex-api
-  name: hornex-api
+    app: hornex-celery
+  name: hornex-celery
 spec:
   selector:
     matchLabels:
-      app: hornex-api
+      app: hornex-celery
   template:
     metadata:
       labels:
-        app: hornex-api
+        app: hornex-celery
     spec:
       containers:
       - image: hornex-api:latest
-        name: hornex-api
+        name: hornex-celery
         args:
-        - runsetup
+        - celery

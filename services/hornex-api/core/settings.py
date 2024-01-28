@@ -194,7 +194,9 @@ SIMPLE_JWT = {
 APPEND_SLASH = False
 
 # CELERY CONFIG
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "amqp://guest:guest@localhost:5672/")
+CELERY_BROKER_URL = os.getenv(
+    "CELERY_BROKER_URL", "amqp://hornex:hornex@localhost:5672/"
+)
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_CACHE_BACKEND = "default"

@@ -2,13 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: hornex-api
-  name: hornex-api
+    app: hornex-celery
+  name: hornex-celery
 spec:
   template:
     spec:
       containers:
-      - name: hornex-api
+      - name: hornex-celery
         env:
           - name: CELERY_BROKER_URL
             value: amqp://hornex:hornex@rabbitmq-cluster-operator:5672

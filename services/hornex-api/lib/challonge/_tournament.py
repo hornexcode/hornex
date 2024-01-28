@@ -1,7 +1,7 @@
 import os
+from collections.abc import Iterable
 from typing import (
     ClassVar,
-    List,
     NotRequired,
     Optional,
     Self,
@@ -223,7 +223,7 @@ class Tournament(ValueObject):
         return cast("Tournament", cls.construct_from(resp.json()[cls.OBJECT_NAME]))
 
     @classmethod
-    def list(cls) -> list["Tournament"]:
+    def list(cls) -> Iterable["Tournament"]:
         """
         Retrieve a set of tournaments created with your account.
         """
@@ -237,9 +237,10 @@ class Tournament(ValueObject):
             raise cls.on_response_error(resp)
 
         results = resp.json()
-        return [
-            cls.construct_from(tournament[cls.OBJECT_NAME]) for tournament in results
-        ]
+        return cast(
+            Iterable["Tournament"],
+            [cls.construct_from(tournament[cls.OBJECT_NAME]) for tournament in results],
+        )
 
     @classmethod
     def checkin_participant(cls, tournament: int, participant: int):
@@ -276,7 +277,7 @@ class Tournament(ValueObject):
         return
 
     @classmethod
-    def list_participants(cls, tournament: int) -> List[Participant]:
+    def list_participants(cls, tournament: int) -> Iterable[Participant]:
         """
         Retrieve a set of participants created with your account.
         """
@@ -291,7 +292,7 @@ class Tournament(ValueObject):
 
         results = resp.json()
         return cast(
-            List["Participant"],
+            Iterable["Participant"],
             [Participant.contruct_from(participant) for participant in results],
         )
 
