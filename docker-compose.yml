@@ -17,14 +17,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+      
   hornex-api:
     container_name: hornex-api
-    command: python manage.py runserver 0.0.0.0:8000
     restart: always
     build:
       context: ./services/hornex-api
       dockerfile: Dockerfile
-      target: development
+      target: local
     volumes:
       - ./services/hornex-api:/src
     ports:
@@ -34,17 +34,11 @@ services:
     depends_on:
       hornex-postgres:
         condition: service_healthy
-  # hornex-redis:
-  #   container_name: hornex-redis
-  #   image: redis:6.2.5
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - redis_data:/data
+
   hornex-celery:
     container_name: hornex-celery
     build:
-      context: ./services/hornex-api/cmd/celery
+      context: ./services/hornex-api
       dockerfile: Dockerfile
       target: development
     command: celery -A core worker -l info
@@ -52,35 +46,36 @@ services:
       - ./services/hornex-api:/usr/src/app
     env_file:
       - ./services/hornex-api/env/dev.env
+
   hornex-celery-beat:
     container_name: hornex-celery-beat
     build:
       context: ./services/hornex-api
       dockerfile: Dockerfile
-      target: development
-    command: celery -A core beat -l info
+      target: beat
     volumes:
       - ./services/hornex-api:/usr/src/app
     env_file:
       - ./services/hornex-api/env/dev.env
     depends_on:
       - hornex-rabbitmq
-  # hornex-celery-flower:
-  #   container_name: hornex-celery-flower
-  #   build:
-  #     context: ./services/hornex-api
-  #     dockerfile: Dockerfile
-  #     target: development
-  #   command: celery -A hornex flower
-  #   volumes:
-  #     - ./services/hornex-api:/usr/src/app
-  #   env_file:
-  #     - ./services/hornex-api/env/dev.env
-  #   ports:
-  #     - "5555:5555"
-  #   depends_on:
-  #     - hornex-postgres
-  #     - hornex-redis
+
+  hornex-celery-flower:
+    container_name: hornex-celery-flower
+    build:
+      context: ./services/hornex-api
+      dockerfile: Dockerfile
+      target: flower
+    volumes:
+      - ./services/hornex-api:/usr/src/app
+    env_file:
+      - ./services/hornex-api/env/dev.env
+    ports:
+      - "5555:5555"
+    depends_on:
+      - hornex-celery
+      - hornex-rabbitmq
+
   # hornex-nginx:
   #   container_name: hornex-nginx
   #   build:
@@ -90,6 +85,7 @@ services:
   #     - "80:80"
   #   depends_on:
   #     - hornex-api
+
   hornex-rabbitmq:
     container_name: hornex-rabbitmq
     image: rabbitmq:3.9.7-management
