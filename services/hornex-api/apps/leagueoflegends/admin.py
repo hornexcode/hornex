@@ -1,6 +1,17 @@
 from django.contrib import admin
 
-from apps.leagueoflegends.models import LeagueEntry, Session, Summoner, Tournament
+from apps.leagueoflegends.models import (
+    LeagueEntry,
+    Provider,
+    Session,
+    Summoner,
+    Tournament,
+)
 
-admin.site.register(Tournament)
-admin.site.register([LeagueEntry, Summoner, Session])
+
+@admin.register(Tournament)
+class TournamentAdmin(admin.ModelAdmin):
+    list_display = ["name", "challonge_tournament_id", "phase"]
+
+
+admin.site.register([LeagueEntry, Summoner, Session, Provider])

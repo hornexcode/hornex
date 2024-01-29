@@ -19,7 +19,7 @@ from apps.leagueoflegends.models import Tournament as LeagueOfLegendsTournament
 from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
-from apps.leagueoflegends.tasks import check_in_challonge_participant
+from apps.leagueoflegends.tasks import participant_registered
 from apps.teams.models import Membership, Team
 from apps.tournaments import errors
 from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
@@ -207,12 +207,11 @@ def check_in(request, *args, **kwargs):
 
         Checkin.objects.create(tournament=tournament, team=team, user=user)
 
-        if Checkin.objects.filter(tournament=tournament, team=team).count() == 5:
-            check_in_challonge_participant.delay(
-                challonge_tournament_id=tournament.challonge_id,
-                tournament_id=tournament.id,
-                team_id=team.id,
-            )
+        participant_registered(
+            tournament_id=tournament.id,
+            team_id=team.id,
+            user_id=user.id,
+        )
 
         return Response(
             {"message": "Checkin successful"},
@@ -299,17 +298,6 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
             return Response(
                 {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-        # Create a mailer interface to do this
-        # t = Template(render_to_string("registration-success.html"))
-        # resend.Emails.send(
-        #     {
-        #         "from": "onboarding@resend.dev",
-        #         "to": "pedro357bm@gmail.com",
-        #         "subject": "Tournament registration",
-        #         "html": t.render(Context({"tournament": tournament})),
-        #     }
-        # )
 
         return Response(
             RegistrationReadSerializer(registration).data,
