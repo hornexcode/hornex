@@ -1,10 +1,4 @@
-import os
-from typing import (
-    ClassVar,
-    TypedDict,
-    Unpack,
-    cast,
-)
+from typing import NotRequired, Optional, Self, TypedDict, Unpack, cast
 
 import structlog
 from requests import request
@@ -20,36 +14,82 @@ headers = {
 }
 
 
-class Participant(dict[str, any]):
-    OBJECT_NAME: ClassVar[str] = "tournament"
-
+class ValueObject(dict[str, any]):
     @classmethod
-    def class_url(cls) -> str:
-        return "%s/v1/%ss.json?api_key=%s" % (  # noqa
-            os.getenv("CHALLONGE_API_BASE_URL"),
-            cls.OBJECT_NAME,
-            challonge.api_key,
-        )
+    def contruct_from(cls, values: dict[str, any]) -> Self:
+        klass = cls()
+        for key, value in values.items():
+            klass.__setitem__(key, value)
+            klass.__setattr__(key, value)
 
+        return cast(ValueObject, klass)
+
+
+class Participant(ValueObject):
     class CreateParams(TypedDict):
-        tournament: str
-        participants: list[str]
+        name: str
+        misc: str
+        seed: NotRequired[int]
+
+    active: bool
+    checked_in_at: Optional[str]
+    created_at: str
+    final_rank: Optional[any]
+    group_id: Optional[int]
+    icon: Optional[str]
+    id: int
+    invitation_id: Optional[int]
+    invite_email: Optional[str]
+    misc: Optional[str]
+    name: str
+    on_waiting_list: bool
+    seed: int
+    tournament_id: int
+    updated_at: str
+    challonge_username: Optional[str]
+    challonge_email_address_verified: Optional[str]
+    removable: bool
+    participatable_or_invitation_attached: bool
+    confirm_remove: bool
+    invitation_pending: bool
+    display_name_with_invitation_email_address: str
+    email_hash: Optional[str]
+    username: Optional[str]
+    attached_participatable_portrait_url: Optional[str]
+    can_check_in: bool
+    checked_in: bool
+    reactivatable: bool
 
     @classmethod
-    def create(cls, **params: Unpack["Participant.CreateParams"]) -> int:
+    def on_response_error(cls, resp):
+        # TODO: handle errors raising error
+        try:
+            errors = resp.json().get("errors", [])
+            if errors:
+                return Exception(errors)
+            return Exception("Internal Server Error")
+        except Exception as e:
+            logger.error("Failed to handle error", error=e)
+            return Exception("Internal Server Error")
+
+    @classmethod
+    def create(
+        cls, tournament: int, **params: Unpack["Participant.CreateParams"]
+    ) -> "Participant":
+        """
+        Adds participants and/or seeds to a tournament (up until it is started)
+        """
+        logger.debug("PARAMS", data=params)
+        logger.debug("REFRESH 1")
+
         resp = request(
-            method="post",
-            url=cls.class_url(),
-            params=params,
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants.json?api_key={challonge.api_key}",
+            headers=headers,
+            json=params,
         )
+
         if not resp.ok:
-            logger.warn(
-                "Failed to request",
-                status=resp.status_code,
-                error=resp.json(),
-            )
-            raise Exception("Internal Server Error")
+            raise cls.on_response_error(resp)
 
-        logger.info("Created participant", data=resp.json())
-
-        return cast(int, resp.json())
+        return cast(Participant, cls.contruct_from(resp.json()))

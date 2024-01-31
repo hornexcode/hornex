@@ -350,6 +350,25 @@ class Tournament(ValueObject):
         return
 
     @classmethod
+    def add_participant(
+        cls, tournament: int, **params: Unpack["Tournament.AddParticipantsParams"]
+    ):
+        """
+        Adds participants and/or seeds to a tournament (up until it is started)
+        """
+
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants.json?api_key={challonge.api_key}",
+            headers=headers,
+            json=params,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+        return
+
+    @classmethod
     def list_participants(cls, tournament: int) -> Iterable[Participant]:
         """
         Retrieve a set of participants created with your account.

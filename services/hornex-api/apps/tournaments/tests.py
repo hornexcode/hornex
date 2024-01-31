@@ -1,3 +1,4 @@
+import time
 from datetime import datetime as dt
 from datetime import timedelta as td
 
@@ -134,8 +135,8 @@ class TestStartTournament(TestCase):
 
         logger.info("Listing matches...")
         matches = ChallongeMatchResourceAPI.list(tournament.challonge_tournament_id)
-
         logger.info("Matches listed", matches=matches)
+
         print("")
         print("")
         print("")
@@ -145,10 +146,6 @@ class TestStartTournament(TestCase):
         print("")
         print("")
         print("")
-
-        logger.info("Checking tournament...")
-        ChallongeTournamentResourceAPI.checkin(tournament.challonge_tournament_id)
-        logger.info("Tournament checked in")
 
         logger.info("Updating match scores...")
         for match in matches:
