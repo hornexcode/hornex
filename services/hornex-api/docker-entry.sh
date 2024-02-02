@@ -24,6 +24,18 @@ function main() (
       --loglevel=INFO \
       --events
     ;;
+  
+  "flower")
+    exec celery \
+      --app core flower \
+      --port=5555
+    ;;
+
+  "beat")
+    exec celery \
+      --app core beat \
+      --loglevel=INFO
+    ;;
 
   "")
     ;;

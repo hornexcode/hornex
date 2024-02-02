@@ -36,7 +36,7 @@
     "ui.navigation.importShortcut": "Definition"
   },
   "go.toolsManagement.autoUpdate": true,
-  // "prettier.configPath": "./eslintrc.js",
+  "prettier.configPath": "./eslintrc.js",
   "problems.decorations.enabled": true,
   "protoc": {
     "options": ["--proto_path=${workspaceRoot}/lib/proto"]
@@ -64,7 +64,11 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "[tsx]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit"
+    }
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"

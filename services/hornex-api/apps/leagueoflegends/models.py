@@ -242,8 +242,8 @@ class Tournament(BaseTournament):
                         teams=True,
                     )
                 )
-                self.challonge_id = chllng_trnmnt.id
-                self.challonge_url = chllng_trnmnt.full_challonge_url
+                self.challonge_tournament_id = chllng_trnmnt.id
+                self.challonge_tournament_url = chllng_trnmnt.full_challonge_url
                 self.save()
 
                 return chllng_trnmnt

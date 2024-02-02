@@ -21,6 +21,91 @@ ENTRYPOINT ["./docker-entry.sh"]
 RUN pip install "poetry==${POETRY_VERSION}"
 
 # -------------------------------------------------------------------------------
+# Used for development in docker-compose
+FROM base as local
+
+WORKDIR /src/
+
+ENV \
+  PATH=/src/.venv/bin:${PATH} \
+  GIT_COMMIT=dev \
+  PIP_NO_CACHE_DIR=off \
+  SENTRY_RELEASE=dev \
+  GUNICORN_RELOAD=true \
+  CELERY_RELOAD=true
+
+RUN ln -s /src/static /static
+
+COPY ./pyproject.toml ./poetry.lock /src/
+
+ENTRYPOINT ["./docker-entry.sh", "runsetup"]
+
+COPY . .
+
+# -------------------------------------------------------------------------------
+FROM base as flower
+
+WORKDIR /src/
+
+ENV \
+  PATH=/src/.venv/bin:${PATH} \
+  GIT_COMMIT=dev \
+  PIP_NO_CACHE_DIR=off \
+  SENTRY_RELEASE=dev \
+  GUNICORN_RELOAD=true \
+  CELERY_RELOAD=true
+
+RUN ln -s /src/static /static
+
+COPY ./pyproject.toml ./poetry.lock /src/
+
+ENTRYPOINT ["./docker-entry.sh", "flower"]
+
+COPY . .
+
+# -------------------------------------------------------------------------------
+FROM base as beat
+
+WORKDIR /src/
+
+ENV \
+  PATH=/src/.venv/bin:${PATH} \
+  GIT_COMMIT=dev \
+  PIP_NO_CACHE_DIR=off \
+  SENTRY_RELEASE=dev \
+  GUNICORN_RELOAD=true \
+  CELERY_RELOAD=true
+
+RUN ln -s /src/static /static
+
+COPY ./pyproject.toml ./poetry.lock /src/
+
+ENTRYPOINT ["./docker-entry.sh", "beat"]
+
+COPY . .
+
+# -------------------------------------------------------------------------------
+FROM base as celery
+
+WORKDIR /src/
+
+ENV \
+  PATH=/src/.venv/bin:${PATH} \
+  GIT_COMMIT=dev \
+  PIP_NO_CACHE_DIR=off \
+  SENTRY_RELEASE=dev \
+  GUNICORN_RELOAD=true \
+  CELERY_RELOAD=true
+
+RUN ln -s /src/static /static
+
+COPY ./pyproject.toml ./poetry.lock /src/
+
+ENTRYPOINT ["./docker-entry.sh", "celery"]
+
+COPY . .
+
+# -------------------------------------------------------------------------------
 # Used for development in Tilt
 FROM base as development
 
@@ -37,6 +122,7 @@ ENV \
 RUN ln -s /src/static /static
 
 COPY ./pyproject.toml ./poetry.lock /src/
+
 
 COPY . .
 

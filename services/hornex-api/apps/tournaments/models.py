@@ -57,8 +57,8 @@ class Tournament(BaseModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    challonge_id = models.IntegerField(null=True, blank=True)
-    challonge_url = models.URLField(max_length=500, blank=True)
+    challonge_tournament_id = models.IntegerField(null=True, blank=True)
+    challonge_tournament_url = models.URLField(max_length=500, blank=True)
 
     class Meta:
         ordering = ["-created_at"]

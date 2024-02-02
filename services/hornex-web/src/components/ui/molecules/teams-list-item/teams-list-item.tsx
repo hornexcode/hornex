@@ -19,8 +19,6 @@ import { ComputerDesktopIcon } from '@heroicons/react/20/solid';
 import {
   Cloud,
   CreditCard,
-  Edit2Icon,
-  Edit3Icon,
   EditIcon,
   Gamepad2Icon,
   Github,
@@ -30,14 +28,13 @@ import {
   Mail,
   MenuIcon,
   MessageSquare,
-  MouseIcon,
   Plus,
   PlusCircle,
   Settings,
   TrashIcon,
   UserPlus,
   Users,
-  UsersIcon,
+  UsersIcon
 } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';

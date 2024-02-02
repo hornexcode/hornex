@@ -183,15 +183,15 @@ class Tournament(ValueObject):
         instance.refresh_from(values)
         return instance
 
-    def refresh_from(self, values):
+    @classmethod
+    def refresh_from(cls, values):
         try:
             for k, v in values.items():
-                setattr(self, k, v)
+                cls.__setattr__(k, v)
+                cls.__setitem__(k, v)
         except AttributeError as e:
             logger.warn("Failed to set attribute", values=values)
             raise e
-
-        return self
 
     @classmethod
     def on_response_error(cls, resp):
@@ -206,7 +206,7 @@ class Tournament(ValueObject):
             return Exception("Internal Server Error")
 
     @classmethod
-    def create(cls, **params: Unpack["Tournament.CreateParams"]) -> "Tournament":
+    def create(cls, **params: Unpack["Tournament.CreateParams"]):
         """
         Creates a new tournament
         """
@@ -220,10 +220,12 @@ class Tournament(ValueObject):
         if not resp.ok:
             raise cls.on_response_error(resp)
 
-        return cast("Tournament", cls.construct_from(resp.json()[cls.OBJECT_NAME]))
+        logger.info("Tournament created", resp=resp.json())
+
+        return resp.json()
 
     @classmethod
-    def list(cls) -> Iterable["Tournament"]:
+    def list(cls):
         """
         Retrieve a set of tournaments created with your account.
         """
@@ -236,11 +238,80 @@ class Tournament(ValueObject):
         if not resp.ok:
             raise cls.on_response_error(resp)
 
-        results = resp.json()
-        return cast(
-            Iterable["Tournament"],
-            [cls.construct_from(tournament[cls.OBJECT_NAME]) for tournament in results],
+        return resp.json()
+
+    @classmethod
+    def destroy(cls, tournament: int):
+        """
+        Deletes a tournament along with all its associated records. There is no"
+        " undo, so use with care!
+        """
+        resp = request(
+            "delete",
+            f"https://api.challonge.com/v1/tournaments/{tournament}.json?api_key={challonge.api_key}",
+            headers=headers,
         )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+
+        logger.info("Tournament deleted", resp=resp.json())
+
+        return resp.json()
+
+    @classmethod
+    def checkin(cls, tournament: int):
+        """
+        Starts a tournament, opening up first round matches for score reporting.
+        """
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/process_check_ins.json?api_key={challonge.api_key}",
+            headers=headers,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+
+        return resp.json()
+
+    @classmethod
+    def start(cls, tournament: int):
+        """
+        Starts a tournament, opening up first round matches for score reporting.
+        """
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/start.json?api_key={challonge.api_key}",
+            headers=headers,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+
+        logger.info("Tournament started", resp=resp.json())
+
+        return resp.json()
+
+    classmethod
+
+    def finalize(cls, tournament: int):
+        """
+        Finalizes a tournament that has had all match scores submitted,
+        rendering its results permanent.
+        """
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/finalize.json?api_key={challonge.api_key}",
+            headers=headers,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+
+        logger.info("Tournament finalized", resp=resp.json())
+
+        return resp.json()
 
     @classmethod
     def checkin_participant(cls, tournament: int, participant: int):
@@ -255,6 +326,8 @@ class Tournament(ValueObject):
 
         if not resp.ok:
             raise cls.on_response_error(resp)
+
+        logger.info("Participant checked in", resp=resp.json())
         return
 
     @classmethod
@@ -268,6 +341,25 @@ class Tournament(ValueObject):
         resp = request(
             "post",
             f"https://api.challonge.com/v1/tournaments/{tournament}/participants/bulk_add.json?api_key={challonge.api_key}",
+            headers=headers,
+            json=params,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+        return
+
+    @classmethod
+    def add_participant(
+        cls, tournament: int, **params: Unpack["Tournament.AddParticipantsParams"]
+    ):
+        """
+        Adds participants and/or seeds to a tournament (up until it is started)
+        """
+
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants.json?api_key={challonge.api_key}",
             headers=headers,
             json=params,
         )
@@ -293,7 +385,10 @@ class Tournament(ValueObject):
         results = resp.json()
         return cast(
             Iterable["Participant"],
-            [Participant.contruct_from(participant) for participant in results],
+            [
+                Participant.contruct_from(participant["participant"])
+                for participant in results
+            ],
         )
 
     @classmethod
