@@ -9,11 +9,7 @@ import { Registration, Tournament } from '@/lib/models';
 import { toCurrency } from '@/lib/utils';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { Tab } from '@headlessui/react';
-import {
-  ExclamationCircleIcon,
-  TrophyIcon,
-  UserGroupIcon,
-} from '@heroicons/react/20/solid';
+import { TrophyIcon } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
 import Image from 'next/image';
 import { FC, useState } from 'react';

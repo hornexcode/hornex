@@ -20,13 +20,16 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
   tournaments,
 }) => {
   return (
-    <>
-      <div className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid 2xl:grid-cols-[280px_minmax(auto,_1fr)]">
-        <div className="hidden border-r border-dashed border-gray-200 pr-8 dark:border-gray-700 2xl:block">
+    <div className="container mx-auto">
+      {/* <div className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
+      2xl:grid-cols-[240px_minmax(auto,_1fr)]"> */}
+      <div className="">
+        {/* <div className="hidden border-r border-dashed border-gray-200 pr-8 dark:border-gray-700 2xl:block">
           <Filters />
-        </div>
+        </div> */}
 
-        <div className="4xl:pl-10 2xl:pl-8">
+        {/* <div className="4xl:pl-10 2xl:pl-8"> */}
+        <div className="">
           <div className="relative z-10 mb-6 flex items-center justify-between">
             <span className="text-xs font-medium text-gray-900 dark:text-white sm:text-sm">
               23 items
@@ -49,7 +52,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid grid-cols-5 gap-5">
             {!isLoading &&
               tournaments.results.map((tournament) => (
                 <TournamentCardInfo
@@ -60,7 +63,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
