@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 from datetime import timedelta as td
+from unittest.mock import patch
 
 import faker
 import pytz
@@ -235,6 +236,7 @@ class TestTournaments(APITestCase, URLPatternsTestCase):
         path("api/v1", include("apps.tournaments.urls")),
     ]
 
+    @patch("apps.leagueoflegends.signals.tournament_created")
     def setUp(self):
         self.credentials = {
             "email": "test.user@hornex.gg",

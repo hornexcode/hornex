@@ -82,7 +82,7 @@ export default function LoginPage() {
               {/* Email */}
               <div>
                 <InputLabel title="Email" important />
-                <Input
+                  <Input
                   placeholder="jonh.doe@example.com"
                   error={errors.email?.message}
                   {...register('email', { required: true })}

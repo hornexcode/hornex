@@ -16,14 +16,14 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
         <div className="block px-5 py-4">
           <Link
             href="/nft-details"
-            className="dark:text-title text-lg font-extrabold text-black"
+            className="dark:text-title font-extrabold text-black"
           >
             {/* trim name */}
             {tournament.name.length >= 25
               ? tournament.name.substring(0, 20) + '...'
               : tournament.name}
           </Link>
-          <div className="text-body mb-1">
+          <div className="text-body mb-1 text-sm">
             {moment(tournament.start_date).format('MMMM Do YYYY')}
           </div>
         </div>
