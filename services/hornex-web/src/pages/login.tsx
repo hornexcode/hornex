@@ -44,9 +44,7 @@ export default function LoginPage() {
 
     if (ok) {
       setSuccess(true);
-      setTimeout(() => {
-        router.push('/compete');
-      }, 1000);
+      router.push('/compete');
     }
     setFetching(false);
   };
@@ -56,7 +54,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-between">
-      <div className="mt-8 self-center">
+        <div className="mt-8 self-center">
         <Logo size="sm" />
       </div>
       <div className="m-auto w-full sm:w-[400px]">

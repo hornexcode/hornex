@@ -4,12 +4,8 @@ import { useModal } from '@/components/modal-views/context';
 import { TournamentPhasesWidget } from '@/components/ui/molecules';
 import TournamentDetailsHeadline from '@/components/ui/organisms/tournament-details-headline';
 import TournamentOverviewTabPanel from '@/components/ui/organisms/tournament-overview-tab-panel/tournament-overview-tab-panel';
-import TournamentScoringTabPanel from '@/components/ui/organisms/tournament-scoring-tab-panel';
 import TournamentStandingTabPanel from '@/components/ui/organisms/tournament-standing-tab-panel';
-import { useToast } from '@/components/ui/use-toast';
-import { Team } from '@/domain';
 import { Registration, Tournament } from '@/lib/models';
-import { dataLoader } from '@/lib/request';
 import { toCurrency } from '@/lib/utils';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { Tab } from '@headlessui/react';
@@ -19,10 +15,8 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/20/solid';
 import classnames from 'classnames';
-import { ArrowRightCircle, CheckCircle2, CheckCircle2Icon } from 'lucide-react';
 import Image from 'next/image';
-import { FC, useEffect, useState } from 'react';
-import { clearInterval } from 'timers';
+import { FC, useState } from 'react';
 
 type TournamentDetailsTemplateProps = {
   tournament: Tournament;
@@ -219,7 +213,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
                 <Tab.Panel>
                   <div className="bg-light-dark">
                     <iframe
-                      src="https://challonge.com/quz6flp4/module?show_live_status=0"
+                      src="https://challonge.com/aqikriz9/module?show_live_status=0"
                       width="100%"
                       height="600"
                       frameBorder={0}
