@@ -13,7 +13,7 @@ client_id = "6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54"
 client_secret = "E9wzc2eEN6Ph5bxdtbxvmef_NJriKXQ0qbgkL9i-DSC"
 
 appCallbackUrl = (
-    "https://robin-lasting-magpie.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback"
+    "https://8c5a-45-169-190-242.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback"
 )
 
 provider = "https://auth.riotgames.com"
@@ -21,7 +21,7 @@ authorizeUrl = provider + "/authorize"
 tokenUrl = provider + "/token"
 
 
-# https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://robin-lasting-magpie.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access
+# https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://8c5a-45-169-190-242.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access
 @swagger_auto_schema(
     operation_description="GET /api/v1/riot/webhooks/oauth2/callback",
     operation_summary="It connects logged in user's riot account",
@@ -118,7 +118,7 @@ def create_or_update_leagueoflegends_account(
             account.classification = classification
             account.save()
 
-            return redirect("https://robin-lasting-magpie.ngrok-free.app")
+            return redirect("https://8c5a-45-169-190-242.ngrok-free.app")
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     except requests.RequestException:
@@ -132,7 +132,7 @@ def riot_connect_account(request):
     if game == "league-of-legends":
         return Response(
             {
-                "link": "https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://robin-lasting-magpie.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access&request_id=1234"
+                "link": "https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://8c5a-45-169-190-242.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access&request_id=1234"
             },
             status=status.HTTP_200_OK,
         )

@@ -9,6 +9,7 @@ import {
 } from './auth-context.types';
 import { saveTokenWithCookies } from './utils';
 import { get, set } from 'es-cookie';
+import { destroyCookie } from 'nookies';
 import React, { createContext, useEffect, useReducer, useState } from 'react';
 
 const { post: authenticateUser } = dataLoader<Token, LoginRequest>('login');
@@ -97,7 +98,7 @@ export const AuthContextProvider = ({
   };
 
   const logout = async () => {
-    set('hx.auth.token', '');
+    destroyCookie(null, 'hx.auth.token');
     dispatch({ type: 'LOGOUT' });
   };
 

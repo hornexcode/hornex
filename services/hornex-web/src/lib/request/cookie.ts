@@ -1,5 +1,5 @@
-import { parse as parseCookie } from 'es-cookie';
 import { IncomingMessage } from 'http';
+import { parseCookies } from 'nookies';
 
 /**
  * getCookieFromRequest accepts a CookieNames enum to get the cookie from the request. If the value is present it is returned as a string.
@@ -15,10 +15,8 @@ export function getCookieFromRequest(
   name: string = ''
 ): string | undefined {
   if (req.headers.cookie) {
-    const { [name]: cookie } = parseCookie(req.headers.cookie);
-    if (cookie) {
-      return cookie;
-    }
+    const cookies = parseCookies({ req });
+    return cookies[name];
   }
   return undefined;
 }

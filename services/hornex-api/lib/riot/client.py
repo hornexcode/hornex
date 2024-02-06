@@ -353,7 +353,7 @@ class Client(Clientable):
     def get_oauth_token(self, access_code: str):
         client_id = "6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54"
         client_secret = "E9wzc2eEN6Ph5bxdtbxvmef_NJriKXQ0qbgkL9i-DSC"
-        appCallbackUrl = "https://robin-lasting-magpie.ngrok-free.app/oauth/riot/login"
+        appCallbackUrl = "https://8c5a-45-169-190-242.ngrok-free.app/oauth/riot/login"
         provider = "https://auth.riotgames.com"
         tokenUrl = provider + "/token"
         form = {
