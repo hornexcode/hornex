@@ -12,10 +12,10 @@ from rest_framework.decorators import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.games.models import GameID
 from apps.leagueoflegends.models import Session
+from jwt_token.authentication import JWTAuthentication
 from lib.riot.client import Client
 
 client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")

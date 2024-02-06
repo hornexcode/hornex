@@ -72,7 +72,6 @@ export default function RegisterPage() {
 
       router.push('/login');
     } catch (error: any) {
-      console.log(error);
       setError(error?.message || 'Something went wrong');
     } finally {
       setIsLoading(false);

@@ -30,14 +30,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   registration,
   isCheckedIn: initialIsCheckedIn,
 }) => {
-  // remove
-  console.log('🚀 initial rendering...', {
-    initialTournament,
-    connectedGameId,
-    registration,
-    initialIsCheckedIn,
-  });
-
   const { openModal } = useModal();
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);

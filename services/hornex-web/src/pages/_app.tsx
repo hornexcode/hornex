@@ -11,6 +11,7 @@ import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
 import { Source_Sans_3 } from 'next/font/google';
+import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -43,19 +44,21 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
             source_Sans_3.className
           )}
         >
-          <AuthContextProvider>
-            <NotificationContextProvider>
-              {getLayout(<Component {...pageProps} />)}
-              <ModalsContainer />
-            </NotificationContextProvider>
-            {/* <SettingsDrawer /> */}
-          </AuthContextProvider>
-          <ToastContainer
-            theme="dark"
-            style={{
-              fontSize: '0.925rem',
-            }}
-          />
+          <SessionProvider session={pageProps.session}>
+            <AuthContextProvider>
+              <NotificationContextProvider>
+                {getLayout(<Component {...pageProps} />)}
+                <ModalsContainer />
+              </NotificationContextProvider>
+              {/* <SettingsDrawer /> */}
+            </AuthContextProvider>
+            <ToastContainer
+              theme="dark"
+              style={{
+                fontSize: '0.925rem',
+              }}
+            />
+          </SessionProvider>
           <Toaster />
         </div>
       </NextThemesProvider>

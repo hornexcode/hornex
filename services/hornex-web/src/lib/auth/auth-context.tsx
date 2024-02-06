@@ -7,8 +7,7 @@ import {
   LoginRequest,
   Token,
 } from './auth-context.types';
-import { saveTokenWithCookies } from './utils';
-import { get, set } from 'es-cookie';
+import { get } from 'es-cookie';
 import { destroyCookie } from 'nookies';
 import React, { createContext, useEffect, useReducer, useState } from 'react';
 
@@ -80,18 +79,25 @@ export const AuthContextProvider = ({
     setFetching(true);
     setError(undefined);
 
-    const { data: token, error } = await authenticateUser(undefined, {
-      email,
-      password,
-    });
-    if (!error && token) {
-      saveTokenWithCookies(token);
+    try {
+      await authenticateUser(undefined, {
+        email,
+        password,
+      });
       loadCurrentUser();
-    } else {
+    } catch (error: any) {
       setError(error?.message || 'Error authenticating user');
       dispatch({ type: 'LOGIN_FAILED' });
       return false;
     }
+    // if (!error && token) {
+    //   saveTokenWithCookies(token);
+    //   loadCurrentUser();
+    // } else {
+    //   setError(error?.message || 'Error authenticating user');
+    //   dispatch({ type: 'LOGIN_FAILED' });
+    //   return false;
+    // }
 
     setFetching(false);
     return true;

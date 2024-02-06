@@ -5,10 +5,10 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.notifications.models import Notification
 from apps.notifications.serializers import NotificationSerializer
+from jwt_token.authentication import JWTAuthentication
 
 
 class NotificationViewSet(viewsets.ModelViewSet):

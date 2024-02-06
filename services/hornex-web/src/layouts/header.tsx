@@ -9,6 +9,7 @@ import { useAuthContext } from '@/lib/auth/auth-context';
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { FC } from 'react';
 
 interface HeaderRightAreaProps {
@@ -29,9 +30,8 @@ const Header = () => {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
 
-  const {
-    state: { user, isAuthenticated },
-  } = useAuthContext();
+  const { data: session } = useSession();
+  const { user } = session || {};
   return (
     <header className="bg-medium-dark fixed left-0 top-0 z-40 h-14 w-full border-b border-gray-700 px-4">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
@@ -49,14 +49,13 @@ const Header = () => {
         {user && (
           <HeaderRightArea
             user={{
-              id: user.id,
-              email: user.email,
-              name: user.name,
+              email: user.email!,
+              name: user.name!,
             }}
           />
         )}
 
-        {!isAuthenticated && (
+        {!session && (
           <div className="flex items-center justify-center">
             <Link href="/login">
               <div className="flex items-center text-sm text-white">

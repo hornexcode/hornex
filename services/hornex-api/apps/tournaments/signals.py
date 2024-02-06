@@ -1,6 +1,4 @@
 import structlog
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from apps.tournaments.models import Checkin, Registration
 from apps.tournaments.tasks import (
@@ -11,7 +9,7 @@ from apps.tournaments.tasks import (
 logger = structlog.get_logger(__name__)
 
 
-@receiver(post_save, sender=Checkin)
+# @receiver(post_save, sender=Checkin)
 def checkin_created(sender, instance: Checkin, created, **kwargs):
     count = Checkin.objects.filter(
         tournament=instance.tournament, team=instance.team
@@ -24,7 +22,7 @@ def checkin_created(sender, instance: Checkin, created, **kwargs):
         )
 
 
-@receiver(post_save, sender=Registration)
+# @receiver(post_save, sender=Registration)
 def registration_updated(sender, instance: Registration, created, **kwargs):
     if not created and instance.status == Registration.RegistrationStatusType.ACCEPTED:
         logger.info("Registration accepted...")
