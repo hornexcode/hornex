@@ -251,6 +251,3 @@ class TestTournaments(APITestCase, URLPatternsTestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
         )
-
-    def test_get_check_in_status_success(self):
-        self.assertTrue(True)

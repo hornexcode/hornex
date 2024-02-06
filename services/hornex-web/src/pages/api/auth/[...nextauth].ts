@@ -1,75 +1,82 @@
-import { LoginResponse } from '@/infra/hx-core/responses/login';
-import NextAuth, { NextAuthOptions, Session, User } from 'next-auth';
-import { AdapterUser } from 'next-auth/adapters';
-import { JWT } from 'next-auth/jwt';
+import { LoginRequest, Token } from '@/lib/auth/auth-context.types';
+import { dataLoader } from '@/lib/request';
+import { NextApiRequest, NextApiResponse } from 'next';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
+import GithubProvider from 'next-auth/providers/github';
+import { setCookie } from 'nookies';
+
+const { fetch: authenticateUser } = dataLoader<Token, LoginRequest>('login');
+
+type NextAuthOptionsCallback = (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => NextAuthOptions;
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
-export const authOptions: NextAuthOptions = {
+const nextAuthOptions: NextAuthOptionsCallback = (req, res) => ({
   // https://next-auth.js.org/configuration/providers/oauth
+  session: {
+    strategy: 'jwt',
+    maxAge: 7 * 24 * 60 * 60, // 30 days
+  },
+  pages: {
+    signIn: '/auth/signin',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: 'Sign in with email and password',
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
-        console.log(credentials);
-        const res = await fetch('http://localhost:9234/api/v1/auth/login', {
-          credentials: 'include',
+      async authorize(credentials) {
+        const response = await fetch(`${process.env.API_URL}/v1/token`, {
           method: 'POST',
-          body: JSON.stringify({
-            email: credentials?.username,
-            password: credentials?.password,
-          }),
-          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
         });
 
-        const data = (await res.json()) as LoginResponse;
-
-        // If no error and we have user data, return it
-        if (res.ok && data) {
-          return data.user;
+        if (!response.ok) {
+          throw new Error('Invalid credentials');
         }
-        // Return null if user data could not be retrieved
-        return null;
+
+        const token = (await response.json()) as Token;
+
+        const payload = JSON.parse(atob(token.access.split('.')[1])) as {
+          user_id: string;
+          user_name: string;
+          exp: number;
+        };
+
+        setCookie({ res }, 'hx.auth.token', token.access, {
+          maxAge: payload.exp - Date.now() / 1000,
+          path: '/',
+          httpOnly: true,
+        });
+
+        return {
+          id: payload.user_id,
+          name: payload.user_name,
+          email: credentials?.email,
+        };
       },
     }),
-    GoogleProvider({
-      clientId: '',
-      clientSecret: '',
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
   ],
-  callbacks: {
-    async session({
-      session,
-      token,
-    }: {
-      session: Session;
-      user: User | AdapterUser;
-      token: JWT;
-    }) {
-      if (typeof token.id === 'string') {
-        session.user.id = token.id;
-      }
-      //
-      return session;
-    },
-    async jwt({ token }) {
-      // token.userRole = 'admin';
-      console.log(token);
-      return token;
-    },
-  },
+  callbacks: {},
+});
+
+const nextauthwrapper = (req: NextApiRequest, res: NextApiResponse) => {
+  return NextAuth(req, res, nextAuthOptions(req, res));
 };
 
-export default NextAuth(authOptions);
+export default nextauthwrapper;

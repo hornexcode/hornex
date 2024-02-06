@@ -12,7 +12,6 @@ from rest_framework.decorators import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.teams.errors import (
     invite_accepted,
@@ -30,6 +29,7 @@ from apps.teams.serializers import (
     UserInviteSerializer,
 )
 from core.route import extract_game_and_platform
+from jwt_token.authentication import JWTAuthentication
 
 logger = structlog.get_logger(__name__)
 

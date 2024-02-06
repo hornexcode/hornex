@@ -2,7 +2,7 @@ import { ListboxOption } from '../../atoms/list-box';
 import Loader from '../../atoms/loader';
 import { CheckoutStep } from './checkout-step';
 import { SelectTeamStep } from './select-team-step';
-import { Team, Tournament } from '@/lib/proto';
+import { Team, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
@@ -65,7 +65,6 @@ const RegistrationView = () => {
   });
 
   const teamsList = teams && teams?.length > 0 ? teams : [];
-  console.log(tournament, teams);
   return (
     <div className="">
       <RegistrationContext.Provider

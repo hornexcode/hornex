@@ -7,6 +7,7 @@ import { dataLoader as dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 const { fetch: getAvailableGames } =
   dataLoader<GetAvailableGamesResponse>('getAvailableGames');
@@ -14,6 +15,8 @@ const { fetch: getAvailableGames } =
 const CompetePage = ({
   games,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const { data: session } = useSession();
+
   return (
     <div className="mx-auto space-y-8 p-8">
       <section id="available-games">

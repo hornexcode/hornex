@@ -99,7 +99,6 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
   const elements = useElements();
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     switch (paymentMethod) {
       case 'pix':
         const pixFormData = data as z.infer<typeof createPixPaymentForm>;

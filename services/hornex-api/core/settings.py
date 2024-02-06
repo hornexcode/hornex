@@ -29,7 +29,7 @@ def get_settings(name, default=None):
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-b=#p+ci^=crap5g$&1wos9*hk658@tqfli((9zyx$f4-15%@vo"
+SECRET_KEY = "changeme"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv("DEBUG", "1")))
@@ -173,8 +173,6 @@ AUTH_USER_MODEL = "users.User"
 # https://jpadilla.github.io/django-rest-framework-jwt/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
-        # "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         # other authentication classes
@@ -185,10 +183,11 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "JWT_SECRET_KEY": SECRET_KEY,
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
     "JWT_ALGORITHM": "HS256",
     "JWT_ALLOW_REFRESH": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
+    "TOKEN_OBTAIN_SERIALIZER": "jwt_token.serializers.HornexTokenObtainPairSerializer",
 }
 
 APPEND_SLASH = False

@@ -8,7 +8,6 @@ from rest_framework.decorators import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.users.filters import UserFilter
 from apps.users.models import User
@@ -17,6 +16,7 @@ from apps.users.serializers import (
     UserSerializer,
     serialize_user,
 )
+from jwt_token.authentication import JWTAuthentication
 
 
 # ViewSets define the view behavior.

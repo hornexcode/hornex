@@ -1,20 +1,9 @@
 import Button from '../../atoms/button';
-import Input from '../../atoms/form/input';
-import InputLabel from '../../atoms/form/input-label';
 import { LongArrowLeft } from '../../atoms/icons/long-arrow-left';
-import { LongArrowRight } from '../../atoms/icons/long-arrow-right';
-import Listbox, { ListboxOption } from '../../atoms/list-box';
 import PaymentOptions from '../../molecules/payment-options';
 import { useStepContext } from './registration-view';
-import { Team, Tournament } from '@/lib/proto';
 import { dataLoader } from '@/lib/request';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { InfoIcon } from 'lucide-react';
-import React, { FC, FormEventHandler, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
-
-const { post: registerTeam } = dataLoader<undefined>('registerTeam');
+import React, { FC, useState } from 'react';
 
 export type CheckoutStepProps = {};
 

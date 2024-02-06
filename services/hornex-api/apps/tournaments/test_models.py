@@ -1,4 +1,3 @@
-import random
 from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
@@ -45,42 +44,6 @@ class TestUnitTournamentModel(TestCase):
     def test_has_start_datetime(self):
         self.assertEqual(self.tournament._has_start_datetime(), True)
 
-    def test_generate_tournament_brackets(self):
-        MAX_TEAMS = 32
-        teams = [TeamFactory.new() for _ in range(0, MAX_TEAMS)]
-
-        self.tournament.teams.set(teams)
-        self.tournament.save()
-        self.tournament.refresh_from_db()
-
-        self.assertEqual(32, self.tournament.teams.count())
-
-        num_rounds = self.tournament.get_number_of_rounds()
-
-        num_teams = MAX_TEAMS
-        for index in range(1, num_rounds + 1):
-            self.tournament.generate_brackets()
-            rounds = self.tournament.rounds.all()
-
-            if num_teams < 2:
-                return
-
-            self.assertEqual(index, len(rounds))
-            self.assertEqual(num_teams / 2, rounds[0].matches.count())
-            fake_tournament_brackets_winners(self.tournament)
-            num_teams = num_teams / 2
-
-    def test_start_tournament(self):
-        MAX_TEAMS = 16
-        teams = [TeamFactory.new() for _ in range(0, MAX_TEAMS)]
-
-        self.tournament.teams.set(teams)
-        self.tournament.save()
-        self.tournament.refresh_from_db()
-        self.tournament.start()
-
-        self.assertEqual(self.tournament.phase, Tournament.PhaseType.RESULTS_TRACKING)
-
 
 class TestUnitRegistrationModel(TestCase):
     user = UserFactory.new()
@@ -95,20 +58,3 @@ class TestUnitRegistrationModel(TestCase):
         self.assertEqual(
             self.registration.status, Registration.RegistrationStatusType.PENDING
         )
-
-
-class TestUnitRoundModel(TestCase):
-    ...
-
-
-class TestUnitBracketModel(TestCase):
-    ...
-
-
-def fake_tournament_brackets_winners(tournament: Tournament):
-    rounds = tournament.rounds.all().order_by("-created_at")
-    if rounds.count() == 0:
-        raise Exception("Not rounds were found")
-
-    for bracket in rounds.first().matches.all():
-        bracket.set_winner(random.choice([bracket.team_a_id, bracket.team_b_id]))

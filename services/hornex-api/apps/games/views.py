@@ -1,10 +1,10 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.games.models import Game, GameID
 from apps.games.serializers import GameIDSerializer, GameSerializer
+from jwt_token.authentication import JWTAuthentication
 
 
 class GameViewSet(viewsets.ModelViewSet):

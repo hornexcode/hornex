@@ -1,7 +1,6 @@
 import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
 import { Route } from '@/lib/routes';
-import { get } from 'es-cookie';
 import { IncomingMessage } from 'http';
 import useSWR, { SWRConfiguration } from 'swr';
 
@@ -75,6 +74,13 @@ export const dataLoader = <T, Data = unknown>(
   };
 
   return {
+    /**
+     * This request happens on the server side
+     * @param params
+     * @param req
+     * @param headers
+     * @returns
+     */
     fetch: async (
       params: ParamMap,
       req: IncomingMessage,
@@ -82,8 +88,19 @@ export const dataLoader = <T, Data = unknown>(
     ): Promise<FetchResponse<T>> => {
       // Server side request
 
+      // if (isServer) {
+      //   const cookie = document.cookie;
+      //   const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
+
+      //   headers = {
+      //     ...headers,
+      //     Authorization: `Bearer ${token?.split('=')[1]}`,
+      //   };
+      // }
+
       const url = route.href(params);
       const token = getCookieFromRequest(req, HX_COOKIE);
+
       // Make sure we pass along the session cookie when we make our request.
       const options: RequestInit = {};
 
@@ -97,23 +114,20 @@ export const dataLoader = <T, Data = unknown>(
       return fetcher(url, options).then(getResponseObject);
     },
 
+    /**
+     * This request only happens on the client side
+     * @param params
+     * @param payload
+     * @returns
+     */
     post: async (
       params: ParamMap = {},
       payload?: Data
     ): Promise<FetchResponse<T>> => {
-      // Client side request
-
-      // get cookie from client
-      const cookie = document.cookie;
-
-      // TODO: this is a hack, we need to find a better way to get the cookie
-      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-
       return fetcher(route.href(params), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token?.split('=')[1]}`,
         },
         body: payload ? JSON.stringify(payload) : '',
         signal,
@@ -124,15 +138,10 @@ export const dataLoader = <T, Data = unknown>(
       params: ParamMap = {},
       payload?: Data
     ): Promise<FetchResponse<T>> => {
-      const cookie = document.cookie;
-
-      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-
       return fetcher(route.href(params), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token?.split('=')[1]}`,
         },
         body: payload ? JSON.stringify(payload) : '',
       }).then(getResponseObject);
@@ -142,16 +151,8 @@ export const dataLoader = <T, Data = unknown>(
       params: ParamMap = {},
       payload?: Data
     ): Promise<FetchResponse<T>> => {
-      const cookie = document.cookie;
-
-      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-
       return fetcher(route.href(params), {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token?.split('=')[1]}`,
-        },
         body: payload ? JSON.stringify(payload) : '',
       }).then(getResponseObject);
     },
@@ -160,16 +161,8 @@ export const dataLoader = <T, Data = unknown>(
       params: ParamMap = {},
       payload?: Data
     ): Promise<FetchResponse<T>> => {
-      const cookie = document.cookie;
-
-      const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-
       return fetcher(route.href(params), {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token?.split('=')[1]}`,
-        },
         body: payload ? JSON.stringify(payload) : '',
       }).then(getResponseObject);
     },
@@ -179,16 +172,6 @@ export const dataLoader = <T, Data = unknown>(
       options: RequestInit = {},
       headers: Record<string, string> = {}
     ): Promise<FetchResponse<T>> => {
-      if (!isServer) {
-        const cookie = document.cookie;
-        const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-
-        headers = {
-          ...headers,
-          Authorization: `Bearer ${token?.split('=')[1]}`,
-        };
-      }
-
       return fetcher(route.href(params), {
         ...options,
         headers: { ...options.headers, ...headers },
@@ -200,15 +183,6 @@ export const dataLoader = <T, Data = unknown>(
       config?: SWRConfiguration,
       headers: Record<string, string> = {}
     ) => {
-      if (!isServer) {
-        const cookie = document.cookie;
-        const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-        headers = {
-          ...headers,
-          Authorization: `Bearer ${token?.split('=')[1]}`,
-        };
-      }
-
       return useSWR<UDT>(
         path,
         (url: string, options: RequestInit = {}) =>

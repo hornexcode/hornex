@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -23,6 +24,7 @@ type LoginForm = z.infer<typeof form>;
 export default function LoginPage() {
   const [success, setSuccess] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState('');
 
   const router = useRouter();
   const {
@@ -34,21 +36,17 @@ export default function LoginPage() {
     resolver: zodResolver(form),
   });
 
-  const { login, error, state } = useAuthContext();
   const handleOnSubmit = async (data: LoginForm) => {
     setFetching(true);
-    const ok = await login({
+    const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
+      redirect: false,
     });
-
-    if (ok) {
-      setSuccess(true);
-      setTimeout(() => {
-        router.push('/compete');
-      }, 1000);
-    }
+    // const ok = await login(data);
     setFetching(false);
+    setSuccess(true);
+    router.push('/compete');
   };
 
   // TODO: remove in production

@@ -8,7 +8,6 @@ from rest_framework.decorators import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.payments.dto import RegistrationPaymentDTO
 from apps.payments.gateway import get_payment_gateway
@@ -18,6 +17,7 @@ from apps.payments.serializers import (
     CreateStripePaymentRegistrationSerializer,
 )
 from apps.tournaments.models import Registration
+from jwt_token.authentication import JWTAuthentication
 
 logger = structlog.get_logger(__name__)
 

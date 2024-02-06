@@ -44,14 +44,12 @@ const Tournaments = ({
   });
 
   return (
-    <div className="min-h-[100vh] p-8">
-      <TournamentsFeedPage
-        isLoading={isLoading}
-        tournaments={
-          tournaments || { count: 0, next: null, previous: null, results: [] }
-        }
-      />
-    </div>
+    <TournamentsFeedPage
+      isLoading={isLoading}
+      tournaments={
+        tournaments || { count: 0, next: null, previous: null, results: [] }
+      }
+    />
   );
 };
 

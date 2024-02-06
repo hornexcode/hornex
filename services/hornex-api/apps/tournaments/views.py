@@ -13,7 +13,6 @@ from rest_framework.decorators import (
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.leagueoflegends.models import Tournament as LeagueOfLegendsTournament
 from apps.leagueoflegends.serializers import (
@@ -32,6 +31,7 @@ from apps.tournaments.serializers import (
     TournamentSerializer,
 )
 from core.route import extract_game_and_platform
+from jwt_token.authentication import JWTAuthentication
 
 logger = structlog.get_logger(__name__)
 # from apps.leagueoflegends.usecases import RegisterTeam
@@ -227,6 +227,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
+        print(self.request.user)
         members = Membership.objects.filter(user=self.request.user)
         teams = [member.team for member in members]
 

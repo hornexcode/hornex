@@ -31,7 +31,7 @@ async function getTournament(id: string): Promise<Tournament> {
 
   if (!res.ok) throw new Error('Failed to fetch tournaments');
 
-  return res.json()
+  return res.json();
 }
 
 export default async function TournamentPage({
@@ -41,7 +41,6 @@ export default async function TournamentPage({
 }) {
   const [loading, setLoading] = React.useState(false);
   const tournament = await getTournament(params.id);
-  console.log(tournament)
 
   return (
     <Suspense fallback={<LoaderIcon className="animate-spin" />}>

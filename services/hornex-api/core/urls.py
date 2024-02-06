@@ -3,13 +3,13 @@ from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 from apps.notifications.consumers import NotificationConsumer
 from core.healthcheck import health
+from jwt_token.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -39,7 +39,7 @@ urlpatterns = [
     # admin
     path("admin/", admin.site.urls),
     # dev internal api
-    path("api-auth/", include("rest_framework.urls")),
+    path("api/auth/", include("rest_framework.urls")),
     # jwt
     path("api/v1/token", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
