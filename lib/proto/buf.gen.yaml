@@ -1,0 +1,28 @@
+version: v1
+plugins:
+  - plugin: buf.build/protocolbuffers/go:v1.30.0
+    out: ../golang/src
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc/go:v1.3.0
+    out: ../golang/src
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc-ecosystem/gateway:v2.15.2
+    out: ../golang/src
+    opt:
+      - paths=source_relative
+  # From: lib/golang/src/scripts/protoc-gen-grpc-gateway-ts
+  - name: grpc-gateway-ts
+    out: ../typescript/src
+    opt:
+      - paths=source_relative
+    strategy: all
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.15.2
+    out: ../../services/hornex-docs/docs/api/
+    opt:
+      - allow_merge=true,merge_file_name=hornex
+  - plugin: buf.build/community/pseudomuto-doc:v1.5.1
+    out: ../../services/hornex-docs/docs/
+    opt:
+      - markdown,gRPC-Protocol-Documentation.md

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package hornex;
+
+option go_package = "hornex.gg/hornex";
+
+message Tournament {
+  string id = 1;
+  string name = 2;
+}
