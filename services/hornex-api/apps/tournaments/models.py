@@ -33,7 +33,6 @@ class Tournament(BaseModel):
 
     registration_start_date = models.DateTimeField()
     registration_end_date = models.DateTimeField()
-    check_in_opens_at = models.DateTimeField(null=True, blank=True)
     check_in_duration = models.IntegerField(null=True, blank=True)
 
     start_date = models.DateField()
@@ -251,13 +250,11 @@ class Tournament(BaseModel):
 
         now = datetime.now(tz=UTC)
 
-        if not self.check_in_opens_at or not self.check_in_duration:
-            return False
+        checkin_opens_at = datetime.combine(
+            self.start_date, self.start_time
+        ) - timedelta(minutes=self.check_in_duration)
 
-        return (
-            now > self.check_in_opens_at
-            and now < self.check_in_opens_at + timedelta(minutes=self.check_in_duration)
-        )
+        return now > checkin_opens_at and now < checkin_opens_at
 
     @abstractmethod
     def validate_participants(self):
