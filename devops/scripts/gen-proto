@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)
+source ${REPO_ROOT}/devops/scripts/helpers
+
+buf_version="1.17.0"
+if [[ "$("${GOPATH}/bin/buf" --version 2>&1)" != "${buf_version}" ]]; then
+  info "Installing buf"
+  (
+    set -x
+    go install github.com/bufbuild/buf/cmd/{buf,protoc-gen-buf-breaking,protoc-gen-buf-lint}@v${buf_version}
+  )
+
+  # Double check for PATH mismatches, etc
+  if [[ "$("${GOPATH}/bin/buf" --version 2>&1)" != "${buf_version}" ]]; then
+    error "Wrong buf version on the PATH, expected ${buf_version}, Got: $("${GOPATH}/bin/buf" --version 2>&1)"
+  fi
+
+fi
+
+mkdir -p ${REPO_ROOT}/lib/golang/src/hornex
+# mkdir -p ${REPO_ROOT}/lib/typescript/src/hornex
+
+if [[ ${1:-} == "rebuild" ]]; then
+  warning "Deleting existing bindings"
+  rm -f ${REPO_ROOT}/lib/golang/src/hornex/**/*.pb.go
+  rm -f ${REPO_ROOT}/lib/golang/src/hornex/**/*.pb.gw.go
+  # rm -f ${REPO_ROOT}/lib/typescript/src/hornex/**/*_gw.ts
+fi
+
+# info "Compiling GRPC Gateway Typescript plugin."
+# go install hornex.io/scripts/protoc-gen-grpc-gateway-ts
+
+(
+  cd ${REPO_ROOT}/lib/proto
+
+  if [[ -z "${HORNEX_GEN_PROTO_NO_FORMAT:-}" ]]; then
+    if ! "${GOPATH}/bin/buf" format --diff --exit-code >/dev/null; then
+      info "Formatting Proto source."
+      (
+        set -x
+        "${GOPATH}/bin/buf" format --write
+      )
+    fi
+  fi
+
+  info "Generating Proto bindings."
+  set -x
+  "${GOPATH}/bin/buf" lint
+  "${GOPATH}/bin/buf" generate
+)
+
+(
+  # Combine all json data into a single file
+  cd ${REPO_ROOT}/services/hornex-docs/docs/api
+  jq --slurp --sort-keys add ./*.swagger.json >hornex.combined.json
+)
+
+success "Done!"

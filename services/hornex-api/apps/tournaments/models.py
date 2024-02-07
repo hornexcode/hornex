@@ -2,15 +2,21 @@ import uuid
 from abc import abstractmethod
 from datetime import UTC, datetime, timedelta
 
+import structlog
 from django.conf import settings
 from django.db import models
 from django.db.models.query import QuerySet
 from rest_framework.exceptions import ValidationError
 
 from apps.common.models import BaseModel
+from apps.games.models import GameID
 from apps.teams.models import Team
 from apps.tournaments import errors
 from apps.tournaments.validators import validate_team_size
+
+logger = structlog.get_logger(__name__)
+
+MINIMUM_PARTICIPANTS = 0
 
 
 class Tournament(BaseModel):
@@ -437,3 +443,130 @@ class Checkin(models.Model):
 
     def __str__(self) -> str:
         return f"Checkin ({self.id}) | {self.tournament.name}"
+
+
+class LeagueOfLegendsEllo(models.Model):
+    class TierOptions(models.TextChoices):
+        IRON = "IRON"
+        BRONZE = "BRONZE"
+        SILVER = "SILVER"
+        GOLD = "GOLD"
+        PLATINUM = "PLATINUM"
+        EMERALD = "EMERALD"
+        DIAMOND = "DIAMOND"
+        MASTER = "MASTER"
+        GRANDMASTER = "GRANDMASTER"
+        CHALLENGER = "CHALLENGER"
+
+    tier = models.CharField(max_length=25, choices=TierOptions.choices)
+
+    class RankOptions(models.TextChoices):
+        I = "I"  # noqa
+        II = "II"
+        III = "III"
+        IV = "IV"
+
+    rank = models.CharField(max_length=25, choices=RankOptions.choices)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ["tier", "rank"]
+        ordering = ["tier", "rank"]
+
+    def __str__(self) -> str:
+        return f"{self.tier} {self.rank}"
+
+
+class LeagueOfLegendsSummoner(models.Model):
+    game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
+    id = models.CharField(max_length=255, primary_key=True, editable=False)
+    puuid = models.CharField(max_length=255)
+    account_id = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    ello = models.ForeignKey(
+        LeagueOfLegendsEllo, on_delete=models.CASCADE, blank=True, null=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class LeagueOfLegendsProvider(models.Model):
+    class RegionType(models.TextChoices):
+        BR = "BR"
+        EUNE = "EUNE"
+        EUW = "EUW"
+        JP = "JP"
+        KR = "KR"
+        LAN = "LAN"
+        LAS = "LAS"
+        NA = "NA"
+        OCE = "OCE"
+        TR = "TR"
+        RU = "RU"
+
+    id = models.IntegerField(primary_key=True, editable=False)
+    region = models.CharField(
+        max_length=10, choices=RegionType.choices, default=RegionType.BR
+    )
+    url = models.URLField(
+        editable=True,
+        null=False,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"League of Legends Provider ({self.id})"
+
+
+class LeagueOfLegendsTournament(Tournament):
+    class PickType(models.TextChoices):
+        BLIND_PICK = "BLIND_PICK"
+        DRAFT_MODE = "DRAFT_MODE"
+        ALL_RANDOM = "ALL_RANDOM"
+        TOURNAMENT_DRAFT = "TOURNAMENT_DRAFT"
+
+    class MapType(models.TextChoices):
+        SUMMONERS_RIFT = "SUMMONERS_RIFT"
+        TWISTED_TREELINE = "TWISTED_TREELINE"
+        HOWLING_ABYSS = "HOWLING_ABYSS"
+
+    class SpectatorType(models.TextChoices):
+        NONE = "NONE"
+        LOBBYONLY = "LOBBYONLY"
+        ALL = "ALL"
+
+    provider = models.ForeignKey(
+        LeagueOfLegendsProvider,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+    )
+    riot_id = models.IntegerField(null=True, blank=True)
+    pick = models.CharField(
+        max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK
+    )
+    map = models.CharField(
+        max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT
+    )
+    spectator = models.CharField(
+        max_length=50, choices=SpectatorType.choices, default=SpectatorType.LOBBYONLY
+    )
+    allowed_ellos = models.ManyToManyField(LeagueOfLegendsEllo)
+    riot_tournament_id = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def get_classifications(self) -> list[str]:
+        return [
+            f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.id})"

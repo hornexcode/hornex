@@ -1,0 +1,16 @@
+version: v1beta1
+deps:
+  - buf.build/googleapis/googleapis
+lint:
+  use:
+    - DEFAULT
+  ignore_only:
+    ENUM_VALUE_PREFIX:
+      - hornex/errors
+    ENUM_ZERO_VALUE_SUFFIX:
+      - hornex/errors
+  except:
+    - RPC_REQUEST_RESPONSE_UNIQUE
+    - RPC_RESPONSE_STANDARD_NAME
+    - RPC_REQUEST_STANDARD_NAME
+    - PACKAGE_VERSION_SUFFIX

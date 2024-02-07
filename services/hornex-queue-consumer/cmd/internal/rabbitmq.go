@@ -1,4 +1,4 @@
-package rabbitmq
+package internal
 
 import (
 	"github.com/streadway/amqp"
@@ -33,7 +33,7 @@ func NewRabbitMQ(conf *envvar.Configuration) (*RabbitMQ, error) {
 	}
 
 	err = channel.ExchangeDeclare(
-		"users", // name
+		"tasks", // name
 		"topic", // type
 		true,    // durable
 		false,   // auto-deleted
