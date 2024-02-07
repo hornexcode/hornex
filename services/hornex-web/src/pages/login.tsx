@@ -37,13 +37,23 @@ export default function LoginPage() {
   });
 
   const handleOnSubmit = async (data: LoginForm) => {
+    setSuccess(false);
+    setError('');
     setFetching(true);
+
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
       redirect: false,
     });
-    // const ok = await login(data);
+
+    if (res?.error) {
+      setError(res.error);
+      setFetching(false);
+
+      return;
+    }
+
     setFetching(false);
     setSuccess(true);
     router.push('/compete');

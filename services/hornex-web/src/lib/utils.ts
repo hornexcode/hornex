@@ -22,25 +22,34 @@ export function stringToDate(date: string): Date {
   return new Date(date);
 }
 
+export const combineDateAndTime = (
+  date: string,
+  time: string,
+  isZeroTimezone: boolean = true
+): Date => new Date(`${date}T${time}${isZeroTimezone ? 'Z' : ''}`);
+
 export function isCheckInOpen(tournament: Tournament): boolean {
   const now = +new Date();
-  const checkInOpensAt = +new Date(tournament.check_in_opens_at);
-  const checkInClosesAt =
-    checkInOpensAt + tournament.check_in_duration * 60 * 1000;
+  const checkInClosesAt = +combineDateAndTime(
+    tournament.start_date,
+    tournament.start_time
+  );
+  const checkInOpensAt =
+    checkInClosesAt - tournament.check_in_duration * 60 * 1000;
+
   return checkInOpensAt < now && checkInClosesAt > now;
 }
 
 export function isCheckInClosed(tournament: Tournament): boolean {
   const now = +new Date();
-  const checkInOpensAt = +new Date(tournament.check_in_opens_at);
-  const checkInClosesAt =
-    checkInOpensAt + tournament.check_in_duration * 60 * 1000;
-  return checkInOpensAt < now && checkInClosesAt < now;
+  const checkInClosesAt = +combineDateAndTime(
+    tournament.start_date,
+    tournament.start_time
+  );
+
+  return checkInClosesAt < now;
 }
 
-export function getCheckInCountdownValue(tournament: Tournament): Date {
-  return new Date(
-    +new Date(tournament.check_in_opens_at) +
-      tournament.check_in_duration * 60 * 1000
-  );
+export function getCheckInCountdownValue(tournament: Tournament): number {
+  return +combineDateAndTime(tournament.start_date, tournament.start_time);
 }
