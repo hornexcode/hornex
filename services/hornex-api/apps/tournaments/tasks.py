@@ -5,7 +5,6 @@ from typing import TypedDict, Unpack
 import pytz
 import structlog
 from celery import shared_task
-from django.conf import settings
 
 from apps.tournaments.models import Tournament
 from core.experiments import experimental
