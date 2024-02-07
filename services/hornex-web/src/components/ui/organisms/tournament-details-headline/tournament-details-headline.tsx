@@ -6,6 +6,7 @@ import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { TeamCheckInStatus, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
+  combineDateAndTime,
   getCheckInCountdownValue,
   isCheckInClosed,
   isCheckInOpen,
@@ -50,24 +51,36 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
   // Controll the check in state
   useEffect(() => {
-    // remove
-    console.log('👻 useEffect...');
-    const isOpen = isCheckInOpen(tournament) && !isCheckInClosed(tournament);
-    // setCheckInOpen(isOpen);
+    const checkinIsNotOpenAndHasNotClosed =
+      !isCheckInOpen(tournament) && !isCheckInClosed(tournament);
 
-    const now = +new Date();
     // if check in is not open and the check in opens in the future
-    if (!isOpen) {
-      // remove
-      console.log('⏳ setTimeout...');
+    if (checkinIsNotOpenAndHasNotClosed) {
+      const checkInClosesAt = +combineDateAndTime(
+        tournament.start_date,
+        tournament.start_time
+      );
+      const checkInClosesIn = checkInClosesAt - +new Date();
+      const closeIn = setTimeout(() => setCheckInOpen(false), checkInClosesIn);
+
       // set a timeout to update the state when the check in opens
-      const interval = setTimeout(() => {
-        setCheckInOpen(true);
-      }, +new Date(tournament.check_in_opens_at) - now);
+      const checkInOpensIn =
+        checkInClosesAt -
+        tournament.check_in_duration * 60 * 1000 -
+        +new Date();
+      const opensIn = setTimeout(() => setCheckInOpen(true), checkInOpensIn);
+
       // avoid memory leak
-      return () => clearTimeout(interval);
+      return () => {
+        clearTimeout(closeIn);
+        clearTimeout(opensIn);
+      };
     }
   }, [tournament]);
+
+  useEffect(() => {
+    setCheckInOpen(isCheckInOpen(tournament));
+  }, []);
 
   const {
     data: checkInStatusData,

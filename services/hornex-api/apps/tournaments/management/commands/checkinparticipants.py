@@ -44,7 +44,6 @@ class Command(BaseCommand):
             end_date=now,
             start_time=now + td(minutes=10),
             end_time=now + td(minutes=30),
-            check_in_opens_at=now,
             check_in_duration=30,
             registration_start_date=now,
             registration_end_date=now + td(minutes=20),
