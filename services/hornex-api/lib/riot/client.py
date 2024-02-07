@@ -2,6 +2,7 @@ import os
 from abc import ABC, abstractmethod
 
 import requests
+from django.conf import settings
 
 from lib.logging import logger
 from lib.riot.types import (
@@ -159,9 +160,7 @@ class Clientable(ABC):
 
 class Client(Clientable):
     def __init__(self):
-        self.api_key = os.getenv("RIOT_API_KEY")
-        if not self.api_key:
-            raise Exception("RIOT_API_KEY not found")
+        self.api_key = os.getenv("RIOT_API_KEY", "")
 
     def register_tournament_provider(
         self,
@@ -387,3 +386,66 @@ class Client(Clientable):
             game_name=data["gameName"],
             tag_line=data["tagLine"],
         )
+
+
+class InMemoryClient(Clientable):
+    def register_tournament_provider(
+        self,
+        url: str,
+        region: RegionType,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> int:
+        return 0
+
+    def register_tournament(
+        self,
+        name: str,
+        provider_id: int,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> int:
+        return 0
+
+    def create_tournament_code(
+        self,
+        params: CreateTournamentCode,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> list[str]:
+        return []
+
+    def get_tournament_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> TournamentCodeV5DTO:
+        return TournamentCodeV5DTO()
+
+    def update_tournament_code(
+        self,
+        params: UpdateTournamentCode,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> None:
+        pass
+
+    def get_games_by_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> list[TournamentGamesV5]:
+        return []
+
+    def get_lobby_events_by_code(
+        self,
+        tournamentCode: str,
+        regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
+    ) -> LobbyEventV5DTOWrapper:
+        return LobbyEventV5DTOWrapper()
+
+    def get_entries_by_summoner_id(
+        self,
+        tournamentCode: str,
+        platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
+    ) -> LobbyEventV5DTOWrapper:
+        return LobbyEventV5DTOWrapper()
+
+
+client = Client() if not settings.TESTING else InMemoryClient()

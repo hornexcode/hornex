@@ -5,73 +5,14 @@ from typing import TypedDict, Unpack
 import pytz
 import structlog
 from celery import shared_task
+from django.conf import settings
 
 from apps.tournaments.models import Tournament
+from core.experiments import experimental
 from lib.challonge import Participant as ChallongeParticipantAPIResource
-from lib.challonge import Tournament as ChallongeTournamentAPIResource
+from lib.challonge import Tournament as TournamentAPIResource
 
 logger = structlog.get_logger(__name__)
-
-
-# Start Challonge Tournament...
-@shared_task
-def start_tournament(*args, **kwargs):
-    logger.info("Starting tournament....", args=args, kwargs=kwargs)
-
-
-# Check in Challonge Team...
-@dataclass(frozen=True)
-class CreateCheckInTask:
-    challonge_tournament_id: str
-    team_id: str
-
-    class Input(TypedDict):
-        challonge_tournament_id: str
-        team_id: str
-
-    def execute(self):
-        try:
-            participants = ChallongeTournamentAPIResource.list_participants(
-                self.challonge_tournament_id
-            )
-
-            logger.info("Participants", participants=participants)
-
-            result = next(
-                filter(
-                    lambda participant: participant.misc == self.team_id, participants
-                ),
-                None,
-            )
-
-            logger.info("Result", result=result)
-
-            if not result:
-                logger.warn("Team not found", team=self.team_id)
-                raise Exception("Team not found")
-
-            ChallongeTournamentAPIResource.checkin_participant(
-                self.challonge_tournament_id, result.id
-            )
-
-        except Exception as e:
-            logger.warn("Failed to handle checkin team event with error: ", error=e)
-
-
-@shared_task
-def _checkin_team_task(data: CreateCheckInTask.Input):
-    try:
-        task = CreateCheckInTask(**data)
-        task.execute()
-    except TypeError:
-        logger.warn("checkin_team_task.CreateCheckInTask: invalid data", data=data)
-
-
-def challonge_tournament_team_checkin_create(
-    **params: Unpack["CreateCheckInTask.Input"],
-):
-    logger.debug("Creating checking at Challonge...", params=params)
-    _checkin_team_task.delay(params)
 
 
 # Create Challonge Tournament...
@@ -93,7 +34,7 @@ class CreateTournamentTask:
             start_at_utc = start_at.replace(tzinfo=pytz.UTC)
             start_at_str = start_at_utc.strftime("%Y-%m-%dT%H:%M:%S.000+00:00")
 
-            resp = ChallongeTournamentAPIResource.create(
+            resp = TournamentAPIResource.create(
                 name=tournament.name,
                 tournament_type="single elimination",
                 start_at=start_at_str,
@@ -124,9 +65,70 @@ def _create_challonge_tournament_task(data: CreateTournamentTask.Input):
         )
 
 
+@experimental
 def create_challonge_tournament(**params: Unpack["CreateTournamentTask.Input"]):
-    logger.debug("Create tournament", params=params)
     _create_challonge_tournament_task.delay(params)
+
+
+# Start Challonge Tournament...
+@shared_task
+def start_tournament(*args, **kwargs):
+    logger.info("Starting tournament....", args=args, kwargs=kwargs)
+
+
+# Check in Challonge Team...
+@dataclass(frozen=True)
+class CreateCheckInTask:
+    challonge_tournament_id: str
+    team_id: str
+
+    class Input(TypedDict):
+        challonge_tournament_id: str
+        team_id: str
+
+    def execute(self):
+        try:
+            participants = TournamentAPIResource.list_participants(
+                self.challonge_tournament_id
+            )
+
+            logger.info("Participants", participants=participants)
+
+            result = next(
+                filter(
+                    lambda participant: participant.misc == self.team_id, participants
+                ),
+                None,
+            )
+
+            logger.info("Result", result=result)
+
+            if not result:
+                logger.warn("Team not found", team=self.team_id)
+                raise Exception("Team not found")
+
+            TournamentAPIResource.checkin_participant(
+                self.challonge_tournament_id, result.id
+            )
+
+        except Exception as e:
+            logger.warn("Failed to handle checkin team event with error: ", error=e)
+
+
+@shared_task
+def _checkin_team_task(data: CreateCheckInTask.Input):
+    try:
+        task = CreateCheckInTask(**data)
+        task.execute()
+    except TypeError:
+        logger.warn("checkin_team_task.CreateCheckInTask: invalid data", data=data)
+
+
+def challonge_tournament_team_checkin_create(
+    **params: Unpack["CreateCheckInTask.Input"],
+):
+    logger.debug("Creating checking at Challonge...", params=params)
+    _checkin_team_task.delay(params)
 
 
 # Create Challonge participant...

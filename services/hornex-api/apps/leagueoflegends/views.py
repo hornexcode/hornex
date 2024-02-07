@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from apps.games.models import GameID
 from apps.leagueoflegends.models import Session
 from jwt_token.authentication import JWTAuthentication
-from lib.riot.client import Client
+from lib.riot.client import client as riot
 
 client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")
 client_secret = os.getenv("RIOT_RSO_CLIENT_SECRET", "")
@@ -37,8 +37,6 @@ logger = logging.getLogger(__name__)
 def oauth_login_callback(request):
     access_code = request.GET.get("code")
     state = request.GET.get("state", "/")
-
-    riot = Client()
 
     # oauth2 - getting access_token by code
     token = riot.get_oauth_token(access_code)

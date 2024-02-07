@@ -1,5 +1,8 @@
 import structlog
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
+from apps.leagueoflegends.models import Tournament
 from apps.tournaments.tasks import (
     create_challonge_tournament,
 )
@@ -7,7 +10,7 @@ from apps.tournaments.tasks import (
 logger = structlog.get_logger(__name__)
 
 
-# @receiver(post_save, sender=Tournament)
+@receiver(post_save, sender=Tournament)
 def tournament_created(sender, instance, created, **kwargs):
     if created:
         logger.info("Creating Challonge Tournament...", tournament_id=instance.id)

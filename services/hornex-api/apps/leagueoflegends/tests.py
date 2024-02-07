@@ -277,5 +277,7 @@ class TestLeagueOfLegendsTournament(APITestCase):
             {"team": team.id},
         )
 
+        print(resp.json())
+
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.data["error"], errors.TeamMemberIsNotAllowedToRegistrate)
