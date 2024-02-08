@@ -30,6 +30,10 @@ from apps.tournaments.serializers import (
     RegistrationReadSerializer,
     TournamentSerializer,
 )
+from apps.tournaments.usecases.create_registration import (
+    CreateRegistrationUseCase,
+    CreateRegistrationUseCaseParams,
+)
 from core.route import extract_game_and_platform
 from jwt_token.authentication import JWTAuthentication
 
@@ -299,6 +303,20 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
             return Response(
                 {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+        return Response(
+            RegistrationReadSerializer(registration).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    @action(
+        detail=True,
+        methods=["post"],
+    )
+    def registration(self, request):
+        uc = CreateRegistrationUseCase()
+
+        registration = uc.execute(CreateRegistrationUseCaseParams(**request.data))
 
         return Response(
             RegistrationReadSerializer(registration).data,

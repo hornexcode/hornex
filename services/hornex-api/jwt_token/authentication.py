@@ -44,7 +44,6 @@ class JWTAuthentication(authentication.BaseAuthentication):
         self.user_model = get_user_model()
 
     def authenticate(self, request: Request) -> Optional[tuple[AuthUser, Token]]:
-        print(request.COOKIES)
         cookie_jwt = request.COOKIES.get(AUTH_COOKIE_NAME)
         if cookie_jwt:
             validated_token = self.get_validated_token(cookie_jwt)
