@@ -14,6 +14,11 @@ app_name = "tournaments"
 
 urlpatterns = [
     path(
+        "/registrations",
+        TournamentRegistrationViewSet.as_view({"post": "registration"}),
+        name="create-registration",
+    ),
+    path(
         "/<str:platform>/<str:game>/tournaments",
         TournamentReadOnlyViewSet.as_view({"get": "list"}),
         name="list",
