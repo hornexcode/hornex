@@ -2,18 +2,8 @@ import { Filters } from '@/components/search/filters';
 import Button from '@/components/ui/atoms/button';
 import { OptionIcon } from '@/components/ui/atoms/icons/option';
 import TournamentCardInfo from '@/components/ui/molecules/tournament-feed-item/tournament-feed-item';
-import { Tournament } from '@/lib/models/types';
+import { TournamentsPageTemplateProps } from '@/components/ui/templates/tournaments-feed-template/tournaments-feed-template.types';
 import { FC } from 'react';
-
-export type TournamentsPageTemplateProps = {
-  tournaments: {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: Tournament[];
-  };
-  isLoading: boolean;
-};
 
 const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
   isLoading,
@@ -32,7 +22,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
         <div className="">
           <div className="relative z-10 mb-6 flex items-center justify-between">
             <span className="text-xs font-medium text-gray-900 dark:text-white sm:text-sm">
-              23 items
+              <strong>{tournaments.count}</strong> Tournaments found
             </span>
 
             <div className="3xl:gap-8 flex gap-6">
