@@ -164,17 +164,18 @@ class MatchFactory:
         """
         user_a = UserFactory.new()
         user_b = UserFactory.new()
-        team_a = TeamFactory.new(user_a)
-        team_b = TeamFactory.new(user_b)
+        team1 = TeamFactory.new(user_a)
+        team2 = TeamFactory.new(user_b)
 
         return Match.objects.create(
             tournament=tournament,
-            team_a_id=kwargs.get("team_a_id", team_a.id),
-            team_b_id=kwargs.get("team_b_id", team_b.id),
+            team1_id=kwargs.get("team1_id", team1.id),
+            team2_id=kwargs.get("team2_id", team2.id),
+            round=kwargs.get("round", round),
             winner_id=kwargs.get("winner_id"),
             loser_id=kwargs.get("loser_id"),
             is_wo=kwargs.get("is_wo", False),
-            status=kwargs.get("status", Match.StatusType.FUTURE),
+            state=kwargs.get("state", Match.State.ALL),
         )
 
 

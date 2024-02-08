@@ -198,8 +198,8 @@ class Tournament(BaseModel):
 
             for bracket in Match.objects.filter(tournament=self):
                 # logger.warning(round.name.center(bracket_width))
-                team1 = bracket.team_a_id.__str__().ljust(max_team_len)
-                team2 = bracket.team_b_id.__str__().rjust(max_team_len)
+                team1 = bracket.team1_id.__str__().ljust(max_team_len)
+                team2 = bracket.team2_id.__str__().rjust(max_team_len)
 
                 v = f"| {team1} | vs | {team2} |"
                 print("-" * len(v))
@@ -334,22 +334,28 @@ class RegistrationParticipants(models.Model):
 
 
 class Match(models.Model):
-    class StatusType(models.TextChoices):
-        FUTURE = "future"
-        PAST = "past"
-        LIVE = "live"
+    class State(models.TextChoices):
+        ALL = "all"
+        PENDING = "pending"
+        OPEN = "open"
+        COMPLETE = "complete"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    team_a_id = models.UUIDField()
-    team_b_id = models.UUIDField()
+    team1_id = models.UUIDField()
+    team2_id = models.UUIDField()
     winner_id = models.UUIDField(null=True, blank=True)
     loser_id = models.UUIDField(null=True, blank=True)
+    team1_score = models.IntegerField(null=True, blank=True)
+    team2_score = models.IntegerField(null=True, blank=True)
+    challonge_match_id = models.IntegerField(null=True, blank=True)
+    started_at = models.DateTimeField(null=True, blank=True)
+    round = models.ForeignKey("Round", on_delete=models.CASCADE, related_name="matches")
     is_wo = models.BooleanField()
-    status = models.CharField(
+    state = models.CharField(
         max_length=50,
-        choices=StatusType.choices,
-        default=StatusType.FUTURE,
+        choices=State.choices,
+        default=State.ALL,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -358,19 +364,19 @@ class Match(models.Model):
         return f"Match ({self.id}) | round: {0} | {self.tournament.name}"
 
     @property
-    def team_a(self):
-        return Team.objects.get(id=self.team_a_id)
+    def team1(self):
+        return Team.objects.get(id=self.team1_id)
 
     @property
-    def team_b(self):
-        return Team.objects.get(id=self.team_b_id)
+    def team2(self):
+        return Team.objects.get(id=self.team2_id)
 
     def set_winner(self, team_id):
-        if team_id not in [self.team_a_id, self.team_b_id]:
+        if team_id not in [self.team1_id, self.team2_id]:
             raise ValueError("Invalid team id")
 
         self.winner_id = team_id
-        self.loser_id = self.team_a_id if team_id == self.team_b_id else self.team_b_id
+        self.loser_id = self.team1_id if team_id == self.team2_id else self.team2_id
 
         self.save()
 

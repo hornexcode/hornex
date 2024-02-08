@@ -25,7 +25,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     def validate(self, attrs):
         if attrs["password"] != attrs["password2"]:
             raise serializers.ValidationError(
-                {"password": "Password fields didn't match."}
+                {"password": "Password fields don't match."}
             )
 
         return attrs

@@ -69,7 +69,7 @@ class TestUsers(APITestCase, URLPatternsTestCase):
 
         self.assertEqual(resp.status_code, 400)
         self.assertRaises(ValidationError)
-        self.assertEqual(resp.data["password"][0], "Password fields didn't match.")
+        self.assertEqual(resp.data["password"][0], "Password fields don't match.")
 
     def test_create_user_password_invalid_400(self):
         url = reverse("register-user")
