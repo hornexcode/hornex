@@ -17,16 +17,16 @@ import { FC, useState } from 'react';
 type TournamentDetailsTemplateProps = {
   tournament: Tournament;
   gameIds: GameID[];
-  registrations: Registration[];
   participantCheckedInStatus?: boolean;
 };
 
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   tournament,
   gameIds,
-  registrations,
   participantCheckedInStatus,
 }) => {
+  const registrations: Registration[] = [];
+
   let [tabs] = useState({
     Overview: '',
     Standings: '',

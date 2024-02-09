@@ -1,5 +1,5 @@
 import Loader from '../../atoms/loader';
-import { useStepContext } from './registration-view';
+import { useStepContext } from './register-team-modal';
 import { useModal } from '@/components/modal-views/context';
 import {
   AlertDialog,
@@ -30,6 +30,8 @@ const { post: registerTeam } = dataLoader<
   Registration,
   {
     team: string;
+    platform: string;
+    game: string;
   }
 >('registerTeam');
 
@@ -42,13 +44,8 @@ type SubmitRegistrationFormType = z.infer<typeof submitRegistrationFormSchema>;
 export type SelectTeamStepProps = {};
 
 export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
-  const {
-    nextStep,
-    setTeam,
-    teams,
-    tournament,
-    isFetching: isFetchingTeams,
-  } = useStepContext();
+  const { nextStep, setTeam, teams, tournament } = useStepContext();
+
   const router = useRouter();
   const { closeModal } = useModal();
   // react hook form
@@ -76,15 +73,18 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
       value: team.id,
     })) || [];
 
-  async function submitHandler(data: SubmitRegistrationFormType) {
+  async function submitHandler() {
     setIsFetching(true);
+
     const { data: registration, error } = await registerTeam(
       {
         tournamentId: tournament?.id || '',
-        platform: router.query.platform || '',
-        game: router.query.game || '',
       },
-      { team: teamOption.value }
+      {
+        team: teamOption.value,
+        platform: router.query.platform as string,
+        game: router.query.game as string,
+      }
     );
 
     setError(error?.message);

@@ -10,7 +10,7 @@ import { Fragment, useEffect } from 'react';
 // dynamic imports
 const SearchView = dynamic(() => import('@/components/search/view'));
 const RegistrationView = dynamic(
-  () => import('@/components/ui/organisms/registration-view')
+  () => import('@/components/ui/organisms/register-team-modal')
 );
 const ConnectAccountView = dynamic(
   () => import('@/components/ui/organisms/connect-account-view')

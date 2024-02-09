@@ -49,7 +49,6 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   // }
   return (
     <TournamentDetailsTemplate
-      registrations={registrations}
       tournament={tournament}
       gameIds={gameIds}
       participantCheckedInStatus={participantCheckedInStatus}

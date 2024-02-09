@@ -1,6 +1,7 @@
 from django.urls import path
 
 from apps.tournaments.views import (
+    RegistrationViewSet,
     TournamentReadOnlyViewSet,
     TournamentRegistrationViewSet,
     TournamentViewSet,
@@ -14,29 +15,14 @@ app_name = "tournaments"
 
 urlpatterns = [
     path(
-        "/registrations",
-        TournamentRegistrationViewSet.as_view({"post": "registration"}),
-        name="create-registration",
-    ),
-    path(
-        "/<str:platform>/<str:game>/tournaments",
-        TournamentReadOnlyViewSet.as_view({"get": "list"}),
-        name="list",
-    ),
-    path(
-        "/<str:platform>/<str:game>/tournaments/<str:id>/details",
-        TournamentViewSet.as_view({"get": "retrieve"}),
-        name="details",
-    ),
-    path(
-        "/<str:platform>/<str:game>/tournaments/<str:id>/register",
+        "/tournaments/<str:id>/registrations",
         TournamentRegistrationViewSet.as_view({"post": "register"}),
         name="register",
     ),
     path(
         "/registrations",
-        TournamentRegistrationViewSet.as_view({"get": "list"}),
-        name="registration-list",
+        RegistrationViewSet.as_view({"get": "list"}),
+        name="list-registrations-for-a-user",
     ),
     path(
         "/registrations/<str:id>",
@@ -57,5 +43,17 @@ urlpatterns = [
         "/tournaments/<str:tournament>/participant/checked-in",
         pariticipant_checked_in,
         name="participant-checked-in",
+    ),
+    # @deprecated
+    path(
+        "/<str:platform>/<str:game>/tournaments",
+        TournamentReadOnlyViewSet.as_view({"get": "list"}),
+        name="list",
+    ),
+    # @deprecated
+    path(
+        "/<str:platform>/<str:game>/tournaments/<str:id>/details",
+        TournamentViewSet.as_view({"get": "retrieve"}),
+        name="details",
     ),
 ]
