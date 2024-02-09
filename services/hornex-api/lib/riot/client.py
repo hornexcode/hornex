@@ -1,4 +1,5 @@
 import os
+import uuid
 from abc import ABC, abstractmethod
 
 import requests
@@ -149,7 +150,7 @@ class Clientable(ABC):
         self,
         tournamentCode: str,
         platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
-    ) -> LobbyEventV5DTOWrapper:
+    ) -> list[LeagueEntryDTO]:
         """
         Get league entries in all queues for a given summoner ID.
 
@@ -449,8 +450,16 @@ class InMemoryClient(Clientable):
         self,
         tournamentCode: str,
         platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
-    ) -> LobbyEventV5DTOWrapper:
-        return LobbyEventV5DTOWrapper()
+    ) -> list[LeagueEntryDTO]:
+        return []
+
+    def get_summoner_by_name(self, summoner_name: str) -> SummonerDTO | None:
+        return SummonerDTO(
+            account_id="account_id",
+            id="id",
+            name=summoner_name,
+            puuid=uuid.uuid4().hex,
+        )
 
 
 client = Client() if not settings.TESTING else InMemoryClient()

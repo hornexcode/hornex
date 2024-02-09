@@ -66,6 +66,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
         )
         GameIdFactory.new(user=self.user)
+        team.add_member(self.user)
         for _ in range(0, 4):
             usr = UserFactory.new()
             team.add_member(usr)
@@ -94,6 +95,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         self.assertEqual(Tournament.objects.count(), 1)
         self.assertEqual(Tournament.objects.count(), 1)
 
+        print(resp.json())
         # response checks
         self.assertEqual(resp.status_code, 201)
 
@@ -210,8 +212,8 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.json()["detail"], errors.TeamAlreadyRegisteredError)
 
-    @patch("lib.riot.client.Client.get_entries_by_summoner_id")
-    @patch("lib.riot.client.Client.get_summoner_by_name")
+    @patch("lib.riot.client.InMemoryClient.get_entries_by_summoner_id")
+    @patch("lib.riot.client.InMemoryClient.get_summoner_by_name")
     def test_register_400_team_member_is_not_allowed_to_registrate_error(
         self, mock_get_summoner_by_name, mock_get_league_entries
     ):

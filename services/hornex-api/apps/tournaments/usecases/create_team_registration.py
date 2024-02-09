@@ -83,9 +83,18 @@ class CreateRegistrationUseCase:
             for game_id in game_ids:
                 if tournament.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
                     summoner = riot_client.get_summoner_by_name(game_id.nickname)
-
                     if summoner is None:
                         raise ValidationError({"detail": "Summoner not found"})
+
+                    summoner_entries = riot_client.get_entries_by_summoner_id(summoner.id)
+
+                    # check if the summoner is allowed to play in the tournament
+                    tournament_entries = tournament.get_classifications()
+                    for entry in summoner_entries:
+                        if f"{entry.tier} {entry.rank}" not in tournament_entries:
+                            raise ValidationError(
+                                {"detail": errors.TeamMemberIsNotAllowedToRegistrate}
+                            )
 
         registration = Registration.objects.create(
             tournament=tournament,
