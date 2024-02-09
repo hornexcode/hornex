@@ -5,7 +5,6 @@ from datetime import UTC, datetime, timedelta
 import structlog
 from django.conf import settings
 from django.db import models
-from django.db.models.query import QuerySet
 from rest_framework.exceptions import ValidationError
 
 from apps.common.models import BaseModel
@@ -71,12 +70,6 @@ class Tournament(BaseModel):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
-    def _check_team_has_enough_members(self, team):
-        return team.members.count() >= self.team_size
-
-    def _check_team_has_registration(self, team):
-        return Registration.objects.filter(tournament=self, team=team).exists()
-
     def _check_team_members_can_play(self, team: Team):
         return all(
             [
@@ -88,11 +81,12 @@ class Tournament(BaseModel):
             ]
         )
 
-    def _get_last_round(self) -> "Round":
-        last_round = self.rounds.all().order_by("-created_at").first()
-        if not last_round:
-            raise ValueError("No rounds found")
-        return last_round
+    def _get_last_round(self):
+        # last_round = self.rounds.all().order_by("-created_at").first()
+        # if not last_round:
+        #     raise ValueError("No rounds found")
+        # return last_round
+        return None
 
     def _get_allowed_number_of_teams(self) -> list[int]:
         try:
@@ -110,9 +104,7 @@ class Tournament(BaseModel):
         return self.teams.count()
 
     def _get_key(self):
-        if self.keys.count() == 0:
-            return Key.objects.create(tournament=self)
-        return self.keys.first()
+        return
 
     def _is_bracket_generation_allowed(self):
         if self._is_first_round():
@@ -123,7 +115,8 @@ class Tournament(BaseModel):
         ).exists()
 
     def _is_first_round(self):
-        return self.rounds.count() == 0
+        # return self.rounds.count() == 0
+        return 0
 
     def _has_start_datetime(self):
         return bool(self.start_date) and bool(self.start_time)
@@ -161,10 +154,11 @@ class Tournament(BaseModel):
         regi.cancel()
 
     def generate_brackets(self, print_brackets=False):
-        key = self._get_key()
+        # key = self._get_key()
 
-        rounds = self.rounds.all()
-        num_rounds = len(rounds)
+        # rounds = self.rounds.all()
+        # rounds = 0
+        # num_rounds = len(rounds)
 
         if not self._is_bracket_generation_allowed():
             raise ValidationError(detail=errors.BracketGenerationNotAllowedError)
@@ -177,9 +171,10 @@ class Tournament(BaseModel):
         else:
             teams = self.teams.all()  # -> QuerySet[Team]
 
-        round = Round.objects.create(
-            tournament=self, key=key, name=f"Round {num_rounds + 1}"
-        )
+        # round = Round.objects.create(
+        #     tournament=self, key=key, name=f"Round {num_rounds + 1}"
+        # )
+        # round = None
 
         num_of_teams = len(teams)
         if num_of_teams not in self._get_allowed_number_of_teams():
@@ -187,14 +182,14 @@ class Tournament(BaseModel):
                 "Number of teams must be in "
                 f"{self._get_allowed_number_of_teams().__str__()}"
             )
-        for i in range(0, int(num_of_teams / 2)):
-            Match.objects.create(
-                tournament=self,
-                team_a_id=teams[i].id,
-                team_b_id=teams[num_of_teams - i - 1].id,
-                round=round,
-                is_wo=True,
-            )
+        # for i in range(0, int(num_of_teams / 2)):
+        # Match.objects.create(
+        #     tournament=self,
+        #     team_a_id=teams[i].id,
+        #     team_b_id=teams[num_of_teams - i - 1].id,
+        #     round=round,
+        #     is_wo=True,
+        # )
 
         if print_brackets:
             # Determine the width of the bracket
@@ -211,21 +206,29 @@ class Tournament(BaseModel):
                 print(v)
                 # logger.warning("-" * len(v))
 
-    def register(self, team):
-        if self._is_full():
-            raise ValidationError(detail=errors.TournamentFullError)
-        if self._check_team_has_registration(team):
-            raise ValidationError(detail=errors.TeamAlreadyRegisteredError)
-        if not self._check_team_has_enough_members(team):
-            raise ValidationError(detail=errors.EnoughMembersError)
-        if not self.is_classification_open and not self._check_team_members_can_play(
-            team
-        ):
-            raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
+    def register(self, team) -> "Registration":
+        if self.is_full:
+            raise ValidationError({"error": errors.TournamentFullError})
 
-        return Registration.objects.create(
+        # check team already has a registration opened
+        # TODO: need to check if the registration is pending
+        if Registration.objects.filter(tournament=self, team=team).exists():
+            raise ValidationError({"error": errors.TeamAlreadyRegisteredError})
+
+        # team has enough members
+        # if team.members.count() < self.team_size:
+        #     raise ValidationError({"error": errors.EnoughMembersError})
+
+        # if not self.is_classification_open and not self._check_team_members_can_play(
+        #     team
+        # ):
+        #     raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
+
+        registration = Registration.objects.create(
             tournament=self, team=team, game_slug=self.game, platform_slug=self.platform
         )
+
+        return registration
 
     def add_team(self, team):
         if not self._check_team_has_registration(team):
@@ -233,7 +236,8 @@ class Tournament(BaseModel):
         self.teams.add(team)
         self.save()
 
-    def _is_full(self):
+    @property
+    def is_full(self):
         now = datetime.now(tz=UTC)
 
         accepted_registrations = Registration.objects.filter(
@@ -274,33 +278,6 @@ class Tournament(BaseModel):
         raise NotImplementedError
 
 
-class Subscription(models.Model):
-    class StatusOptions(models.TextChoices):
-        ACTIVE = "active"
-        PENDING = "pending"
-        UNPAID = "unpaid"
-        REFUNDED = "refunded"
-        CANCELLED = "cancelled"
-        PAST_DUE = "past_due"
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
-    entry_fee = models.IntegerField(default=0, null=True, blank=True)
-    status = models.CharField(
-        max_length=50,
-        choices=StatusOptions.choices,
-        default=StatusOptions.PENDING,
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self) -> str:
-        return f"{self.tournament.name} :: {self.team.name} ({self.id})"
-
-
 class Registration(models.Model):
     class RegistrationStatusType(models.TextChoices):
         PENDING = "pending"
@@ -339,6 +316,23 @@ class Registration(models.Model):
         self.save()
 
 
+class RegistrationParticipants(models.Model):
+    """
+    This model is used to keep track of the participants in a tournament.
+    It makes easier to get the a registration for a given tournament and the
+    participants.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    registration = models.ForeignKey(Registration, on_delete=models.CASCADE)
+    participants = models.ManyToManyField(
+        "users.User", related_name="tournaments", blank=True
+    )
+
+    def __str__(self) -> str:
+        return f"Tournament Participants ({self.id}) | {self.tournament.name}"
+
+
 class Match(models.Model):
     class StatusType(models.TextChoices):
         FUTURE = "future"
@@ -351,7 +345,6 @@ class Match(models.Model):
     team_b_id = models.UUIDField()
     winner_id = models.UUIDField(null=True, blank=True)
     loser_id = models.UUIDField(null=True, blank=True)
-    round = models.ForeignKey("Round", on_delete=models.CASCADE, related_name="matches")
     is_wo = models.BooleanField()
     status = models.CharField(
         max_length=50,
@@ -362,7 +355,7 @@ class Match(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return f"Match ({self.id}) | round: {self.round} | {self.tournament.name}"
+        return f"Match ({self.id}) | round: {0} | {self.tournament.name}"
 
     @property
     def team_a(self):
@@ -388,51 +381,6 @@ class Match(models.Model):
         return Team.objects.get(id=self.loser_id)
 
 
-class MatchRound(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    team_a_id = models.UUIDField()
-    team_b_id = models.UUIDField()
-    team_a_score = models.CharField(max_length=255)
-    team_b_score = models.CharField(max_length=255)
-    schedule = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self) -> str:
-        return f"MatchRound ({self.id}) | {self.match}"
-
-
-class Round(models.Model):
-    tournament = models.ForeignKey(
-        Tournament, on_delete=models.CASCADE, related_name="rounds"
-    )
-    name = models.CharField(max_length=255)
-    key = models.ForeignKey("Key", on_delete=models.CASCADE, related_name="rounds")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["-created_at"]
-
-    def __str__(self) -> str:
-        return f"Round ({self.id}) | {self.tournament.name}"
-
-    def get_winners(self) -> QuerySet[Team]:
-        return Team.objects.filter(id__in=self.get_winner_ids())
-
-    def get_winner_ids(self):
-        return [bracket.winner_id for bracket in self.matches.all()]
-
-
-class Key(models.Model):
-    tournament = models.ForeignKey(
-        Tournament, on_delete=models.CASCADE, related_name="keys"
-    )
-
-    def __str__(self) -> str:
-        return f"Key ({self.id}) | {self.tournament.name}"
-
-
 class Checkin(models.Model):
     tournament = models.ForeignKey(
         Tournament, on_delete=models.CASCADE, related_name="checkins"
@@ -445,6 +393,7 @@ class Checkin(models.Model):
         return f"Checkin ({self.id}) | {self.tournament.name}"
 
 
+# LEAGUE OF LEGENDS
 class LeagueOfLegendsEllo(models.Model):
     class TierOptions(models.TextChoices):
         IRON = "IRON"

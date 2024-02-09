@@ -1,7 +1,7 @@
 import Button from '../../atoms/button';
 import { LongArrowLeft } from '../../atoms/icons/long-arrow-left';
 import PaymentOptions from '../../molecules/payment-options';
-import { useStepContext } from './registration-view';
+import { useStepContext } from './register-team-modal';
 import { dataLoader } from '@/lib/request';
 import React, { FC, useState } from 'react';
 

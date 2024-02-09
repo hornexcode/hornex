@@ -26,7 +26,6 @@ from apps.tournaments.models import Checkin, Registration, Tournament
 from apps.tournaments.models import Tournament as BaseTournament
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.serializers import (
-    RegistrationCreateSerializer,
     RegistrationReadSerializer,
     TournamentSerializer,
 )
@@ -110,6 +109,81 @@ class TournamentViewSet(viewsets.ModelViewSet):
         if obj.game == BaseTournament.GameType.LEAGUE_OF_LEGENDS:
             return LeagueOfLegendsTournament.objects.get(id=obj.id)
         return obj
+
+
+class TournamentRegistrationViewSet(viewsets.ModelViewSet):
+    """
+    Manage registrations for a tournament
+    """
+
+    queryset = Registration.objects.all()
+    serializer_class = RegistrationReadSerializer
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    @action(detail=True, methods=["post"])
+    @transaction.atomic
+    def register(self, request, **kwargs):
+        print(
+            {
+                **request.data,
+                "tournament": kwargs["id"],
+            }
+        )
+        uc = CreateRegistrationUseCase()
+
+        registration = uc.execute(
+            CreateRegistrationUseCaseParams(
+                **{
+                    **request.data,
+                    "tournament": kwargs["id"],
+                }
+            ),
+        )
+
+        return Response(
+            RegistrationReadSerializer(registration).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class RegistrationViewSet(viewsets.ModelViewSet):
+    """
+    Manage registrations for a logged user
+    """
+
+    queryset = Registration.objects.all()
+    serializer_class = RegistrationReadSerializer
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def list(self, request):
+        return Response(
+            [],
+            status=status.HTTP_200_OK,
+        )
+
+
+class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = LeagueOfLegendsTournament.objects.all()
+    serializer_class = LeagueOfLegendsTournamentSerializer
+    lookup_field = "id"
+    filter_backends = (
+        DjangoFilterBackend,
+        TournamentListFilter,
+        TournamentListOrdering,
+    )
+    pagination_class = TournamentPagination
+
+    @swagger_auto_schema(
+        operation_description="GET /api/v1/tournaments/lol/search",
+        operation_summary="List and filter paginated a lol tournaments",
+        manual_parameters=[game_qp, platform_qp],
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 @api_view(["GET"])
@@ -221,124 +295,3 @@ def check_in(request, *args, **kwargs):
             {"message": "Checkin successful"},
             status=status.HTTP_200_OK,
         )
-
-
-class TournamentRegistrationViewSet(viewsets.ModelViewSet):
-    queryset = Registration.objects.all()
-    serializer_class = RegistrationReadSerializer
-    lookup_field = "id"
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-
-    def get_queryset(self):
-        print(self.request.user)
-        members = Membership.objects.filter(user=self.request.user)
-        teams = [member.team for member in members]
-
-        self.queryset = Registration.objects.filter(team__in=teams)
-        status = self.request.GET.get("status", "")
-        if (
-            "status" in self.request.GET
-            and status in Registration.RegistrationStatusType.values
-        ):
-            self.queryset = self.queryset.filter(status=status)
-        return self.queryset
-
-    @swagger_auto_schema(
-        operation_description="POST /api/v1/tournaments/<str:id>/register",
-        operation_summary="Register a team to a tournament",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "team": openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        "name": openapi.Schema(type=openapi.TYPE_STRING),
-                        "captain": openapi.Schema(type=openapi.TYPE_STRING),
-                        "players": openapi.Schema(
-                            type=openapi.TYPE_ARRAY,
-                            items=openapi.Schema(type=openapi.TYPE_STRING),
-                        ),
-                    },
-                )
-            },
-        ),
-    )
-    @action(
-        detail=True,
-        methods=["post"],
-    )
-    @transaction.atomic
-    def register(self, request, *args, **kwargs):
-        params = RegistrationCreateSerializer(
-            data={**request.data, "tournament": kwargs["id"]},
-            context={"request": request},
-        )
-        if not params.is_valid():
-            return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            tournament = LeagueOfLegendsTournament.objects.get(
-                id=params.data.get("tournament")
-            )
-        except LeagueOfLegendsTournament.DoesNotExist:
-            return Response(
-                {"error": f"Tournament not found for id: {params.data['tournament']}"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            team = Team.objects.get(id=params.data["team"])
-        except Team.DoesNotExist:
-            return Response(
-                {"error": f"Invalid team for id: {params.data['team']}"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            registration = tournament.register(team)
-        except ValidationError as e:
-            return Response({"error": e.detail[0]}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response(
-                {"error": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-        return Response(
-            RegistrationReadSerializer(registration).data,
-            status=status.HTTP_201_CREATED,
-        )
-
-    @action(
-        detail=True,
-        methods=["post"],
-    )
-    def registration(self, request):
-        uc = CreateRegistrationUseCase()
-
-        registration = uc.execute(CreateRegistrationUseCaseParams(**request.data))
-
-        return Response(
-            RegistrationReadSerializer(registration).data,
-            status=status.HTTP_201_CREATED,
-        )
-
-
-class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = LeagueOfLegendsTournament.objects.all()
-    serializer_class = LeagueOfLegendsTournamentSerializer
-    lookup_field = "id"
-    filter_backends = (
-        DjangoFilterBackend,
-        TournamentListFilter,
-        TournamentListOrdering,
-    )
-    pagination_class = TournamentPagination
-
-    @swagger_auto_schema(
-        operation_description="GET /api/v1/tournaments/lol/search",
-        operation_summary="List and filter paginated a lol tournaments",
-        manual_parameters=[game_qp, platform_qp],
-    )
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)

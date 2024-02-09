@@ -1,7 +1,5 @@
 # Description: Register a team in a tournament
-from datetime import timedelta
 
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
@@ -49,11 +47,8 @@ class CreateRegistrationUseCase:
         :param team: Team
         :return: Registration
         """
-
         try:
-            tournament = Tournament.objects.get(
-                id=params.tournament, game=params.game, platform=params.platform
-            )
+            tournament = Tournament.objects.get(id=params.tournament)
         except Tournament.DoesNotExist:
             raise ValidationError({"detail": "Tournament not found"})
 
@@ -62,38 +57,6 @@ class CreateRegistrationUseCase:
         except Team.DoesNotExist:
             raise ValidationError({"detail": "Team not found"})
 
-        # check if tournament is open for registration
-        if (
-            tournament.phase != Tournament.PhaseType.REGISTRATION_OPEN
-            or tournament.registration_start_date > timezone.now()
-        ):
-            # check if start date is in the future
-            raise ValidationError(
-                {"detail": "The tournament is not open for registration"}
-            )
-
-        # check if tournament is full with
-        # all registrations accepted + pending created in the last 2 hours
-        diff = timezone.now() - timedelta(hours=2)
-        if tournament.max_teams and (
-            Registration.objects.filter(
-                tournament=tournament,
-                status=Registration.RegistrationStatusType.ACCEPTED,
-            ).count()
-            + Registration.objects.filter(
-                tournament=tournament,
-                status=Registration.RegistrationStatusType.PENDING,
-                created_at__gte=diff,
-            ).count()
-        ):
-            raise ValidationError({"detail": "The tournament is full"})
-
-        # check if the team is already registered
-        if Registration.objects.filter(tournament=tournament, team=team).exists():
-            raise ValidationError({"detail": "The team is already registered"})
-
-        registration = Registration.objects.create(
-            tournament=tournament, team=team, status="pending"
-        )
+        registration = tournament.register(team)
 
         return registration

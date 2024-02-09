@@ -85,7 +85,6 @@ def create_tournaments():
         end_date=now + td(days=14),
         start_time=now + td(days=7),
         end_time=now + td(days=14),
-        check_in_opens_at=now + td(days=7, minutes=-15),
         check_in_duration=50,
         registration_start_date=now,
         registration_end_date=now + td(days=7),

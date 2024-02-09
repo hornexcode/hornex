@@ -6,7 +6,7 @@ import { Team, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const { useData: getTeams } = dataLoader<Team[]>('getTeams');
 const { useData: getTournament } = dataLoader<Tournament>('getTournament');
@@ -17,30 +17,18 @@ export type RegistrationSteps =
   | 'PAYMENT'
   | 'SUCCESS';
 
-export const RegistrationContext = createContext<{
-  step: RegistrationSteps;
-  teams?: Team[];
-  team?: ListboxOption;
-  tournament?: Tournament;
-  isFetching: boolean;
-  setTeam: (team: ListboxOption) => void;
-  nextStep: (step: RegistrationSteps) => void;
-}>({
-  step: 'SELECT_TEAM',
-  teams: undefined,
-  tournament: undefined,
-  team: undefined,
-  isFetching: false,
-  setTeam: (team: ListboxOption) => {},
-  nextStep: (step: RegistrationSteps) => {},
-});
-
 const RegistrationView = () => {
   const [step, setStep] = useState<RegistrationSteps>('SELECT_TEAM');
   const [team, setTeam] = useState<ListboxOption | undefined>(undefined);
 
   const nextStep = (step: RegistrationSteps) => setStep(step);
   const selectTeam = (team: ListboxOption) => setTeam(team);
+
+  useEffect(() => {
+    if (team) {
+      setStep('CHECKOUT');
+    }
+  }, []);
 
   // get params
   const router = useRouter();
@@ -50,8 +38,8 @@ const RegistrationView = () => {
     error: teamsError,
     isLoading: loadingTeams,
   } = getTeams({
-    platform: router.query.platform || '',
-    game: router.query.game || '',
+    platform: router.query.platform as string,
+    game: router.query.game as string,
   });
 
   const {
@@ -59,12 +47,29 @@ const RegistrationView = () => {
     error: tournamentError,
     isLoading: loadingTournament,
   } = getTournament({
-    tournamentId: router.query.id || '',
-    platform: router.query.platform || '',
-    game: router.query.game || '',
+    tournamentId: router.query.id as string,
+    platform: router.query.platform as string,
+    game: router.query.game as string,
   });
 
+  if (loadingTeams || loadingTournament) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader className="mx-auto mt-10" variant="blink" />
+      </div>
+    );
+  }
+
+  if (tournamentError || !tournament) {
+    return (
+      <p className="mt-8 text-center text-sm text-gray-400">
+        failed to fetch tournament
+      </p>
+    );
+  }
+
   const teamsList = teams && teams?.length > 0 ? teams : [];
+
   return (
     <div className="">
       <RegistrationContext.Provider
@@ -78,19 +83,29 @@ const RegistrationView = () => {
           setTeam,
         }}
       >
-        {(loadingTeams || loadingTournament) && (
-          <Loader className="mx-auto mt-10" variant="blink" />
-        )}
-        {(tournamentError || teamsError) && (
-          <p className="mt-8 text-center text-sm text-gray-400">
-            failed to load step
-          </p>
-        )}
-        {tournament && teams && renderStep(step)}
+        {renderStep(step)}
       </RegistrationContext.Provider>
     </div>
   );
 };
+
+export const RegistrationContext = createContext<{
+  step: RegistrationSteps;
+  teams?: Team[];
+  team?: ListboxOption;
+  tournament: Tournament;
+  isFetching: boolean;
+  setTeam: (team: ListboxOption) => void;
+  nextStep: (step: RegistrationSteps) => void;
+}>({
+  step: 'SELECT_TEAM',
+  teams: undefined,
+  tournament: {} as Tournament,
+  team: undefined,
+  isFetching: false,
+  setTeam: (team: ListboxOption) => {},
+  nextStep: (step: RegistrationSteps) => {},
+});
 
 function renderStep(step: RegistrationSteps) {
   switch (step) {

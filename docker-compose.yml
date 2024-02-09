@@ -17,6 +17,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   hornex-api:
     container_name: hornex-api
     restart: always
@@ -26,63 +27,32 @@ services:
       target: local
     volumes:
       - ./services/hornex-api:/src
-    ports:
-      - "8000:8000"
     env_file:
       - ./services/hornex-api/env/dev.env
     depends_on:
       hornex-postgres:
         condition: service_healthy
 
-  hornex-celery:
-    container_name: hornex-celery
+  hornex-web:
+    container_name: hornex-web
     build:
-      context: ./services/hornex-api
+      context: ./services/hornex-web
       dockerfile: Dockerfile
-      target: celery
     volumes:
-      - ./services/hornex-api:/src
-    env_file:
-      - ./services/hornex-api/env/dev.env
-
-  hornex-celery-beat:
-    container_name: hornex-celery-beat
-    build:
-      context: ./services/hornex-api
-      dockerfile: Dockerfile
-      target: beat
-    volumes:
-      - ./services/hornex-api:/src
-    env_file:
-      - ./services/hornex-api/env/dev.env
+      - ./services/hornex-web:/app
     depends_on:
-      - hornex-rabbitmq
+      - hornex-api
 
-  hornex-celery-flower:
-    container_name: hornex-celery-flower
+  hornex-nginx:
+    container_name: hornex-nginx
     build:
-      context: ./services/hornex-api
+      context: ./services/hornex-nginx
       dockerfile: Dockerfile
-      target: flower
-    volumes:
-      - ./services/hornex-api:/src
-    env_file:
-      - ./services/hornex-api/env/dev.env
     ports:
-      - "5555:5555"
+      - "9876:80"
     depends_on:
-      - hornex-celery
-      - hornex-rabbitmq
-
-  # hornex-nginx:
-  #   container_name: hornex-nginx
-  #   build:
-  #     context: ./services/hornex-nginx
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - hornex-api
+      - hornex-api
+      - hornex-web
 
   hornex-rabbitmq:
     container_name: hornex-rabbitmq
