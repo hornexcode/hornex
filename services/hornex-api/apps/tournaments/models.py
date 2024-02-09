@@ -336,9 +336,9 @@ class RegistrationParticipants(models.Model):
 class Match(models.Model):
     class MatchStatus(models.TextChoices):
         ALL = "all"
-        PENDING = 'pending'
-        ONGOING = 'ongoing'
-        FINISHED = 'finished'
+        PENDING = "pending"
+        ONGOING = "ongoing"
+        FINISHED = "finished"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
@@ -350,7 +350,6 @@ class Match(models.Model):
     team2_score = models.IntegerField(default=0)
     challonge_match_id = models.IntegerField(null=True, blank=True)
     started_at = models.DateTimeField(null=True, blank=True)
-    round = models.ForeignKey("Round", on_delete=models.CASCADE, related_name="matches")
     is_wo = models.BooleanField()
     status = models.CharField(
         max_length=50,
