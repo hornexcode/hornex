@@ -334,11 +334,11 @@ class RegistrationParticipants(models.Model):
 
 
 class Match(models.Model):
-    class State(models.TextChoices):
+    class MatchStatus(models.TextChoices):
         ALL = "all"
-        PENDING = "pending"
-        OPEN = "open"
-        COMPLETE = "complete"
+        PENDING = 'pending'
+        ONGOING = 'ongoing'
+        FINISHED = 'finished'
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
@@ -346,30 +346,22 @@ class Match(models.Model):
     team2_id = models.UUIDField()
     winner_id = models.UUIDField(null=True, blank=True)
     loser_id = models.UUIDField(null=True, blank=True)
-    team1_score = models.IntegerField(null=True, blank=True)
-    team2_score = models.IntegerField(null=True, blank=True)
+    team1_score = models.IntegerField(default=0)
+    team2_score = models.IntegerField(default=0)
     challonge_match_id = models.IntegerField(null=True, blank=True)
     started_at = models.DateTimeField(null=True, blank=True)
     round = models.ForeignKey("Round", on_delete=models.CASCADE, related_name="matches")
     is_wo = models.BooleanField()
-    state = models.CharField(
+    status = models.CharField(
         max_length=50,
-        choices=State.choices,
-        default=State.ALL,
+        choices=MatchStatus.choices,
+        default=MatchStatus.ALL,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return f"Match ({self.id}) | round: {0} | {self.tournament.name}"
-
-    @property
-    def team1(self):
-        return Team.objects.get(id=self.team1_id)
-
-    @property
-    def team2(self):
-        return Team.objects.get(id=self.team2_id)
 
     def set_winner(self, team_id):
         if team_id not in [self.team1_id, self.team2_id]:
