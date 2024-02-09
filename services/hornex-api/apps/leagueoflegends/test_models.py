@@ -26,10 +26,12 @@ class TestUnitTournamentModel(TestCase):
 
         self.league_entries = [
             LeagueEntry.objects.create(
-                tier=LeagueEntry.TierOptions.IRON, rank=LeagueEntry.RankOptions.I
+                tier=LeagueEntry.TierOptions.IRON,
+                rank=LeagueEntry.RankOptions.I,
             ),
             LeagueEntry.objects.create(
-                tier=LeagueEntry.TierOptions.IRON, rank=LeagueEntry.RankOptions.II
+                tier=LeagueEntry.TierOptions.IRON,
+                rank=LeagueEntry.RankOptions.II,
             ),
         ]
         tournament.allowed_league_entries.set(self.league_entries)

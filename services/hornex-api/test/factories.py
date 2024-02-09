@@ -102,9 +102,7 @@ class LeagueOfLegendsTournamentFactory:
         """
         Create a new league of legends tournament with the given organizer and kwargs.
         """
-        default_provider = Provider.objects.create(
-            id=1, region="BR", url="https://www.hornex.gg/"
-        )
+        default_provider = Provider.objects.create(id=1, region="BR", url="https://www.hornex.gg/")
 
         now = dt.now(tz=UTC)
         tmt = Tournament.objects.create(

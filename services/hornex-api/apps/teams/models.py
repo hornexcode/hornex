@@ -11,14 +11,13 @@ class Team(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100, blank=True)
-    created_by = models.ForeignKey("users.User", on_delete=models.DO_NOTHING)
-    members = models.ManyToManyField(
-        "users.User", through="Membership", related_name="teams"
-    )
+    members = models.ManyToManyField("users.User")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    created_by = models.UUIDField()
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
@@ -31,21 +30,11 @@ class Team(BaseModel):
     def add_member(self, user, is_admin=False):
         self.members.add(user)
 
-
-class Membership(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    is_admin = models.BooleanField(default=False)
-
-    joined_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self) -> str:
-        return f"{self.user.email} :: ({self.team.name})"
-
-    def can_play(self, game, classifications):
-        u = self.user
-        return u.can_play(game, classifications)
+    def can_register(self, game: str, classifications: list[str]):
+        for m in self.members.all():
+            if not m.can_register(game, classifications):
+                return False
+        return True
 
 
 class Invite(models.Model):
@@ -67,7 +56,7 @@ class Invite(models.Model):
         return "pending"
 
     def accept(self):
-        Membership.objects.create(team=self.team, user=self.user)
+        self.team.members.add(self.user)
         self.accepted_at = dt.now(tz=UTC)
         self.save()
 

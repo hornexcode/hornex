@@ -19,9 +19,12 @@ from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
 from apps.leagueoflegends.tasks import participant_registered
-from apps.teams.models import Membership, Team
+from apps.teams.models import Team
 from apps.tournaments import errors
-from apps.tournaments.filters import TournamentListFilter, TournamentListOrdering
+from apps.tournaments.filters import (
+    TournamentListFilter,
+    TournamentListOrdering,
+)
 from apps.tournaments.models import Checkin, Registration, Tournament
 from apps.tournaments.models import Tournament as BaseTournament
 from apps.tournaments.pagination import TournamentPagination
@@ -196,7 +199,7 @@ def team_check_in_status(request, *args, **kwargs):
             team = Team.objects.get(id=kwargs["team"])
 
             # check if user belongs to team
-            if not Membership.objects.filter(user=request.user, team=team).exists():
+            if not team.members.objects.filter(user=request.user).exists():
                 return Response(
                     {"error": errors.UserDoesNotBelongToTeamError},
                     status=status.HTTP_403_FORBIDDEN,

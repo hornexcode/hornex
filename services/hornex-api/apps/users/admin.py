@@ -21,7 +21,13 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     add_fieldsets = (
-        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2"),
+            },
+        ),
     )
 
     list_display = ("email", "name", "is_staff", "last_login")

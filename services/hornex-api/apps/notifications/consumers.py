@@ -33,7 +33,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def send_notification(self):
         await self.send(
             text_data=json.dumps(
-                {"message": "should be event, but it does not exist", "type": "invite"}
+                {
+                    "message": "should be event, but it does not exist",
+                    "type": "invite",
+                }
             )
         )
 

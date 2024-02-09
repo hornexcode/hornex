@@ -70,10 +70,10 @@ class Tournament(BaseModel):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
-    def _check_team_members_can_play(self, team: Team):
+    def _check_team_members_can_register(self, team: Team):
         return all(
             [
-                member.can_play(
+                member.can_register(
                     game=self.game,
                     classifications=self.get_classifications(),  # ["1","4","5"]
                 )
@@ -110,9 +110,7 @@ class Tournament(BaseModel):
         if self._is_first_round():
             return True
 
-        return not Match.objects.filter(
-            tournament=self, winner_id__isnull=True
-        ).exists()
+        return not Match.objects.filter(tournament=self, winner_id__isnull=True).exists()
 
     def _is_first_round(self):
         # return self.rounds.count() == 0
@@ -179,8 +177,7 @@ class Tournament(BaseModel):
         num_of_teams = len(teams)
         if num_of_teams not in self._get_allowed_number_of_teams():
             raise ValueError(
-                "Number of teams must be in "
-                f"{self._get_allowed_number_of_teams().__str__()}"
+                "Number of teams must be in " f"{self._get_allowed_number_of_teams().__str__()}"
             )
         # for i in range(0, int(num_of_teams / 2)):
         # Match.objects.create(
@@ -206,26 +203,27 @@ class Tournament(BaseModel):
                 print(v)
                 # logger.warning("-" * len(v))
 
-    def register(self, team: Team) -> "Registration":
+    def can_register(self, team: Team) -> bool:
         if self.is_full:
-            raise ValidationError({"detail": errors.TournamentFullError})
+            return False
 
-        # check team already has a registration opened
-        # TODO: need to check if the registration is pending
-        if Registration.objects.filter(tournament=self, team=team).exists():
+        if self.teams.filter(id=team.id).exists():
             raise ValidationError({"detail": errors.TeamAlreadyRegisteredError})
 
-        # team has enough members
         if team.members.count() < self.team_size:
             raise ValidationError({"detail": errors.EnoughMembersError})
 
-        if not self.is_classification_open and not self._check_team_members_can_play(
-            team
-        ):
-            raise ValidationError({"detail": errors.TeamMemberIsNotAllowedToRegistrate})
+        if not self.is_classification_open and not self._check_team_members_can_register(team):
+            return False
 
+        return True
+
+    def register(self, team: Team) -> "Registration":
         registration = Registration.objects.create(
-            tournament=self, team=team, game_slug=self.game, platform_slug=self.platform
+            tournament=self,
+            team=team,
+            game_slug=self.game,
+            platform_slug=self.platform,
         )
 
         return registration
@@ -260,9 +258,9 @@ class Tournament(BaseModel):
 
         now = datetime.now(tz=UTC)
 
-        checkin_opens_at = datetime.combine(
-            self.start_date, self.start_time
-        ) - timedelta(minutes=self.check_in_duration)
+        checkin_opens_at = datetime.combine(self.start_date, self.start_time) - timedelta(
+            minutes=self.check_in_duration
+        )
 
         return now > checkin_opens_at and now < checkin_opens_at
 
@@ -325,9 +323,7 @@ class RegistrationParticipants(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     registration = models.ForeignKey(Registration, on_delete=models.CASCADE)
-    participants = models.ManyToManyField(
-        "users.User", related_name="tournaments", blank=True
-    )
+    participants = models.ManyToManyField("users.User", related_name="tournaments", blank=True)
 
     def __str__(self) -> str:
         return f"Tournament Participants ({self.id}) | {self.tournament.name}"
@@ -382,9 +378,7 @@ class Match(models.Model):
 
 
 class Checkin(models.Model):
-    tournament = models.ForeignKey(
-        Tournament, on_delete=models.CASCADE, related_name="checkins"
-    )
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="checkins")
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -434,9 +428,7 @@ class LeagueOfLegendsSummoner(models.Model):
     puuid = models.CharField(max_length=255)
     account_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    ello = models.ForeignKey(
-        LeagueOfLegendsEllo, on_delete=models.CASCADE, blank=True, null=True
-    )
+    ello = models.ForeignKey(LeagueOfLegendsEllo, on_delete=models.CASCADE, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -460,9 +452,7 @@ class LeagueOfLegendsProvider(models.Model):
         RU = "RU"
 
     id = models.IntegerField(primary_key=True, editable=False)
-    region = models.CharField(
-        max_length=10, choices=RegionType.choices, default=RegionType.BR
-    )
+    region = models.CharField(max_length=10, choices=RegionType.choices, default=RegionType.BR)
     url = models.URLField(
         editable=True,
         null=False,
@@ -497,14 +487,12 @@ class LeagueOfLegendsTournament(Tournament):
         blank=True,
     )
     riot_id = models.IntegerField(null=True, blank=True)
-    pick = models.CharField(
-        max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK
-    )
-    map = models.CharField(
-        max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT
-    )
+    pick = models.CharField(max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK)
+    map = models.CharField(max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT)
     spectator = models.CharField(
-        max_length=50, choices=SpectatorType.choices, default=SpectatorType.LOBBYONLY
+        max_length=50,
+        choices=SpectatorType.choices,
+        default=SpectatorType.LOBBYONLY,
     )
     allowed_ellos = models.ManyToManyField(LeagueOfLegendsEllo)
     riot_tournament_id = models.IntegerField(null=True, blank=True)
@@ -513,9 +501,7 @@ class LeagueOfLegendsTournament(Tournament):
         ordering = ["-created_at"]
 
     def get_classifications(self) -> list[str]:
-        return [
-            f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()
-        ]
+        return [f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"

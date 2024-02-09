@@ -6,14 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from apps.notifications.models import Notification
-from apps.teams.models import Invite, Membership, Team
-
-
-@receiver(post_save, sender=Team)
-def team_created(sender, instance, created, **kwargs):
-    if created:
-        user = instance.created_by
-        Membership.objects.create(team=instance, user=user, is_admin=True)
+from apps.teams.models import Invite
 
 
 @receiver(post_save, sender=Invite)

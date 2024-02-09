@@ -30,7 +30,5 @@ class Command(BaseCommand):
                 raise CommandError(f"Failed to create provider: {e}")
             else:
                 self.stdout.write(
-                    self.style.SUCCESS(
-                        'Successfully created tournament provider of id "%s"' % id
-                    )
+                    self.style.SUCCESS('Successfully created tournament provider of id "%s"' % id)
                 )

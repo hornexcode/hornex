@@ -101,6 +101,7 @@ def create_tournaments():
 
 def create_teams():
     Team.objects.all().delete()
+
     logger.info("Creating teams...")
 
     admin = User.objects.get(email="admin@hornex.gg")
@@ -109,11 +110,9 @@ def create_teams():
         description="Team 1 description",
         game=Team.GameType.LEAGUE_OF_LEGENDS,
         platform=Team.PlatformType.PC,
-        created_by=admin,
+        created_by=admin.id,
     )
-
-    for user in User.objects.exclude(email="admin@hornex.gg").all()[:4]:
-        team.add_member(user)
+    team.members.set(User.objects.exclude(email="admin@hornex.gg").all()[:4])
 
     logger.info("Teams created!")
 

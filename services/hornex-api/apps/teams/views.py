@@ -20,11 +20,10 @@ from apps.teams.errors import (
     invite_expired,
     invite_not_found,
 )
-from apps.teams.models import Invite, Membership, Team
+from apps.teams.models import Invite, Team
 from apps.teams.serializers import (
     InviteListSerializer,
     InviteSerializer,
-    MembershipSerializer,
     TeamSerializer,
     UserInviteSerializer,
 )
@@ -126,82 +125,12 @@ class InviteViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        operation_description="DELETE /api/v1/teams/<id>/invites/<id>",
-        operation_summary="Destroy a invite",
-    )
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, **kwargs):
         team_id = kwargs.get("team_id")
         id = kwargs.get("id")
         try:
             invite = Invite.objects.get(team__id=team_id, id=id)
-
-            admin = Membership.objects.filter(
-                team__id=team_id, user=request.user, is_admin=True
-            )
-            if not admin.exists():
-                return Response(
-                    {"message": "You are not a team admin."},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-
             invite.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except ObjectDoesNotExist as err:
-            return Response({"message": str(err)}, status=status.HTTP_404_NOT_FOUND)
-
-
-class MembershipViewSet(viewsets.ModelViewSet):
-    queryset = Membership.objects.all()
-    serializer_class = MembershipSerializer
-    lookup_field = "id"
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-
-    def get_queryset(self):
-        id = self.kwargs.get("id")
-        return Membership.objects.filter(team__id=id)
-
-    @swagger_auto_schema(
-        operation_description="GET /api/v1/teams/<id>/members",
-        operation_summary="List all members for a team",
-    )
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    @swagger_auto_schema(
-        operation_description="GET /api/v1/teams/<team_id>/members/<member_id>",
-        operation_summary="Retrieve a member for a team",
-    )
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @swagger_auto_schema(
-        operation_description="DELETE /api/v1/teams/<id>/members",
-        operation_summary="Destroy a member",
-    )
-    def destroy(self, request, *args, **kwargs):
-        team_id = kwargs.get("team_id")
-        id = kwargs.get("id")
-        try:
-            team_member = Membership.objects.get(team__id=team_id, id=id)
-            team = Team.objects.get(id=team_id)
-
-            admin = Membership.objects.filter(
-                team__id=team_id, user=request.user, is_admin=True
-            )
-            if not admin.exists():
-                return Response(
-                    {"message": "You are not a team admin."},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-            if team_member.user == team.created_by:
-                return Response(
-                    {"message": "The team owner can not be removed."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            team_member.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist as err:
             return Response({"message": str(err)}, status=status.HTTP_404_NOT_FOUND)
@@ -259,11 +188,20 @@ def get_invites_count(request):
     inviteStatus = {}
 
     if filtering["status"] is not None and filtering["status"] == "accepted":
-        inviteStatus = {"accepted_at__isnull": False, "declined_at__isnull": True}
+        inviteStatus = {
+            "accepted_at__isnull": False,
+            "declined_at__isnull": True,
+        }
     elif filtering["status"] is not None and filtering["status"] == "declined":
-        inviteStatus = {"declined_at__isnull": True, "accepted_at__isnull": False}
+        inviteStatus = {
+            "declined_at__isnull": True,
+            "accepted_at__isnull": False,
+        }
     elif filtering["status"] is not None and filtering["status"] == "pending":
-        inviteStatus = {"accepted_at__isnull": True, "declined_at__isnull": True}
+        inviteStatus = {
+            "accepted_at__isnull": True,
+            "declined_at__isnull": True,
+        }
 
     return Response(
         Invite.objects.filter(user__id=u.id, **inviteStatus).count(),

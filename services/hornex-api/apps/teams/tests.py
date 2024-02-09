@@ -6,7 +6,7 @@ from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.teams.models import Membership, Team
+from apps.teams.models import Team
 from apps.users.models import User
 
 prefix = "api/v1/<str:platform>/<str:game>"
@@ -29,9 +29,7 @@ class TestTeam(APITestCase, URLPatternsTestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
         self.platform = Team.PlatformType.PC
         self.game = Team.GameType.LEAGUE_OF_LEGENDS
@@ -151,9 +149,7 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
         self.platform = Team.PlatformType.PC
         self.game = Team.GameType.LEAGUE_OF_LEGENDS
@@ -181,7 +177,6 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         mock.assert_called_once()
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(self.invite.accepted_at)
-        self.assertEqual(Membership.objects.count(), 2)
 
     @patch("apps.teams.signals.send_notification")
     def test_accept_invite_not_found_404(self, mock):
@@ -304,7 +299,6 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         mock.assert_called_once()
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(self.invite.declined_at)
-        self.assertEqual(Membership.objects.count(), 1)
 
     @patch("apps.teams.signals.send_notification")
     def test_decline_invite_not_found_404(self, mock):

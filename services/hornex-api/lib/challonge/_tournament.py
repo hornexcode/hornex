@@ -332,7 +332,9 @@ class Tournament(ValueObject):
 
     @classmethod
     def add_participants(
-        cls, tournament: int, **params: Unpack["Tournament.AddParticipantsParams"]
+        cls,
+        tournament: int,
+        **params: Unpack["Tournament.AddParticipantsParams"],
     ):
         """
         Adds participants and/or seeds to a tournament (up until it is started)
@@ -351,7 +353,9 @@ class Tournament(ValueObject):
 
     @classmethod
     def add_participant(
-        cls, tournament: int, **params: Unpack["Tournament.AddParticipantsParams"]
+        cls,
+        tournament: int,
+        **params: Unpack["Tournament.AddParticipantsParams"],
     ):
         """
         Adds participants and/or seeds to a tournament (up until it is started)
@@ -385,10 +389,7 @@ class Tournament(ValueObject):
         results = resp.json()
         return cast(
             Iterable["Participant"],
-            [
-                Participant.contruct_from(participant["participant"])
-                for participant in results
-            ],
+            [Participant.contruct_from(participant["participant"]) for participant in results],
         )
 
     @classmethod

@@ -2,7 +2,6 @@ from django.urls import path
 
 from apps.teams.views import (
     InviteViewSet,
-    MembershipViewSet,
     TeamViewSet,
     accept_invite,
     decline_invite,
@@ -41,18 +40,4 @@ urlpatterns = [
     path("/invites/count", get_invites_count, name="invites_count"),
     path("/invites/accept", accept_invite, name="invite-accept"),
     path("/invites/decline", decline_invite, name="invite-decline"),
-    path(
-        "/<str:id>/members",
-        MembershipViewSet.as_view({"get": "list"}),
-        name="team-members",
-    ),
-    path(
-        "/<str:team_id>/members/<str:id>",
-        MembershipViewSet.as_view(
-            {
-                "delete": "destroy",
-            }
-        ),
-        name="team-members-details",
-    ),
 ]

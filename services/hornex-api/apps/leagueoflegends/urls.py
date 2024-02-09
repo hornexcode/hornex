@@ -7,5 +7,9 @@ urlpatterns = [
         "/oauth/login",
         oauth_login,
     ),
-    path("/oauth/login/callback", oauth_login_callback, name="riot-oauth-callback"),
+    path(
+        "/oauth/login/callback",
+        oauth_login_callback,
+        name="riot-oauth-callback",
+    ),
 ]

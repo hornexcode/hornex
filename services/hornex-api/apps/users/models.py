@@ -59,11 +59,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
 
-    def can_play(self, game: Tournament.GameType, classifications: list[str]) -> bool:
+    def can_register(self, game: Tournament.GameType, classifications: list[str]) -> bool:
         if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            active_gid = (
-                GameID.objects.filter(is_active=True, user=self).first() or None
-            )
+            active_gid = GameID.objects.filter(is_active=True, user=self).first() or None
             if active_gid is None:
                 return False
 

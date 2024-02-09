@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_yasg",
     "channels",  # websockets
-    "django_celery_results",
     "corsheaders",  # dev only
     "django_crontab",
     # apps
@@ -129,9 +128,7 @@ else:
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
@@ -191,14 +188,6 @@ SIMPLE_JWT = {
 }
 
 APPEND_SLASH = False
-
-# CELERY CONFIG
-CELERY_BROKER_URL = os.getenv(
-    "CELERY_BROKER_URL", "amqp://hornex:hornex@localhost:5672/"
-)
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_CACHE_BACKEND = "default"
 
 # THIRD PARTY KEYS
 RIOT_API_KEY = "RGAPI-eda91699-6860-4fde-9ef8-d6ea815a9201"

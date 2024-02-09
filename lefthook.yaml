@@ -29,5 +29,5 @@ pre-commit:
       root: services/hornex-api
     api-format:
       glob: "services/hornex-api/**"
-      run: poetry run ruff format --check .
+      run: poetry run ruff format .
       root: services/hornex-api

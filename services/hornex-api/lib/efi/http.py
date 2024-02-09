@@ -30,17 +30,16 @@ class EfiDial:
         self.certificate = f"{BASE_DIR}/{CERT_NAME}"
 
     def authenticate(self):
-        auth = base64.b64encode(
-            (f"{self.client_id}:{self.client_secret}").encode()
-        ).decode()
+        auth = base64.b64encode((f"{self.client_id}:{self.client_secret}").encode()).decode()
 
         url = f"{self.base_url}/oauth/token"
         payload = json.dumps({"grant_type": "client_credentials"})
-        headers = {"Authorization": f"Basic {auth}", "Content-Type": "application/json"}
+        headers = {
+            "Authorization": f"Basic {auth}",
+            "Content-Type": "application/json",
+        }
 
-        resp = requests.post(
-            url, headers=headers, data=payload, cert=self.certificate, timeout=5
-        )
+        resp = requests.post(url, headers=headers, data=payload, cert=self.certificate, timeout=5)
 
         if resp.status_code != 200:
             logger.error("Error on get oauth token", resp.json())

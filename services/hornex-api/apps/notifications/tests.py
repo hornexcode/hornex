@@ -26,9 +26,7 @@ class TestNotification(APITestCase, URLPatternsTestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
     def test_list_notifications_200(self):
         """
@@ -59,7 +57,9 @@ class TestNotification(APITestCase, URLPatternsTestCase):
             recipient_id=self.user.id,
         )
 
-        url = f"{reverse('notification-list')}?activity={Notification.ActivityType.TEAM_INVITATION!s}"  # noqa
+        url = (
+            f"{reverse('notification-list')}?activity={Notification.ActivityType.TEAM_INVITATION!s}"
+        )
         resp = self.client.get(url)
 
         self.assertEqual(resp.status_code, 200)
@@ -82,7 +82,7 @@ class TestNotification(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(
             str(resp.data["activity"][0]),
-            "Select a valid choice. invalid activity is not one of the available choices.",  # noqa
+            "Select a valid choice. invalid activity is not one of the available choices.",
         )
 
     def test_create_notification_201(self):
@@ -188,7 +188,10 @@ class TestNotification(APITestCase, URLPatternsTestCase):
 
         url = reverse("notification-details", kwargs={"id": notification.id})
 
-        notification_update = {"name": "updated notification", "data": "updated data"}
+        notification_update = {
+            "name": "updated notification",
+            "data": "updated data",
+        }
         resp = self.client.patch(url, notification_update)
 
         self.assertEqual(resp.status_code, 200)

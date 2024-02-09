@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 
 from apps.leagueoflegends.models import LeagueEntry, Tournament
-from apps.teams.models import Membership, Team
+from apps.teams.models import Team
 from apps.tournaments.models import Checkin
 from apps.users.models import User
 
@@ -24,9 +24,7 @@ class Command(BaseCommand):
         now = dt.utcnow()
         logger.info("Creating tournament...", now=now)
 
-        tester = User.objects.create(
-            name="admin", email="tester@hornex.gg", password="test"
-        )
+        tester = User.objects.create(name="admin", email="tester@hornex.gg", password="test")
 
         bronze_tier, _ = LeagueEntry.objects.get_or_create(
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
@@ -73,12 +71,7 @@ class Command(BaseCommand):
 
         for team in teams:
             for i in range(5):
-                Membership.objects.create(
-                    team=team,
-                    user=User.objects.create(
-                        name=fake.name(), email=fake.email(), password="test"
-                    ),
-                )
+                team.members.add(User.objects.create(name=f"User {i + 1}"))
             logger.info("Team configured", team=team)
 
         tournament.teams.set(teams)

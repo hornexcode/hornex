@@ -3,9 +3,12 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
+from apps.games.models import GameID
 from apps.teams.models import Team
+from apps.tournaments import errors
 from apps.tournaments.factories import tournament_factory
 from apps.tournaments.models import Registration, Tournament
+from lib.riot.client import client as riot_client
 
 
 class CreateRegistrationUseCaseParams:
@@ -61,6 +64,45 @@ class CreateRegistrationUseCase:
         except Team.DoesNotExist:
             raise ValidationError({"detail": "Team not found"})
 
-        registration = tournament.register(team)
+        if Registration.objects.filter(tournament=tournament, team=team).exists():
+            raise ValidationError({"detail": errors.TeamAlreadyRegisteredError})
+
+        if tournament.is_full:
+            raise ValidationError({"detail": errors.TournamentFullError})
+
+        if team.members.count() < tournament.team_size:
+            raise ValidationError({"detail": errors.EnoughMembersError})
+
+        if not tournament.is_classification_open:
+            members = team.members.all()
+            game_ids = GameID.objects.filter(user__in=members, game=tournament.game)
+
+            if len(game_ids) < tournament.team_size:
+                raise ValidationError({"detail": "Not enough members with the game ID"})
+
+            for game_id in game_ids:
+                if tournament.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
+                    summoner = riot_client.get_summoner_by_name(game_id.nickname)
+
+                    if summoner is None:
+                        raise ValidationError({"detail": "Summoner not found"})
+
+        registration = Registration.objects.create(
+            tournament=tournament,
+            team=team,
+            game_slug=tournament.game,
+            platform_slug=tournament.platform,
+        )
 
         return registration
+
+
+class LeagueOfLegendsValidator:
+    @classmethod
+    def validate(cls, team, tournament):
+        return True
+
+
+def validator_factory(game: str):
+    if game == "league-of-legends":
+        return LeagueOfLegendsValidator()
