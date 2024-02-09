@@ -84,7 +84,7 @@ def oauth_login(request):
     return Response(
         {
             "redirect_url": "https://auth.riotgames.com/authorize?"
-            "client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri="
+            f"client_id={client_id}&redirect_uri="
             f"{appCallbackUrl}&response_type=code&scope=openid+offline_access&"
             f"state={request.GET.get('return_path', '/')}"
         },

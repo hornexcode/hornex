@@ -36,7 +36,6 @@ RegistrationCheckout.getLayout = (page: React.ReactElement) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // check user is authenticated
-  console.log(ctx.query.id);
   const { data: registration, error: registrationError } =
     await getRegistration(
       {
@@ -44,8 +43,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
       ctx.req
     );
-
-  console.log(registration);
 
   if (!registration || registrationError) {
     return {

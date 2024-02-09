@@ -44,13 +44,13 @@ urlpatterns = [
     path("api/v1/token", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     # api/v1
+    path("api/v1/accounts", include("apps.accounts.urls")),
     path("api/v1/users", include("apps.users.urls")),
     path("api/v1/platforms", include("apps.platforms.urls")),
     path("api/v1/teams", include("apps.teams.urls")),
     path("api/v1/games", include("apps.games.urls")),
     path("api/v1/payments", include("apps.payments.urls")),
     path("api/v1/notifications", include("apps.notifications.urls")),
-    path("api/v1/league-of-legends", include("apps.leagueoflegends.urls")),
     # webhooks
     path("v1/webhooks", include("apps.webhooks.urls")),
     # health check
