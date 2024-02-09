@@ -68,7 +68,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         GameIdFactory.new(user=self.user)
         for _ in range(0, 4):
             usr = UserFactory.new()
-            team.members.add(usr)
+            team.add_member(usr)
             GameIdFactory.new(user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
@@ -133,7 +133,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
 
     def test_register_400_tournament_is_full_error(self):
         team = TeamFactory.new(created_by=self.user)
-        team.members.add(self.user)
+        team.add_member(self.user)
         allowed_league_entries = LeagueEntry.objects.create(
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
         )
@@ -150,7 +150,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         # -
         user_b = UserFactory.new()
         team_b = TeamFactory.new(created_by=user_b)
-        team_b.members.add(user_b)
+        team_b.add_member(user_b)
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(user_b)
@@ -179,7 +179,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
 
     def test_register_400_team_already_registered_error(self):
         team = TeamFactory.new(created_by=self.user)
-        team.members.add(self.user)
+        team.add_member(self.user)
         allowed_league_entries = LeagueEntry.objects.create(
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
         )
@@ -244,13 +244,13 @@ class TestLeagueOfLegendsTournaments(APITestCase):
             tier=LeagueEntry.TierOptions.SILVER, rank=LeagueEntry.RankOptions.I
         )
 
-        team.members.add(self.user)
+        team.add_member(self.user)
         GameIdFactory.new(user=self.user)
 
         for _ in range(0, 4):
             usr = UserFactory.new()
 
-            team.members.add(usr)
+            team.add_member(usr)
             GameIdFactory.new(user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(

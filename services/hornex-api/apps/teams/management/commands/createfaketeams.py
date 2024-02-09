@@ -58,8 +58,8 @@ class Command(BaseCommand):
                     game=Team.GameType.LEAGUE_OF_LEGENDS,
                     platform=Team.PlatformType.PC,
                 )
-                team.members.set(pill)
-                team.save()
+                for pill_user in pill:
+                    team.add_member(pill_user, is_admin=True)
                 pill = []
 
         assert len(Team.objects.all()) == 32

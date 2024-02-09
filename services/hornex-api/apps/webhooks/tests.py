@@ -18,7 +18,7 @@ class TestWebhooks(APITestCase):
         self.user = UserFactory.new()
         self.team = TeamFactory.new(created_by=self.user)
         for _ in range(0, 4):
-            self.team.members.add(UserFactory.new())
+            self.team.add_member(UserFactory.new())
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
             organizer=UserFactory.new(),

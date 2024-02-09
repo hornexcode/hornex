@@ -30,7 +30,7 @@ class UserFactory:
 
 class TeamFactory:
     @staticmethod
-    def new(created_by: User | None = None, **kwargs) -> Team:
+    def new(created_by=None, **kwargs) -> Team:
         """
         Create a new team with the given owner and kwargs.
 

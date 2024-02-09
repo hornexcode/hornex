@@ -70,17 +70,6 @@ class Tournament(BaseModel):
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
 
-    def _check_team_members_can_register(self, team: Team):
-        return all(
-            [
-                member.can_register(
-                    game=self.game,
-                    classifications=self.get_classifications(),  # ["1","4","5"]
-                )
-                for member in team.members.all()
-            ]
-        )
-
     def _get_last_round(self):
         # last_round = self.rounds.all().order_by("-created_at").first()
         # if not last_round:
@@ -203,21 +192,6 @@ class Tournament(BaseModel):
                 print(v)
                 # logger.warning("-" * len(v))
 
-    def can_register(self, team: Team) -> bool:
-        if self.is_full:
-            return False
-
-        if self.teams.filter(id=team.id).exists():
-            raise ValidationError({"detail": errors.TeamAlreadyRegisteredError})
-
-        if team.members.count() < self.team_size:
-            raise ValidationError({"detail": errors.EnoughMembersError})
-
-        if not self.is_classification_open and not self._check_team_members_can_register(team):
-            return False
-
-        return True
-
     def register(self, team: Team) -> "Registration":
         registration = Registration.objects.create(
             tournament=self,
@@ -229,8 +203,6 @@ class Tournament(BaseModel):
         return registration
 
     def add_team(self, team):
-        if not self._check_team_has_registration(team):
-            raise ValidationError(detail=errors.TeamNotRegisteredError)
         self.teams.add(team)
         self.save()
 

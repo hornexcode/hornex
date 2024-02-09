@@ -32,7 +32,7 @@ from apps.tournaments.serializers import (
     RegistrationReadSerializer,
     TournamentSerializer,
 )
-from apps.tournaments.usecases.create_registration import (
+from apps.tournaments.usecases.create_team_registration import (
     CreateRegistrationUseCase,
     CreateRegistrationUseCaseParams,
 )
@@ -199,7 +199,7 @@ def team_check_in_status(request, *args, **kwargs):
             team = Team.objects.get(id=kwargs["team"])
 
             # check if user belongs to team
-            if not team.members.objects.filter(user=request.user).exists():
+            if not team.members.filter(user=request.user).exists():
                 return Response(
                     {"error": errors.UserDoesNotBelongToTeamError},
                     status=status.HTTP_403_FORBIDDEN,
