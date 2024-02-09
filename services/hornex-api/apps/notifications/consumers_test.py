@@ -48,9 +48,7 @@ class NotificationConsumerTest(TestCase):
         connected, subprotocol = await communicator.connect()
         assert connected
 
-        team = await sync_to_async(Team.objects.create)(
-            name="Test Team", created_by=self.user
-        )
+        team = await sync_to_async(Team.objects.create)(name="Test Team", created_by=self.user)
         await sync_to_async(TeamInvite.objects.create)(team=team, user=self.user)
 
         message = await communicator.receive_json_from(2)

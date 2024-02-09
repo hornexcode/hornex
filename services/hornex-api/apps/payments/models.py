@@ -16,9 +16,7 @@ class PaymentRegistration(models.Model):
     registration = models.ForeignKey(
         Registration, on_delete=models.CASCADE, related_name="payments"
     )
-    status = models.CharField(
-        choices=Status.choices, max_length=12, default=Status.PENDING
-    )
+    status = models.CharField(choices=Status.choices, max_length=12, default=Status.PENDING)
     amount = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

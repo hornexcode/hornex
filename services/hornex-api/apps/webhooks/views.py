@@ -35,9 +35,7 @@ class PixDTO:
 def efi_controller(request):
     pix_serializer = PixReceivedSerializer(data=request.data)
     if not pix_serializer.is_valid():
-        return Response(
-            {"message": "Invalid payload"}, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({"message": "Invalid payload"}, status=status.HTTP_400_BAD_REQUEST)
     pix = PixDTO(**pix_serializer.data["pix"][0])
 
     try:
@@ -86,9 +84,7 @@ def stripe_controller(request):
     payload = request.body
     sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, stripe_endpoint_secret
-        )
+        event = stripe.Webhook.construct_event(payload, sig_header, stripe_endpoint_secret)
     except ValueError as e:
         # Invalid payload
         raise e
@@ -106,7 +102,8 @@ def stripe_controller(request):
             payment_registration = PaymentRegistration.objects.get(id=registration_id)
         except PaymentRegistration.DoesNotExist:
             logger.error(
-                "PaymentRegistration.DoesNotExist", registration_id=registration_id
+                "PaymentRegistration.DoesNotExist",
+                registration_id=registration_id,
             )
             return Response(
                 {"message": "Payment registration not found"},

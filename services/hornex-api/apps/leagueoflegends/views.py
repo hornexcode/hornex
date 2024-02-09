@@ -42,14 +42,16 @@ def oauth_login_callback(request):
     token = riot.get_oauth_token(access_code)
     if token is None:
         return Response(
-            {"message": "Error getting token."}, status=status.HTTP_400_BAD_REQUEST
+            {"message": "Error getting token."},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     # retrieve account details to get summoner name
     riot_account = riot.get_account_me(token.access_token)
     if riot_account is None:
         return Response(
-            {"message": "Error getting account."}, status=status.HTTP_400_BAD_REQUEST
+            {"message": "Error getting account."},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     # create game id in case not exists

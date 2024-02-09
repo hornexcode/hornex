@@ -4,7 +4,6 @@ from typing import TypedDict, Unpack
 
 import pytz
 import structlog
-from celery import shared_task
 
 from apps.tournaments.models import Tournament
 from core.experiments import experimental
@@ -25,7 +24,8 @@ class CreateTournamentTask:
     def execute(self):
         try:
             logger.info(
-                "Handling create tournament task...", tournament_id=self.tournament_id
+                "Handling create tournament task...",
+                tournament_id=self.tournament_id,
             )
             tournament = Tournament.objects.get(id=self.tournament_id)
 
@@ -52,7 +52,6 @@ class CreateTournamentTask:
             logger.error("CreateTournamentTask.execute failed", error=e)
 
 
-@shared_task
 def _create_challonge_tournament_task(data: CreateTournamentTask.Input):
     try:
         task = CreateTournamentTask(**data)
@@ -60,17 +59,17 @@ def _create_challonge_tournament_task(data: CreateTournamentTask.Input):
     except TypeError:
         # TODO: use dead letter queue
         logger.error(
-            "create_tournament_task.CreateTournamentTask: invalid data", data=data
+            "create_tournament_task.CreateTournamentTask: invalid data",
+            data=data,
         )
 
 
 @experimental
 def create_challonge_tournament(**params: Unpack["CreateTournamentTask.Input"]):
-    _create_challonge_tournament_task.delay(params)
+    _create_challonge_tournament_task(params)
 
 
 # Start Challonge Tournament...
-@shared_task
 def start_tournament(*args, **kwargs):
     logger.info("Starting tournament....", args=args, kwargs=kwargs)
 
@@ -87,15 +86,14 @@ class CreateCheckInTask:
 
     def execute(self):
         try:
-            participants = TournamentAPIResource.list_participants(
-                self.challonge_tournament_id
-            )
+            participants = TournamentAPIResource.list_participants(self.challonge_tournament_id)
 
             logger.info("Participants", participants=participants)
 
             result = next(
                 filter(
-                    lambda participant: participant.misc == self.team_id, participants
+                    lambda participant: participant.misc == self.team_id,
+                    participants,
                 ),
                 None,
             )
@@ -106,15 +104,12 @@ class CreateCheckInTask:
                 logger.warn("Team not found", team=self.team_id)
                 raise Exception("Team not found")
 
-            TournamentAPIResource.checkin_participant(
-                self.challonge_tournament_id, result.id
-            )
+            TournamentAPIResource.checkin_participant(self.challonge_tournament_id, result.id)
 
         except Exception as e:
             logger.warn("Failed to handle checkin team event with error: ", error=e)
 
 
-@shared_task
 def _checkin_team_task(data: CreateCheckInTask.Input):
     try:
         task = CreateCheckInTask(**data)
@@ -127,7 +122,7 @@ def challonge_tournament_team_checkin_create(
     **params: Unpack["CreateCheckInTask.Input"],
 ):
     logger.debug("Creating checking at Challonge...", params=params)
-    _checkin_team_task.delay(params)
+    _checkin_team_task(params)
 
 
 # Create Challonge participant...
@@ -165,7 +160,6 @@ class CreateParticipantTask:
             logger.error("CreateParticipantTask.execute failed", error=e)
 
 
-@shared_task
 def _create_challonge_participant_task(data: CreateParticipantTask.Input):
     try:
         task = CreateParticipantTask(**data)
@@ -173,10 +167,13 @@ def _create_challonge_participant_task(data: CreateParticipantTask.Input):
     except TypeError:
         # TODO: use dead letter queue
         logger.error(
-            "create_participant_task.CreateParticipantTask: invalid data", data=data
+            "create_participant_task.CreateParticipantTask: invalid data",
+            data=data,
         )
 
 
-def create_challonge_participant(**params: Unpack["CreateParticipantTask.Input"]):
+def create_challonge_participant(
+    **params: Unpack["CreateParticipantTask.Input"],
+):
     logger.debug("Create participant", params=params)
-    _create_challonge_participant_task.delay(params)
+    _create_challonge_participant_task(params)

@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import TypedDict, Unpack
 
 import structlog
-from celery import shared_task
 
 from apps.leagueoflegends.models import Tournament
 from lib.challonge import Tournament as ChallongeTournamentAPIResource
@@ -36,11 +35,11 @@ class ParticipantRegisteredTask:
             # ChallongeTournamentAPIResource.checkin_participant()
         except Exception as e:
             logger.warn(
-                "Failed to handle participant registered event with error: ", error=e
+                "Failed to handle participant registered event with error: ",
+                error=e,
             )
 
 
-@shared_task
 def participant_registered_task(data: ParticipantRegisteredTask.Input):
     try:
         event = ParticipantRegisteredTask(**data)
@@ -54,4 +53,4 @@ def participant_registered_task(data: ParticipantRegisteredTask.Input):
 
 def participant_registered(**params: Unpack["ParticipantRegisteredTask.Input"]):
     logger.debug("Participant registered", params=params)
-    participant_registered_task.delay(params)
+    participant_registered_task(params)

@@ -4,7 +4,7 @@ import faker
 from django.core.management.base import BaseCommand
 
 from apps.leagueoflegends.models import GameID, LeagueEntry, Summoner
-from apps.teams.models import Membership, Team
+from apps.teams.models import Team
 from apps.users.models import User
 
 fake = faker.Faker()
@@ -58,10 +58,8 @@ class Command(BaseCommand):
                     game=Team.GameType.LEAGUE_OF_LEGENDS,
                     platform=Team.PlatformType.PC,
                 )
-                Membership.objects.create(team=team, user=users[0], is_admin=True)
-                for user in pill[1:]:
-                    Membership.objects.create(team=team, user=user)
+                for pill_user in pill:
+                    team.add_member(pill_user, is_admin=True)
                 pill = []
 
         assert len(Team.objects.all()) == 32
-        assert len(Membership.objects.all()) == 160

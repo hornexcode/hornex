@@ -101,9 +101,7 @@ class Match(ValueObject):
         return cast(Iterable["Match"], [cls.contruct_from(m) for m in matches])
 
     @classmethod
-    def update(
-        cls, tournament: int, match: int, **params: Unpack["Match.UpdateParams"]
-    ) -> "Match":
+    def update(cls, tournament: int, match: int, **params: Unpack["Match.UpdateParams"]) -> "Match":
         """
         Retrieve a set of tournaments created with your account.
         """

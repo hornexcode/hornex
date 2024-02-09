@@ -35,9 +35,7 @@ class Efi(PaymentGateway):
             payment_registration.amount,
         ).to_dict()
 
-        order = self.client.create_order_with_transaction_id(
-            payment_registration.id, payload
-        )
+        order = self.client.create_order_with_transaction_id(payment_registration.id, payload)
         qrcode = self.client.create_qrcode(order.get("loc").get("id"))
         return qrcode
 

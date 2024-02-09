@@ -8,10 +8,6 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils import timezone
 
-from apps.games.models import GameID
-from apps.tournaments.models import Tournament
-from lib.riot.client import Client
-
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
@@ -58,32 +54,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
-
-    def can_play(self, game: Tournament.GameType, classifications: list[str]) -> bool:
-        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            active_gid = (
-                GameID.objects.filter(is_active=True, user=self).first() or None
-            )
-            if active_gid is None:
-                return False
-
-            riot = Client()
-
-            summoner = riot.get_summoner_by_name(active_gid.nickname)
-
-            if summoner is None:
-                return False
-
-            league_entry = riot.get_entries_by_summoner_id(summoner.id)
-
-            if not league_entry:
-                return False
-
-            return f"{league_entry[0].tier} {league_entry[0].rank}" in classifications
-
-        return False
-
-    def get_game_id(self, game: str):
-        if game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            return self.game_id
-        return None

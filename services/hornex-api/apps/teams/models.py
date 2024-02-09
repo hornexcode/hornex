@@ -11,14 +11,13 @@ class Team(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100, blank=True)
-    created_by = models.ForeignKey("users.User", on_delete=models.DO_NOTHING)
-    members = models.ManyToManyField(
-        "users.User", through="Membership", related_name="teams"
-    )
+    members = models.ManyToManyField("users.User", through="Member", related_name="teams")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    created_by = models.ForeignKey("users.User", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
@@ -29,23 +28,16 @@ class Team(BaseModel):
         return True
 
     def add_member(self, user, is_admin=False):
-        self.members.add(user)
+        Member.objects.create(team=self, user=user, is_admin=is_admin)
 
 
-class Membership(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
+class Member(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
 
-    joined_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self) -> str:
-        return f"{self.user.email} :: ({self.team.name})"
-
-    def can_play(self, game, classifications):
-        u = self.user
-        return u.can_play(game, classifications)
+        return f"{self.user.email} ({self.user.id})"
 
 
 class Invite(models.Model):
@@ -67,7 +59,7 @@ class Invite(models.Model):
         return "pending"
 
     def accept(self):
-        Membership.objects.create(team=self.team, user=self.user)
+        self.team.add_member(self.user)
         self.accepted_at = dt.now(tz=UTC)
         self.save()
 

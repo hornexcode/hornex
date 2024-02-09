@@ -24,19 +24,6 @@ function main() (
       --loglevel=INFO \
       --events
     ;;
-  
-  "flower")
-    exec celery \
-      --app core flower \
-      --port=5555
-    ;;
-
-  "beat")
-    exec celery \
-      --app core beat \
-      --loglevel=INFO
-    ;;
-
   "")
     ;;
   *)
@@ -48,10 +35,6 @@ function main() (
 )
 
 function dev_poetry_install() (
-  # if [[ "${NAMESPACE:-}" == "dev-"* ]]; then
-  #   set -x
-  #   poetry install --sync
-  # fi
   set -x
   poetry install --sync --no-root
 )

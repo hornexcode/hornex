@@ -11,9 +11,7 @@ logger = structlog.get_logger(__name__)
 
 # @receiver(post_save, sender=Checkin)
 def checkin_created(sender, instance: Checkin, created, **kwargs):
-    count = Checkin.objects.filter(
-        tournament=instance.tournament, team=instance.team
-    ).count()
+    count = Checkin.objects.filter(tournament=instance.tournament, team=instance.team).count()
     if created and count == instance.tournament.max_teams:
         logger.info("Team full checked...")
         challonge_tournament_team_checkin_create(

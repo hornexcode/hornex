@@ -101,6 +101,7 @@ def create_tournaments():
 
 def create_teams():
     Team.objects.all().delete()
+
     logger.info("Creating teams...")
 
     admin = User.objects.get(email="admin@hornex.gg")
@@ -113,7 +114,7 @@ def create_teams():
     )
 
     for user in User.objects.exclude(email="admin@hornex.gg").all()[:4]:
-        team.add_member(user)
+        team.add_member(user, is_admin=False)
 
     logger.info("Teams created!")
 

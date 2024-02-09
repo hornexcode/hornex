@@ -42,5 +42,6 @@ class TestLeagueOfLegendsCommands(TestCase):
         except Exception as e:
             self.assertRaises(Exception)
             self.assertEqual(
-                str(e), "Error: the following arguments are required: region, url"
+                str(e),
+                "Error: the following arguments are required: region, url",
             )

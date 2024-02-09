@@ -15,7 +15,6 @@ from apps.leagueoflegends.models import (
     LeagueEntry,
     Tournament,
 )
-from apps.teams.models import Membership
 from apps.tournaments import errors
 from apps.tournaments.models import Registration
 from lib.riot.types import LeagueEntryDTO, SummonerDTO
@@ -31,9 +30,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
     @patch("lib.riot.client.Client.get_entries_by_summoner_id")
     @patch("lib.riot.client.Client.get_summoner_by_name")
@@ -68,11 +65,11 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         allowed_league_entries = LeagueEntry.objects.create(
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
         )
-        Membership.objects.create(team=team, user=self.user)
         GameIdFactory.new(user=self.user)
+        team.add_member(self.user)
         for _ in range(0, 4):
             usr = UserFactory.new()
-            Membership.objects.create(team=team, user=usr)
+            team.add_member(usr)
             GameIdFactory.new(user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
@@ -98,6 +95,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         self.assertEqual(Tournament.objects.count(), 1)
         self.assertEqual(Tournament.objects.count(), 1)
 
+        print(resp.json())
         # response checks
         self.assertEqual(resp.status_code, 201)
 
@@ -137,7 +135,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
 
     def test_register_400_tournament_is_full_error(self):
         team = TeamFactory.new(created_by=self.user)
-        Membership.objects.create(team=team, user=self.user)
+        team.add_member(self.user)
         allowed_league_entries = LeagueEntry.objects.create(
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
         )
@@ -154,15 +152,13 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         # -
         user_b = UserFactory.new()
         team_b = TeamFactory.new(created_by=user_b)
-        Membership.objects.create(team=team_b, user=user_b)
+        team_b.add_member(user_b)
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(user_b)
 
         # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
         url = reverse(
             "tournaments:register",
@@ -185,7 +181,7 @@ class TestLeagueOfLegendsTournaments(APITestCase):
 
     def test_register_400_team_already_registered_error(self):
         team = TeamFactory.new(created_by=self.user)
-        Membership.objects.create(team=team, user=self.user)
+        team.add_member(self.user)
         allowed_league_entries = LeagueEntry.objects.create(
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
         )
@@ -216,8 +212,8 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(resp.json()["detail"], errors.TeamAlreadyRegisteredError)
 
-    @patch("lib.riot.client.Client.get_entries_by_summoner_id")
-    @patch("lib.riot.client.Client.get_summoner_by_name")
+    @patch("lib.riot.client.InMemoryClient.get_entries_by_summoner_id")
+    @patch("lib.riot.client.InMemoryClient.get_summoner_by_name")
     def test_register_400_team_member_is_not_allowed_to_registrate_error(
         self, mock_get_summoner_by_name, mock_get_league_entries
     ):
@@ -250,13 +246,13 @@ class TestLeagueOfLegendsTournaments(APITestCase):
             tier=LeagueEntry.TierOptions.SILVER, rank=LeagueEntry.RankOptions.I
         )
 
-        Membership.objects.create(team=team, user=self.user)
+        team.add_member(self.user)
         GameIdFactory.new(user=self.user)
 
         for _ in range(0, 4):
             usr = UserFactory.new()
 
-            Membership.objects.create(team=team, user=usr)
+            team.add_member(usr)
             GameIdFactory.new(user=usr)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
@@ -281,6 +277,4 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         )
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(
-            resp.json()["detail"], errors.TeamMemberIsNotAllowedToRegistrate
-        )
+        self.assertEqual(resp.json()["detail"], errors.TeamMemberIsNotAllowedToRegistrate)

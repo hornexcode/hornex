@@ -41,8 +41,6 @@ def check_signature(hmac_signature=None):
     if hmac_signature is None:
         return False
 
-    expected_hmac = hmac.new(
-        secret_key.encode(), secret_msg.encode(), hashlib.sha256
-    ).hexdigest()
+    expected_hmac = hmac.new(secret_key.encode(), secret_msg.encode(), hashlib.sha256).hexdigest()
 
     return hmac.compare_digest(expected_hmac, hmac_signature)

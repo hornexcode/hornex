@@ -5,7 +5,7 @@ from apps.teams.errors import (
     team_invite_already_exists,
     unauthorized_error,
 )
-from apps.teams.models import Invite, Membership, Team
+from apps.teams.models import Invite, Team
 from apps.users.serializers import UserSerializer
 
 
@@ -54,14 +54,6 @@ class TeamSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class MembershipSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Membership
-        fields = "__all__"
-
-
 class InviteListSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
@@ -92,17 +84,10 @@ class InviteSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        admin = self.context["request"].user
         user = validated_data["user"]
         team = validated_data["team"]
 
-        member = Membership.objects.filter(team=team, user__id=admin.id).first()
-
-        if not member or not member.is_admin:
-            raise unauthorized_error
-
-        it = Membership.objects.filter(team=team, user=user)
-        if it.exists():
+        if team.members.filter(id=user.id).exists():
             raise already_team_member
 
         # Verify if team's pending invite already exists for this user

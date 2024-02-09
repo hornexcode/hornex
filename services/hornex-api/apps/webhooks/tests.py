@@ -10,7 +10,6 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from apps.payments.models import PaymentRegistration
-from apps.teams.models import Membership
 from apps.tournaments.models import Registration, Tournament
 
 
@@ -19,7 +18,7 @@ class TestWebhooks(APITestCase):
         self.user = UserFactory.new()
         self.team = TeamFactory.new(created_by=self.user)
         for _ in range(0, 4):
-            Membership.objects.create(team=self.team, user=UserFactory.new())
+            self.team.add_member(UserFactory.new())
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
             organizer=UserFactory.new(),
@@ -95,9 +94,7 @@ class TestWebhooks(APITestCase):
 
     @patch("apps.webhooks.decorators.is_ip_authorized")
     @patch("apps.webhooks.decorators.check_signature")
-    def test_efi_callback_payment_not_found_error(
-        self, mocked_check_signature, mocked_verify_ip
-    ):
+    def test_efi_callback_payment_not_found_error(self, mocked_check_signature, mocked_verify_ip):
         mocked_check_signature.return_value = True
         mocked_verify_ip.return_value = True
 
@@ -127,9 +124,7 @@ class TestWebhooks(APITestCase):
 
     @patch("apps.webhooks.decorators.is_ip_authorized")
     @patch("apps.webhooks.decorators.check_signature")
-    def test_efi_callback_amount_not_match_error(
-        self, mocked_check_signature, mocked_verify_ip
-    ):
+    def test_efi_callback_amount_not_match_error(self, mocked_check_signature, mocked_verify_ip):
         mocked_check_signature.return_value = True
         mocked_verify_ip.return_value = True
 
@@ -197,15 +192,16 @@ class TestWebhooks(APITestCase):
     @patch("apps.webhooks.decorators.check_signature")
     @patch("apps.tournaments.models.Registration.confirm_registration")
     def test_efi_callback_confirm_registration_fail(
-        self, mocked_confirm_registration, mocked_check_signature, mocked_verify_ip
+        self,
+        mocked_confirm_registration,
+        mocked_check_signature,
+        mocked_verify_ip,
     ):
         mocked_check_signature.return_value = True
         mocked_verify_ip.return_value = True
 
         with mocked_confirm_registration:
-            mocked_confirm_registration.side_effect = Exception(
-                "error saving registration"
-            )
+            mocked_confirm_registration.side_effect = Exception("error saving registration")
 
             # pass hmac secret to query params
             url = reverse("efi-callback")

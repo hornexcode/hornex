@@ -24,9 +24,7 @@ class TestUsers(APITestCase, URLPatternsTestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
     def test_create_user_201(self):
         url = reverse("register-user")

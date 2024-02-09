@@ -1,4 +1,5 @@
 import os
+import uuid
 from abc import ABC, abstractmethod
 
 import requests
@@ -149,7 +150,7 @@ class Clientable(ABC):
         self,
         tournamentCode: str,
         platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
-    ) -> LobbyEventV5DTOWrapper:
+    ) -> list[LeagueEntryDTO]:
         """
         Get league entries in all queues for a given summoner ID.
 
@@ -168,7 +169,9 @@ class Client(Clientable):
         region: RegionType,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = f"https://{regional_routing.value}/lol/tournament/v5/providers?api_key={self.api_key}"
+        endpoint = (
+            f"https://{regional_routing.value}/lol/tournament/v5/providers?api_key={self.api_key}"
+        )
         response = requests.post(endpoint, json={"url": url, "region": region.value})
 
         if response.status_code != 200:
@@ -183,10 +186,10 @@ class Client(Clientable):
         provider_id: int,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = f"https://{regional_routing.value}/lol/tournament/v5/tournaments?api_key={self.api_key}"
-        response = requests.post(
-            endpoint, json={"name": name, "providerId": provider_id}
+        endpoint = (
+            f"https://{regional_routing.value}/lol/tournament/v5/tournaments?api_key={self.api_key}"
         )
+        response = requests.post(endpoint, json={"name": name, "providerId": provider_id})
 
         if response.status_code != 200:
             logger.warning("Error registering tournament", response.json())
@@ -277,9 +280,7 @@ class Client(Clientable):
 
         tournament_games: list[TournamentGamesV5] = []
         for tournament_game in data:
-            tournament_games.append(
-                TournamentGamesV5.from_api_response(tournament_game)
-            )
+            tournament_games.append(TournamentGamesV5.from_api_response(tournament_game))
 
         return tournament_games
 
@@ -319,21 +320,25 @@ class Client(Clientable):
 
         return league_entries
 
-    def get_summoner_by_name(self, summoner_name: str) -> SummonerDTO:
+    def get_summoner_by_name(self, summoner_name: str) -> SummonerDTO | None:
         url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoner_name}?api_key={self.api_key}"
 
-        resp = requests.get(url)
-        if not resp.ok:
-            return None
+        try:
+            resp = requests.get(url)
+            if not resp.ok:
+                return None
 
-        data = resp.json()
+            data = resp.json()
 
-        return SummonerDTO(
-            id=data["id"],
-            account_id=data["accountId"],
-            puuid=data["puuid"],
-            name=data["name"],
-        )
+            summoner = SummonerDTO(
+                id=data["id"],
+                account_id=data["accountId"],
+                puuid=data["puuid"],
+                name=data["name"],
+            )
+            return summoner
+        except Exception as e:
+            raise Exception("Error parsing summoner") from e
 
     def get_summoner_entries_by_summoner_id(self, id: str) -> list[LeagueEntryDTO]:
         url = f"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{id}?api_key={self.api_key}"
@@ -445,8 +450,16 @@ class InMemoryClient(Clientable):
         self,
         tournamentCode: str,
         platform_routing: PlatformRoutingType = PlatformRoutingType.BR1,
-    ) -> LobbyEventV5DTOWrapper:
-        return LobbyEventV5DTOWrapper()
+    ) -> list[LeagueEntryDTO]:
+        return []
+
+    def get_summoner_by_name(self, summoner_name: str) -> SummonerDTO | None:
+        return SummonerDTO(
+            account_id="account_id",
+            id="id",
+            name=summoner_name,
+            puuid=uuid.uuid4().hex,
+        )
 
 
 client = Client() if not settings.TESTING else InMemoryClient()

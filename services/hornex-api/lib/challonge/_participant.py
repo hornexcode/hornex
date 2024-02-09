@@ -73,9 +73,7 @@ class Participant(ValueObject):
             return Exception("Internal Server Error")
 
     @classmethod
-    def create(
-        cls, tournament: int, **params: Unpack["Participant.CreateParams"]
-    ) -> "Participant":
+    def create(cls, tournament: int, **params: Unpack["Participant.CreateParams"]) -> "Participant":
         """
         Adds participants and/or seeds to a tournament (up until it is started)
         """

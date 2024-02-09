@@ -33,9 +33,7 @@ class TestPaymentRegistration(
         self.refresh = RefreshToken.for_user(self.user)
         # Authenticate the client with the token
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
     @patch("apps.payments.views.get_payment_gateway")
     def test_create_payment_registration_success(self, mock_payment_gateway):

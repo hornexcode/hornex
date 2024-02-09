@@ -56,5 +56,6 @@ class TestUnitRegistrationModel(TestCase):
 
     def test_registration_status(self):
         self.assertEqual(
-            self.registration.status, Registration.RegistrationStatusType.PENDING
+            self.registration.status,
+            Registration.RegistrationStatusType.PENDING,
         )
