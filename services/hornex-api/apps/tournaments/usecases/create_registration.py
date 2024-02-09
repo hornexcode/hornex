@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from apps.teams.models import Team
+from apps.tournaments.factories import tournament_factory
 from apps.tournaments.models import Registration, Tournament
 
 
@@ -45,10 +46,13 @@ class CreateRegistrationUseCase:
         Register a team in a tournament
         :param tournament: Tournament
         :param team: Team
+        :param game: str
         :return: Registration
         """
+        model = tournament_factory(params.game)
+
         try:
-            tournament = Tournament.objects.get(id=params.tournament)
+            tournament = model.objects.get(id=params.tournament)
         except Tournament.DoesNotExist:
             raise ValidationError({"detail": "Tournament not found"})
 

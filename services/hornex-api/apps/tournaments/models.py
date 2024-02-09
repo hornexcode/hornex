@@ -206,23 +206,23 @@ class Tournament(BaseModel):
                 print(v)
                 # logger.warning("-" * len(v))
 
-    def register(self, team) -> "Registration":
+    def register(self, team: Team) -> "Registration":
         if self.is_full:
-            raise ValidationError({"error": errors.TournamentFullError})
+            raise ValidationError({"detail": errors.TournamentFullError})
 
         # check team already has a registration opened
         # TODO: need to check if the registration is pending
         if Registration.objects.filter(tournament=self, team=team).exists():
-            raise ValidationError({"error": errors.TeamAlreadyRegisteredError})
+            raise ValidationError({"detail": errors.TeamAlreadyRegisteredError})
 
         # team has enough members
-        # if team.members.count() < self.team_size:
-        #     raise ValidationError({"error": errors.EnoughMembersError})
+        if team.members.count() < self.team_size:
+            raise ValidationError({"detail": errors.EnoughMembersError})
 
-        # if not self.is_classification_open and not self._check_team_members_can_play(
-        #     team
-        # ):
-        #     raise ValidationError(detail=errors.TeamMemberIsNotAllowedToRegistrate)
+        if not self.is_classification_open and not self._check_team_members_can_play(
+            team
+        ):
+            raise ValidationError({"detail": errors.TeamMemberIsNotAllowedToRegistrate})
 
         registration = Registration.objects.create(
             tournament=self, team=team, game_slug=self.game, platform_slug=self.platform

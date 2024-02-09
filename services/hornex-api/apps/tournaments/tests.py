@@ -1,248 +1,31 @@
-from datetime import datetime as dt
-from datetime import timedelta as td
+from test.factories import (
+    GameIdFactory,
+    LeagueOfLegendsTournamentFactory,
+    TeamFactory,
+    UserFactory,
+)
+from unittest.mock import patch
 
 import faker
-import pytz
-import structlog
-from django.test import TestCase
-from django.urls import include, path
-from rest_framework.test import APITestCase, URLPatternsTestCase
+from django.urls import reverse
+from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.leagueoflegends.models import LeagueEntry, Tournament
-from apps.teams.models import Membership, Team
-from apps.users.models import User
-from lib.challonge import Match as ChallongeMatchResourceAPI
-from lib.challonge import Tournament as ChallongeTournamentResourceAPI
-
-logger = structlog.get_logger(__name__)
-
+from apps.leagueoflegends.models import (
+    LeagueEntry,
+    Tournament,
+)
+from apps.teams.models import Membership
+from apps.tournaments import errors
+from apps.tournaments.models import Registration
+from lib.riot.types import LeagueEntryDTO, SummonerDTO
 
 fake = faker.Faker()
 
 
-class TestStartTournament(TestCase):
-    def tart(self, *args, **options):
-        return
-        now = dt.utcnow()
-
-        tester = User.objects.create(
-            name="admin", email="tester@hornex.gg", password="test"
-        )
-
-        bronze_tier, _ = LeagueEntry.objects.get_or_create(
-            tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
-        )
-        silver_tier, _ = LeagueEntry.objects.get_or_create(
-            tier=LeagueEntry.TierOptions.SILVER, rank=LeagueEntry.RankOptions.I
-        )
-
-        t = Tournament.objects.create(
-            name=f"Test Tournament {now.microsecond}",
-            description="Torneio de League of Legends do Hornex",
-            game=Tournament.GameType.LEAGUE_OF_LEGENDS,
-            organizer=tester,
-            start_date=now,
-            end_date=now,
-            start_time=now + td(minutes=10),
-            end_time=now + td(minutes=30),
-            check_in_opens_at=now,
-            check_in_duration=30,
-            registration_start_date=now,
-            registration_end_date=now + td(minutes=20),
-            feature_image="tmt-6.jpeg",
-            is_public=True,  # change to is_published
-            entry_fee=100,
-            max_teams=32,
-            team_size=5,
-            is_classification_open=False,
-        )
-
-        t.allowed_league_entries.set([bronze_tier, silver_tier])
-
-        logger.info("Starting tournament...")
-
-        tournament = Tournament.objects.first()
-
-        # create 5 teams
-        teams: Team = []
-        for i in range(4):
-            team = Team.objects.create(name=f"Team {i + 1}", created_by=tester)
-            teams.append(team)
-            logger.info("Team created", team=team)
-
-        for team in teams:
-            for i in range(5):
-                Membership.objects.create(
-                    team=team,
-                    user=User.objects.create(
-                        name=fake.name(), email=fake.email(), password="test"
-                    ),
-                )
-            logger.info("Team configured", team=team)
-
-        tournament.teams.set(teams)
-        logger.info("Tournament configured", tournament=tournament)
-
-        start_at = dt.combine(tournament.start_date, tournament.start_time)
-        start_at_utc = start_at.replace(tzinfo=pytz.UTC)
-        start_at_str = start_at_utc.strftime("%Y-%m-%dT%H:%M:%S.000+00:00")
-
-        logger.warn("start at", start_at=start_at_str)
-
-        resp = ChallongeTournamentResourceAPI.create(
-            name=tournament.name,
-            tournament_type="single elimination",
-            start_at=start_at_str,
-            teams=True,
-            check_in_duration=tournament.check_in_duration,
-        )
-
-        tournament.challonge_tournament_id = resp["tournament"]["id"]
-        tournament.save()
-
-        logger.info(
-            "Tournament created on Challonge",
-            challonge_tournament_id=tournament.challonge_tournament_id,
-        )
-
-        resp = ChallongeTournamentResourceAPI.add_participants(
-            tournament.challonge_tournament_id,
-            participants=[
-                {"name": team.name, "seed": i + 1} for i, team in enumerate(teams)
-            ],
-        )
-
-        logger.info("Checking participants...")
-        participants = ChallongeTournamentResourceAPI.list_participants(
-            tournament.challonge_tournament_id
-        )
-        for participant in participants:
-            logger.info("Participant id -> ", participant_id=participant.id)
-            ChallongeTournamentResourceAPI.checkin_participant(
-                tournament.challonge_tournament_id, participant=participant.id
-            )
-            logger.info("Participant checked in", participant=participant)
-        logger.info("Participants checked in")
-
-        logger.info("Checking tournament...")
-        ChallongeTournamentResourceAPI.checkin(tournament.challonge_tournament_id)
-        logger.info("Tournament checked in")
-
-        logger.info("Starting tournament...")
-        ChallongeTournamentResourceAPI.start(tournament.challonge_tournament_id)
-        logger.info("Tournament started")
-
-        logger.info("Listing matches...")
-        matches = ChallongeMatchResourceAPI.list(tournament.challonge_tournament_id)
-        logger.info("Matches listed", matches=matches)
-
-        print("")
-        print("")
-        print("")
-        print("")
-        logger.info("Round 1")
-        print("")
-        print("")
-        print("")
-        print("")
-
-        logger.info("Updating match scores...")
-        for match in matches:
-            if match.round == 1:
-                ChallongeMatchResourceAPI.mark_as_undeway(
-                    tournament.challonge_tournament_id, match=match.id
-                )
-                logger.info(
-                    "Match marked as underway", match=match.id, state=match.state
-                )
-
-        for match in matches:
-            if match.round == 1:
-                ChallongeMatchResourceAPI.update(
-                    tournament.challonge_tournament_id,
-                    match=match.id,
-                    scores_csv="1-0",
-                    player1_votes=1,
-                    player2_votes=0,
-                    winner_id=match.player1_id,
-                )
-                logger.info(
-                    "Match scores updated", match=match.id, winner_id=match.player1_id
-                )
-
-        logger.info("Unmark as underway...")
-        for match in matches:
-            if match.round == 1:
-                ChallongeMatchResourceAPI.unmark_as_undeway(
-                    tournament.challonge_tournament_id, match=match.id
-                )
-                logger.info(
-                    "Match unmarked as underway", match=match.id, state=match.state
-                )
-
-        print("")
-        print("")
-        print("")
-        print("")
-        logger.info("Round 2")
-        print("")
-        print("")
-        print("")
-        print("")
-
-        logger.info("Updating match scores...")
-        for match in matches:
-            if match.round == 2:
-                m = ChallongeMatchResourceAPI.mark_as_undeway(
-                    tournament.challonge_tournament_id, match=match.id
-                )
-                logger.info(
-                    "Match marked as underway",
-                    match=m.id,
-                    state=m.state,
-                    player1_id=m.player1_id,
-                    player2_id=m.player2_id,
-                )
-
-        logger.info("Listing matches...")
-        matches = ChallongeMatchResourceAPI.list(tournament.challonge_tournament_id)
-        for match in matches:
-            if match.round == 2:
-                m = ChallongeMatchResourceAPI.update(
-                    tournament.challonge_tournament_id,
-                    match=match.id,
-                    scores_csv="1-2",
-                    player1_votes=1,
-                    player2_votes=2,
-                    winner_id=match.player2_id,
-                )
-                logger.info(
-                    "Match scores updated", match=match.id, winner_id=m.player2_id
-                )
-
-        logger.info("Unmark as underway...")
-        for match in matches:
-            if match.round == 2:
-                m = ChallongeMatchResourceAPI.unmark_as_undeway(
-                    tournament.challonge_tournament_id, match=match.id
-                )
-                logger.info("Match unmarked as underway", match=match.id, state=m.state)
-
-
-class TestTournaments(APITestCase, URLPatternsTestCase):
-    urlpatterns = [
-        path("api/v1", include("apps.tournaments.urls")),
-    ]
-
-    def setUp(self):
-        self.credentials = {
-            "email": "test.user@hornex.gg",
-            "password": "hsfbhkas",
-            "name": "Test User",
-        }
-
-        self.user = User.objects.create_user(**self.credentials)
+class TestLeagueOfLegendsTournaments(APITestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory.new()
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(self.user)
@@ -250,4 +33,254 @@ class TestTournaments(APITestCase, URLPatternsTestCase):
         # Authenticate the client with the token
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+    @patch("lib.riot.client.Client.get_entries_by_summoner_id")
+    @patch("lib.riot.client.Client.get_summoner_by_name")
+    def test_register_register_201_success(
+        self, mock_get_summoner_by_name, mock_get_league_entries
+    ):
+        mock_get_summoner_by_name.return_value = SummonerDTO(
+            id="id",
+            account_id="account_id",
+            puuid="puuid",
+            name="name",
+        )
+        mock_get_league_entries.return_value = [
+            LeagueEntryDTO(
+                leagueId="leagueId",
+                summonerId="summonerId",
+                summonerName="summonerName",
+                queueType="queueType",
+                tier="BRONZE",
+                rank="I",
+                leaguePoints=1,
+                wins=1,
+                losses=1,
+                hotStreak=True,
+                veteran=True,
+                freshBlood=True,
+                inactive=True,
+            )
+        ]
+
+        team = TeamFactory.new(created_by=self.user)
+        allowed_league_entries = LeagueEntry.objects.create(
+            tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
+        )
+        Membership.objects.create(team=team, user=self.user)
+        GameIdFactory.new(user=self.user)
+        for _ in range(0, 4):
+            usr = UserFactory.new()
+            Membership.objects.create(team=team, user=usr)
+            GameIdFactory.new(user=usr)
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user, allowed_league_entries=allowed_league_entries
+        )
+
+        url = reverse(
+            "tournaments:register",
+            kwargs={
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {
+                "team": team.id,
+                "platform": "pc",
+                "game": "league-of-legends",
+            },
+        )
+
+        self.assertEqual(Tournament.objects.count(), 1)
+        self.assertEqual(Tournament.objects.count(), 1)
+
+        # response checks
+        self.assertEqual(resp.status_code, 201)
+
+        # database checks
+        self.assertEqual(Registration.objects.count(), 1)
+
+        regi = Registration.objects.first()
+        self.assertEqual(regi.status, Registration.RegistrationStatusType.PENDING)
+
+    def test_register_400_do_not_has_enough_members_error(self):
+        team = TeamFactory.new(created_by=self.user)
+        allowed_league_entries = LeagueEntry.objects.create(
+            tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
+        )
+        tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user, allowed_league_entries=allowed_league_entries
+        )
+
+        url = reverse(
+            "tournaments:register",
+            kwargs={
+                "id": tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {
+                "team": team.id,
+                "platform": "pc",
+                "game": "league-of-legends",
+            },
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.json()["detail"], errors.EnoughMembersError)
+
+    def test_register_400_tournament_is_full_error(self):
+        team = TeamFactory.new(created_by=self.user)
+        Membership.objects.create(team=team, user=self.user)
+        allowed_league_entries = LeagueEntry.objects.create(
+            tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
+        )
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user,
+            allowed_league_entries=allowed_league_entries,
+            team_size=1,
+            max_teams=1,
+        )
+
+        Registration.objects.create(team=team, tournament=self.tournament)
+
+        # -
+        user_b = UserFactory.new()
+        team_b = TeamFactory.new(created_by=user_b)
+        Membership.objects.create(team=team_b, user=user_b)
+
+        # Generating a JWT token for the test user
+        self.refresh = RefreshToken.for_user(user_b)
+
+        # Authenticate the client with the token
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+        url = reverse(
+            "tournaments:register",
+            kwargs={
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {
+                "team": team_b.id,
+                "platform": "pc",
+                "game": "league-of-legends",
+            },
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.json()["detail"], errors.TournamentFullError)
+
+    def test_register_400_team_already_registered_error(self):
+        team = TeamFactory.new(created_by=self.user)
+        Membership.objects.create(team=team, user=self.user)
+        allowed_league_entries = LeagueEntry.objects.create(
+            tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
+        )
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user,
+            allowed_league_entries=allowed_league_entries,
+            team_size=1,
+        )
+
+        url = reverse(
+            "tournaments:register",
+            kwargs={
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        Registration.objects.create(team=team, tournament=self.tournament)
+
+        resp = self.client.post(
+            url,
+            {
+                "team": team.id,
+                "platform": "pc",
+                "game": "league-of-legends",
+            },
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.json()["detail"], errors.TeamAlreadyRegisteredError)
+
+    @patch("lib.riot.client.Client.get_entries_by_summoner_id")
+    @patch("lib.riot.client.Client.get_summoner_by_name")
+    def test_register_400_team_member_is_not_allowed_to_registrate_error(
+        self, mock_get_summoner_by_name, mock_get_league_entries
+    ):
+        mock_get_summoner_by_name.return_value = SummonerDTO(
+            id="id",
+            account_id="account_id",
+            puuid="puuid",
+            name="name",
+        )
+        mock_get_league_entries.return_value = [
+            LeagueEntryDTO(
+                leagueId="leagueId",
+                summonerId="summonerId",
+                summonerName="summonerName",
+                queueType="queueType",
+                tier="BRONZE",
+                rank="I",
+                leaguePoints=1,
+                wins=1,
+                losses=1,
+                hotStreak=True,
+                veteran=True,
+                freshBlood=True,
+                inactive=True,
+            )
+        ]
+        team = TeamFactory.new(created_by=self.user)
+
+        classification_silver = LeagueEntry.objects.create(
+            tier=LeagueEntry.TierOptions.SILVER, rank=LeagueEntry.RankOptions.I
+        )
+
+        Membership.objects.create(team=team, user=self.user)
+        GameIdFactory.new(user=self.user)
+
+        for _ in range(0, 4):
+            usr = UserFactory.new()
+
+            Membership.objects.create(team=team, user=usr)
+            GameIdFactory.new(user=usr)
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(
+            organizer=self.user,
+            allowed_league_entries=[classification_silver],
+        )
+
+        url = reverse(
+            "tournaments:register",
+            kwargs={
+                "id": self.tournament.id.__str__(),
+            },
+        )
+
+        resp = self.client.post(
+            url,
+            {
+                "team": team.id,
+                "platform": "pc",
+                "game": "league-of-legends",
+            },
+        )
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.json()["detail"], errors.TeamMemberIsNotAllowedToRegistrate
         )

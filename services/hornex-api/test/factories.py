@@ -11,7 +11,7 @@ from apps.leagueoflegends.models import (
     Tournament,
 )
 from apps.teams.models import Invite, Team
-from apps.tournaments.models import Match, Round
+from apps.tournaments.models import Match
 from apps.tournaments.models import Tournament as BaseTournament
 from apps.users.models import User
 
@@ -156,19 +156,6 @@ class LeagueEntryFactory:
         )
 
 
-class RoundFactory:
-    @staticmethod
-    def new(tournament: Tournament, **kwargs):
-        """
-        Create a new round with the given kwargs.
-        """
-        return Round.objects.create(
-            tournament=tournament,
-            name=kwargs.get("name", f"Round | {fake.name()}"),
-            key=tournament._get_key(),
-        )
-
-
 class MatchFactory:
     @staticmethod
     def new(tournament: Tournament, **kwargs):
@@ -179,13 +166,11 @@ class MatchFactory:
         user_b = UserFactory.new()
         team_a = TeamFactory.new(user_a)
         team_b = TeamFactory.new(user_b)
-        round = RoundFactory.new(tournament)
 
         return Match.objects.create(
             tournament=tournament,
             team_a_id=kwargs.get("team_a_id", team_a.id),
             team_b_id=kwargs.get("team_b_id", team_b.id),
-            round=kwargs.get("round", round),
             winner_id=kwargs.get("winner_id"),
             loser_id=kwargs.get("loser_id"),
             is_wo=kwargs.get("is_wo", False),
