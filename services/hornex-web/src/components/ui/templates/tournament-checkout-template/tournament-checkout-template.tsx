@@ -230,7 +230,6 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                       </span>{' '}
                     </div>
                     <div className="flex items-center">
-                      ${' '}
                       <span className="font-display">
                         {toCurrency(
                           tournament.entry_fee * tournament.team_size
@@ -242,7 +241,6 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                   <div className="text-title flex items-center justify-between px-6 pb-6 text-sm font-extrabold">
                     <div className="">Total Charge</div>
                     <div className="flex items-center">
-                      ${' '}
                       <span className="font-display">
                         {toCurrency(
                           tournament.entry_fee * tournament.team_size

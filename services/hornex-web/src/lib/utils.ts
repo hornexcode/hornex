@@ -15,7 +15,10 @@ export function calcPrizePool(
 }
 
 export function toCurrency(num: number): string {
-  return `${(num / 100).toFixed(2)}`;
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(num);
 }
 
 export function stringToDate(date: string): Date {

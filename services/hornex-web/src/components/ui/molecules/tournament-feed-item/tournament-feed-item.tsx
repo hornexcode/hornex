@@ -1,5 +1,7 @@
 import { TournamentFeedItemProps } from './tournament-feed-item.types';
 import Button from '@/components/ui/atoms/button/button';
+import { toCurrency } from '@/lib/utils';
+import { getTournamentStatus } from '@/utils/get-tournament-status';
 import { UsersIcon } from '@heroicons/react/20/solid';
 import { DollarSign, SwordIcon, Swords } from 'lucide-react';
 import moment from 'moment';
@@ -24,7 +26,8 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
               : tournament.name}
           </Link>
           <div className="text-body mb-1 text-sm">
-            {moment(tournament.start_date).format('MMMM Do YYYY')}
+            {moment(tournament.start_date).format('MM dd')} &#x279E;{' '}
+            {moment(tournament.end_date).format('MM dd')}
           </div>
         </div>
       </div>
@@ -61,7 +64,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
             <div className="relative flex">
               <span className="absolute -left-3 top-1 h-2 w-2 rounded-full bg-white"></span>
               <span className="text-xs font-bold uppercase text-white">
-                open
+                {getTournamentStatus(tournament.phase)}
               </span>
             </div>
           </div>
@@ -87,11 +90,14 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
         <div className="block">
           <span className="text-xs text-slate-400">Prize Pool</span>
           <div className="flex items-center space-x-1">
-            <DollarSign className="h-4 w-4 text-white" />
+            {/* <DollarSign className="h-4 w-4 text-white" /> */}
             <span className="text-lg text-white">
-              {tournament.entry_fee *
-                tournament.max_teams *
-                tournament.team_size}
+              {toCurrency(
+                tournament.entry_fee *
+                  tournament.max_teams *
+                  tournament.team_size *
+                  0.7
+              )}
             </span>
           </div>
         </div>

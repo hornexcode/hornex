@@ -1,11 +1,18 @@
 import z from 'zod';
 
+const tournamentPhaseEnum = [
+  'registration_open',
+  'results_tracking',
+  'payment_pending',
+  'finished_and_paid',
+] as const;
+
 export const tournament = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
   is_public: z.boolean(),
-  status: z.string(),
+  phase: z.enum(tournamentPhaseEnum),
   start_date: z.string(),
   registration_start_date: z.date(),
   registration_end_date: z.date(),

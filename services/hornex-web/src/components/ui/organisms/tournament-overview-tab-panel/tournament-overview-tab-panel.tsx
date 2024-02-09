@@ -1,5 +1,5 @@
 import { SwordsIcon } from '@/components/ui/atoms/icons';
-import { Tournament } from '@/lib/models/types';
+import { Tournament } from '@/lib/models';
 import { toCurrency } from '@/lib/utils';
 import { ComputerDesktopIcon, LockOpenIcon } from '@heroicons/react/20/solid';
 import { CoinsIcon } from 'lucide-react';
@@ -44,7 +44,6 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             Entry Fee
           </h4>
           <span className="text-title text-sm font-light">
-            ${' '}
             <span className="font-display">
               {toCurrency(tournament.entry_fee)}
             </span>{' '}
@@ -56,7 +55,6 @@ const TournamentOverviewTabPanel: FC<TournamentOverviewTabPanelProps> = ({
             Potential Prize Pool
           </h4>
           <span className="text-title text-sm font-light">
-            ${' '}
             <span className="font-display">
               {toCurrency(
                 tournament.entry_fee *

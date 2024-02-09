@@ -128,7 +128,6 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
                             Potential Prize Pool
                           </h4>
                           <div className="text-title font-display text-xl font-extrabold ">
-                            R${' '}
                             <span className="">
                               {toCurrency(
                                 tournament.team_size *
