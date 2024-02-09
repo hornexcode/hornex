@@ -1,140 +1,92 @@
-import requests
-from django.shortcuts import redirect
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+import logging
+import os
+from datetime import datetime as dt
+from datetime import timedelta as td
+
+from django.db import transaction
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.accounts.models import Classification, LeagueOfLegendsAccount
-from lib.riot.client import Client
+from apps.games.models import GameID
+from apps.leagueoflegends.models import Session
+from jwt_token.authentication import JWTAuthentication
+from lib.riot.client import client as riot
 
-client_id = "6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54"
-client_secret = "E9wzc2eEN6Ph5bxdtbxvmef_NJriKXQ0qbgkL9i-DSC"
+client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")
+client_secret = os.getenv("RIOT_RSO_CLIENT_SECRET", "")
 
-appCallbackUrl = (
-    "https://8c5a-45-169-190-242.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback"
-)
+appCallbackUrl = os.getenv("APP_URL", "") + "/oauth/riot/login"
 
-provider = "https://auth.riotgames.com"
+provider = os.getenv("RIOT_RSO_PROVIDER_URL", "")
 authorizeUrl = provider + "/authorize"
 tokenUrl = provider + "/token"
 
+logger = logging.getLogger(__name__)
 
-# https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://8c5a-45-169-190-242.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access
-@swagger_auto_schema(
-    operation_description="GET /api/v1/riot/webhooks/oauth2/callback",
-    operation_summary="It connects logged in user's riot account",
-    methods=["get"],
-    responses={
-        200: openapi.Response(
-            "All credentials from riot oauth",
-        ),
-    },
-)
+
 @api_view(["GET"])
-def riot_oauth_callback(request):
-    csrftoken = request.GET.get("state")
-    user = request.user
-    if csrftoken is None:
-        return redirect("http://localhost:3000")
-
-    # post information as x-www-form-urlencoded
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+@transaction.atomic
+def oauth_login_callback(request):
     access_code = request.GET.get("code")
-    form = {
-        "grant_type": "authorization_code",
-        "code": access_code,
-        "redirect_uri": appCallbackUrl,
-    }
+    state = request.GET.get("state", "/")
 
-    is_new = True
-    try:
-        # It will throw an exception whenever the user does not have acc.
-        user.leagueoflegendsaccount
-        is_new = False
-    except LeagueOfLegendsAccount.DoesNotExist:
-        is_new = True
-
-    if is_new:
-        account = LeagueOfLegendsAccount()
-        account.user = user
-
-        return create_or_update_leagueoflegends_account(form, account)
-    else:
-        account: LeagueOfLegendsAccount = user.leagueoflegendsaccount
-        return create_or_update_leagueoflegends_account(form, account)
-
-
-def create_or_update_leagueoflegends_account(
-    form: dict, account: LeagueOfLegendsAccount
-):
-    riot_client = Client()
-    try:
-        resp = requests.post(
-            tokenUrl,
-            data=form,
-            auth=(client_id, client_secret),
-        )
-        data = resp.json()
-
-        if resp.ok:
-            ui_resp = requests.get(
-                "https://auth.riotgames.com/userinfo",
-                headers={"Authorization": "Bearer " + data.get("access_token")},
-            )
-            ui = ui_resp.json()
-            account.sub = ui.get("sub")
-            account.sub = ui.get("jti")
-
-            accme_resp = requests.get(
-                "https://americas.api.riotgames.com/riot/account/v1/accounts/me",
-                headers={"Authorization": "Bearer " + data.get("access_token")},
-            )
-            accme = accme_resp.json()
-            account.tag_line = accme.get("tagLine")
-
-            summonerme_resp = requests.get(
-                "https://br1.api.riotgames.com/lol/summoner/v4/summoners/me",
-                headers={"Authorization": "Bearer " + data.get("access_token")},
-            )
-
-            summonerme = summonerme_resp.json()
-            account.summoner_id = summonerme.get("id")
-            account.account_id = summonerme.get("accountId")
-            account.puuid = summonerme.get("puuid")
-            account.summoner_name = summonerme.get("name")
-            account.profile_icon_id = summonerme.get("profileIconId")
-            account.revision_date = summonerme.get("revisionDate")
-            account.summoner_level = summonerme.get("summonerLevel")
-
-            entries = riot_client.get_entries_by_summoner_id(account.summoner_id)
-
-            if not entries:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-
-            classification = Classification.objects.get(
-                tier=entries[0].tier, rank=entries[0].rank
-            )
-            account.classification = classification
-            account.save()
-
-            return redirect("https://8c5a-45-169-190-242.ngrok-free.app")
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-    except requests.RequestException:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    except Classification.DoesNotExist:
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-def riot_connect_account(request):
-    game = request.GET.get("game")
-    if game == "league-of-legends":
+    # oauth2 - getting access_token by code
+    token = riot.get_oauth_token(access_code)
+    if token is None:
         return Response(
-            {
-                "link": "https://auth.riotgames.com/authorize?client_id=6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54&redirect_uri=https://8c5a-45-169-190-242.ngrok-free.app/api/v1/riot/webhooks/oauth2/callback&response_type=code&scope=openid+offline_access&request_id=1234"
-            },
-            status=status.HTTP_200_OK,
+            {"message": "Error getting token."}, status=status.HTTP_400_BAD_REQUEST
         )
 
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    # retrieve account details to get summoner name
+    riot_account = riot.get_account_me(token.access_token)
+    if riot_account is None:
+        return Response(
+            {"message": "Error getting account."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # create game id in case not exists
+    gid, _ = GameID.objects.update_or_create(
+        user=request.user,
+        is_active=True,
+        region="Brazil",  # Default value
+        region_code=riot_account.tag_line,
+        nickname=riot_account.game_name,
+        game=GameID.GameOptions.LEAGUE_OF_LEGENDS,
+    )
+
+    # expires_in to expires_at
+    expires_at = dt.now() + td(seconds=token.expires_in)
+    Session.objects.create(
+        game_id=gid,
+        scope=token.scope,
+        expires_at=expires_at,
+        token_type=token.token_type,
+        refresh_token=token.refresh_token,
+        id_token=token.id_token,
+        access_token=token.access_token,
+    )
+
+    return Response({"return_path": state}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def oauth_login(request):
+    return Response(
+        {
+            "redirect_url": "https://auth.riotgames.com/authorize?"
+            f"client_id={client_id}&redirect_uri="
+            f"{appCallbackUrl}&response_type=code&scope=openid+offline_access&"
+            f"state={request.GET.get('return_path', '/')}"
+        },
+        status=status.HTTP_200_OK,
+    )

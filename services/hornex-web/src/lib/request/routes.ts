@@ -142,11 +142,11 @@ export const routes = {
     schema: null,
   },
   connectRiotAccount: {
-    path: 'v1/league-of-legends/oauth/login',
+    path: 'v1/accounts/league-of-legends/oauth/login',
     method: Method.GET,
   },
   connectRiotAccountCallback: {
-    path: 'v1/league-of-legends/oauth/login/callback',
+    path: 'v1/accounts/league-of-legends/oauth/login/callback',
     method: Method.GET,
   },
   getGameIds: {

@@ -44,8 +44,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   });
 
   if (tournamentData && !error) {
-    // remove
-    console.log('🚀 updating touranment...');
     tournament = tournamentData;
   }
 
@@ -137,8 +135,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
       tournamentId: tournament.id,
       teamId: registration?.team,
     });
-    // remove
-    console.log('❌ Error cehecking-in user', { error });
 
     if (!error) {
       setCheckedIn(true);

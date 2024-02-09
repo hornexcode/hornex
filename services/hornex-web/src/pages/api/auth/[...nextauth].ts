@@ -33,7 +33,6 @@ const nextAuthOptions: NextAuthOptionsCallback = (req, res) => ({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log('🪲 API_URL', process.env.API_URL);
         const response = await fetch(`${process.env.API_URL}/v1/token`, {
           method: 'POST',
           credentials: 'include',

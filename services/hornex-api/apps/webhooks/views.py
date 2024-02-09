@@ -15,7 +15,7 @@ from apps.webhooks.decorators import verify_hmac, verify_ip
 logger = structlog.get_logger(__name__)
 
 stripe.api_key = os.getenv("STRIPE_API_KEY")
-stripe_endpoint_secret = "whsec_SBK7tKkjmCsWxXaAg3HHg9Ji9ZL0FKVT"
+stripe_endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 
 @dataclass

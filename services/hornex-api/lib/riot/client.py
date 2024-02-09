@@ -350,9 +350,10 @@ class Client(Clientable):
         return league_entries
 
     def get_oauth_token(self, access_code: str):
-        client_id = "6bb8a9d1-2dbe-4d1f-b9cb-e4fbade3db54"
-        client_secret = "E9wzc2eEN6Ph5bxdtbxvmef_NJriKXQ0qbgkL9i-DSC"
-        appCallbackUrl = "https://8c5a-45-169-190-242.ngrok-free.app/oauth/riot/login"
+        client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")
+        client_secret = os.getenv("RIOT_RSO_CLIENT_SECRET", "")
+        app_url = os.getenv("APP_URL", "")
+        appCallbackUrl = f"{app_url}/oauth/riot/login"
         provider = "https://auth.riotgames.com"
         tokenUrl = provider + "/token"
         form = {
