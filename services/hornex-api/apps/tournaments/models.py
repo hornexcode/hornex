@@ -334,7 +334,7 @@ class RegistrationParticipants(models.Model):
 
 
 class Match(models.Model):
-    class MatchStatus(models.TextChoices):
+    class MatchStatuses(models.TextChoices):
         ALL = "all"
         PENDING = "pending"
         ONGOING = "ongoing"
@@ -353,8 +353,8 @@ class Match(models.Model):
     is_wo = models.BooleanField()
     status = models.CharField(
         max_length=50,
-        choices=MatchStatus.choices,
-        default=MatchStatus.ALL,
+        choices=MatchStatuses.choices,
+        default=MatchStatuses.ALL,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
