@@ -4,7 +4,7 @@ import structlog
 from django.db import models
 from rest_framework.exceptions import ValidationError
 
-from apps.games.models import GameID
+from apps.accounts.models import GameID
 from apps.tournaments.models import Checkin
 from apps.tournaments.models import Tournament as BaseTournament
 from lib.challonge import Tournament as ChallongeTournamentResourceAPI
@@ -55,10 +55,9 @@ class LeagueEntry(models.Model):
 
 
 class Summoner(models.Model):
+    id = models.CharField(max_length=500, primary_key=True, editable=True)
     game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
-    id = models.CharField(max_length=255, primary_key=True, editable=False)
     puuid = models.CharField(max_length=255)
-    account_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     league_entry = models.ForeignKey(LeagueEntry, on_delete=models.CASCADE, blank=True, null=True)
 

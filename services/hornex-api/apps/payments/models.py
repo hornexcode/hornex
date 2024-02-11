@@ -6,7 +6,7 @@ from apps.tournaments.models import Registration
 
 
 class PaymentRegistration(models.Model):
-    class Status(models.TextChoices):
+    class StatusOptions(models.TextChoices):
         PENDING = "pending"
         PAID = "paid"
         REFUNDED = "refunded"
@@ -16,7 +16,9 @@ class PaymentRegistration(models.Model):
     registration = models.ForeignKey(
         Registration, on_delete=models.CASCADE, related_name="payments"
     )
-    status = models.CharField(choices=Status.choices, max_length=12, default=Status.PENDING)
+    status = models.CharField(
+        choices=StatusOptions.choices, max_length=12, default=StatusOptions.PENDING
+    )
     amount = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -31,8 +33,8 @@ class PaymentRegistration(models.Model):
         return float(self.amount / 100)
 
     def confirm_payment(self):
-        self.status = self.Status.PAID
+        self.status = self.StatusOptions.PAID
         self.save()
 
     def is_paid(self):
-        return self.status == self.Status.PAID
+        return self.status == self.StatusOptions.PAID

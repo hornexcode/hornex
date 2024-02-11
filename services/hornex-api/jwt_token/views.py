@@ -1,5 +1,3 @@
-import os
-
 from django.utils.module_loading import import_string
 from rest_framework import generics, status
 from rest_framework.request import Request
@@ -53,7 +51,6 @@ class TokenViewBase(generics.GenericAPIView):
             max_age=api_settings.ACCESS_TOKEN_LIFETIME.total_seconds(),
             httponly=True,
             path="/",
-            domain=os.getenv("APP_DOMAIN"),
         )
 
         return res

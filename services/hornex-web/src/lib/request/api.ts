@@ -2,6 +2,7 @@ import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
 import { Route } from '@/lib/routes';
 import { IncomingMessage } from 'http';
+import { parseCookies } from 'nookies';
 import useSWR, { SWRConfiguration } from 'swr';
 
 // type APIRouteMap = { [key in APIRouteName]: Route };
@@ -87,16 +88,6 @@ export const dataLoader = <T, Data = unknown>(
       headers: Record<string, string> = {}
     ): Promise<FetchResponse<T>> => {
       // Server side request
-
-      // if (isServer) {
-      //   const cookie = document.cookie;
-      //   const token = cookie.split(';').find((c) => c.includes(HX_COOKIE));
-
-      //   headers = {
-      //     ...headers,
-      //     Authorization: `Bearer ${token?.split('=')[1]}`,
-      //   };
-      // }
 
       const url = route.href(params);
       const token = getCookieFromRequest(req, HX_COOKIE);

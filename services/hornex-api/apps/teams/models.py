@@ -1,5 +1,4 @@
 import uuid
-from datetime import UTC
 from datetime import datetime as dt
 
 from django.db import models
@@ -60,15 +59,15 @@ class Invite(models.Model):
 
     def accept(self):
         self.team.add_member(self.user)
-        self.accepted_at = dt.now(tz=UTC)
+        self.accepted_at = dt.now()
         self.save()
 
     def decline(self):
-        self.declined_at = dt.now(tz=UTC)
+        self.declined_at = dt.now()
         self.save()
 
     def expire(self):
-        self.expired_at = dt.now(tz=UTC)
+        self.expired_at = dt.now()
         self.save()
 
     def __str__(self) -> str:  # noqa

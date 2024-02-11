@@ -14,7 +14,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.leagueoflegends.models import Tournament as LeagueOfLegendsTournament
 from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
@@ -25,14 +24,13 @@ from apps.tournaments.filters import (
     TournamentListFilter,
     TournamentListOrdering,
 )
-from apps.tournaments.models import Checkin, Registration, Tournament
-from apps.tournaments.models import Tournament as BaseTournament
+from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.serializers import (
     RegistrationReadSerializer,
     TournamentSerializer,
 )
-from apps.tournaments.usecases.create_team_registration import (
+from apps.tournaments.usecases.create_registration import (
     CreateRegistrationUseCase,
     CreateRegistrationUseCaseParams,
 )
@@ -84,7 +82,7 @@ class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TournamentViewSet(viewsets.ModelViewSet):
-    queryset = BaseTournament.objects.all()
+    queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
     lookup_field = "id"
 
@@ -104,12 +102,12 @@ class TournamentViewSet(viewsets.ModelViewSet):
 
         return super().retrieve(request, *args, **kwargs)
 
-    def construct_object(self) -> BaseTournament:
+    def construct_object(self) -> Tournament:
         """
         Returns the tournament object based on the game type
         """
         obj = self.get_object()
-        if obj.game == BaseTournament.GameType.LEAGUE_OF_LEGENDS:
+        if obj.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
             return LeagueOfLegendsTournament.objects.get(id=obj.id)
         return obj
 

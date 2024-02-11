@@ -4,13 +4,22 @@ import { Dialog } from '@/components/ui/atoms/dialog';
 import { Close } from '@/components/ui/atoms/icons/close';
 import { Transition } from '@/components/ui/atoms/transition';
 import cn from 'classnames';
+import clsx from 'clsx';
 import dynamic from 'next/dynamic';
+import { Source_Sans_3 } from 'next/font/google';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect } from 'react';
+
+const source_Sans_3 = Source_Sans_3({
+  weight: ['400', '500', '600', '700', '800'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
 // dynamic imports
 const SearchView = dynamic(() => import('@/components/search/view'));
 const RegistrationView = dynamic(
-  () => import('@/components/ui/organisms/register-team-modal')
+  () => import('@/components/ui/organisms/register-team-modal-view')
 );
 const ConnectAccountView = dynamic(
   () => import('@/components/ui/organisms/connect-account-view')
@@ -50,7 +59,10 @@ export default function ModalContainer() {
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="3xl:p-12 fixed inset-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden p-4 text-center sm:p-6 lg:p-8 xl:p-10"
+        className={clsx(
+          '3xl:p-12 fixed inset-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden p-4 text-center sm:p-6 lg:p-8 xl:p-10',
+          source_Sans_3.className
+        )}
         onClose={closeModal}
       >
         <Transition.Child

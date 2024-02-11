@@ -1,7 +1,15 @@
 from django.contrib import admin, messages
 from django.utils.translation import ngettext
 
-from apps.tournaments.models import Checkin, Registration
+from apps.tournaments.models import (
+    Checkin,
+    LeagueOfLegendsLeague,
+    LeagueOfLegendsTournament,
+    Registration,
+)
+
+admin.site.register(LeagueOfLegendsLeague)
+admin.site.register(LeagueOfLegendsTournament)
 
 
 class RegistrationAdmin(admin.ModelAdmin):

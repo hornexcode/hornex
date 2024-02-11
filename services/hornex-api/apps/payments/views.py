@@ -44,7 +44,7 @@ def create_payment_registration(request):
 
     try:
         registration = Registration.objects.get(id=form.data["registration"])
-        if registration.status != Registration.RegistrationStatusType.PENDING:
+        if registration.status != Registration.RegistrationStatusOptions.PENDING:
             return Response({"error": "Registration is not pending"}, status=400)
     except Registration.DoesNotExist:
         return Response({"error": "Registration does not exist"}, status=404)

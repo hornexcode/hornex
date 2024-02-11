@@ -45,7 +45,7 @@ class Command(BaseCommand):
             registration_start_date=now,
             registration_end_date=now + td(minutes=20),
             feature_image="tmt-6.jpeg",
-            is_public=True,  # change to is_published
+            published=True,  # change to is_published
             entry_fee=500,  # 5.00
             max_teams=32,
             team_size=5,

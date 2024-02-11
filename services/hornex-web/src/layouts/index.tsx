@@ -6,7 +6,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="">
       <Header />
       <Sidebar />
-      <main className="3xl:px-10 relative h-[100vh] rounded pt-14 md:pl-20 xl:pb-24">
+      <main className="3xl:px-10 relative h-[100vh] rounded pt-14 md:pl-[64px] xl:pb-24">
         {children}
       </main>
     </div>

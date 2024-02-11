@@ -219,11 +219,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           <div className="flex items-center self-start">
             {/* TODO: make this a molecule component */}
             <div className="flex items-center">
-              {/* Game */}
-              <div className="border-r-2 border-dotted border-slate-700 px-8">
-                <LeagueOfLegendsLogo className="text-title w-16" />
-              </div>
-
               {/* Classification */}
               <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">
                 <div className="text-body text-xs">Classification</div>

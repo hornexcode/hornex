@@ -27,7 +27,7 @@ headers = {
 
 class ValueObject(dict[str, any]):
     @classmethod
-    def contruct_from(cls, values: dict[str, any]) -> Self:
+    def construct_from(cls, values: dict[str, any]) -> Self:
         klass = cls()
         for key, value in values.items():
             klass.__setitem__(key, value)
@@ -178,12 +178,6 @@ class Tournament(ValueObject):
         )
 
     @classmethod
-    def construct_from(cls, values: dict[str, any]) -> "Tournament":
-        instance = cls()
-        instance.refresh_from(values)
-        return instance
-
-    @classmethod
     def refresh_from(cls, values):
         try:
             for k, v in values.items():
@@ -206,7 +200,7 @@ class Tournament(ValueObject):
             return Exception("Internal Server Error")
 
     @classmethod
-    def create(cls, **params: Unpack["Tournament.CreateParams"]):
+    def create(cls, **params: Unpack["Tournament.CreateParams"]) -> "Tournament":
         """
         Creates a new tournament
         """
@@ -218,11 +212,14 @@ class Tournament(ValueObject):
         )
 
         if not resp.ok:
-            raise cls.on_response_error(resp)
+            logger.error("Failed to create tournament", error=resp.json())
+            return None
 
         logger.info("Tournament created", resp=resp.json())
 
-        return resp.json()
+        tournament = Tournament.construct_from(values=resp.json()["tournament"])
+        print(tournament.id, tournament.name, tournament.url, tournament.full_challonge_url)
+        return cast("Tournament", tournament)
 
     @classmethod
     def list(cls):
@@ -331,6 +328,27 @@ class Tournament(ValueObject):
         return
 
     @classmethod
+    def add_team(
+        cls,
+        tournament: int,
+        team_name: str,
+    ):
+        """
+        Adds participants and/or seeds to a tournament (up until it is started)
+        """
+
+        resp = request(
+            "post",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants.json?api_key={challonge.api_key}",
+            headers=headers,
+            json={"name": team_name},
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+        return
+
+    @classmethod
     def add_participants(
         cls,
         tournament: int,
@@ -389,7 +407,7 @@ class Tournament(ValueObject):
         results = resp.json()
         return cast(
             Iterable["Participant"],
-            [Participant.contruct_from(participant["participant"]) for participant in results],
+            [Participant.construct_from(participant["participant"]) for participant in results],
         )
 
     @classmethod

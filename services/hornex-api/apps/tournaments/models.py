@@ -1,6 +1,6 @@
 import uuid
 from abc import abstractmethod
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 
 import structlog
 from django.conf import settings
@@ -8,7 +8,6 @@ from django.db import models
 from rest_framework.exceptions import ValidationError
 
 from apps.common.models import BaseModel
-from apps.games.models import GameID
 from apps.teams.models import Team
 from apps.tournaments import errors
 from apps.tournaments.validators import validate_team_size
@@ -29,7 +28,7 @@ class Tournament(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
-    is_public = models.BooleanField(default=False)
+    published = models.BooleanField(default=False)
     phase = models.CharField(
         max_length=50,
         choices=PhaseType.choices,
@@ -56,7 +55,7 @@ class Tournament(BaseModel):
 
     teams = models.ManyToManyField("teams.Team", related_name="tournaments", blank=True)
 
-    is_classification_open = models.BooleanField(default=False)
+    open_classification = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -208,17 +207,17 @@ class Tournament(BaseModel):
 
     @property
     def is_full(self):
-        now = datetime.now(tz=UTC)
+        now = datetime.now()
 
         accepted_registrations = Registration.objects.filter(
-            tournament=self, status=Registration.RegistrationStatusType.ACCEPTED
+            tournament=self, status=Registration.RegistrationStatusOptions.ACCEPTED
         ).count()
 
         # get the number of pending registrations that are not paid
         # in 2 hours
         pending_registrations = Registration.objects.filter(
             tournament=self,
-            status=Registration.RegistrationStatusType.PENDING,
+            status=Registration.RegistrationStatusOptions.PENDING,
             created_at__gt=now - timedelta(hours=1),
         ).count()
 
@@ -228,7 +227,7 @@ class Tournament(BaseModel):
         if self.phase != Tournament.PhaseType.REGISTRATION_OPEN:
             return False
 
-        now = datetime.now(tz=UTC)
+        now = datetime.now()
 
         checkin_opens_at = datetime.combine(self.start_date, self.start_time) - timedelta(
             minutes=self.check_in_duration
@@ -249,7 +248,7 @@ class Tournament(BaseModel):
 
 
 class Registration(models.Model):
-    class RegistrationStatusType(models.TextChoices):
+    class RegistrationStatusOptions(models.TextChoices):
         PENDING = "pending"
         ACCEPTED = "accepted"
         REJECTED = "rejected"
@@ -262,8 +261,8 @@ class Registration(models.Model):
     platform_slug = models.CharField(max_length=255)
     status = models.CharField(
         max_length=50,
-        choices=RegistrationStatusType.choices,
-        default=RegistrationStatusType.PENDING,
+        choices=RegistrationStatusOptions.choices,
+        default=RegistrationStatusOptions.PENDING,
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -277,28 +276,13 @@ class Registration(models.Model):
     def confirm_registration(self):
         self.tournament.teams.add(self.team)
         self.tournament.save()
-        self.status = Registration.RegistrationStatusType.ACCEPTED
+        self.status = Registration.RegistrationStatusOptions.ACCEPTED
         self.save()
 
     def cancel(self):
         self.tournament.teams.remove(self.team)
-        self.status = Registration.RegistrationStatusType.CANCELLED
+        self.status = Registration.RegistrationStatusOptions.CANCELLED
         self.save()
-
-
-class RegistrationParticipants(models.Model):
-    """
-    This model is used to keep track of the participants in a tournament.
-    It makes easier to get the a registration for a given tournament and the
-    participants.
-    """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    registration = models.ForeignKey(Registration, on_delete=models.CASCADE)
-    participants = models.ManyToManyField("users.User", related_name="tournaments", blank=True)
-
-    def __str__(self) -> str:
-        return f"Tournament Participants ({self.id}) | {self.tournament.name}"
 
 
 class Match(models.Model):
@@ -360,7 +344,7 @@ class Checkin(models.Model):
 
 
 # LEAGUE OF LEGENDS
-class LeagueOfLegendsEllo(models.Model):
+class LeagueOfLegendsLeague(models.Model):
     class TierOptions(models.TextChoices):
         IRON = "IRON"
         BRONZE = "BRONZE"
@@ -382,7 +366,6 @@ class LeagueOfLegendsEllo(models.Model):
         IV = "IV"
 
     rank = models.CharField(max_length=25, choices=RankOptions.choices)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -394,23 +377,8 @@ class LeagueOfLegendsEllo(models.Model):
         return f"{self.tier} {self.rank}"
 
 
-class LeagueOfLegendsSummoner(models.Model):
-    game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
-    id = models.CharField(max_length=255, primary_key=True, editable=False)
-    puuid = models.CharField(max_length=255)
-    account_id = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    ello = models.ForeignKey(LeagueOfLegendsEllo, on_delete=models.CASCADE, blank=True, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self) -> str:
-        return self.name
-
-
 class LeagueOfLegendsProvider(models.Model):
-    class RegionType(models.TextChoices):
+    class RegionOptions(models.TextChoices):
         BR = "BR"
         EUNE = "EUNE"
         EUW = "EUW"
@@ -424,7 +392,9 @@ class LeagueOfLegendsProvider(models.Model):
         RU = "RU"
 
     id = models.IntegerField(primary_key=True, editable=False)
-    region = models.CharField(max_length=10, choices=RegionType.choices, default=RegionType.BR)
+    region = models.CharField(
+        max_length=10, choices=RegionOptions.choices, default=RegionOptions.BR
+    )
     url = models.URLField(
         editable=True,
         null=False,
@@ -442,12 +412,12 @@ class LeagueOfLegendsTournament(Tournament):
         ALL_RANDOM = "ALL_RANDOM"
         TOURNAMENT_DRAFT = "TOURNAMENT_DRAFT"
 
-    class MapType(models.TextChoices):
+    class MapOptions(models.TextChoices):
         SUMMONERS_RIFT = "SUMMONERS_RIFT"
         TWISTED_TREELINE = "TWISTED_TREELINE"
         HOWLING_ABYSS = "HOWLING_ABYSS"
 
-    class SpectatorType(models.TextChoices):
+    class SpectatorOptions(models.TextChoices):
         NONE = "NONE"
         LOBBYONLY = "LOBBYONLY"
         ALL = "ALL"
@@ -458,22 +428,23 @@ class LeagueOfLegendsTournament(Tournament):
         null=True,
         blank=True,
     )
-    riot_id = models.IntegerField(null=True, blank=True)
     pick = models.CharField(max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK)
-    map = models.CharField(max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT)
+    map = models.CharField(
+        max_length=50, choices=MapOptions.choices, default=MapOptions.SUMMONERS_RIFT
+    )
     spectator = models.CharField(
         max_length=50,
-        choices=SpectatorType.choices,
-        default=SpectatorType.LOBBYONLY,
+        choices=SpectatorOptions.choices,
+        default=SpectatorOptions.LOBBYONLY,
     )
-    allowed_ellos = models.ManyToManyField(LeagueOfLegendsEllo)
+    classifications = models.ManyToManyField(LeagueOfLegendsLeague)
     riot_tournament_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
 
     def get_classifications(self) -> list[str]:
-        return [f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()]
+        return [f"{entry.tier} {entry.rank}" for entry in self.classifications.all()]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"

@@ -185,7 +185,10 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
       <div className="grid grid-cols-2 gap-8">
         {/* Summary */}
         <div className="col-span-1">
-          <div className="bg-medium-dark shadow-card flex items-center rounded p-6">
+          <div className="mb-4">
+            <h2 className="text-title text-xl">Resumo</h2>
+          </div>
+          {/* <div className="bg-medium-dark shadow-card flex items-center rounded p-6">
             <div className="block">
               <AlertCircle className="text-body mr-4" />
             </div>
@@ -196,63 +199,56 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                 sua vaga no torneio, realize o pagamento.
               </p>
             </div>
+          </div> */}
+          <div className="bg-light-dark space-y-4 rounded">
+            {/* tournament name */}
+            <div className="bg-medium-dark highlight-white-5 block border-b  border-gray-700">
+              <div className="text-title p-6 text-sm font-light">
+                Inscrição para torneio de{' '}
+                <span className="text-body font-bold">League of Legends</span>:{' '}
+                <span className="font-bold">{tournament.name}</span>
+              </div>
+            </div>
+            {/* team name */}
+            <div className="text-body flex items-center justify-between px-6 text-sm font-light">
+              <div className="">Team</div>
+              <div className="">{team.name} </div>
+            </div>
+            <div className="text-body flex items-center justify-between px-6 text-sm font-light">
+              <div className="">
+                {tournament.team_size} x{' '}
+                <span className="font-semibold">
+                  {tournament.name} inscrições
+                </span>{' '}
+              </div>
+              <div className="flex items-center">
+                ${' '}
+                <span className="font-display">
+                  {toCurrency(tournament.entry_fee * tournament.team_size)}
+                </span>
+                <span className="ml-2 text-xs">BRL</span>
+              </div>
+            </div>
+            <div className="text-title flex items-center justify-between px-6 pb-6 text-sm font-extrabold">
+              <div className="">Total Charge</div>
+              <div className="flex items-center">
+                ${' '}
+                <span className="font-display">
+                  {toCurrency(tournament.entry_fee * tournament.team_size)}
+                </span>
+                <span className="ml-2 text-xs">BRL</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="bg-medium-dark shadow-card col-span-1 rounded p-6">
+        <div className="col-span-1 p-6">
           <div className="mb-4">
             <h2 className="text-title text-xl">Purchase Resume</h2>
           </div>
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
               <div className="space-y-8">
-                <div className="space-y-4 rounded border border-gray-600">
-                  {/* tournament name */}
-                  <div className="block border-b border-gray-600 p-6">
-                    <div className="text-title text-sm font-light">
-                      Inscrição para torneio de{' '}
-                      <span className="text-body font-bold">
-                        League of Legends
-                      </span>
-                      : <span className="font-bold">{tournament.name}</span>
-                    </div>
-                  </div>
-                  {/* team name */}
-                  <div className="text-body flex items-center justify-between px-6 text-sm font-light">
-                    <div className="">Team</div>
-                    <div className="">{team.name} </div>
-                  </div>
-                  <div className="text-body flex items-center justify-between px-6 text-sm font-light">
-                    <div className="">
-                      {tournament.team_size} x{' '}
-                      <span className="font-semibold">
-                        {tournament.name} inscrições
-                      </span>{' '}
-                    </div>
-                    <div className="flex items-center">
-                      ${' '}
-                      <span className="font-display">
-                        {toCurrency(
-                          tournament.entry_fee * tournament.team_size
-                        )}
-                      </span>
-                      <span className="ml-2 text-xs">BRL</span>
-                    </div>
-                  </div>
-                  <div className="text-title flex items-center justify-between px-6 pb-6 text-sm font-extrabold">
-                    <div className="">Total Charge</div>
-                    <div className="flex items-center">
-                      ${' '}
-                      <span className="font-display">
-                        {toCurrency(
-                          tournament.entry_fee * tournament.team_size
-                        )}
-                      </span>
-                      <span className="ml-2 text-xs">BRL</span>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="">
                   <div>
                     <InputLabel title="Payment Method" important />

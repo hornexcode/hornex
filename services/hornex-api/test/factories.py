@@ -1,4 +1,3 @@
-from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 
@@ -69,14 +68,14 @@ class TournamentFactory:
         """
         Create a new tournament with the given organizer and kwargs.
         """
-        now = dt.now(tz=UTC)
+        now = dt.now()
         return BaseTournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),
             organizer=organizer,
             game=kwargs.get("game", BaseTournament.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", BaseTournament.PlatformType.PC),
-            is_public=kwargs.get("is_public", True),
+            published=kwargs.get("published", True),
             phase=kwargs.get("phase", BaseTournament.PhaseType.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
             registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
@@ -104,7 +103,7 @@ class LeagueOfLegendsTournamentFactory:
         """
         default_provider = Provider.objects.create(id=1, region="BR", url="https://www.hornex.gg/")
 
-        now = dt.now(tz=UTC)
+        now = dt.now()
         tmt = Tournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),

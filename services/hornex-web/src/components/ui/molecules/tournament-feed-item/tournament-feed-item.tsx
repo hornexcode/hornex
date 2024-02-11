@@ -1,6 +1,8 @@
 import { TournamentFeedItemProps } from './tournament-feed-item.types';
 import Button from '@/components/ui/atoms/button/button';
+import { toCurrency } from '@/lib/utils';
 import { UsersIcon } from '@heroicons/react/20/solid';
+import clsx from 'clsx';
 import { DollarSign, SwordIcon, Swords } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
@@ -11,7 +13,7 @@ import { FC } from 'react';
 const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
   const router = useRouter();
   return (
-    <div className="shadow-light bg-light-dark">
+    <div className="shadow-light bg-light-dark rounded">
       <div className="bg-medium-dark highlight-white-5 rounded rounded-t">
         <div className="block px-5 py-4">
           <Link
@@ -52,35 +54,35 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
         <div className="col-span-2">
           <div className="flex justify-between">
             <div className="flex items-center">
-              <UsersIcon className="mr-1 h-5 w-4 " />
-              <span className="font-display pr-4 text-xs font-bold text-white">
+              <UsersIcon className="text-body mr-1 h-5 w-4" />
+              <span className="font-display text-body pr-4 text-xs font-bold">
                 {tournament.teams.length}/{tournament.max_teams}
               </span>
             </div>
             {/* phase status */}
             <div className="relative flex">
-              <span className="absolute -left-3 top-1 h-2 w-2 rounded-full bg-white"></span>
-              <span className="text-xs font-bold uppercase text-white">
+              <span className="absolute -left-3 top-1 h-2 w-2 rounded-full bg-green-400"></span>
+              <span className="text-xs font-bold uppercase text-green-400">
                 open
               </span>
             </div>
           </div>
         </div>
-        {/* <div className="col-span-2">
-          <div className={classnames('flex w-full')}>
-            {Array.from({ length: tournament.max_teams }).map((_, index) => (
+        <div className="col-span-2">
+          <div className={clsx('flex w-full')}>
+            {/* build a progress bar */}
+            <div className="bg-medium-dark flex w-full rounded-lg">
               <div
-                key={index}
-                className={classnames(
-                  'flex-basis mr-1 h-2 flex-grow rounded-[2px] bg-gray-400',
-                  {
-                    '!bg-amber-500': index < tournament.teams.length,
-                  }
-                )}
+                style={{
+                  width: `${
+                    (tournament.teams.length / tournament.max_teams) * 100
+                  }%`,
+                }}
+                className="h-2 rounded-lg bg-amber-400"
               ></div>
-            ))}
+            </div>
           </div>
-        </div> */}
+        </div>
       </div>
 
       <div className="shadow-light flex items-end rounded-b-lg border-t border-dashed border-gray-600 px-5 py-4">
@@ -88,10 +90,13 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
           <span className="text-xs text-slate-400">Prize Pool</span>
           <div className="flex items-center space-x-1">
             <DollarSign className="h-4 w-4 text-white" />
-            <span className="text-lg text-white">
-              {tournament.entry_fee *
-                tournament.max_teams *
-                tournament.team_size}
+            <span className="text-white">
+              {toCurrency(
+                tournament.entry_fee *
+                  tournament.max_teams *
+                  tournament.team_size *
+                  0.7
+              )}
             </span>
           </div>
         </div>

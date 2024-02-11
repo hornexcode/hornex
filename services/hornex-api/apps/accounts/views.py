@@ -13,7 +13,7 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.games.models import GameID
+from apps.accounts.models import GameID
 from apps.leagueoflegends.models import Session
 from jwt_token.authentication import JWTAuthentication
 from lib.riot.client import client as riot
@@ -58,8 +58,11 @@ def oauth_login_callback(request):
     gid, _ = GameID.objects.update_or_create(
         user=request.user,
         is_active=True,
-        region="Brazil",  # Default value
-        region_code=riot_account.tag_line,
+        metadata={
+            "puuid": riot_account.puuid,
+            "region": "Brazil",
+            "tag_line": riot_account.tag_line,
+        },
         nickname=riot_account.game_name,
         game=GameID.GameOptions.LEAGUE_OF_LEGENDS,
     )

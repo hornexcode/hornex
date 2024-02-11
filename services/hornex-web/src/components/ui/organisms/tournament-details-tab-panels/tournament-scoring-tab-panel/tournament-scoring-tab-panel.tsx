@@ -105,7 +105,7 @@ const COLUMNS = [
   },
 ];
 
-const TournamentScoringTabPanel: FC<TournamentScoringTabPanelProps> = ({
+export const TournamentScoringTabPanel: FC<TournamentScoringTabPanelProps> = ({
   tournament,
 }) => {
   const data = React.useMemo(() => CoinPriceData, []);
@@ -122,5 +122,3 @@ const TournamentScoringTabPanel: FC<TournamentScoringTabPanelProps> = ({
     </div>
   );
 };
-
-export default TournamentScoringTabPanel;

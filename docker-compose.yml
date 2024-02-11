@@ -25,6 +25,8 @@ services:
       context: ./services/hornex-api
       dockerfile: Dockerfile
       target: local
+    ports:
+      - "8000:8000"
     volumes:
       - ./services/hornex-api:/src
     env_file:

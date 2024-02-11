@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime as dt
 from typing import TypedDict, Unpack
 
-import pytz
 import structlog
 
 from apps.tournaments.models import Tournament
@@ -30,8 +29,7 @@ class CreateTournamentTask:
             tournament = Tournament.objects.get(id=self.tournament_id)
 
             start_at = dt.combine(tournament.start_date, tournament.start_time)
-            start_at_utc = start_at.replace(tzinfo=pytz.UTC)
-            start_at_str = start_at_utc.strftime("%Y-%m-%dT%H:%M:%S.000+00:00")
+            start_at_str = start_at.strftime("%Y-%m-%dT%H:%M:%S.000+00:00")
 
             resp = TournamentAPIResource.create(
                 name=tournament.name,
