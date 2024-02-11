@@ -8,7 +8,6 @@ from django.db import models
 from rest_framework.exceptions import ValidationError
 
 from apps.common.models import BaseModel
-from apps.games.models import GameID
 from apps.teams.models import Team
 from apps.tournaments import errors
 from apps.tournaments.validators import validate_team_size
@@ -29,7 +28,7 @@ class Tournament(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
-    is_public = models.BooleanField(default=False)
+    published = models.BooleanField(default=False)
     phase = models.CharField(
         max_length=50,
         choices=PhaseType.choices,
@@ -56,7 +55,7 @@ class Tournament(BaseModel):
 
     teams = models.ManyToManyField("teams.Team", related_name="tournaments", blank=True)
 
-    is_classification_open = models.BooleanField(default=False)
+    open_classification = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -360,6 +359,8 @@ class Checkin(models.Model):
 
 
 # LEAGUE OF LEGENDS
+
+
 class LeagueOfLegendsEllo(models.Model):
     class TierOptions(models.TextChoices):
         IRON = "IRON"
@@ -382,7 +383,7 @@ class LeagueOfLegendsEllo(models.Model):
         IV = "IV"
 
     rank = models.CharField(max_length=25, choices=RankOptions.choices)
-
+    queue_type = models.CharField(max_length=55)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -392,21 +393,6 @@ class LeagueOfLegendsEllo(models.Model):
 
     def __str__(self) -> str:
         return f"{self.tier} {self.rank}"
-
-
-class LeagueOfLegendsSummoner(models.Model):
-    game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
-    id = models.CharField(max_length=255, primary_key=True, editable=False)
-    puuid = models.CharField(max_length=255)
-    account_id = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    ello = models.ForeignKey(LeagueOfLegendsEllo, on_delete=models.CASCADE, blank=True, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self) -> str:
-        return self.name
 
 
 class LeagueOfLegendsProvider(models.Model):
@@ -458,7 +444,6 @@ class LeagueOfLegendsTournament(Tournament):
         null=True,
         blank=True,
     )
-    riot_id = models.IntegerField(null=True, blank=True)
     pick = models.CharField(max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK)
     map = models.CharField(max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT)
     spectator = models.CharField(
@@ -473,7 +458,7 @@ class LeagueOfLegendsTournament(Tournament):
         ordering = ["-created_at"]
 
     def get_classifications(self) -> list[str]:
-        return [f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()]
+        return [f"{entry.tier} {entry.rank}" for entry in self.allowed_ellos.all()]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"

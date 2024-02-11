@@ -4,7 +4,7 @@ export const tournament = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
-  is_public: z.boolean(),
+  published: z.boolean(),
   status: z.string(),
   start_date: z.string(),
   registration_start_date: z.date(),

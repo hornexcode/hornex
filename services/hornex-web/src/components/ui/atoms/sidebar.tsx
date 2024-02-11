@@ -1,19 +1,11 @@
-import {
-  CounterStrikeLogoIcon,
-  LolIcon,
-  SwordsIcon,
-} from '@/components/ui/atoms/icons';
+import { LeagueOfLegendsLogo } from './icons/league-of-legends-icon';
+import { LolFlatIcon } from './icons/lol-flat-icon';
+import { LolIcon } from '@/components/ui/atoms/icons';
 import routes from '@/config/routes';
-import { GetInvitesResponse } from '@/lib/models/types';
 import { dataLoader } from '@/lib/request';
 import { useNotification } from '@/lib/websocket';
 import { useWebSocketContext } from '@/websocket/context';
-import {
-  HomeIcon,
-  PlusIcon,
-  TrophyIcon,
-  UserGroupIcon,
-} from '@heroicons/react/20/solid';
+import { HomeIcon, TrophyIcon, UserGroupIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
@@ -42,18 +34,18 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-medium-dark shadow-card fixed top-14 z-20 flex h-full flex-col items-center border-r border-gray-700 p-4 text-center md:w-20',
+        'bg-medium-dark shadow-card fixed top-14 z-20 flex h-full w-[64px] flex-col items-center border-r border-gray-700 p-4 text-center',
         className
       )}
     >
-      <ul className="flex flex-col items-center space-y-3 py-2 text-xs">
+      <ul className="flex flex-col items-center space-y-4 py-2 text-xs">
         <li>
           <Link
             href={`/${routes.compete}`}
             className="group cursor-pointer text-center transition-all"
           >
-            <div className="flex h-[38px] w-[38px] items-center justify-center  rounded-lg bg-slate-700">
-              <HomeIcon className=" h-4 w-4 text-white shadow-xl" />
+            <div className="mb-2 flex h-[36px] w-[36px] items-center  justify-center rounded-md bg-slate-700">
+              <HomeIcon className="h-5 w-5 text-white shadow-xl" />
             </div>
             <span className="mx-auto">Home</span>
           </Link>
@@ -61,21 +53,21 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li className="">
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex cursor-pointer flex-col items-center rounded-lg  transition-all"
+            className="group flex cursor-pointer flex-col items-center rounded-md  transition-all"
           >
-            <div className="flex h-[45px] w-[45px] items-center justify-center  rounded-lg ">
-              <TrophyIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
+            <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
+              <TrophyIcon className="h-5 w-5 text-slate-400 shadow-xl group-hover:text-white" />
             </div>
             <span className="mx-auto">compete</span>
           </Link>
         </li>
-        <li title="Teams" className="relative">
+        <li>
           <Link
             href={`/${routes.teams}`}
-            className="group flex h-[45px] w-[45px] cursor-pointer flex-col items-center justify-center rounded text-center transition-all  hover:bg-slate-700"
+            className="group cursor-pointer flex-col items-center justify-center rounded text-center transition-all  hover:bg-slate-700"
           >
-            <div className="flex h-[45px] w-[45px] items-center justify-center  rounded-lg ">
-              <UserGroupIcon className="h-4 w-4 text-slate-400 shadow-xl group-hover:text-white" />
+            <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
+              <UserGroupIcon className="h-5 w-5 text-slate-400 shadow-xl group-hover:text-white" />
             </div>
             <span className="mx-auto">Teams</span>
           </Link>
@@ -91,24 +83,16 @@ export const Sidebar = ({ className }: { className?: string }) => {
         </li>
       </ul>
 
-      <ul className="block space-y-3 py-2">
+      {/* <ul className="block space-y-3 py-2">
         <li>
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex h-[45px] w-[45px] cursor-pointer items-center justify-center rounded  text-center  transition-all hover:bg-slate-700"
+            className="group flex h-[36px] w-[36px] cursor-pointer items-center justify-center rounded text-center transition-all hover:bg-slate-700"
           >
-            <LolIcon className="w-4 fill-slate-400 shadow-xl group-hover:fill-white" />
+            <LolFlatIcon className="w-7 fill-slate-400 shadow-xl group-hover:fill-white" />
           </Link>
         </li>
-        {/* <li>
-          <Link
-            href="#"
-            className="bg-dark roundedborder group flex h-[45px] w-[45px] cursor-pointer items-center justify-center   text-center  transition-all hover:bg-slate-700"
-          >
-            <CounterStrikeLogoIcon className="fill-slate-400 p-2 shadow-xl group-hover:fill-white" />
-          </Link>
-        </li> */}
-      </ul>
+      </ul> */}
     </div>
   );
 };

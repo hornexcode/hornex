@@ -82,7 +82,7 @@ export const routes = {
     schema: null,
   },
   registerTeam: {
-    path: 'v1/tournaments/[tournamentId]/register',
+    path: 'v1/tournaments/[tournamentId]/registrations',
     method: Method.POST,
     schema: null,
   },

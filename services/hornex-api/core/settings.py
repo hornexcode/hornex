@@ -37,7 +37,7 @@ DEBUG = bool(int(os.getenv("DEBUG", "1")))
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True  # dev only
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]  # dev only
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
 
 # Application definition
 INSTALLED_APPS = [

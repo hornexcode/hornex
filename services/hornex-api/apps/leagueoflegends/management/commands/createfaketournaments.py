@@ -27,7 +27,7 @@ class Command(BaseCommand):
             entry_fee=25,
             max_teams=32,
             team_size=5,
-            is_public=True,
+            published=True,
         )
         tournament.allowed_league_entries.set(
             [

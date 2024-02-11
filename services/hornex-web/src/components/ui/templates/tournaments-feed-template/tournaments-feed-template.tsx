@@ -1,3 +1,4 @@
+import { Star } from '../../atoms/icons/star';
 import { Filters } from '@/components/search/filters';
 import Button from '@/components/ui/atoms/button';
 import { OptionIcon } from '@/components/ui/atoms/icons/option';
@@ -10,39 +11,13 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
   tournaments,
 }) => {
   return (
-    <div className="container mx-auto">
-      {/* <div className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
-      2xl:grid-cols-[240px_minmax(auto,_1fr)]"> */}
-      <div className="">
-        {/* <div className="hidden border-r border-dashed border-gray-200 pr-8 dark:border-gray-700 2xl:block">
-          <Filters />
-        </div> */}
-
-        {/* <div className="4xl:pl-10 2xl:pl-8"> */}
-        <div className="">
-          <div className="relative z-10 mb-6 flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-900 dark:text-white sm:text-sm">
-              <strong>{tournaments.count}</strong> Tournaments found
-            </span>
-
-            <div className="3xl:gap-8 flex gap-6">
-              {/* <SortList /> */}
-              <div className="3xl:block hidden">{/* <GridSwitcher /> */}</div>
-              <div className="hidden sm:block 2xl:hidden">
-                <Button
-                  shape="rounded"
-                  size="small"
-                  variant="ghost"
-                  color="gray"
-                  // onClick={() => openDrawer('DRAWER_SEARCH')}
-                  className="!h-11 !p-3 hover:!translate-y-0 hover:!shadow-none focus:!translate-y-0 focus:!shadow-none"
-                >
-                  <OptionIcon className="relative h-auto w-[18px]" />
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-5 gap-5">
+    <div className="container mx-auto pt-12">
+      <div
+        className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
+      gap-5 2xl:grid-cols-[minmax(auto,_1fr)_240px]"
+      >
+        <div className="4xl:pl-10 2xl:pl-8">
+          <div className="grid grid-cols-4 gap-5 lg:grid-cols-4">
             {!isLoading &&
               tournaments.results.map((tournament) => (
                 <TournamentCardInfo
@@ -50,6 +25,94 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
                   tournament={tournament}
                 />
               ))}
+            {!isLoading &&
+              tournaments.results.map((tournament) => (
+                <TournamentCardInfo
+                  key={tournament.id}
+                  tournament={tournament}
+                />
+              ))}
+            {!isLoading &&
+              tournaments.results.map((tournament) => (
+                <TournamentCardInfo
+                  key={tournament.id}
+                  tournament={tournament}
+                />
+              ))}
+            {!isLoading &&
+              tournaments.results.map((tournament) => (
+                <TournamentCardInfo
+                  key={tournament.id}
+                  tournament={tournament}
+                />
+              ))}
+          </div>
+        </div>
+
+        <div className="hidden 2xl:block">
+          {/* <Filters /> */}
+          <div className="bg-medium-dark highlight-white-5 rounded">
+            <div className="text-title shadow-light p-4 font-bold">
+              Tournaments Recents
+            </div>
+            <ul className="bg-light-dark py-4 text-sm font-light text-slate-400">
+              <li className="px-4 py-1 underline">
+                <a href="#" className="text-body hover:text-amber-400">
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-2" />
+                    First enabler tournament
+                  </div>
+                </a>
+              </li>
+              <li className="px-4 py-1 underline">
+                <a href="#" className="text-body hover:text-amber-400">
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-2" />
+                    Torneio summer eletro hits
+                  </div>
+                </a>
+              </li>
+              <li className="px-4 py-1 underline">
+                <a href="#" className="text-body hover:text-amber-400">
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-2" />
+                    All win tournament
+                  </div>
+                </a>
+              </li>
+              <li className="px-4 py-1 underline">
+                <a href="#" className="text-body hover:text-amber-400">
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-2" />
+                    Lorem ipsum dolor sit.
+                  </div>
+                </a>
+              </li>
+              <li className="px-4 py-1 underline">
+                <a href="#" className="text-body hover:text-amber-400">
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-2" />
+                    Lorem ipsum dolor sit amet .
+                  </div>
+                </a>
+              </li>
+              <li className="px-4 py-1 underline">
+                <a href="#" className="text-body hover:text-amber-400">
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-2" />
+                    First enabler tournament v2
+                  </div>
+                </a>
+              </li>
+              <li className="px-4 py-1 underline">
+                <a href="#" className="text-body hover:text-amber-400">
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-2" />
+                    First enabler
+                  </div>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

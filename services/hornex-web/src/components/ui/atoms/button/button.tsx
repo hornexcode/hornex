@@ -32,7 +32,7 @@ const variants: Record<VariantNames, string[]> = {
 const colors: Record<ColorNames, string[]> = {
   primary: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
   white: ['text-gray-900', 'bg-white', 'border-white'],
-  gray: ['text-gray-300', 'bg-gray-300', 'border-gray-300'],
+  gray: ['text-body', 'bg-body', 'border-body'],
   success: ['text-green-500', 'bg-green-500', 'border-green-500'],
   info: ['text-blue-500', 'bg-blue-500', 'border-blue-500'],
   warning: ['text-amber-500', 'bg-amber-500', 'border-amber-500'],
@@ -128,7 +128,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={buttonRef}
         onClick={clickHandler}
         className={cn(
-          'highlight-white-20 relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold outline-none transition-all sm:text-sm',
+          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold outline-none transition-all sm:text-sm',
           buttonColorClassNames,
           !disabled
             ? buttonColorClassNames

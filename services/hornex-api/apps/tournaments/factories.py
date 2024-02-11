@@ -1,5 +1,4 @@
-from apps.leagueoflegends.models import Tournament as LeagueOfLegendsTournament
-from apps.tournaments.models import Tournament
+from apps.tournaments.models import LeagueOfLegendsTournament, Tournament
 
 
 def tournament_factory(game: str) -> "Tournament":

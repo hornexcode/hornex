@@ -1,5 +1,5 @@
 import Loader from '../../atoms/loader';
-import { useStepContext } from './register-team-modal';
+import { useStepContext } from './register-team-modal-view';
 import { useModal } from '@/components/modal-views/context';
 import {
   AlertDialog,
@@ -102,7 +102,9 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
       {/* <RegistrationStepper /> */}
       <div className="bg-medium-dark flex items-center p-5">
         <LolFlatIcon className="mr-2 h-8 w-8" />
-        <h4 className="text-title text-left text-xl font-bold">Registration</h4>
+        <h4 className="text-title text-left text-xl font-bold -tracking-tight">
+          Registration
+        </h4>
       </div>
 
       <div className="relative">

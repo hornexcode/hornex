@@ -1,5 +1,6 @@
 # Description: Register a team in a tournament
 
+import structlog
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
@@ -8,7 +9,10 @@ from apps.teams.models import Team
 from apps.tournaments import errors
 from apps.tournaments.factories import tournament_factory
 from apps.tournaments.models import Registration, Tournament
+from lib.riot import LeagueV4
 from lib.riot.client import client as riot_client
+
+logger = structlog.get_logger(__name__)
 
 
 class CreateRegistrationUseCaseParams:
@@ -73,28 +77,50 @@ class CreateRegistrationUseCase:
         if team.members.count() < tournament.team_size:
             raise ValidationError({"detail": errors.EnoughMembersError})
 
-        if not tournament.is_classification_open:
+        if not tournament.open_classification:
             members = team.members.all()
             game_ids = GameID.objects.filter(user__in=members, game=tournament.game)
 
+            # check if all members have a game ID
             if len(game_ids) < tournament.team_size:
                 raise ValidationError({"detail": "Not enough members with the game ID"})
 
             for game_id in game_ids:
                 if tournament.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
+                    ############################################################
+                    # TODO: refactor this to a service
+                    ############################################################
+
+                    # get the summoner by the game ID nickname
                     summoner = riot_client.get_summoner_by_name(game_id.nickname)
                     if summoner is None:
                         raise ValidationError({"detail": "Summoner not found"})
+                    logger.info("Summoner found", summoner=summoner)
 
-                    summoner_entries = riot_client.get_entries_by_summoner_id(summoner.id)
+                    # get all ellos entries by the summoner ID
+                    summoner_entries = LeagueV4.get_all_league_entries_by_summoner_id(summoner.id)
+                    ranked_solo_entry = next(
+                        (
+                            entry
+                            for entry in summoner_entries
+                            if entry.queue_type == "RANKED_SOLO_5x5"
+                        ),
+                        None,
+                    )
+                    logger.info("Ranked solo entry", ranked_solo_entry=ranked_solo_entry)
 
                     # check if the summoner is allowed to play in the tournament
+                    # this get_classification is an abstraction to get the allowed entries
+                    if ranked_solo_entry is None:
+                        raise ValidationError({"detail": errors.TeamMemberIsNotAllowedToRegistrate})
+
                     tournament_entries = tournament.get_classifications()
-                    for entry in summoner_entries:
-                        if f"{entry.tier} {entry.rank}" not in tournament_entries:
-                            raise ValidationError(
-                                {"detail": errors.TeamMemberIsNotAllowedToRegistrate}
-                            )
+                    if (
+                        f"{ranked_solo_entry.tier} {ranked_solo_entry.rank}"
+                        not in tournament_entries
+                    ):
+                        raise ValidationError({"detail": errors.TeamMemberIsNotAllowedToRegistrate})
+                    ############################################################
 
         registration = Registration.objects.create(
             tournament=tournament,
