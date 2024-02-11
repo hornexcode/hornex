@@ -7,27 +7,20 @@ pre-commit:
 
   commands:
     root-install:
-      run: yarn install
       glob: "**/*.{ts,js,tsx,jsx}"
-
-    web-install:
-      glob: "services/hornex-web/**"
       run: yarn install
-      root: services/hornex-web
-    web-lint:
-      glob: "services/hornex-web/**"
-      run: yarn lint
-      root: services/hornex-web
 
-    api-install:
+    hornex-web:
+      glob: "services/hornex-web/**"
+      root: services/hornex-web
+      run: |
+        yarn install
+        yarn lint
+
+    hornex-api:
       glob: "services/hornex-api/**"
-      run: poetry install --no-root
       root: services/hornex-api
-    api-lint:
-      glob: "services/hornex-api/**"
-      run: poetry run ruff check --fix .
-      root: services/hornex-api
-    api-format:
-      glob: "services/hornex-api/**"
-      run: poetry run ruff format .
-      root: services/hornex-api
+      run: |
+        poetry install --sync --no-root
+        poetry run ruff check --fix .
+        poetry run ruff format .
