@@ -210,14 +210,14 @@ class Tournament(BaseModel):
         now = datetime.now(tz=UTC)
 
         accepted_registrations = Registration.objects.filter(
-            tournament=self, status=Registration.RegistrationStatusType.ACCEPTED
+            tournament=self, status=Registration.RegistrationStatusOptions.ACCEPTED
         ).count()
 
         # get the number of pending registrations that are not paid
         # in 2 hours
         pending_registrations = Registration.objects.filter(
             tournament=self,
-            status=Registration.RegistrationStatusType.PENDING,
+            status=Registration.RegistrationStatusOptions.PENDING,
             created_at__gt=now - timedelta(hours=1),
         ).count()
 
@@ -248,7 +248,7 @@ class Tournament(BaseModel):
 
 
 class Registration(models.Model):
-    class RegistrationStatusType(models.TextChoices):
+    class RegistrationStatusOptions(models.TextChoices):
         PENDING = "pending"
         ACCEPTED = "accepted"
         REJECTED = "rejected"
@@ -261,8 +261,8 @@ class Registration(models.Model):
     platform_slug = models.CharField(max_length=255)
     status = models.CharField(
         max_length=50,
-        choices=RegistrationStatusType.choices,
-        default=RegistrationStatusType.PENDING,
+        choices=RegistrationStatusOptions.choices,
+        default=RegistrationStatusOptions.PENDING,
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -276,28 +276,13 @@ class Registration(models.Model):
     def confirm_registration(self):
         self.tournament.teams.add(self.team)
         self.tournament.save()
-        self.status = Registration.RegistrationStatusType.ACCEPTED
+        self.status = Registration.RegistrationStatusOptions.ACCEPTED
         self.save()
 
     def cancel(self):
         self.tournament.teams.remove(self.team)
-        self.status = Registration.RegistrationStatusType.CANCELLED
+        self.status = Registration.RegistrationStatusOptions.CANCELLED
         self.save()
-
-
-class RegistrationParticipants(models.Model):
-    """
-    This model is used to keep track of the participants in a tournament.
-    It makes easier to get the a registration for a given tournament and the
-    participants.
-    """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    registration = models.ForeignKey(Registration, on_delete=models.CASCADE)
-    participants = models.ManyToManyField("users.User", related_name="tournaments", blank=True)
-
-    def __str__(self) -> str:
-        return f"Tournament Participants ({self.id}) | {self.tournament.name}"
 
 
 class Match(models.Model):
@@ -359,8 +344,6 @@ class Checkin(models.Model):
 
 
 # LEAGUE OF LEGENDS
-
-
 class LeagueOfLegendsEllo(models.Model):
     class TierOptions(models.TextChoices):
         IRON = "IRON"
@@ -396,7 +379,7 @@ class LeagueOfLegendsEllo(models.Model):
 
 
 class LeagueOfLegendsProvider(models.Model):
-    class RegionType(models.TextChoices):
+    class RegionOptions(models.TextChoices):
         BR = "BR"
         EUNE = "EUNE"
         EUW = "EUW"
@@ -410,7 +393,9 @@ class LeagueOfLegendsProvider(models.Model):
         RU = "RU"
 
     id = models.IntegerField(primary_key=True, editable=False)
-    region = models.CharField(max_length=10, choices=RegionType.choices, default=RegionType.BR)
+    region = models.CharField(
+        max_length=10, choices=RegionOptions.choices, default=RegionOptions.BR
+    )
     url = models.URLField(
         editable=True,
         null=False,
@@ -428,12 +413,12 @@ class LeagueOfLegendsTournament(Tournament):
         ALL_RANDOM = "ALL_RANDOM"
         TOURNAMENT_DRAFT = "TOURNAMENT_DRAFT"
 
-    class MapType(models.TextChoices):
+    class MapOptions(models.TextChoices):
         SUMMONERS_RIFT = "SUMMONERS_RIFT"
         TWISTED_TREELINE = "TWISTED_TREELINE"
         HOWLING_ABYSS = "HOWLING_ABYSS"
 
-    class SpectatorType(models.TextChoices):
+    class SpectatorOptions(models.TextChoices):
         NONE = "NONE"
         LOBBYONLY = "LOBBYONLY"
         ALL = "ALL"
@@ -445,11 +430,13 @@ class LeagueOfLegendsTournament(Tournament):
         blank=True,
     )
     pick = models.CharField(max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK)
-    map = models.CharField(max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT)
+    map = models.CharField(
+        max_length=50, choices=MapOptions.choices, default=MapOptions.SUMMONERS_RIFT
+    )
     spectator = models.CharField(
         max_length=50,
-        choices=SpectatorType.choices,
-        default=SpectatorType.LOBBYONLY,
+        choices=SpectatorOptions.choices,
+        default=SpectatorOptions.LOBBYONLY,
     )
     allowed_ellos = models.ManyToManyField(LeagueOfLegendsEllo)
     riot_tournament_id = models.IntegerField(null=True, blank=True)

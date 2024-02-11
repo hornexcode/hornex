@@ -59,7 +59,7 @@ class TestPaymentRegistration(
         registration = Registration.objects.create(
             team=team,
             tournament=tournament,
-            status=Registration.RegistrationStatusType.PENDING,
+            status=Registration.RegistrationStatusOptions.PENDING,
         )
 
         target_url = reverse("create-payment-registration")

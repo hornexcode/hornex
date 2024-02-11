@@ -83,6 +83,7 @@ def stripe_controller(request):
     event = None
     payload = request.body
     sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
+
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, stripe_endpoint_secret)
     except ValueError as e:

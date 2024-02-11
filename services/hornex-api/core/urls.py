@@ -42,6 +42,7 @@ urlpatterns = [
         schema_view.with_ui("redoc", cache_timeout=0),
         name="schema-redoc",
     ),
+    path("v1/webhooks", include("apps.webhooks.urls")),
     # admin
     path("admin/", admin.site.urls),
     # dev internal api
@@ -58,7 +59,6 @@ urlpatterns = [
     path("api/v1/payments", include("apps.payments.urls")),
     path("api/v1/notifications", include("apps.notifications.urls")),
     # webhooks
-    path("v1/webhooks", include("apps.webhooks.urls")),
     # health check
     path("api/v1/health/check", health),
     #

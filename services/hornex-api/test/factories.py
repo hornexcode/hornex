@@ -111,7 +111,7 @@ class LeagueOfLegendsTournamentFactory:
             organizer=organizer,
             game=kwargs.get("game", Tournament.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", Tournament.PlatformType.PC),
-            published=kwargs.get("published", True),
+            is_public=kwargs.get("is_public", True),
             phase=kwargs.get("phase", Tournament.PhaseType.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
             registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
