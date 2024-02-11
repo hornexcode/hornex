@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime as dt
 from typing import TypedDict, Unpack
 
-import pytz
 import structlog
 
 from apps.tournaments.models import Tournament

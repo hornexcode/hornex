@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0002_initial'),
-        ('tournaments', '0004_remove_leagueoflegendstournament_riot_id'),
+        ("accounts", "0002_initial"),
+        ("tournaments", "0004_remove_leagueoflegendstournament_riot_id"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='LeagueOfLegendsEllo',
-            new_name='LeagueOfLegendsLeague',
+            old_name="LeagueOfLegendsEllo",
+            new_name="LeagueOfLegendsLeague",
         ),
         migrations.DeleteModel(
-            name='RegistrationParticipants',
+            name="RegistrationParticipants",
         ),
     ]

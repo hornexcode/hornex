@@ -2,11 +2,9 @@ import faker
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from apps.accounts.models import GameID, LeagueOfLegendsSummoner
+from apps.accounts.models import GameID
 from apps.teams.models import Team
-from apps.tournaments.models import LeagueOfLegendsLeague
 from apps.users.models import User
-from lib.riot import LeagueV4
 from lib.riot import Summoner as SummonerAPIResource
 
 fake = faker.Faker()
