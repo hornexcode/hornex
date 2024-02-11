@@ -12,10 +12,17 @@ source ${REPO_ROOT}/devops/scripts/helpers
 function main() (
   case "${1}" in
     up)
-      k3d cluster create hornex \
-        --registry-create=registry:0.0.0.0:5432 \
-        --port="8000:80@loadbalancer" \
-        --timeout=1m
+
+      if k3d cluster list hornex &>/dev/null; then
+        warning "Cluster hornex already running"
+      else
+        logx k3d cluster create hornex \
+          --registry-create=registry:0.0.0.0:5432 \
+          --port="8000:80@loadbalancer" \
+          --timeout=1m
+      fi
+
+      logx kubectl --namespace=kube-system rollout status deployment traefik --watch --timeout=5m
 
       # # Install Traefik Resource Definitions:
       # kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
@@ -25,13 +32,18 @@ function main() (
       ;;
 
     down)
-      k3d cluster delete hornex
+      logx k3d cluster delete hornex
       ;;
 
     *)
       error "Unknown command: '${1}', expected either 'up' or 'down'"
       ;;
   esac
+)
+
+function logx() (
+  set -x
+  $@
 )
 
 main "${@}"
