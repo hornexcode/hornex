@@ -7,30 +7,30 @@ function main() (
 
   echo "Waiting for postgres..."
 
-  python3 ./wait_for_postgres.py
+  ./wait_for_postgres.py
 
   command="${1:-}"
 
   case "$command" in
 
-  "runsetup")
-    run_setup
-    ;;
+    "runsetup")
+      run_setup
+      ;;
 
-  "celery")
-    exec celery \
-      --app core worker \
-      --concurrency=4 \
-      --loglevel=INFO \
-      --events
-    ;;
-  "")
-    ;;
-  *)
-    # shellcheck disable=SC2068
-    python3 manage.py $@
-    exit 1
-    ;;
+    "celery")
+      exec celery \
+        --app core worker \
+        --concurrency=4 \
+        --loglevel=INFO \
+        --events
+      ;;
+    "") ;;
+
+    *)
+      # shellcheck disable=SC2068
+      ./manage.py $@
+      exit 1
+      ;;
   esac
 )
 
@@ -43,19 +43,19 @@ function run_setup() (
   printf "\n\n"
   echo "Running migrations..."
   echo "====================="
-  python3 manage.py migrate
+  ./manage.py migrate
   echo "Done!"
 
   printf "\n\n"
   echo "Seeding database..."
   echo "====================="
-  python3 ./bin/seed_database.py
+  ./bin/seed_database.py
   echo "Done!"
 
   printf "\n\n"
   echo "Running server..."
   echo "====================="
-  python3 manage.py runserver 0.0.0.0:8000
+  ./manage.py runserver 0.0.0.0:8000
 )
 
 main $@

@@ -14,11 +14,13 @@ docker_build(
     live_update=[
         fall_back_on(
             [
-                "services/hornex-api/docker-entrypoint.sh",
+                "services/hornex-api/dev-api.sh",
+                "services/hornex-api/dev-celery.sh",
                 "services/hornex-api/pyproject.toml",
                 "services/hornex-api/poetry.lock",
             ]
         ),
         sync("services/hornex-api", "/src/"),
+        run("poetry install --sync", trigger=["services/hornex-api/pyproject.toml", "services/hornex-api/poetry.lock"])
     ],
 )
