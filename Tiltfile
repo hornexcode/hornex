@@ -15,7 +15,6 @@ docker_build(
         fall_back_on(
             [
                 "services/hornex-api/dev-api.sh",
-                "services/hornex-api/dev-celery.sh",
                 "services/hornex-api/pyproject.toml",
                 "services/hornex-api/poetry.lock",
             ]
