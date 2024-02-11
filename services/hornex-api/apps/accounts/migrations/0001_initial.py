@@ -4,21 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='LeagueOfLegendsSummoner',
+            name="LeagueOfLegendsSummoner",
             fields=[
-                ('id', models.CharField(max_length=500, primary_key=True, serialize=False)),
-                ('puuid', models.CharField(max_length=255)),
-                ('name', models.CharField(max_length=255)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("id", models.CharField(max_length=500, primary_key=True, serialize=False)),
+                ("puuid", models.CharField(max_length=255)),
+                ("name", models.CharField(max_length=255)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
     ]

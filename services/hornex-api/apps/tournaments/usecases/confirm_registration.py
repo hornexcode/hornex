@@ -2,15 +2,8 @@
 
 import structlog
 from rest_framework import serializers
-from rest_framework.validators import ValidationError
 
-from apps.games.models import GameID
-from apps.teams.models import Team
-from apps.tournaments import errors
-from apps.tournaments.factories import tournament_factory
-from apps.tournaments.models import Registration, Tournament
-from lib.riot import LeagueV4
-from lib.riot.client import client as riot_client
+from apps.tournaments.models import Registration
 
 logger = structlog.get_logger(__name__)
 

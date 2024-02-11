@@ -5,24 +5,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('accounts', '0001_initial'),
-        ('games', '0001_initial'),
-        ('tournaments', '0001_initial'),
+        ("accounts", "0001_initial"),
+        ("games", "0001_initial"),
+        ("tournaments", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='leagueoflegendssummoner',
-            name='ello',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='tournaments.leagueoflegendsello'),
+            model_name="leagueoflegendssummoner",
+            name="ello",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="tournaments.leagueoflegendsello",
+            ),
         ),
         migrations.AddField(
-            model_name='leagueoflegendssummoner',
-            name='game_id',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='games.gameid'),
+            model_name="leagueoflegendssummoner",
+            name="game_id",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.gameid"),
         ),
     ]
