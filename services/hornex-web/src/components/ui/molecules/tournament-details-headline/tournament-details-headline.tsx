@@ -1,7 +1,6 @@
 import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
-import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { TeamCheckInStatus, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
@@ -145,42 +144,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
   return (
     <>
-      {/* debugger
-      <div className="bg-light-dark mb-4 block p-5 text-sm text-amber-500">
-        <div className="text-bold mb-2 text-white">[ Debug ]</div>
-        <table className="">
-          <tr>
-            <td>registered:</td>
-            <td className="px-2 text-cyan-400">
-              {registration ? 'true' : 'false'}
-            </td>
-          </tr>
-          <tr>
-            <td>check-in open:</td>
-            <td className="px-2 text-cyan-400">
-              {isCheckInOpen(tournament) ? 'true' : 'false'}
-            </td>
-          </tr>
-          <tr>
-            <td>check-in closed:</td>
-            <td className="px-2 text-cyan-400">
-              {isCheckInClosed(tournament) ? 'true' : 'false'}
-            </td>
-          </tr>
-          <tr>
-            <td>user checked-in:</td>
-            <td className="px-2 text-cyan-400">
-              {isCheckedIn ? 'true' : 'false'}
-            </td>
-          </tr>
-          <tr>
-            <td>team checked-in:</td>
-            <td className="px-2 text-cyan-400">
-              {isCheckedIn ? 'true' : 'false'}
-            </td>
-          </tr>
-        </table>
-      </div> */}
       {/* end debugger */}
       <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image
@@ -203,11 +166,11 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           )}
         </div>
       </div>
-      <div className="from-light-dark shadow-card to-medium-dark flex rounded-b bg-gradient-to-t p-4">
+      <div className="shadow-card bg-medium-dark flex rounded-b p-4">
         <div className="i flex w-full justify-between">
           {/* Tournament name */}
           <div className="flex items-start">
-            <h4 className="text-title text-xl font-extrabold">
+            <h4 className="text-title text-lg font-extrabold">
               {tournament.name}
               <div className="text-body text-xs">
                 Organized by <span className="text-title">@hornex</span>
@@ -221,9 +184,11 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             <div className="flex items-center">
               {/* Classification */}
               <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">
-                <div className="text-body text-xs">Classification</div>
+                <div className="text-body text-xs">Classifications</div>
                 <div className="text-title font-display text-sm">
-                  {tournament.classifications.map((c) => c).join(', ')}
+                  {!tournament.open_classification
+                    ? tournament.classifications.map((c) => c).join(', ')
+                    : 'all'}
                 </div>
               </div>
 
@@ -272,9 +237,9 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             {/* Registered Status */}
             {registration && !checkInOpen && (
               <div className="pl-4">
-                <div className="flex items-center rounded bg-green-500 px-4 py-1.5">
-                  <div className="text-dark text-sm">Time Registrado</div>
-                </div>
+                <Button size="small" color="primary" disabled shape="rounded">
+                  Registrado
+                </Button>
               </div>
             )}
 

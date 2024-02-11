@@ -26,7 +26,7 @@ const TournamentDetailsTabPanels = ({
       <Tab.Group>
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
-            <Tab.List className="no-scrollbar flex gap-4 overflow-auto border-b border-gray-700 py-1 sm:overflow-visible md:gap-10">
+            <Tab.List className="no-scrollbar flex gap-4 overflow-auto border-b border-zinc-700 py-1 sm:overflow-visible md:gap-10">
               {Object.keys(tabs).map((tab) => (
                 <Tab
                   key={tab}
@@ -42,7 +42,9 @@ const TournamentDetailsTabPanels = ({
               ))}
             </Tab.List>
           </div>
-
+          <div className="col-span-3">
+            <TournamentPhasesWidget tournament={tournament} />
+          </div>
           <div className="col-span-9">
             <Tab.Panels>
               <Tab.Panel>
@@ -55,7 +57,7 @@ const TournamentDetailsTabPanels = ({
               <Tab.Panel>
                 <div className="bg-light-dark">
                   <iframe
-                    src="https://challonge.com/aqikriz9/module?show_live_status=0"
+                    src={`${tournament.challonge_tournament_url}/module?show_live_status=0`}
                     width="100%"
                     height="600"
                     frameBorder={0}
@@ -65,9 +67,6 @@ const TournamentDetailsTabPanels = ({
                 </div>
               </Tab.Panel>
             </Tab.Panels>
-          </div>
-          <div className="col-span-3">
-            <TournamentPhasesWidget tournament={tournament} />
           </div>
         </div>
       </Tab.Group>

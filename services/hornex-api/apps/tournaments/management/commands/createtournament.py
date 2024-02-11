@@ -38,7 +38,7 @@ class Command(BaseCommand):
             registration_end_date=now + td(minutes=40),
             start_date=now,
             end_date=now + td(days=3),
-            start_time=time(17, 20, 0),
+            start_time=time(18, 50, 0),
             end_time=time(18, 0, 0),
             check_in_duration=15,
             organizer=user,

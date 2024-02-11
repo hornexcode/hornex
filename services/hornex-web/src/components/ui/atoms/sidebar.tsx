@@ -5,8 +5,19 @@ import routes from '@/config/routes';
 import { dataLoader } from '@/lib/request';
 import { useNotification } from '@/lib/websocket';
 import { useWebSocketContext } from '@/websocket/context';
-import { HomeIcon, TrophyIcon, UserGroupIcon } from '@heroicons/react/20/solid';
+import {
+  HomeIcon,
+  HomeModernIcon,
+  TrophyIcon,
+  UserGroupIcon,
+} from '@heroicons/react/20/solid';
 import classNames from 'classnames';
+import {
+  LayoutDashboard,
+  LayoutDashboardIcon,
+  Sword,
+  SwordsIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 
@@ -34,20 +45,19 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-medium-dark shadow-card fixed top-14 z-20 flex h-full w-[64px] flex-col items-center border-r border-gray-700 p-4 text-center',
+        'bg-medium-dark shadow-card fixed top-14 z-20 flex h-full w-[54px] flex-col items-center border-r border-zinc-700 p-4 text-center',
         className
       )}
     >
-      <ul className="flex flex-col items-center space-y-4 py-2 text-xs">
-        <li>
+      <ul className="flex flex-col items-center space-y-2 py-2 text-xs">
+        <li className="">
           <Link
             href={`/${routes.compete}`}
             className="group cursor-pointer text-center transition-all"
           >
-            <div className="mb-2 flex h-[36px] w-[36px] items-center  justify-center rounded-md bg-slate-700">
-              <HomeIcon className="h-5 w-5 text-white shadow-xl" />
+            <div className="bg-light-dark mb-2 flex h-[36px] w-[36px]  items-center justify-center rounded-lg">
+              <HomeModernIcon className="h-6 w-6 text-white shadow-xl transition-transform group-hover:scale-110" />
             </div>
-            <span className="mx-auto">Home</span>
           </Link>
         </li>
         <li className="">
@@ -56,20 +66,18 @@ export const Sidebar = ({ className }: { className?: string }) => {
             className="group flex cursor-pointer flex-col items-center rounded-md  transition-all"
           >
             <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
-              <TrophyIcon className="h-5 w-5 text-slate-400 shadow-xl group-hover:text-white" />
+              <SwordsIcon className="h-6 w-6 text-slate-400 shadow-xl group-hover:scale-110 group-hover:text-white" />
             </div>
-            <span className="mx-auto">compete</span>
           </Link>
         </li>
         <li>
           <Link
             href={`/${routes.teams}`}
-            className="group cursor-pointer flex-col items-center justify-center rounded text-center transition-all  hover:bg-slate-700"
+            className="hover:bg-light-dark transition-alg group cursor-pointer flex-col items-center justify-center rounded  text-center"
           >
             <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
-              <UserGroupIcon className="h-5 w-5 text-slate-400 shadow-xl group-hover:text-white" />
+              <UserGroupIcon className="h-6 w-6 text-slate-400 shadow-xl group-hover:scale-110 group-hover:text-white" />
             </div>
-            <span className="mx-auto">Teams</span>
           </Link>
           {/* {!!notifications.filter((n) => n.type === 'invite').length && ( */}
           {!!invitesNum && (
@@ -87,7 +95,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <li>
           <Link
             href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex h-[36px] w-[36px] cursor-pointer items-center justify-center rounded text-center transition-all hover:bg-slate-700"
+            className="group flex h-[36px] w-[36px] cursor-pointer items-center justify-center rounded text-center transition-all hover:bg-liglg-dark"
           >
             <LolFlatIcon className="w-7 fill-slate-400 shadow-xl group-hover:fill-white" />
           </Link>

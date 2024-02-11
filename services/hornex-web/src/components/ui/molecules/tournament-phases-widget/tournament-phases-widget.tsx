@@ -17,19 +17,19 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   return (
     <div className="bg-light-dark shadow-card space-y-2 rounded-md ">
       <div className="bg-medium-dark highlight-white-5 rounded-t">
-        <div className="border-b border-gray-700 p-4">
+        <div className="border-b border-zinc-600 p-4">
           <h4 className="leading-2 text-title text-sm font-extrabold">
             Tournament Phases
           </h4>
         </div>
       </div>
       <div className="block p-5">
-        <ol className="relative border-l border-gray-200 dark:border-gray-700">
-          <div className="absolute -left-1 top-0 h-[100%] w-[4px] rounded bg-slate-700"></div>
+        <ol className="relative border-l border-zinc-200 dark:border-zinc-700">
+          <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-zinc-800"></div>
 
           <li className="relative pl-4">
-            <div className="absolute -left-1 top-0 h-[100%] w-[4px] rounded bg-amber-500"></div>
-            <div className="absolute -left-2.5 mt-3.5 rounded-full">
+            <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div>
+            <div className="absolute -left-2 mt-3.5 rounded-full">
               <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
             </div>
             <time className="text-body mb-1 text-xs font-normal leading-none">
@@ -46,9 +46,9 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
             </h3>
           </li>
           <li className="relative pl-4 pt-10">
-            {/* <div className="absolute -left-1 top-0 h-[100%] w-[4px] rounded bg-amber-500"></div> */}
-            <div className="absolute -left-2.5 mt-3.5 rounded-full">
-              <CheckCircle2 className="h-4 w-4 rounded-full bg-slate-700 text-slate-400" />
+            {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
+            <div className="absolute -left-2 mt-3.5 rounded-full">
+              <CheckCircle2 className="h-4 w-4 rounded-full bg-zinc-800 text-zinc-600" />
             </div>
             <time className="text-body mb-1 text-xs font-normal leading-none">
               Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
@@ -62,9 +62,9 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
             </h3>
           </li>
           <li className="relative pl-4 pt-10">
-            {/* <div className="absolute -left-1 top-0 h-[100%] w-[4px] rounded bg-amber-500"></div> */}
-            <div className="absolute -left-2.5 mt-3.5 rounded-full">
-              <CheckCircle2 className="h-4 w-4 rounded-full bg-slate-700 text-slate-400" />
+            {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
+            <div className="absolute -left-2 mt-3.5 rounded-full">
+              <CheckCircle2 className="h-4 w-4 rounded-full bg-zinc-800 text-zinc-600" />
             </div>
             <time className="text-body mb-1 text-xs font-normal leading-none">
               Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
@@ -75,9 +75,9 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
             </h3>
           </li>
           <li className="relative pl-4 pt-10">
-            {/* <div className="absolute -left-1 top-0 h-[100%] w-[4px] rounded bg-amber-500"></div> */}
-            <div className="absolute -left-2.5 mt-3.5 rounded-full">
-              <CheckCircle2 className="h-4 w-4 rounded-full bg-slate-700 text-slate-400" />
+            {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
+            <div className="absolute -left-2 mt-3.5 rounded-full">
+              <CheckCircle2 className="h-4 w-4 rounded-full bg-zinc-800 text-zinc-600" />
             </div>
             <time className="text-body mb-1 text-xs font-normal leading-none">
               Closes at {moment(tournament.start_date).format('MMM Do')}{' '}

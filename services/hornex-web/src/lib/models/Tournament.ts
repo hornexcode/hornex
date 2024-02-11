@@ -27,5 +27,7 @@ export const tournament = z.object({
   teams: z.array(z.string()),
   classifications: z.string().array(),
   feature_image: z.string(),
+  open_classification: z.boolean(),
+  challonge_tournament_url: z.string(),
 });
 export type Tournament = z.infer<typeof tournament>;

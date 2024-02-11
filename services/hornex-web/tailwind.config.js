@@ -42,9 +42,9 @@ module.exports = {
         brand: 'rgb(var(--color-brand) / <alpha-value>)',
         body: '#95a5a6',
         title: '#eaeded',
-        dark: '#16191f',
-        'medium-dark': '#21252d',
-        'light-dark': '#292e34',
+        dark: '#18181b',
+        'medium-dark': '#27272a',
+        'light-dark': '#3f3f46',
         'sidebar-body': '#F8FAFC',
       },
       spacing: {

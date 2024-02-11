@@ -1,7 +1,4 @@
-import { SwordsIcon } from '@/components/ui/atoms/icons';
-import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
-import { Tournament } from '@/lib/models/types';
-import { PlusIcon } from '@heroicons/react/20/solid';
+import { Tournament } from '@/lib/models';
 import { FC } from 'react';
 
 type TournamentOverviewTabPanelProps = {

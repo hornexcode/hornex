@@ -51,6 +51,7 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     <TournamentDetailsTemplate
       tournament={tournament}
       gameIds={gameIds}
+      registrations={registrations}
       participantCheckedInStatus={participantCheckedInStatus}
     />
   );
@@ -88,12 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   const { data: registrations, error: registrationError } =
-    await getRegistrations(
-      {
-        status: 'accepted',
-      },
-      ctx.req
-    );
+    await getRegistrations({}, ctx.req);
 
   if (!registrations || registrationError) {
     console.log('error', registrationError);
