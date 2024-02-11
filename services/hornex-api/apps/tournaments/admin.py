@@ -3,12 +3,12 @@ from django.utils.translation import ngettext
 
 from apps.tournaments.models import (
     Checkin,
-    LeagueOfLegendsEllo,
+    LeagueOfLegendsLeague,
     LeagueOfLegendsTournament,
     Registration,
 )
 
-admin.site.register(LeagueOfLegendsEllo)
+admin.site.register(LeagueOfLegendsLeague)
 admin.site.register(LeagueOfLegendsTournament)
 
 

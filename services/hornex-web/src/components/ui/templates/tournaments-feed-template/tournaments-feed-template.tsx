@@ -16,29 +16,8 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
         className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
       gap-5 2xl:grid-cols-[minmax(auto,_1fr)_240px]"
       >
-        <div className="4xl:pl-10 2xl:pl-8">
+        <div className="">
           <div className="grid grid-cols-4 gap-5 lg:grid-cols-4">
-            {!isLoading &&
-              tournaments.results.map((tournament) => (
-                <TournamentCardInfo
-                  key={tournament.id}
-                  tournament={tournament}
-                />
-              ))}
-            {!isLoading &&
-              tournaments.results.map((tournament) => (
-                <TournamentCardInfo
-                  key={tournament.id}
-                  tournament={tournament}
-                />
-              ))}
-            {!isLoading &&
-              tournaments.results.map((tournament) => (
-                <TournamentCardInfo
-                  key={tournament.id}
-                  tournament={tournament}
-                />
-              ))}
             {!isLoading &&
               tournaments.results.map((tournament) => (
                 <TournamentCardInfo

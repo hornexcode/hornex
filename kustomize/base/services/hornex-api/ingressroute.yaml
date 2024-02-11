@@ -4,6 +4,7 @@ metadata:
   labels:
     app: hornex-api
   name: hornex-api
+  namespace: default
 spec:
   entryPoints:
     - web

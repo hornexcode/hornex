@@ -94,7 +94,6 @@ def create_tournaments():
         entry_fee=100,
         max_teams=32,
         team_size=5,
-        # is_prize_pool_fixed=False,
         is_classification_open=False,
     )
     t.allowed_league_entries.set([bronze_tier, silver_tier])
@@ -123,5 +122,5 @@ def create_teams():
 create_superuser()
 create_platforms()
 create_games()
-create_teams()
-create_tournaments()
+# create_teams()
+# create_tournaments()

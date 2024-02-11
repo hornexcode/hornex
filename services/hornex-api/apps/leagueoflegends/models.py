@@ -4,7 +4,7 @@ import structlog
 from django.db import models
 from rest_framework.exceptions import ValidationError
 
-from apps.games.models import GameID
+from apps.accounts.models import GameID
 from apps.tournaments.models import Checkin
 from apps.tournaments.models import Tournament as BaseTournament
 from lib.challonge import Tournament as ChallongeTournamentResourceAPI

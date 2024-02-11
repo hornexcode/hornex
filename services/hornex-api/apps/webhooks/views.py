@@ -10,6 +10,10 @@ from rest_framework.response import Response
 
 from apps.payments.models import PaymentRegistration
 from apps.payments.serializers import PixReceivedSerializer
+from apps.tournaments.usecases.confirm_registration import (
+    ConfirmRegistrationUseCase,
+    ConfirmRegistrationUseCaseParams,
+)
 from apps.webhooks.decorators import verify_hmac, verify_ip
 
 logger = structlog.get_logger(__name__)
@@ -98,40 +102,10 @@ def stripe_controller(request):
         payment_intent = event.data.object  # contains a stripe.PaymentIntent
 
         registration_id = payment_intent["metadata"]["registration_id"]
-
-        try:
-            payment_registration = PaymentRegistration.objects.get(id=registration_id)
-        except PaymentRegistration.DoesNotExist:
-            logger.error(
-                "PaymentRegistration.DoesNotExist",
-                registration_id=registration_id,
-            )
-            return Response(
-                {"message": "Payment registration not found"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            payment_registration.confirm_payment()
-        except Exception as e:
-            logger.error("payment_registration.confirm_payment", error=e)
-            return Response(
-                {"message": "Something went wrong while confirming the payment"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-        registration = payment_registration.registration
-
-        try:
-            registration.confirm_registration()
-        except Exception as e:
-            logger.error("registration.confirm_registration", error=e)
-            return Response(
-                {"message": "Something went wrong while confirming the registration"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-        logger.info("PaymentIntent was successful!", payment_intent=payment_intent)
+        ConfirmRegistrationUseCase().execute(
+            ConfirmRegistrationUseCaseParams(registration_id=registration_id)
+        )
+        logger.info("PaymentIntent was successful!")
     else:
         print(f"Unhandled event type {event.type}")
 

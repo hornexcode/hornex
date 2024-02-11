@@ -20,3 +20,5 @@ spec:
             value: postgres
           - name: HORNEX_SQL_PASSWORD
             value: postgres
+          - name: DJANGO_CSRF_TRUSTED_ORIGINS
+            value: https://stirred-koala-wise.ngrok-free.app,http://localhost:9876,http://localhost:8000

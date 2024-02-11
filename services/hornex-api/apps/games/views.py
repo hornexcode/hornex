@@ -2,8 +2,9 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
+from apps.accounts.serializers import GameIDSerializer
 from apps.games.models import Game, GameID
-from apps.games.serializers import GameIDSerializer, GameSerializer
+from apps.games.serializers import GameSerializer
 from jwt_token.authentication import JWTAuthentication
 
 

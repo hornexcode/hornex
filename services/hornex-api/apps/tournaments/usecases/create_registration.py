@@ -4,7 +4,7 @@ import structlog
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
-from apps.games.models import GameID
+from apps.accounts.models import GameID
 from apps.teams.models import Team
 from apps.tournaments import errors
 from apps.tournaments.factories import tournament_factory

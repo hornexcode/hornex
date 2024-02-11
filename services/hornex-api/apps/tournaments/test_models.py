@@ -1,4 +1,3 @@
-from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 from test.factories import TeamFactory, TournamentFactory, UserFactory
@@ -10,7 +9,7 @@ from apps.tournaments.models import Registration, Tournament
 
 class TestUnitTournamentModel(TestCase):
     def setUp(self) -> None:
-        now = dt.now(UTC)
+        now = dt.now()
         self.now = now
         self.tournament = Tournament.objects.create(
             name="Test Tournament",

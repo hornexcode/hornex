@@ -1,6 +1,6 @@
 import uuid
 from abc import abstractmethod
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 
 import structlog
 from django.conf import settings
@@ -207,7 +207,7 @@ class Tournament(BaseModel):
 
     @property
     def is_full(self):
-        now = datetime.now(tz=UTC)
+        now = datetime.now()
 
         accepted_registrations = Registration.objects.filter(
             tournament=self, status=Registration.RegistrationStatusOptions.ACCEPTED
@@ -227,7 +227,7 @@ class Tournament(BaseModel):
         if self.phase != Tournament.PhaseType.REGISTRATION_OPEN:
             return False
 
-        now = datetime.now(tz=UTC)
+        now = datetime.now()
 
         checkin_opens_at = datetime.combine(self.start_date, self.start_time) - timedelta(
             minutes=self.check_in_duration
@@ -344,7 +344,7 @@ class Checkin(models.Model):
 
 
 # LEAGUE OF LEGENDS
-class LeagueOfLegendsEllo(models.Model):
+class LeagueOfLegendsLeague(models.Model):
     class TierOptions(models.TextChoices):
         IRON = "IRON"
         BRONZE = "BRONZE"
@@ -366,7 +366,6 @@ class LeagueOfLegendsEllo(models.Model):
         IV = "IV"
 
     rank = models.CharField(max_length=25, choices=RankOptions.choices)
-    queue_type = models.CharField(max_length=55)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -438,14 +437,14 @@ class LeagueOfLegendsTournament(Tournament):
         choices=SpectatorOptions.choices,
         default=SpectatorOptions.LOBBYONLY,
     )
-    allowed_ellos = models.ManyToManyField(LeagueOfLegendsEllo)
+    classifications = models.ManyToManyField(LeagueOfLegendsLeague)
     riot_tournament_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
 
     def get_classifications(self) -> list[str]:
-        return [f"{entry.tier} {entry.rank}" for entry in self.allowed_ellos.all()]
+        return [f"{entry.tier} {entry.rank}" for entry in self.classifications.all()]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
