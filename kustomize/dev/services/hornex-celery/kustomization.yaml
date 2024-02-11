@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
 - ../../../base/services/hornex-celery
 patches:
-- path: hornex-celery-env.yaml
+- path: deployment-command.yaml
+- path: deployment-env.yaml

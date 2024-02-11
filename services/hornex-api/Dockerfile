@@ -16,8 +16,6 @@ ENV \
 
 RUN mkdir --mode=777 ${PROMETHEUS_MULTIPROC_DIR}
 
-ENTRYPOINT ["./docker-entry.sh"]
-
 RUN pip install "poetry==${POETRY_VERSION}"
 
 # -------------------------------------------------------------------------------
@@ -56,14 +54,13 @@ ENV \
 
 RUN ln -s /src/static /static
 
-COPY ./pyproject.toml ./poetry.lock /src/
-
-
 COPY . .
 
 # -------------------------------------------------------------------------------
 # Runtime prod/stage/etc
 FROM base as production
+
+ENTRYPOINT ["./docker-entry.sh"]
 
 WORKDIR /app/
 
