@@ -17,13 +17,6 @@ function main() (
       run_setup
       ;;
 
-    "celery")
-      exec celery \
-        --app core worker \
-        --concurrency=4 \
-        --loglevel=INFO \
-        --events
-      ;;
     "") ;;
 
     *)
