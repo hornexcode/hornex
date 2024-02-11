@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hornex-api
+  name: hornex-api
+spec:
+  template:
+    spec:
+      containers:
+      - name: hornex-api
+        volumeMounts:
+        - mountPath: /src/.venv
+          name: storage
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: hornex-api
