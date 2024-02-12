@@ -15,91 +15,93 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   const { openModal } = useModal();
 
   return (
-    <div className="bg-light-dark shadow-card space-y-2 rounded-md ">
-      <div className="bg-medium-dark highlight-white-5 rounded-t">
-        <div className="border-b border-zinc-600 p-4">
-          <h4 className="leading-2 text-title text-sm font-extrabold">
-            Tournament Phases
-          </h4>
+    <div className="pr-8">
+      <div className="bg-light-dark shadow-card space-y-2 rounded-md">
+        <div className="bg-medium-dark highlight-white-5 rounded-t">
+          <div className="border-b border-gray-600 p-4">
+            <h4 className="leading-2 text-title text-sm font-extrabold">
+              Tournament Phases
+            </h4>
+          </div>
         </div>
-      </div>
-      <div className="block p-5">
-        <ol className="relative border-l border-zinc-200 dark:border-zinc-700">
-          <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-zinc-800"></div>
+        <div className="block p-5">
+          <ol className="relative border-l border-gray-200 dark:border-gray-700">
+            <div className="bg-dark absolute -left-1 top-0 h-[100%] w-2 rounded"></div>
 
-          <li className="relative pl-4">
-            <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div>
-            <div className="absolute -left-2 mt-3.5 rounded-full">
-              <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
-            </div>
-            <time className="text-body mb-1 text-xs font-normal leading-none">
-              Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-            </time>
-
-            <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-              <div className="flex items-center">
-                <span>Registration Open</span>
-                <span className="font-display text-body ml-2 text-xs  font-semibold">
-                  teams {tournament.teams.length}/{tournament.max_teams}
-                </span>
+            <li className="relative pl-4">
+              <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div>
+              <div className="absolute -left-2 mt-3.5 rounded-full">
+                <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
               </div>
-            </h3>
-          </li>
-          <li className="relative pl-4 pt-10">
-            {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
-            <div className="absolute -left-2 mt-3.5 rounded-full">
-              <CheckCircle2 className="h-4 w-4 rounded-full bg-zinc-800 text-zinc-600" />
-            </div>
-            <time className="text-body mb-1 text-xs font-normal leading-none">
-              Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-            </time>
+              <time className="text-body mb-1 text-xs font-normal leading-none">
+                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
+              </time>
 
-            <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-              <span>Tracking results</span>
-              <span className="font-display dark:text-body ml-2 text-xs font-semibold">
-                round 0/4
-              </span>
-            </h3>
-          </li>
-          <li className="relative pl-4 pt-10">
-            {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
-            <div className="absolute -left-2 mt-3.5 rounded-full">
-              <CheckCircle2 className="h-4 w-4 rounded-full bg-zinc-800 text-zinc-600" />
-            </div>
-            <time className="text-body mb-1 text-xs font-normal leading-none">
-              Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-            </time>
+              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                <div className="flex items-center">
+                  <span>Registration Open</span>
+                  <span className="font-display text-body ml-2 text-xs  font-semibold">
+                    teams {tournament.teams.length}/{tournament.max_teams}
+                  </span>
+                </div>
+              </h3>
+            </li>
+            <li className="relative pl-4 pt-10">
+              {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
+              <div className="absolute -left-2 mt-3.5 rounded-full">
+                <CheckCircle2 className="h-4 w-4 rounded-full bg-gray-800 text-gray-600" />
+              </div>
+              <time className="text-body mb-1 text-xs font-normal leading-none">
+                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
+              </time>
 
-            <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-              Payment
-            </h3>
-          </li>
-          <li className="relative pl-4 pt-10">
-            {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
-            <div className="absolute -left-2 mt-3.5 rounded-full">
-              <CheckCircle2 className="h-4 w-4 rounded-full bg-zinc-800 text-zinc-600" />
-            </div>
-            <time className="text-body mb-1 text-xs font-normal leading-none">
-              Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-            </time>
+              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                <span>Tracking results</span>
+                <span className="font-display dark:text-body ml-2 text-xs font-semibold">
+                  round 0/4
+                </span>
+              </h3>
+            </li>
+            <li className="relative pl-4 pt-10">
+              {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
+              <div className="absolute -left-2 mt-3.5 rounded-full">
+                <CheckCircle2 className="h-4 w-4 rounded-full bg-gray-800 text-gray-600" />
+              </div>
+              <time className="text-body mb-1 text-xs font-normal leading-none">
+                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
+              </time>
 
-            <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-              Done
-            </h3>
-          </li>
-        </ol>
-      </div>
+              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                Payment
+              </h3>
+            </li>
+            <li className="relative pl-4 pt-10">
+              {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
+              <div className="absolute -left-2 mt-3.5 rounded-full">
+                <CheckCircle2 className="h-4 w-4 rounded-full bg-gray-800 text-gray-600" />
+              </div>
+              <time className="text-body mb-1 text-xs font-normal leading-none">
+                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
+              </time>
 
-      <div className="block border-t border-dashed border-gray-600 p-5">
-        <Button
-          onClick={() => openModal(`REGISTRATION_VIEW`)}
-          color="warning"
-          size="small"
-          fullWidth
-          shape="rounded"
-        >
-          Registrar time
-        </Button>
+              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                Done
+              </h3>
+            </li>
+          </ol>
+        </div>
+
+        <div className="block border-t border-dashed border-gray-600 p-5">
+          <Button
+            onClick={() => openModal(`REGISTRATION_VIEW`)}
+            color="warning"
+            size="small"
+            fullWidth
+            shape="rounded"
+          >
+            Registrar time
+          </Button>
+        </div>
       </div>
     </div>
   );

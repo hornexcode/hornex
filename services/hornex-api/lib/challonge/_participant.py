@@ -91,3 +91,19 @@ class Participant(ValueObject):
             raise cls.on_response_error(resp)
 
         return cast(Participant, cls.contruct_from(resp.json()))
+
+    @classmethod
+    def find(cls, tournament: int, participant: int) -> "Participant":
+        """
+        Retrieve a single participant record for a tournament.
+        """
+        resp = request(
+            "get",
+            f"https://api.challonge.com/v1/tournaments/{tournament}/participants/{participant}.json?api_key={challonge.api_key}",
+            headers=headers,
+        )
+
+        if not resp.ok:
+            raise cls.on_response_error(resp)
+
+        return cast(Participant, cls.contruct_from(resp.json()))

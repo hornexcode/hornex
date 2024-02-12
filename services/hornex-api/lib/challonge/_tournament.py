@@ -311,7 +311,7 @@ class Tournament(ValueObject):
         return resp.json()
 
     @classmethod
-    def checkin_participant(cls, tournament: int, participant: int):
+    def checkin_team(cls, tournament: int, participant: int):
         """
         Checks a participant in, setting checked_in_at to the current time.
         """

@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.utils.translation import ngettext
 
-from apps.teams.models import Invite, Team
+from apps.teams.models import Invite, Member, Team
 
 
 class InviteAdmin(admin.ModelAdmin):
@@ -42,3 +42,4 @@ class TeamAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Team, TeamAdmin)
+admin.site.register(Member)

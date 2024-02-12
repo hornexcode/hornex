@@ -36,6 +36,7 @@ from apps.tournaments.usecases.create_registration import (
 )
 from core.route import extract_game_and_platform
 from jwt_token.authentication import JWTAuthentication
+from lib.challonge import Tournament as ChallongeTournamentAPIResource
 
 logger = structlog.get_logger(__name__)
 # from apps.leagueoflegends.usecases import RegisterTeam
@@ -300,6 +301,11 @@ def check_in(request, *args, **kwargs):
             team_id=team.id,
             user_id=user.id,
         )
+
+        if Checkin.objects.filter(tournament=tournament, team=team).count() == 2:
+            ChallongeTournamentAPIResource.checkin_team(
+                tournament.challonge_tournament_id,
+            )
 
         return Response(
             {"message": "Checkin successful"},
