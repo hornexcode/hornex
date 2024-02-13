@@ -26,8 +26,21 @@ function HomePage() {
 
   return (
     <>
-      <div className="relative h-[400px] w-full bg-[url('/images/tournaments/tmt-6.jpeg')] bg-cover bg-center bg-no-repeat">
-        <div className="bg-dark/60 absolute top-0 h-full w-full"></div>
+      <div className="relative h-[400px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
+        <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
+        <div className="bg-dark/70 absolute top-0 z-0 h-full w-full"></div>
+        <div className="container absolute top-24 z-10 mx-auto">
+          <h1 className="text-title text-6xl font-extrabold">
+            Organize, Compete and{' '}
+            <span className="text-dark bg-amber-500 px-2">Get Paid</span>
+          </h1>
+          <p className="text-title text-lg font-thin">
+            by playing tournaments of your favorite game
+          </p>
+        </div>
+      </div>
+      <div className="container mx-auto py-8">
+        <h4 className="text-title text-xl font-bold">Next tournaments</h4>
       </div>
       <footer className="dark:bg-dark mx-auto border-t border-gray-800 bg-white p-6 md:p-14">
         <div className="mx-auto w-full max-w-screen-xl">

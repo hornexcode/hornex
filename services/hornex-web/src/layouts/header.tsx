@@ -5,7 +5,6 @@ import ProfileMenuItem from '@/components/profile/profile-menu-item';
 import { LoggedUser } from '@/domain';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { useIsMounted } from '@/hooks/use-is-mounted';
-import { useAuthContext } from '@/lib/auth/auth-context';
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -34,12 +33,15 @@ const Header = () => {
   const { user } = session || {};
 
   return (
-    <header className="bg-medium-dark z-40 h-14 w-full border-b border-zinc-700 px-4">
+    <header className="bg-medium-dark fixed z-40 h-14 w-full border-b border-gray-700 px-4 shadow-lg">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
-          <Link className="block font-extrabold text-white" href="/">
-            <Image className="w-8" src={HornexLogo} alt="Hornex logo" />
-          </Link>
+          <div className="text-title flex h-[20] w-[180px] items-center text-xl font-bold">
+            <Link className="mr-4 block font-extrabold text-white" href="/">
+              <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
+            </Link>
+            HORNEX
+          </div>
           {isMounted && ['xs', 'sm', 'md', 'lg'].indexOf(breakpoint) == -1 && (
             <MenuItems />
           )}

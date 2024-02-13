@@ -1,26 +1,11 @@
-import { LeagueOfLegendsLogo } from './icons/league-of-legends-icon';
-import { LolFlatIcon } from './icons/lol-flat-icon';
-import { LolIcon } from '@/components/ui/atoms/icons';
 import routes from '@/config/routes';
 import { dataLoader } from '@/lib/request';
 import { useNotification } from '@/lib/websocket';
 import { useWebSocketContext } from '@/websocket/context';
-import {
-  Cog6ToothIcon,
-  HomeIcon,
-  HomeModernIcon,
-  TrophyIcon,
-  UserGroupIcon,
-} from '@heroicons/react/20/solid';
+import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
-import {
-  Home,
-  LayoutDashboard,
-  LayoutDashboardIcon,
-  Sword,
-  SwordsIcon,
-  Users2,
-} from 'lucide-react';
+import { FileBadge, Home, SwordsIcon, Users2 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 
@@ -48,17 +33,18 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-medium-dark shadow-card fixed z-20 flex h-full w-[180px] flex-col  border-r border-zinc-700 p-4',
+        'bg-light-dark shadow-card fixed top-14 z-20 flex h-full w-[180px] flex-col  border-r border-zinc-700 p-4',
         className
       )}
     >
-      <div className="text-title h-[20] text-xl font-bold">HORNEX</div>
-      <ul className="flex w-full flex-col space-y-2 py-8 text-xs">
+      <div className="flex items-center">
+        <div className="text-title mb-8 flex h-[20] w-[180px] items-center text-sm font-bold">
+          MENU OPTIONS
+        </div>
+      </div>
+      <ul className="flex w-full flex-col space-y-2 text-xs">
         <li className="">
-          <Link
-            href={`/${routes.compete}`}
-            className="group cursor-pointer transition-all"
-          >
+          <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
               <div>
                 <Home className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
@@ -76,7 +62,20 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <SwordsIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">Tournaments</span>
+              <span className="text-title text-sm">Compete</span>
+            </div>
+          </Link>
+        </li>
+        <li className="">
+          <Link
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
+          >
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <FileBadge className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Registrations</span>
             </div>
           </Link>
         </li>

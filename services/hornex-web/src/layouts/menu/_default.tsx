@@ -9,13 +9,13 @@ import { Fragment } from 'react';
 
 export default function MenuItems() {
   return (
-    <div className="3xl:px-16 flex items-center xl:px-10 2xl:px-14">
+    <div className="flex items-center">
       {menuItems.map((item, index) => (
         <Fragment key={item.name + index}>
           {item.dropdownItems ? (
             <div className="relative mx-4 first:ml-0 last:mr-0">
               <Menu>
-                <Menu.Button className="flex items-center text-sm font-bold  text-gray-600 transition hover:text-gray-900 dark:text-white dark:hover:text-white">
+                <Menu.Button className="flex items-center text-sm   text-gray-600 transition hover:text-gray-900 dark:text-white dark:hover:text-white">
                   {item.name}
                   <span className="z-[1] transition-transform duration-200 ltr:ml-3 rtl:mr-3">
                     <ChevronDown />
@@ -38,7 +38,7 @@ export default function MenuItems() {
                             href={{
                               pathname: routes.home + dropDownItem.href,
                             }}
-                            className="block rounded-lg px-3 py-2 text-sm font-bold  !text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 dark:!text-white dark:hover:bg-gray-700/50"
+                            className="block rounded-lg px-3 py-2 text-sm   !text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 dark:!text-white dark:hover:bg-gray-700/50"
                             activeClassName="!bg-gray-100 dark:!bg-gray-700 my-1 last:mb-0 first:mt-0 !text-gray-900 dark:!text-white"
                           >
                             {dropDownItem.name}
@@ -55,7 +55,7 @@ export default function MenuItems() {
               href={{
                 pathname: routes.home + (item.href !== '/' ? item.href : ''),
               }}
-              className="3xl:mx-4 mx-3 text-[13px] font-bold  text-gray-600 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-white dark:hover:text-white 2xl:mx-3 2xl:text-sm"
+              className="3xl:mx-4 mx-3 text-[13px]   text-gray-600 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-white dark:hover:text-white 2xl:mx-3 2xl:text-sm"
               activeClassName="!text-gray-900 dark:!text-white"
             >
               {item.name}

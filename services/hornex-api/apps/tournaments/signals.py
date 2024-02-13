@@ -22,7 +22,7 @@ def checkin_created(sender, instance: Checkin, created, **kwargs):
 
 # @receiver(post_save, sender=Registration)
 def registration_updated(sender, instance: Registration, created, **kwargs):
-    if not created and instance.status == Registration.RegistrationStatusType.ACCEPTED:
+    if not created and instance.status == Registration.RegistrationStatusOptions.ACCEPTED:
         logger.info("Registration accepted...")
         create_challonge_participant(
             challonge_tournament_id=instance.tournament.challonge_tournament_id,
