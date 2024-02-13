@@ -6,6 +6,7 @@ import { dataLoader } from '@/lib/request';
 import { useNotification } from '@/lib/websocket';
 import { useWebSocketContext } from '@/websocket/context';
 import {
+  Cog6ToothIcon,
   HomeIcon,
   HomeModernIcon,
   TrophyIcon,
@@ -13,10 +14,12 @@ import {
 } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import {
+  Home,
   LayoutDashboard,
   LayoutDashboardIcon,
   Sword,
   SwordsIcon,
+  Users2,
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
@@ -45,62 +48,65 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-medium-dark shadow-card fixed top-14 z-20 flex h-full w-[54px] flex-col items-center border-r border-zinc-700 p-4 text-center',
+        'bg-medium-dark shadow-card fixed z-20 flex h-full w-[180px] flex-col  border-r border-zinc-700 p-4',
         className
       )}
     >
-      <ul className="flex flex-col items-center space-y-2 py-2 text-xs">
+      <div className="text-title h-[20] text-xl font-bold">HORNEX</div>
+      <ul className="flex w-full flex-col space-y-2 py-8 text-xs">
         <li className="">
           <Link
             href={`/${routes.compete}`}
-            className="group cursor-pointer text-center transition-all"
+            className="group cursor-pointer transition-all"
           >
-            <div className="bg-light-dark mb-2 flex h-[36px] w-[36px]  items-center justify-center rounded-lg">
-              <HomeModernIcon className="h-6 w-6 text-white shadow-xl transition-transform group-hover:scale-110" />
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <Home className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Home</span>
             </div>
           </Link>
         </li>
         <li className="">
           <Link
-            href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex cursor-pointer flex-col items-center rounded-md  transition-all"
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
           >
-            <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
-              <SwordsIcon className="h-6 w-6 text-slate-400 shadow-xl group-hover:scale-110 group-hover:text-white" />
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <SwordsIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Tournaments</span>
             </div>
           </Link>
         </li>
-        <li>
+        <li className="">
           <Link
-            href={`/${routes.teams}`}
-            className="hover:bg-light-dark transition-alg group cursor-pointer flex-col items-center justify-center rounded  text-center"
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
           >
-            <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
-              <UserGroupIcon className="h-6 w-6 text-slate-400 shadow-xl group-hover:scale-110 group-hover:text-white" />
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <Users2 className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Teams</span>
             </div>
           </Link>
-          {/* {!!notifications.filter((n) => n.type === 'invite').length && ( */}
-          {!!invitesNum && (
-            <div>
-              <span className="sr-only">Notifications</span>
-              <div className="absolute -right-2 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-white bg-red-500 font-bold text-[11x] text-white dark:border-gray-900">
-                {invitesNum}
+        </li>
+        <li className="">
+          <Link
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
+          >
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <Cog6ToothIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
+              <span className="text-title text-sm">Organize a tournament</span>
             </div>
-          )}
+          </Link>
         </li>
       </ul>
-
-      {/* <ul className="block space-y-3 py-2">
-        <li>
-          <Link
-            href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex h-[36px] w-[36px] cursor-pointer items-center justify-center rounded text-center transition-all hover:bg-liglg-dark"
-          >
-            <LolFlatIcon className="w-7 fill-slate-400 shadow-xl group-hover:fill-white" />
-          </Link>
-        </li>
-      </ul> */}
     </div>
   );
 };

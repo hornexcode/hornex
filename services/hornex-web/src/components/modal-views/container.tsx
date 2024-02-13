@@ -19,13 +19,16 @@ const source_Sans_3 = Source_Sans_3({
 // dynamic imports
 const SearchView = dynamic(() => import('@/components/search/view'));
 const RegistrationView = dynamic(
-  () => import('@/components/ui/organisms/register-team-modal-view')
+  () => import('@/components/ui/organisms/register-team-view')
 );
 const ConnectAccountView = dynamic(
   () => import('@/components/ui/organisms/connect-account-view')
 );
 const ModalErrorView = dynamic(
   () => import('@/components/ui/organisms/modal-error-view')
+);
+const ProcessingPaymentView = dynamic(
+  () => import('@/components/ui/organisms/processing-payment-view')
 );
 
 function renderModalContent(view: MODAL_VIEW) {
@@ -38,6 +41,8 @@ function renderModalContent(view: MODAL_VIEW) {
       return <ConnectAccountView />;
     case 'ERROR_VIEW':
       return <ModalErrorView />;
+    case 'PROCESSING_PAYMENT_VIEW':
+      return <ProcessingPaymentView />;
     default:
       return null;
   }

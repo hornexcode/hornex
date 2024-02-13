@@ -1,19 +1,38 @@
-import { useModal } from '@/components/modal-views/context';
-import Button from '@/components/ui/atoms/button/button';
-import { Tournament } from '@/lib/models';
-import { CheckCircle2, UsersIcon } from 'lucide-react';
+import { RegisterButton } from '../../atoms/register-button';
+import { Skeleton } from '../../skeleton';
+import { useTournament } from '@/contexts/tournament';
+import { getStatus, TournamentStatus } from '@/lib/models';
+import clsx from 'clsx';
+import { CheckCircle2 } from 'lucide-react';
 import moment from 'moment';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-type TournamentPhasesWidgetProps = {
-  tournament: Tournament;
-};
+type TournamentPhasesWidgetProps = {};
 
-export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
-  tournament,
-}) => {
-  const { openModal } = useModal();
+export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
+  const { tournament, isLoading, isRegistered } = useTournament();
 
+  const [status, setStatus] = useState<TournamentStatus>('');
+
+  useEffect(() => {
+    setStatus(getStatus(tournament));
+  }, [tournament]);
+
+  const renderButton = () => {
+    if (isLoading) {
+      return <Skeleton className="bg-medium-dark h-[40px] w-full rounded" />;
+    }
+
+    if (status === 'In progress') {
+      return (
+        <div className="text-center text-sm text-amber-500">
+          🚀 <span className="pl-2">In progress...</span>
+        </div>
+      );
+    }
+
+    return <RegisterButton isRegistered={isRegistered} className="w-full" />;
+  };
   return (
     <div className="pr-8">
       <div className="bg-light-dark shadow-card space-y-2 rounded-md">
@@ -29,45 +48,48 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
             <div className="bg-dark absolute -left-1 top-0 h-[100%] w-2 rounded"></div>
 
             <li className="relative pl-4">
-              <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div>
+              <div
+                className={clsx(
+                  'absolute -left-1 top-0 h-[100%] w-2 rounded',
+                  status === 'Open' ? 'bg-amber-500' : 'bg-dark'
+                )}
+              ></div>
               <div className="absolute -left-2 mt-3.5 rounded-full">
-                <CheckCircle2 className="text-dark h-4 w-4 rounded-full bg-amber-500" />
+                <CheckCircle2
+                  className={clsx(
+                    'text-dark h-4 w-4 rounded-full bg-amber-500'
+                  )}
+                />
               </div>
-              <time className="text-body mb-1 text-xs font-normal leading-none">
+              <time className="text-body mb-1 text-xs leading-none">
                 Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
               </time>
 
               <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
                 <div className="flex items-center">
                   <span>Registration Open</span>
-                  <span className="font-display text-body ml-2 text-xs  font-semibold">
-                    teams {tournament.teams.length}/{tournament.max_teams}
-                  </span>
                 </div>
               </h3>
             </li>
             <li className="relative pl-4 pt-10">
               {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
               <div className="absolute -left-2 mt-3.5 rounded-full">
-                <CheckCircle2 className="h-4 w-4 rounded-full bg-gray-800 text-gray-600" />
+                <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
               </div>
-              <time className="text-body mb-1 text-xs font-normal leading-none">
-                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
+              <time className="text-body mb-1 text-xs leading-none">
+                Closes at {moment(tournament.end_date).format('MMM Do')}{' '}
               </time>
 
               <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
                 <span>Tracking results</span>
-                <span className="font-display dark:text-body ml-2 text-xs font-semibold">
-                  round 0/4
-                </span>
               </h3>
             </li>
             <li className="relative pl-4 pt-10">
               {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
               <div className="absolute -left-2 mt-3.5 rounded-full">
-                <CheckCircle2 className="h-4 w-4 rounded-full bg-gray-800 text-gray-600" />
+                <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
               </div>
-              <time className="text-body mb-1 text-xs font-normal leading-none">
+              <time className="text-body mb-1 text-xs leading-none">
                 Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
               </time>
 
@@ -78,9 +100,9 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
             <li className="relative pl-4 pt-10">
               {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
               <div className="absolute -left-2 mt-3.5 rounded-full">
-                <CheckCircle2 className="h-4 w-4 rounded-full bg-gray-800 text-gray-600" />
+                <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
               </div>
-              <time className="text-body mb-1 text-xs font-normal leading-none">
+              <time className="text-body mb-1 text-xs leading-none">
                 Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
               </time>
 
@@ -92,15 +114,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
         </div>
 
         <div className="block border-t border-dashed border-gray-600 p-5">
-          <Button
-            onClick={() => openModal(`REGISTRATION_VIEW`)}
-            color="warning"
-            size="small"
-            fullWidth
-            shape="rounded"
-          >
-            Registrar time
-          </Button>
+          {renderButton()}
         </div>
       </div>
     </div>

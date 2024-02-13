@@ -1,3 +1,4 @@
+import { EyeIcon } from '@/components/ui/atoms/icons';
 import { Tournament } from '@/lib/models';
 import { FC } from 'react';
 
@@ -37,15 +38,46 @@ export const TournamentOverviewTabPanel: FC<
       </div>
       <div className="block">
         <h3 className="text-title mb-4 text-lg font-bold">Registered teams</h3>
-        <ul className="text-sm text-amber-400 underline">
-          <li>team 1</li>
-          <li>Hornex</li>
-          <li>AKG</li>
-          <li>team 1</li>
-          <li>team 1</li>
-          <li>team 1</li>
-          <li>team 1</li>
-        </ul>
+        <div className="grid grid-cols-4">
+          <div>
+            <ul className="text-sm underline">
+              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
+                <div className="flex items-center">
+                  Pain Gaming <EyeIcon className="ml-2 w-4" />
+                </div>
+              </li>
+              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
+                <div className="flex items-center">
+                  NFT <EyeIcon className="ml-2 w-4" />
+                </div>
+              </li>
+              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
+                <div className="flex items-center">
+                  Flamengo <EyeIcon className="ml-2 w-4" />
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <ul className="text-sm underline">
+              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
+                <div className="flex items-center">
+                  Pain Gaming <EyeIcon className="ml-2 w-4" />
+                </div>
+              </li>
+              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
+                <div className="flex items-center">
+                  NFT <EyeIcon className="ml-2 w-4" />
+                </div>
+              </li>
+              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
+                <div className="flex items-center">
+                  Flamengo <EyeIcon className="ml-2 w-4" />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div className="block">
         <h3 className="text-title text-lg font-bold">Sponsors & Partners</h3>

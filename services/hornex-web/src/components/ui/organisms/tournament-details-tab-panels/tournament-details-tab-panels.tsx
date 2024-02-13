@@ -1,7 +1,9 @@
 import { TournamentPhasesWidget } from '../../molecules';
 import { TournamentOverviewTabPanel } from './tournament-overview-tab-panel';
 import { TournamentStandingTabPanel } from './tournament-standing-tab-panel';
+import { useTournament } from '@/contexts/tournament';
 import { Tournament } from '@/lib/models';
+import { toCurrency } from '@/lib/utils';
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -20,6 +22,8 @@ const TournamentDetailsTabPanels = ({
     Brackets: '',
     Rules: '',
   });
+
+  const { isCheckInOpened, isRegistered, isLoading } = useTournament();
 
   return (
     <div className="py-4">
@@ -43,7 +47,7 @@ const TournamentDetailsTabPanels = ({
             </Tab.List>
           </div>
           <div className="col-span-3">
-            <TournamentPhasesWidget tournament={tournament} />
+            <TournamentPhasesWidget />
           </div>
           <div className="col-span-9">
             <Tab.Panels>
@@ -53,7 +57,61 @@ const TournamentDetailsTabPanels = ({
               <Tab.Panel>
                 <TournamentStandingTabPanel tournament={tournament} />
               </Tab.Panel>
-              <Tab.Panel></Tab.Panel>
+              <Tab.Panel>
+                {/* prize pool */}
+                <div className="block">
+                  <h3 className="text-title mb-4 text-lg font-bold">
+                    Prize Pool
+                  </h3>
+                  <ul className="block space-y-4">
+                    <li className="">
+                      <div className="block">
+                        <div className="text-body text-sm">1st place</div>
+                        <div className="font-display text-sm text-amber-400">
+                          R${' '}
+                          {toCurrency(
+                            tournament.entry_fee *
+                              tournament.max_teams *
+                              tournament.team_size *
+                              0.7 *
+                              0.55
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                    <li className="">
+                      <div className="block">
+                        <div className="text-body text-sm">2nd place</div>
+                        <div className="font-display text-sm text-amber-400">
+                          R${' '}
+                          {toCurrency(
+                            tournament.entry_fee *
+                              tournament.max_teams *
+                              tournament.team_size *
+                              0.7 *
+                              0.3
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                    <li className="">
+                      <div className="block">
+                        <div className="text-body text-sm">3rd place</div>
+                        <div className="font-display text-sm text-amber-400">
+                          R${' '}
+                          {toCurrency(
+                            tournament.entry_fee *
+                              tournament.max_teams *
+                              tournament.team_size *
+                              0.7 *
+                              0.15
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </Tab.Panel>
               <Tab.Panel>
                 <div className="bg-light-dark">
                   <iframe

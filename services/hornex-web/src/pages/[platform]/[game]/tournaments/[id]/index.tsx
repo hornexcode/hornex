@@ -1,4 +1,5 @@
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
+import { TournamentContextProvider } from '@/contexts/tournament';
 import { AppLayout } from '@/layouts';
 import {
   ParticipantCheckedInStatus,
@@ -48,12 +49,14 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   //     break;
   // }
   return (
-    <TournamentDetailsTemplate
-      tournament={tournament}
-      gameIds={gameIds}
-      registrations={registrations}
-      participantCheckedInStatus={participantCheckedInStatus}
-    />
+    <TournamentContextProvider tournament={tournament}>
+      <TournamentDetailsTemplate
+        tournament={tournament}
+        gameIds={gameIds}
+        registrations={registrations}
+        participantCheckedInStatus={participantCheckedInStatus}
+      />
+    </TournamentContextProvider>
   );
 };
 

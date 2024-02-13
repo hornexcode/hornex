@@ -1,5 +1,5 @@
+import { RegisterButton } from '../../atoms/register-button';
 import { TournamentHeadlineProps } from './tournament-details-headline.types';
-import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { TeamCheckInStatus, Tournament } from '@/lib/models';
@@ -30,7 +30,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   registration,
   isCheckedIn: initialIsCheckedIn,
 }) => {
-  const { openModal } = useModal();
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
@@ -222,26 +221,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </div>
 
             {/* Register button */}
-            {!registration && (
-              <div className="block">
-                <Button
-                  size="small"
-                  onClick={() => openModal('REGISTRATION_VIEW')}
-                  shape="rounded"
-                >
-                  Registrar time
-                </Button>
-              </div>
-            )}
-
-            {/* Registered Status */}
-            {registration && !checkInOpen && (
-              <div className="pl-4">
-                <Button size="small" color="primary" disabled shape="rounded">
-                  Registrado
-                </Button>
-              </div>
-            )}
+            <RegisterButton className="ml-4" isRegistered={!!registration} />
 
             {/* Check-in button */}
             {registration &&

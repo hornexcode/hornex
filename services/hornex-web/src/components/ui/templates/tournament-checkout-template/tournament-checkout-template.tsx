@@ -4,6 +4,7 @@ import {
   PixResponse,
   TournamentCheckoutProps,
 } from './tournament-checkout-template.types';
+import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
 import Input from '@/components/ui/atoms/form/input';
 import InputLabel from '@/components/ui/atoms/form/input-label';
@@ -69,6 +70,7 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
     useState<PaymentMethod>('credit-card');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { openModal, closeModal } = useModal();
 
   const registrationId = router.query.id as string;
 
@@ -99,6 +101,7 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
   const elements = useElements();
 
   const onSubmit = async (data: any) => {
+    openModal('PROCESSING_PAYMENT_VIEW');
     switch (paymentMethod) {
       case 'pix':
         const pixFormData = data as z.infer<typeof createPixPaymentForm>;
@@ -124,13 +127,13 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
         setLoading(true);
 
         if (!stripe || !elements) {
-          return null;
+          break;
         }
 
         const cardElement = elements.getElement(CardNumberElement);
         if (!cardElement) {
           setLoading(false);
-          return null;
+          break;
         }
 
         const cardholder = `${stripeFormData.firstName} ${stripeFormData.lastName}`;
@@ -148,7 +151,7 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
         if (stripeError || !paymentIntent) {
           console.log(stripeError);
           setLoading(false);
-          return null;
+          break;
         }
 
         const { error: stripePaymentError } = await stripe.confirmCardPayment(
@@ -169,22 +172,24 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
         if (stripePaymentError) {
           console.log(stripePaymentError);
           setLoading(false);
-          return null;
+          break;
         }
-
-        setLoading(false);
+        closeModal();
         console.log('success!');
+        window.location.href = `/thank-you`;
         break;
       default:
         break;
     }
+    setLoading(false);
+    closeModal();
   };
 
   return (
     <div className="pace-y-8 container sm:space-y-16 sm:pt-8">
       <div className="grid grid-cols-2 gap-8">
         {/* Summary */}
-        <div className="col-span-1">
+        <div className="col-span-1 hidden">
           <div className="mb-4">
             <h2 className="text-title text-xl">Resumo</h2>
           </div>
@@ -200,7 +205,13 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
               </p>
             </div>
           </div> */}
-          <div className="bg-light-dark space-y-4 rounded">
+        </div>
+
+        <div className="col-span-1 p-6">
+          <div className="mb-4">
+            <h2 className="text-title text-xl">Purchase Resume</h2>
+          </div>
+          <div className="bg-light-dark mb-10 space-y-4 rounded">
             {/* tournament name */}
             <div className="bg-medium-dark highlight-white-5 block border-b  border-gray-700">
               <div className="text-title p-6 text-sm font-light">
@@ -229,22 +240,18 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
                 <span className="ml-2 text-xs">BRL</span>
               </div>
             </div>
-            <div className="text-title flex items-center justify-between px-6 pb-6 text-sm font-extrabold">
-              <div className="">Total Charge</div>
-              <div className="flex items-center">
-                ${' '}
-                <span className="font-display">
-                  {toCurrency(tournament.entry_fee * tournament.team_size)}
-                </span>
-                <span className="ml-2 text-xs">BRL</span>
+            <div className="text-title px-6 pb-6 text-sm font-extrabold">
+              <div className="flex items-center justify-between border-t border-dashed border-gray-700 pt-4">
+                <div className="">Total Charge</div>
+                <div className="flex items-center">
+                  ${' '}
+                  <span className="font-display">
+                    {toCurrency(tournament.entry_fee * tournament.team_size)}
+                  </span>
+                  <span className="ml-2 text-xs">BRL</span>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="col-span-1 p-6">
-          <div className="mb-4">
-            <h2 className="text-title text-xl">Purchase Resume</h2>
           </div>
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>

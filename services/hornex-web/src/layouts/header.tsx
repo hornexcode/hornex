@@ -34,7 +34,7 @@ const Header = () => {
   const { user } = session || {};
 
   return (
-    <header className="bg-medium-dark fixed left-0 top-0 z-40 h-14 w-full border-b border-zinc-700 px-4">
+    <header className="bg-medium-dark z-40 h-14 w-full border-b border-zinc-700 px-4">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           <Link className="block font-extrabold text-white" href="/">

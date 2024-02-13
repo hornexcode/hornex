@@ -4,7 +4,8 @@ export type MODAL_VIEW =
   | 'SEARCH_VIEW'
   | 'REGISTRATION_VIEW'
   | 'CONNECT_ACCOUNT_VIEW'
-  | 'ERROR_VIEW';
+  | 'ERROR_VIEW'
+  | 'PROCESSING_PAYMENT_VIEW';
 
 interface ModalTypes {
   isOpen: boolean;
