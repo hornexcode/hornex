@@ -69,7 +69,7 @@ class TestWebhooks(APITestCase):
         self.assertEqual(Registration.objects.count(), 1)
         self.assertEqual(
             Registration.objects.first().status,
-            Registration.RegistrationStatusType.ACCEPTED,
+            Registration.RegistrationStatusOptions.ACCEPTED,
         )
         self.assertEqual(Tournament.objects.first().teams.count(), 1)
 

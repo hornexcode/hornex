@@ -1,4 +1,5 @@
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
+import { TournamentContextProvider } from '@/contexts/tournament';
 import { AppLayout } from '@/layouts';
 import {
   ParticipantCheckedInStatus,
@@ -48,11 +49,14 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   //     break;
   // }
   return (
-    <TournamentDetailsTemplate
-      tournament={tournament}
-      gameIds={gameIds}
-      participantCheckedInStatus={participantCheckedInStatus}
-    />
+    <TournamentContextProvider tournament={tournament}>
+      <TournamentDetailsTemplate
+        tournament={tournament}
+        gameIds={gameIds}
+        registrations={registrations}
+        participantCheckedInStatus={participantCheckedInStatus}
+      />
+    </TournamentContextProvider>
   );
 };
 
@@ -88,12 +92,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   const { data: registrations, error: registrationError } =
-    await getRegistrations(
-      {
-        status: 'accepted',
-      },
-      ctx.req
-    );
+    await getRegistrations({}, ctx.req);
 
   if (!registrations || registrationError) {
     console.log('error', registrationError);

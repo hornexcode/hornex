@@ -9,15 +9,15 @@ type TournamentDetailsTemplateProps = {
   tournament: Tournament;
   gameIds: GameID[];
   participantCheckedInStatus?: boolean;
+  registrations: Registration[];
 };
 
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   tournament,
   gameIds,
   participantCheckedInStatus,
+  registrations,
 }) => {
-  const registrations: Registration[] = [];
-
   const gameId =
     (gameIds.length > 0 &&
       gameIds.find((gameId) => gameId.game === 'league-of-legends')) ||
@@ -28,7 +28,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   );
 
   return (
-    <div className="container mx-auto pt-8">
+    <div className="mx-auto px-8 pt-8">
       {/* connect account */}
       {!gameId && <ConnectAccountButton />}
       <TournamentDetailsHeadline

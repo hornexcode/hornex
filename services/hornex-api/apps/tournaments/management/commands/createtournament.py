@@ -32,13 +32,13 @@ class Command(BaseCommand):
         now = dt.now()
 
         LeagueOfLegendsTournament.objects.create(
-            name="First Tournament Enabler Summoner 2k24",
+            name="Second Tournament Enabler Summoner 2k24",
             description="This is a test tournament",
             registration_start_date=now,
             registration_end_date=now + td(minutes=40),
-            start_date=now,
-            end_date=now + td(days=3),
-            start_time=time(17, 20, 0),
+            start_date=now + td(days=3),
+            end_date=now + td(days=6),
+            start_time=time(9, 40, 0),
             end_time=time(18, 0, 0),
             check_in_duration=15,
             organizer=user,

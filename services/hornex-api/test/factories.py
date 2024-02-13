@@ -3,14 +3,10 @@ from datetime import timedelta as td
 
 import faker
 
-from apps.leagueoflegends.models import (
-    GameID,
-    LeagueEntry,
-    Provider,
-    Tournament,
-)
+from apps.accounts.models import GameID
 from apps.teams.models import Invite, Team
-from apps.tournaments.models import Match
+from apps.tournaments.models import LeagueOfLegendsLeague, Match
+from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Tournament as BaseTournament
 from apps.users.models import User
 
@@ -101,8 +97,6 @@ class LeagueOfLegendsTournamentFactory:
         """
         Create a new league of legends tournament with the given organizer and kwargs.
         """
-        default_provider = Provider.objects.create(id=1, region="BR", url="https://www.hornex.gg/")
-
         now = dt.now()
         tmt = Tournament.objects.create(
             name=kwargs.get("name", fake.name()),
@@ -110,7 +104,7 @@ class LeagueOfLegendsTournamentFactory:
             organizer=organizer,
             game=kwargs.get("game", Tournament.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", Tournament.PlatformType.PC),
-            is_public=kwargs.get("is_public", True),
+            published=kwargs.get("published", True),
             phase=kwargs.get("phase", Tournament.PhaseType.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
             registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
@@ -126,17 +120,11 @@ class LeagueOfLegendsTournamentFactory:
             prize_pool=kwargs.get("prize_pool", 999),
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
-            provider=kwargs.get("provider", default_provider),
-            pick=kwargs.get("pick", Tournament.PickType.DRAFT_MODE),
-            map=kwargs.get("map", Tournament.MapType.HOWLING_ABYSS),
-            spectator=kwargs.get("spectator", Tournament.SpectatorType.ALL),
+            open_classification=True,
         )
 
-        if not allowed_league_entries:
-            allowed_league_entries = LeagueEntryFactory.new()
-        if not isinstance(allowed_league_entries, list):
-            allowed_league_entries = [allowed_league_entries]
-        tmt.allowed_league_entries.set(allowed_league_entries)
+        if allowed_league_entries is not None:
+            tmt.classifications.set(allowed_league_entries)
 
         return tmt
 
@@ -147,9 +135,9 @@ class LeagueEntryFactory:
         """
         Create a new LeagueEntry with the given kwargs.
         """
-        return LeagueEntry.objects.create(
-            tier=kwargs.get("name", LeagueEntry.TierOptions.SILVER),
-            rank=kwargs.get("rank", LeagueEntry.RankOptions.I),
+        return LeagueOfLegendsLeague.objects.create(
+            tier=kwargs.get("name", LeagueOfLegendsLeague.TierOptions.SILVER),
+            rank=kwargs.get("rank", LeagueOfLegendsLeague.RankOptions.I),
         )
 
 
@@ -187,6 +175,4 @@ class GameIdFactory:
             game=kwargs.get("game", GameID.GameOptions.LEAGUE_OF_LEGENDS),
             nickname=fake.name(),
             is_active=kwargs.get("is_active", True),
-            region=kwargs.get("region", "BR"),
-            region_code=kwargs.get("region_code", "BR"),
         )

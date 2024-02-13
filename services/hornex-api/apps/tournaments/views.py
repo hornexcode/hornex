@@ -18,7 +18,7 @@ from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
 from apps.leagueoflegends.tasks import participant_registered
-from apps.teams.models import Team
+from apps.teams.models import Member, Team
 from apps.tournaments import errors
 from apps.tournaments.filters import (
     TournamentListFilter,
@@ -36,6 +36,7 @@ from apps.tournaments.usecases.create_registration import (
 )
 from core.route import extract_game_and_platform
 from jwt_token.authentication import JWTAuthentication
+from lib.challonge import Tournament as ChallongeTournamentAPIResource
 
 logger = structlog.get_logger(__name__)
 # from apps.leagueoflegends.usecases import RegisterTeam
@@ -161,8 +162,17 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
 
     def list(self, request):
+        teams = Team.objects.filter(members__in=[request.user]).values_list("id", flat=True)
+        self.queryset = self.queryset.filter(
+            team__in=teams,
+            status__in=[
+                Registration.RegistrationStatusOptions.PENDING,
+                Registration.RegistrationStatusOptions.ACCEPTED,
+            ],
+        )
+        serializer = self.get_serializer(self.queryset, many=True)
         return Response(
-            [],
+            serializer.data,
             status=status.HTTP_200_OK,
         )
 
@@ -197,7 +207,7 @@ def team_check_in_status(request, *args, **kwargs):
             team = Team.objects.get(id=kwargs["team"])
 
             # check if user belongs to team
-            if not team.members.filter(user=request.user).exists():
+            if not Member.objects.filter(user=request.user).exists():
                 return Response(
                     {"error": errors.UserDoesNotBelongToTeamError},
                     status=status.HTTP_403_FORBIDDEN,
@@ -291,6 +301,11 @@ def check_in(request, *args, **kwargs):
             team_id=team.id,
             user_id=user.id,
         )
+
+        if Checkin.objects.filter(tournament=tournament, team=team).count() == 2:
+            ChallongeTournamentAPIResource.checkin_team(
+                tournament.challonge_tournament_id,
+            )
 
         return Response(
             {"message": "Checkin successful"},

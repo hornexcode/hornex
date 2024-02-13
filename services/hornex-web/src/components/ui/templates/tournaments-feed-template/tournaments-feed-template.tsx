@@ -4,6 +4,7 @@ import Button from '@/components/ui/atoms/button';
 import { OptionIcon } from '@/components/ui/atoms/icons/option';
 import TournamentCardInfo from '@/components/ui/molecules/tournament-feed-item/tournament-feed-item';
 import { TournamentsPageTemplateProps } from '@/components/ui/templates/tournaments-feed-template/tournaments-feed-template.types';
+import Image from 'next/image';
 import { FC } from 'react';
 
 const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
@@ -11,7 +12,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
   tournaments,
 }) => {
   return (
-    <div className="container mx-auto pt-12">
+    <div className="mx-auto px-8 pt-8">
       <div
         className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
       gap-5 2xl:grid-cols-[minmax(auto,_1fr)_240px]"
@@ -28,7 +29,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
           </div>
         </div>
 
-        <div className="hidden 2xl:block">
+        <div className="hidden">
           {/* <Filters /> */}
           <div className="bg-medium-dark highlight-white-5 rounded">
             <div className="text-title shadow-light p-4 font-bold">

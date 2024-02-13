@@ -37,7 +37,7 @@ export default function PaymentOptions({
           {({ checked }) => (
             <span
               className={`dark:bg-dark relative flex cursor-pointer items-center justify-center rounded border border-gray-500  bg-white text-center text-sm font-medium transition-all ${
-                checked ? 'ring' : ''
+                checked ? 'ring ring-gray-100' : ''
               }`}
             >
               <span className="sm:h-30 relative flex h-28 flex-col items-center justify-center gap-3 px-2 text-center text-xs uppercase sm:gap-4 sm:text-sm">

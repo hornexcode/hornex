@@ -228,12 +228,10 @@ class Tournament(BaseModel):
             return False
 
         now = datetime.now()
+        start_at = datetime.combine(self.start_date, self.start_time)
+        checkin_opens_at = start_at - timedelta(minutes=self.check_in_duration)
 
-        checkin_opens_at = datetime.combine(self.start_date, self.start_time) - timedelta(
-            minutes=self.check_in_duration
-        )
-
-        return now > checkin_opens_at and now < checkin_opens_at
+        return now > checkin_opens_at and now < start_at
 
     @abstractmethod
     def validate_participants(self):

@@ -1,12 +1,11 @@
-import { LeagueOfLegendsLogo } from './icons/league-of-legends-icon';
-import { LolFlatIcon } from './icons/lol-flat-icon';
-import { LolIcon } from '@/components/ui/atoms/icons';
 import routes from '@/config/routes';
 import { dataLoader } from '@/lib/request';
 import { useNotification } from '@/lib/websocket';
 import { useWebSocketContext } from '@/websocket/context';
-import { HomeIcon, TrophyIcon, UserGroupIcon } from '@heroicons/react/20/solid';
+import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
+import { FileBadge, Home, SwordsIcon, Users2 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 
@@ -34,65 +33,79 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-medium-dark shadow-card fixed top-14 z-20 flex h-full w-[64px] flex-col items-center border-r border-gray-700 p-4 text-center',
+        'bg-light-dark shadow-card fixed top-14 z-20 flex h-full w-[180px] flex-col  border-r border-zinc-700 p-4',
         className
       )}
     >
-      <ul className="flex flex-col items-center space-y-4 py-2 text-xs">
-        <li>
-          <Link
-            href={`/${routes.compete}`}
-            className="group cursor-pointer text-center transition-all"
-          >
-            <div className="mb-2 flex h-[36px] w-[36px] items-center  justify-center rounded-md bg-slate-700">
-              <HomeIcon className="h-5 w-5 text-white shadow-xl" />
+      <div className="flex items-center">
+        <div className="text-title mb-8 flex h-[20] w-[180px] items-center text-sm font-bold">
+          MENU OPTIONS
+        </div>
+      </div>
+      <ul className="flex w-full flex-col space-y-2 text-xs">
+        <li className="">
+          <Link href={`/`} className="group cursor-pointer transition-all">
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <Home className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Home</span>
             </div>
-            <span className="mx-auto">Home</span>
           </Link>
         </li>
         <li className="">
           <Link
-            href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex cursor-pointer flex-col items-center rounded-md  transition-all"
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
           >
-            <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
-              <TrophyIcon className="h-5 w-5 text-slate-400 shadow-xl group-hover:text-white" />
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <SwordsIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Compete</span>
             </div>
-            <span className="mx-auto">compete</span>
           </Link>
         </li>
-        <li>
+        <li className="">
           <Link
-            href={`/${routes.teams}`}
-            className="group cursor-pointer flex-col items-center justify-center rounded text-center transition-all  hover:bg-slate-700"
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
           >
-            <div className="flex h-[36px] w-[36px] items-center justify-center  rounded-md ">
-              <UserGroupIcon className="h-5 w-5 text-slate-400 shadow-xl group-hover:text-white" />
-            </div>
-            <span className="mx-auto">Teams</span>
-          </Link>
-          {/* {!!notifications.filter((n) => n.type === 'invite').length && ( */}
-          {!!invitesNum && (
-            <div>
-              <span className="sr-only">Notifications</span>
-              <div className="absolute -right-2 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-white bg-red-500 font-bold text-[11x] text-white dark:border-gray-900">
-                {invitesNum}
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <FileBadge className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
+              <span className="text-title text-sm">Registrations</span>
             </div>
-          )}
+          </Link>
+        </li>
+        <li className="">
+          <Link
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
+          >
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <Users2 className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Teams</span>
+            </div>
+          </Link>
+        </li>
+        <li className="">
+          <Link
+            href={`/${routes.compete}`}
+            className="group cursor-pointer transition-all"
+          >
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <Cog6ToothIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title text-sm">Organize a tournament</span>
+            </div>
+          </Link>
         </li>
       </ul>
-
-      {/* <ul className="block space-y-3 py-2">
-        <li>
-          <Link
-            href={`/${routes.platform}/league-of-legends/${routes.tournaments}`}
-            className="group flex h-[36px] w-[36px] cursor-pointer items-center justify-center rounded text-center transition-all hover:bg-slate-700"
-          >
-            <LolFlatIcon className="w-7 fill-slate-400 shadow-xl group-hover:fill-white" />
-          </Link>
-        </li>
-      </ul> */}
     </div>
   );
 };

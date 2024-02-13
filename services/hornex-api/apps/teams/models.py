@@ -29,6 +29,9 @@ class Team(BaseModel):
     def add_member(self, user, is_admin=False):
         Member.objects.create(team=self, user=user, is_admin=is_admin)
 
+    def is_member(self, user):
+        return self.members.filter(id=user.id).exists()
+
 
 class Member(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)

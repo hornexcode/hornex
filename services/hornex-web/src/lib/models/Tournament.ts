@@ -27,5 +27,26 @@ export const tournament = z.object({
   teams: z.array(z.string()),
   classifications: z.string().array(),
   feature_image: z.string(),
+  open_classification: z.boolean(),
+  challonge_tournament_url: z.string(),
 });
 export type Tournament = z.infer<typeof tournament>;
+
+export type TournamentStatus = 'Open' | 'In progress' | '';
+
+export function getStatus(tournament: Tournament): TournamentStatus {
+  const startAt = +new Date(
+    `${tournament.start_date}T${tournament.start_time}`
+  );
+  const endAt = +new Date(`${tournament.end_date}T${tournament.end_time}`);
+
+  const now = +new Date();
+  if (now < +new Date(tournament.start_date)) {
+    return 'Open';
+  }
+  if (now > startAt && now < endAt) {
+    return 'In progress';
+  }
+
+  return 'Open';
+}
