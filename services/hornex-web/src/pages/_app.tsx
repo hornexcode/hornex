@@ -10,7 +10,7 @@ import { NotificationContextProvider } from '@/lib/websocket';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
-import { Source_Sans_3 } from 'next/font/google';
+import { Kanit, Source_Sans_3 } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
@@ -32,6 +32,11 @@ const source_Sans_3 = Source_Sans_3({
   display: 'swap',
 });
 
+const kanit = Kanit({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-kanit',
+});
 function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -41,7 +46,8 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
         <div
           className={classnames(
             'bg-dark/90 font-semibold text-zinc-500 antialiased',
-            source_Sans_3.className
+            source_Sans_3.className,
+            kanit.variable
           )}
         >
           <SessionProvider session={pageProps.session}>

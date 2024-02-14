@@ -17,6 +17,7 @@ module.exports = {
     },
     fontFamily: {
       display: ['JetBrains mono', 'monospace'],
+      title: ['var(--font-kanit)', 'JetBrains Mono', 'monospace'],
     },
     container: {
       padding: {
@@ -43,6 +44,12 @@ module.exports = {
         body: '#95a5a6',
         title: '#eaeded',
         dark: '#16191f',
+        primary: '#21252d',
+        accent: '#21252d',
+        border: '#2d3748',
+        background: '#21252d',
+        popover: '#2d3748',
+        input: '#2d3748',
         'medium-dark': '#21252d',
         'light-dark': '#292e34',
         'sidebar-body': '#F8FAFC',

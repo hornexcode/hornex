@@ -1,17 +1,7 @@
-import FreeFireLogo from '@/assets/images/games/free-fire/logo.png';
-import LeagueOfLegendsLogo from '@/assets/images/games/league-of-legends/logo.png';
-import CsGoLogo from '@/assets/images/hero/csgo-logo.png';
-import RocketLeagueLogo from '@/assets/images/hero/rl-logo.png';
-import BullHorn from '@/assets/images/hornex/hornex-logo.png';
-import Tournament from '@/assets/images/tournaments/tournament.png';
-import Button from '@/components/ui/atoms/button/button';
+import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 import { useAuthContext } from '@/lib/auth/auth-context';
-import {
-  ArrowRightOnRectangleIcon,
-  ArrowUpRightIcon,
-} from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -26,21 +16,30 @@ function HomePage() {
 
   return (
     <>
-      <div className="relative h-[400px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
+      <div className="relative h-[450px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
         <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
         <div className="bg-dark/70 absolute top-0 z-0 h-full w-full"></div>
-        <div className="container absolute top-24 z-10 mx-auto">
-          <h1 className="text-title text-6xl font-extrabold">
+        <div className="container absolute z-10 mx-auto">
+          <Image src={HornexLogo} alt="Hornex" width={150} height={150} />
+          <h1 className="text-title font-title py-4 text-6xl font-extrabold">
             Organize, Compete and{' '}
             <span className="text-dark bg-amber-500 px-2">Get Paid</span>
           </h1>
-          <p className="text-title text-lg font-thin">
-            by playing tournaments of your favorite game
+          <p className="text-title font-title w-[40%] text-lg font-thin">
+            With Hornex you can easily organize and compete in tournaments. We
+            make it easy to get paid for your skills.
           </p>
         </div>
       </div>
-      <div className="container mx-auto py-8">
-        <h4 className="text-title text-xl font-bold">Next tournaments</h4>
+      <div className="bg-light-dark container mx-auto py-8">
+        <h4 className="text-title font-title mb-4 text-5xl font-extrabold">
+          Built for organizers
+        </h4>
+        <p className="text-body w-[40%] text-lg">
+          Hornex is a platform that allows you to easily create and manage
+          tournaments. We take care of the hard work so you can focus on
+          organizing the best events.
+        </p>
       </div>
       <footer className="dark:bg-dark mx-auto border-t border-gray-800 bg-white p-6 md:p-14">
         <div className="mx-auto w-full max-w-screen-xl">
