@@ -2,7 +2,7 @@ import Button from '@/components/ui/atoms/button/button';
 import Input from '@/components/ui/atoms/form/input';
 import InputLabel from '@/components/ui/atoms/form/input-label';
 import { Logo } from '@/components/ui/atoms/logo';
-import { useAuthContext } from '@/lib/auth';
+import { useSession } from 'next-auth/react';
 import { dataLoader } from '@/lib/request';
 import { ArrowUpRightIcon, CheckCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,9 +31,9 @@ const { get: getEmailConfirmationCode } = dataLoader<{}>(
 export default function RegisterPage() {
   const router = useRouter();
   const {
-    state: { isAuthenticated },
-  } = useAuthContext();
-  if (isAuthenticated) {
+    data: session, status,
+  } = useSession();
+  if (status === "authenticated") {
     router.push('/compete');
   }
   const [codeEvent, setCodeEvent] = useState<'send' | 'resend' | 'sent'>(

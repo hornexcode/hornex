@@ -1,15 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/atoms/avatar';
 import { LoggedUser } from '@/domain';
-import { useAuthContext } from '@/lib/auth';
+import { signOut } from 'next-auth/react';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { ChevronDownIcon, UserIcon } from 'lucide-react';
 import { Fragment } from 'react';
+import router from 'next/router';
 
 export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
-  const { logout } = useAuthContext();
   const handleLogout = async () => {
-    await logout();
+    await signOut().then(() => {
+      router.push('/login');
+    });
   };
 
   return (

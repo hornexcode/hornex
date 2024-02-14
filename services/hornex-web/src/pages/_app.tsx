@@ -5,7 +5,6 @@ import '@/websocket/app'; // websocket
 
 import ModalsContainer from '@/components/modal-views/container';
 import { Toaster } from '@/components/ui/sonner';
-import { AuthContextProvider } from '@/lib/auth/auth-context';
 import { NotificationContextProvider } from '@/lib/websocket';
 import classnames from 'classnames';
 import { NextPage } from 'next';
@@ -45,13 +44,11 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
           )}
         >
           <SessionProvider session={pageProps.session}>
-            <AuthContextProvider>
               <NotificationContextProvider>
                 {getLayout(<Component {...pageProps} />)}
                 <ModalsContainer />
               </NotificationContextProvider>
               {/* <SettingsDrawer /> */}
-            </AuthContextProvider>
             <ToastContainer
               theme="dark"
               style={{

@@ -7,7 +7,7 @@ import Tournament from '@/assets/images/tournaments/tournament.png';
 import Button from '@/components/ui/atoms/button/button';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
-import { useAuthContext } from '@/lib/auth/auth-context';
+import { useSession } from 'next-auth/react';
 import {
   ArrowRightOnRectangleIcon,
   ArrowUpRightIcon,
@@ -19,20 +19,161 @@ import { useRouter } from 'next/router';
 function HomePage() {
   const router = useRouter();
 
-  const { state, logout } = useAuthContext();
-  if (state.isAuthenticated) {
-    router.push(routes.compete);
+  const { status, data: session } = useSession();
+
+  const logout = () => {
+    if (status === "authenticated") {
+      router.push(routes.compete);
+    }
   }
 
   return (
-    <>
-      <div className="relative h-[400px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
-        <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
-        <div className="bg-dark/70 absolute top-0 z-0 h-full w-full"></div>
-        <div className="container absolute top-24 z-10 mx-auto">
-          <h1 className="text-title text-6xl font-extrabold">
-            Organize, Compete and{' '}
-            <span className="text-dark bg-amber-500 px-2">Get Paid</span>
+    <main className="">
+      <nav className="bg-dark/40 fixed top-0 z-10 w-full border-b border-slate-700">
+        <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 text-sm">
+          <Link href="/" className="flex items-center">
+            <span className="self-center text-2xl font-bold tracking-tighter dark:text-white md:text-3xl">
+              Hornex
+            </span>
+          </Link>
+          <div className="flex items-center gap-4 md:order-2 md:gap-8">
+            {status !== "authenticated" ? (
+              <>
+                <Link
+                  href={routes.login}
+                  className="flex items-center text-white transition-colors hover:text-amber-400"
+                >
+                  Login
+                  <ArrowUpRightIcon className="ml-2 w-4" />
+                </Link>
+                <Link
+                  href={routes.register}
+                  className="rounded bg-amber-500 px-4 py-2 font-medium tracking-tight text-white transition-colors hover:bg-amber-400 focus:ring-2"
+                >
+                  Register now
+                </Link>
+              </>
+            ) : (
+              <Button onClick={logout}>
+                <div className="flex items-center text-white">
+                  logout
+                  <ArrowRightOnRectangleIcon className="ml-2 w-4" />
+                </div>
+              </Button>
+            )}
+            <button
+              data-collapse-toggle="navbar-sticky"
+              type="button"
+              className="inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-600 md:hidden"
+              aria-controls="navbar-sticky"
+              aria-expanded="false"
+            >
+              <span className="sr-only">Open main menu</span>
+              <svg
+                className="h-6 w-6"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div
+            className="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto"
+            id="navbar-sticky"
+          >
+            <ul className="mt-4 flex flex-col rounded-lg border border-gray-100 p-4 font-medium dark:border-gray-700 md:mt-0 md:flex-row md:space-x-8 md:border-0  md:p-0">
+              <li>
+                <a
+                  href="#home"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:bg-transparent md:p-0"
+                  aria-current="page"
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#supported-games"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:p-0"
+                >
+                  Supported Games
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#how-to-play"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:p-0"
+                >
+                  How to play
+                </a>
+              </li>
+              <li>
+                <Link
+                  href="#contact"
+                  className="block rounded py-2 pl-3 pr-4 text-white transition-colors hover:text-amber-400 md:p-0"
+                >
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <section id="home" className="relative h-[calc(90vh-68px)]">
+        {/* <div className="absolute inset-0 top-0 -z-10 h-full w-full bg-[url('/images/major.avif')] bg-cover bg-no-Hornex">
+          <div className="h-full w-full bg-dark/95" />
+        </div> */}
+
+        <div className="absolute left-0 right-0 m-auto h-full">
+          <video
+            className="bg-dark/70 left-0 top-0 h-full w-full object-cover object-center"
+            autoPlay
+            loop
+            muted
+          >
+            <source src="/videos/hornex-gaming.webm" type="video/webm" />
+          </video>
+          <div className="bg-dark/80 absolute inset-0"></div>
+        </div>
+
+        <div className="absolute left-0 right-0 top-20 mx-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
+          <a
+            href="#"
+            className="mb-7 inline-flex items-center justify-between rounded-full bg-gray-100 px-1 py-1 pr-4 text-sm text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+            role="alert"
+          >
+            <span className="bg-primary-600 mr-3 rounded-full px-4 py-1.5 text-xs text-white transition-colors">
+              Coming soon
+            </span>
+            <span className="text-sm font-medium">Hx is launching soon. </span>
+            <svg
+              className="ml-2 h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </a>
+
+          <div className="mb-8 flex flex-col items-center">
+            <Image src={BullHorn} alt="horn" width={128} height={128} />
+          </div>
+          <h1 className="text-body mb-4 text-4xl font-extrabold uppercase leading-none tracking-tight dark:text-white md:text-5xl lg:text-5xl">
+            <span className="text-amber-400">get paid</span> playing your
+            favorite games
           </h1>
           <p className="text-title text-lg font-thin">
             by playing tournaments of your favorite game
