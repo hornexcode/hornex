@@ -1,4 +1,5 @@
 import { LangToggler } from '../molecules';
+import { Separator } from '../separator';
 import routes from '@/config/routes';
 import { dataLoader } from '@/lib/request';
 import { useNotification } from '@/lib/websocket';
@@ -89,7 +90,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             href={`/${routes.compete}`}
             className="group cursor-pointer transition-all"
           >
-            <div className="mb-2 flex items-center rounded-lg">
+            <div className="flex items-center rounded-lg">
               <div>
                 <Users2 className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
@@ -97,9 +98,17 @@ export const Sidebar = ({ className }: { className?: string }) => {
             </div>
           </Link>
         </li>
+      </ul>
+      <Separator className="my-4" />
+      <div className="flex items-center">
+        <div className="text-body mb-4 flex h-[20] w-[180px] items-center text-sm font-bold">
+          Organizers
+        </div>
+      </div>
+      <ul>
         <li className="">
           <Link
-            href={`/${routes.compete}`}
+            href={`/dashboard`}
             className="group cursor-pointer transition-all"
           >
             <div className="mb-2 flex items-center rounded-lg">

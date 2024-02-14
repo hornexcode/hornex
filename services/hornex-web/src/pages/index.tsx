@@ -1,11 +1,11 @@
+import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 import { useAuthContext } from '@/lib/auth/auth-context';
-import { GetStaticProps } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 function HomePage() {
   const { t } = useTranslation('common');
@@ -18,21 +18,30 @@ function HomePage() {
 
   return (
     <>
-      <div className="relative h-[400px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
+      <div className="relative h-[450px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
         <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
         <div className="bg-dark/70 absolute top-0 z-0 h-full w-full"></div>
-        <div className="container absolute top-24 z-10 mx-auto">
-          <h1 className="text-title text-6xl font-extrabold">
+        <div className="container absolute z-10 mx-auto">
+          <Image src={HornexLogo} alt="Hornex" width={150} height={150} />
+          <h1 className="text-title font-title py-4 text-6xl font-extrabold">
             Organize, Compete and{' '}
             <span className="text-dark bg-amber-500 px-2">Get Paid</span>
           </h1>
-          <p className="text-title text-lg font-thin">
-            by playing tournaments of your favorite game
+          <p className="text-title font-title w-[40%] text-lg font-thin">
+            With Hornex you can easily organize and compete in tournaments. We
+            make it easy to get paid for your skills.
           </p>
         </div>
       </div>
-      <div className="container mx-auto py-8">
-        <h4 className="text-title text-xl font-bold">Next tournaments</h4>
+      <div className="bg-light-dark container mx-auto py-8">
+        <h4 className="text-title font-title mb-4 text-5xl font-extrabold">
+          Built for organizers
+        </h4>
+        <p className="text-body w-[40%] text-lg">
+          Hornex is a platform that allows you to easily create and manage
+          tournaments. We take care of the hard work so you can focus on
+          organizing the best events.
+        </p>
       </div>
       <footer className="dark:bg-dark mx-auto border-t border-gray-800 bg-white p-6 md:p-14">
         <div className="mx-auto w-full max-w-screen-xl">
@@ -220,12 +229,5 @@ function HomePage() {
 HomePage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
-
-// or getServerSideProps: GetServerSideProps<Props> = async ({ locale })
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-  props: {
-    ...(await serverSideTranslations(locale ?? 'en', ['common'])),
-  },
-});
 
 export default HomePage;
