@@ -52,7 +52,7 @@ const formSchema = z.object({
   size: z.string(),
   team_size: z.string(),
   map: z.string().default('summoners-rift'),
-  winners_prizes: z
+  prizes: z
     .array(
       z.object({
         custom: z.boolean(),
@@ -86,10 +86,10 @@ function TournamentCreateForm() {
     },
   });
 
-  const { register, control, handleSubmit, watch } = form;
+  const { register, control, handleSubmit, watch, setValue } = form;
 
   const { fields, remove, append } = useFieldArray({
-    name: "winners_prizes",
+    name: "prizes",
     control,
   })
 
@@ -402,10 +402,10 @@ function TournamentCreateForm() {
               hidden: watch('prize_pool_enabled'),
             })}
           >
-            {fields.map((field, index) => {
+            {fields.map((fld, index) => {
               return(
-                <div className="border-accent space-y-3 rounded-lg border p-5" key={field.id}>
-                  <div className="text-title">{field.place}# place prize</div>
+                <div className="border-accent space-y-3 rounded-lg border p-5" key={fld.id}>
+                  <div className="text-title">{fld.place}# place prize</div>
                     <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
                       <div className="space-y-0.5">
                         <FormLabel className="text-title">Custom</FormLabel>
@@ -415,16 +415,16 @@ function TournamentCreateForm() {
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.custom} {...register(`winners_prizes.${index}.custom`)} onChange={(val) => { return !val}}/>
+                        <Switch onCheckedChange={(val) => setValue(`prizes.${index}.custom` as const, !val)}  {...register(`prizes.${index}.custom` as const)} />
                       </FormControl>
                     </FormItem>
                     <Input
                       type="text"
-                      disabled={watch(`winners_prizes.${index}.custom`)}
+                      disabled={watch(`prizes.${index}.custom` as const)}
                       placeholder="100"
-                      {...register(`winners_prizes.${index}.amount`)}
+                      {...register(`prizes.${index}.amount` as const)}
                     />
-                    <Textarea placeholder="Description of the prize pool" {...register(`winners_prizes.${index}.content`)}/>
+                    <Textarea placeholder="Description of the prize pool" {...register(`prizes.${index}.content`)}/>
                     <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => remove(index)}>
                       <TrashIcon className="mr-4 h-6 w-6" />
                       <div>Remove</div>
