@@ -13,7 +13,7 @@ function DashboardPage() {
       <div>
         <Button
           onClick={() => {
-            router.push('/organizer/tournaments/create');
+            router.push('/admin/tournaments/create');
           }}
           shape="rounded"
           size="mini"
