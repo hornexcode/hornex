@@ -7,8 +7,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
-from apps.payments.models import PaymentRegistration
-from apps.tournaments.models import Prize, Registration, Tournament
+from apps.tournaments.models import Prize, Tournament
 from apps.users.models import User
 from lib.challonge import Tournament as ChallongeTournament
 

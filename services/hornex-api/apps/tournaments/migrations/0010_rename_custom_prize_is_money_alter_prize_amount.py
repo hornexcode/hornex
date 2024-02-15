@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tournaments', '0009_remove_tournament_is_prize_pool_fixed_and_more'),
+        ("tournaments", "0009_remove_tournament_is_prize_pool_fixed_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='prize',
-            old_name='custom',
-            new_name='is_money',
+            model_name="prize",
+            old_name="custom",
+            new_name="is_money",
         ),
         migrations.AlterField(
-            model_name='prize',
-            name='amount',
+            model_name="prize",
+            name="amount",
             field=models.FloatField(),
         ),
     ]
