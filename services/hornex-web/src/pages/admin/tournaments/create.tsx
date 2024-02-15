@@ -55,7 +55,7 @@ const formSchema = z.object({
   winners_prizes: z
     .array(
       z.object({
-        custom: z.number(),
+        custom: z.boolean(),
         place: z.number(),
         amount: z.number(),
         content: z.string().optional(),
@@ -406,34 +406,34 @@ function TournamentCreateForm() {
               return(
                 <div className="border-accent space-y-3 rounded-lg border p-5" key={field.id}>
                   <div className="text-title">{field.place}# place prize</div>
-                  <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-title">Custom</FormLabel>
-                      <FormDescription>
-                        If enabled, the prize pool will be calculated based on the
-                        registrations entry fee
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch {...form.register(`winners_prizes.${index}.custom`)} onChange={(value) => console.log(value)}/>
-                    </FormControl>
-                  </FormItem>
-                  <Input
-                    type="text"
-                    disabled={field.custom == 0 ? false : true}
-                    placeholder="100"
-                    {...form.register(`winners_prizes.${index}.amount`)}
-                  />
-                  <Textarea placeholder="Description of the prize pool" {...form.register(`winners_prizes.${index}.content`)}/>
-                  <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => remove(index)}>
-                    <TrashIcon className="mr-4 h-6 w-6" />
-                    <div>Remove</div>
-                  </button>
+                    <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-title">Custom</FormLabel>
+                        <FormDescription>
+                          If enabled, the prize pool will be calculated based on the
+                          registrations entry fee
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch checked={field.custom} {...register(`winners_prizes.${index}.custom`)} onChange={(val) => { return !val}}/>
+                      </FormControl>
+                    </FormItem>
+                    <Input
+                      type="text"
+                      disabled={watch(`winners_prizes.${index}.custom`)}
+                      placeholder="100"
+                      {...register(`winners_prizes.${index}.amount`)}
+                    />
+                    <Textarea placeholder="Description of the prize pool" {...register(`winners_prizes.${index}.content`)}/>
+                    <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => remove(index)}>
+                      <TrashIcon className="mr-4 h-6 w-6" />
+                      <div>Remove</div>
+                    </button>
                 </div>
               )
             })}
             <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => append({
-              custom: 0,
+              custom: true,
               place: fields.length + 1,
               amount: 0,
               content: '',
