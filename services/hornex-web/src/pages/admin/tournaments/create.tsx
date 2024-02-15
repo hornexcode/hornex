@@ -25,10 +25,10 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { AppLayout } from '@/layouts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusIcon } from '@radix-ui/react-icons';
+import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const formSchema = z.object({
@@ -55,6 +55,7 @@ const formSchema = z.object({
   winners_prizes: z
     .array(
       z.object({
+        custom: z.number(),
         place: z.number(),
         amount: z.number(),
         content: z.string().optional(),
@@ -85,7 +86,12 @@ function TournamentCreateForm() {
     },
   });
 
-  const { watch } = form;
+  const { register, control, handleSubmit, watch } = form;
+
+  const { fields, remove, append } = useFieldArray({
+    name: "winners_prizes",
+    control,
+  })
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -96,9 +102,9 @@ function TournamentCreateForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pb-10">
         <FormField
-          control={form.control}
+          control={control}
           name="game"
           render={({ field }) => (
             <FormItem>
@@ -123,7 +129,7 @@ function TournamentCreateForm() {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -139,7 +145,7 @@ function TournamentCreateForm() {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="description"
           render={({ field }) => (
             <FormItem>
@@ -156,7 +162,7 @@ function TournamentCreateForm() {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="size"
           render={({ field }) => (
             <FormItem>
@@ -182,7 +188,7 @@ function TournamentCreateForm() {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="map"
           render={({ field }) => (
             <FormItem>
@@ -209,7 +215,7 @@ function TournamentCreateForm() {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="team_size"
           render={({ field }) => (
             <FormItem>
@@ -233,7 +239,7 @@ function TournamentCreateForm() {
         />
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            control={form.control}
+            control={control}
             name="start_date"
             render={({ field }) => (
               <FormItem>
@@ -252,7 +258,7 @@ function TournamentCreateForm() {
           />
 
           <FormField
-            control={form.control}
+            control={control}
             name="start_time"
             render={({ field }) => (
               <FormItem>
@@ -272,7 +278,7 @@ function TournamentCreateForm() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            control={form.control}
+            control={control}
             name="end_date"
             render={({ field }) => (
               <FormItem>
@@ -291,7 +297,7 @@ function TournamentCreateForm() {
           />
 
           <FormField
-            control={form.control}
+            control={control}
             name="end_time"
             render={({ field }) => (
               <FormItem>
@@ -310,7 +316,7 @@ function TournamentCreateForm() {
           />
         </div>
         <FormField
-          control={form.control}
+          control={control}
           name="registration_start_date"
           render={({ field }) => (
             <FormItem>
@@ -329,7 +335,7 @@ function TournamentCreateForm() {
         />
 
         <FormField
-          control={form.control}
+          control={control}
           name="registration_end_date"
           render={({ field }) => (
             <FormItem>
@@ -347,7 +353,7 @@ function TournamentCreateForm() {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="is_entry_free"
           render={({ field }) => (
             <FormItem className="border-light-dark flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
@@ -369,7 +375,7 @@ function TournamentCreateForm() {
         />
         <div className="border-accent rounded-lg border">
           <FormField
-            control={form.control}
+            control={control}
             name="prize_pool_enabled"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
@@ -396,59 +402,50 @@ function TournamentCreateForm() {
               hidden: watch('prize_pool_enabled'),
             })}
           >
-            <div className="border-accent space-y-3 rounded-lg border p-5">
-              <div className="text-title">1# place prize</div>
-              <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-title">Custom</FormLabel>
-                  <FormDescription>
-                    If enabled, the prize pool will be calculated based on the
-                    registrations entry fee
-                  </FormDescription>
+            {fields.map((field, index) => {
+              return(
+                <div className="border-accent space-y-3 rounded-lg border p-5" key={field.id}>
+                  <div className="text-title">{field.place}# place prize</div>
+                  <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-title">Custom</FormLabel>
+                      <FormDescription>
+                        If enabled, the prize pool will be calculated based on the
+                        registrations entry fee
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch {...form.register(`winners_prizes.${index}.custom`)} onChange={(value) => console.log(value)}/>
+                    </FormControl>
+                  </FormItem>
+                  <Input
+                    type="text"
+                    disabled={field.custom == 0 ? false : true}
+                    placeholder="100"
+                    {...form.register(`winners_prizes.${index}.amount`)}
+                  />
+                  <Textarea placeholder="Description of the prize pool" {...form.register(`winners_prizes.${index}.content`)}/>
+                  <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => remove(index)}>
+                    <TrashIcon className="mr-4 h-6 w-6" />
+                    <div>Remove</div>
+                  </button>
                 </div>
-                <FormControl>
-                  <Switch />
-                </FormControl>
-              </FormItem>
-              <Input
-                type="text"
-                disabled
-                placeholder="100"
-                {...form.register('entry_fee')}
-              />
-              <Textarea placeholder="Description of the prize pool" />
-            </div>
-            <div className="border-accent space-y-3 rounded-lg border p-5">
-              <div className="text-title">2# place prize</div>
-              <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-title">Custom</FormLabel>
-                  <FormDescription>
-                    If enabled, the prize pool will be calculated based on the
-                    registrations entry fee
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch />
-                </FormControl>
-              </FormItem>
-              <Input
-                type="text"
-                disabled
-                placeholder="100"
-                {...form.register('entry_fee')}
-              />
-              <Textarea placeholder="Description of the prize pool" />
-            </div>
-            <div className="border-accent flex items-center justify-center rounded-lg border p-5">
+              )
+            })}
+            <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => append({
+              custom: 0,
+              place: fields.length + 1,
+              amount: 0,
+              content: '',
+            })}>
               <PlusIcon className="mr-4 h-6 w-6" />
-              <div>Add 4# place</div>
-            </div>
+              <div>Add {fields.length + 1}# place</div>
+            </button>
           </div>
         </div>
 
         <FormField
-          control={form.control}
+          control={control}
           name="is_entry_free"
           render={({ field }) => (
             <FormItem>
@@ -463,7 +460,7 @@ function TournamentCreateForm() {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="is_entry_free"
           render={({ field }) => (
             <FormItem>
