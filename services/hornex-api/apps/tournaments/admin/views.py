@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from apps.tournaments.usecases.create_tournament import (
+from apps.tournaments.usecases.admin.create_tournament import (
     CreateTournamentUseCase,
     CreateTournamentUseCaseParams,
 )
