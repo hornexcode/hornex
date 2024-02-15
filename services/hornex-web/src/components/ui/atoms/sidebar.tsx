@@ -103,7 +103,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
       <ul>
         <li className="">
           <Link
-            href={`/dashboard`}
+            href={`/admin/tournaments`}
             className="group cursor-pointer transition-all"
           >
             <div className="mb-2 flex items-center rounded-lg">

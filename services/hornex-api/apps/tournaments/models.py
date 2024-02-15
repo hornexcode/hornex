@@ -248,8 +248,8 @@ class Tournament(BaseModel):
 class Prize(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     place = models.IntegerField()
-    amount = models.IntegerField()
-    custom = models.BooleanField(default=False)
+    is_money = models.BooleanField(default=False)
+    amount = models.FloatField()  # cents
     content = models.TextField(default="")
 
     def __str__(self) -> str:

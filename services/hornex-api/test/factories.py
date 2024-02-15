@@ -84,8 +84,6 @@ class TournamentFactory:
             end_time=kwargs.get("end_time", now + td(hours=18)),
             feature_image=kwargs.get("feature_image", "https://fakeimg.pl/300/"),
             is_entry_free=kwargs.get("is_entry_free", False),
-            # is_prize_pool_fixed=kwargs.get("is_prize_pool_fixed", True),
-            prize_pool=kwargs.get("prize_pool", 999),
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
         )
@@ -117,7 +115,6 @@ class LeagueOfLegendsTournamentFactory:
             end_time=kwargs.get("end_time", now + td(hours=18)),
             feature_image=kwargs.get("feature_image", "https://fakeimg.pl/300/"),
             is_entry_free=kwargs.get("is_entry_free", False),
-            prize_pool=kwargs.get("prize_pool", 999),
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
             open_classification=True,
