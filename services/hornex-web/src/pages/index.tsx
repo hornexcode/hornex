@@ -1,22 +1,14 @@
-import FreeFireLogo from '@/assets/images/games/free-fire/logo.png';
-import LeagueOfLegendsLogo from '@/assets/images/games/league-of-legends/logo.png';
-import CsGoLogo from '@/assets/images/hero/csgo-logo.png';
-import RocketLeagueLogo from '@/assets/images/hero/rl-logo.png';
-import BullHorn from '@/assets/images/hornex/hornex-logo.png';
-import Tournament from '@/assets/images/tournaments/tournament.png';
-import Button from '@/components/ui/atoms/button/button';
 import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 import { useAuthContext } from '@/lib/auth/auth-context';
-import {
-  ArrowRightOnRectangleIcon,
-  ArrowUpRightIcon,
-} from '@heroicons/react/20/solid';
-import Image from 'next/image';
+import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 function HomePage() {
+  const { t } = useTranslation('common');
   const router = useRouter();
 
   const { state, logout } = useAuthContext();
@@ -152,7 +144,7 @@ function HomePage() {
             <span className="text-sm text-gray-500 dark:text-gray-300 sm:text-center">
               © 2023 <Link href="/">Hornex™</Link>
               <br />
-              All Rights Reserved.
+              {t('rights-reserved')}
             </span>
             <div className="mt-4 flex items-center space-x-5 sm:justify-center md:mt-0">
               <a
@@ -228,5 +220,12 @@ function HomePage() {
 HomePage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
+
+// or getServerSideProps: GetServerSideProps<Props> = async ({ locale })
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+  },
+});
 
 export default HomePage;

@@ -1,0 +1,17 @@
+{
+  "rights-reserved": "Tous droits réservés",
+  "sidebar": {
+    "title": "Options du menu",
+    "home": "Maison",
+    "compete": "Rivaliser",
+    "registrations": "Inscriptions",
+    "teams": "Équipes",
+    "organize": "Organiser un tournoi"
+  },
+  "lang-toggler": {
+    "title": "langue",
+    "en": "anglais",
+    "pt": "portugais",
+    "fr": "français"
+  }
+}

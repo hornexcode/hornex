@@ -1,0 +1,17 @@
+{
+  "rights-reserved": "All rights reserved",
+  "sidebar": {
+    "title": "Menu Options",
+    "home": "Home",
+    "compete": "Compete",
+    "registrations": "Registrations",
+    "teams": "Teams",
+    "organize": "Organize tournament"
+  },
+  "lang-toggler": {
+    "title": "language",
+    "en": "english",
+    "pt": "portuguese",
+    "fr": "french"
+  }
+}

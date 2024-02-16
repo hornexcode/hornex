@@ -12,6 +12,7 @@ import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
 import { Source_Sans_3 } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
+import { appWithTranslation } from 'next-i18next';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -78,4 +79,4 @@ HornexApp.getInitialProps = async (context: AppContext) => {
   };
 };
 
-export default HornexApp;
+export default appWithTranslation(HornexApp);
