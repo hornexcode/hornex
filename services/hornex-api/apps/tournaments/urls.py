@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from apps.tournaments.views import (
     RegistrationViewSet,
@@ -14,6 +14,9 @@ from apps.tournaments.views import (
 app_name = "tournaments"
 
 urlpatterns = [
+    # admin
+    path("/admin", include("apps.tournaments.admin.urls", namespace="admin")),
+    # web
     path(
         "/tournaments/<str:id>/registrations",
         TournamentRegistrationViewSet.as_view({"post": "register"}),

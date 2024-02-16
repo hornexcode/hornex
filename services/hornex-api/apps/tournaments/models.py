@@ -48,7 +48,7 @@ class Tournament(BaseModel):
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
     entry_fee = models.IntegerField(default=0, null=True, blank=True)  # in cents
-    prize_pool = models.IntegerField(default=0, null=True, blank=True)  # in centes
+    prize_pool_enabled = models.BooleanField(default=True)
 
     max_teams = models.IntegerField(default=32)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
@@ -243,6 +243,17 @@ class Tournament(BaseModel):
 
     def checkin(self):
         raise NotImplementedError
+
+
+class Prize(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    place = models.IntegerField()
+    is_money = models.BooleanField(default=False)
+    amount = models.FloatField()  # cents
+    content = models.TextField(default="")
+
+    def __str__(self) -> str:
+        return f"Prize ({self.id}) | {self.tournament.name}"
 
 
 class Registration(models.Model):
