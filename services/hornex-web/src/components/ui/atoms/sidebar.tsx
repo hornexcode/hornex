@@ -1,3 +1,4 @@
+import { LangToggler } from '../molecules';
 import routes from '@/config/routes';
 import { dataLoader } from '@/lib/request';
 import { useNotification } from '@/lib/websocket';
@@ -5,13 +6,15 @@ import { useWebSocketContext } from '@/websocket/context';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import { FileBadge, Home, SwordsIcon, Users2 } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 
 const { useData: useCountUserInvites } = dataLoader<number>('countUserInvites');
 
 export const Sidebar = ({ className }: { className?: string }) => {
+  const { t } = useTranslation('common');
+
   const { notifications: generalNotifications } = useNotification();
   const notifications = React.useMemo(
     () => generalNotifications.filter((n) => n.type === 'invite'),
@@ -38,8 +41,8 @@ export const Sidebar = ({ className }: { className?: string }) => {
       )}
     >
       <div className="flex items-center">
-        <div className="text-title mb-8 flex h-[20] w-[180px] items-center text-sm font-bold">
-          MENU OPTIONS
+        <div className="text-title mb-8 flex h-[20] w-[180px] items-center text-sm font-bold uppercase">
+          {t('sidebar.title')}
         </div>
       </div>
       <ul className="flex w-full flex-col space-y-2 text-xs">
@@ -49,7 +52,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <Home className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">Home</span>
+              <span className="text-title text-sm">{t('sidebar.home')}</span>
             </div>
           </Link>
         </li>
@@ -62,7 +65,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <SwordsIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">Compete</span>
+              <span className="text-title text-sm">{t('sidebar.compete')}</span>
             </div>
           </Link>
         </li>
@@ -75,7 +78,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <FileBadge className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">Registrations</span>
+              <span className="text-title text-sm">
+                {t('sidebar.registrations')}
+              </span>
             </div>
           </Link>
         </li>
@@ -88,7 +93,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <Users2 className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">Teams</span>
+              <span className="text-title text-sm">{t('sidebar.teams')}</span>
             </div>
           </Link>
         </li>
@@ -101,11 +106,16 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <Cog6ToothIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">Organize a tournament</span>
+              <span className="text-title text-sm">
+                {t('sidebar.organize')}
+              </span>
             </div>
           </Link>
         </li>
       </ul>
+      <div className="mt-auto pb-14">
+        <LangToggler />
+      </div>
     </div>
   );
 };
