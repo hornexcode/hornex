@@ -1,19 +1,17 @@
 import '@/styles/global.css';
 import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
-import '@/websocket/app'; // websocket
 
+import { ni18nConfig } from '../../ni18n.config';
 import ModalsContainer from '@/components/modal-views/container';
 import { Toaster } from '@/components/ui/toaster';
-import { AuthContextProvider } from '@/lib/auth/auth-context';
-import { NotificationContextProvider } from '@/lib/websocket';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
 import { Kanit, Source_Sans_3 } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
-import { appWithTranslation } from 'next-i18next';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { appWithI18Next } from 'ni18n';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
@@ -81,4 +79,4 @@ HornexApp.getInitialProps = async (context: AppContext) => {
   };
 };
 
-export default appWithTranslation(HornexApp);
+export default appWithI18Next(HornexApp, ni18nConfig);

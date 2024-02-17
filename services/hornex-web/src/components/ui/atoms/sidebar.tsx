@@ -1,38 +1,15 @@
 import { LangToggler } from '../molecules';
 import { Separator } from '../separator';
 import routes from '@/config/routes';
-import { dataLoader } from '@/lib/request';
-import { useNotification } from '@/lib/websocket';
-import { useWebSocketContext } from '@/websocket/context';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import { FileBadge, Home, SwordsIcon, Users2 } from 'lucide-react';
 import Link from 'next/link';
-import { useTranslation } from 'next-i18next';
-import React, { useEffect } from 'react';
-
-const { useData: useCountUserInvites } = dataLoader<number>('countUserInvites');
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const Sidebar = ({ className }: { className?: string }) => {
-  const { t } = useTranslation('common');
-
-  const { notifications: generalNotifications } = useNotification();
-  const notifications = React.useMemo(
-    () => generalNotifications.filter((n) => n.type === 'invite'),
-    [generalNotifications]
-  );
-
-  const { data: invitesNum, mutate } = useCountUserInvites({
-    status: 'pending',
-  });
-
-  const { addListener } = useWebSocketContext();
-
-  useEffect(() => {
-    addListener('team_invitation', (_) => {
-      mutate();
-    });
-  }, []);
+  const { t } = useTranslation();
 
   return (
     <div
