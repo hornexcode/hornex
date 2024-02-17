@@ -8,8 +8,8 @@ urlpatterns = [
     # -
     path("", UserViewSet.as_view({"get": "list", "post": "create"}), name="user"),
     path(
-        "/register",
+        "",
         UserViewSet.as_view({"post": "create"}),
-        name="register-user",
+        name="sign-up",
     ),
 ]
