@@ -1,7 +1,6 @@
 from django.urls import include, path, reverse
 from rest_framework.serializers import ValidationError
 from rest_framework.test import APITestCase, URLPatternsTestCase
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.models import User
 
