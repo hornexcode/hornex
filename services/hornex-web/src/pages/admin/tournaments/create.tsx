@@ -89,9 +89,9 @@ function TournamentCreateForm() {
   const { register, control, handleSubmit, watch, setValue } = form;
 
   const { fields, remove, append } = useFieldArray({
-    name: "prizes",
+    name: 'prizes',
     control,
-  })
+  });
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -168,7 +168,7 @@ function TournamentCreateForm() {
             <FormItem>
               <FormLabel className="text-title">Tournament Size</FormLabel>
               <FormControl>
-                <Select {...field}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="4" />
                   </SelectTrigger>
@@ -237,6 +237,45 @@ function TournamentCreateForm() {
             </FormItem>
           )}
         />
+        <div className="grid grid-cols-2">
+          <FormField
+            control={control}
+            name="registration_start_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-title">
+                  Registration Start Date
+                </FormLabel>
+                <FormControl>
+                  <DatePicker date={field.value} onSelect={field.onChange} />
+                </FormControl>
+                <FormDescription>
+                  This define when the registration period will start.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="registration_end_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-title">
+                  Registration End Date
+                </FormLabel>
+                <FormControl>
+                  <DatePicker date={field.value} onSelect={field.onChange} />
+                </FormControl>
+                <FormDescription>
+                  This define when the registration period will end.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={control}
@@ -315,43 +354,7 @@ function TournamentCreateForm() {
             )}
           />
         </div>
-        <FormField
-          control={control}
-          name="registration_start_date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-title">
-                Registration Start Date
-              </FormLabel>
-              <FormControl>
-                <DatePicker date={field.value} onSelect={field.onChange} />
-              </FormControl>
-              <FormDescription>
-                This define when the registration period will start.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={control}
-          name="registration_end_date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-title">
-                Registration End Date
-              </FormLabel>
-              <FormControl>
-                <DatePicker date={field.value} onSelect={field.onChange} />
-              </FormControl>
-              <FormDescription>
-                This define when the registration period will end.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={control}
           name="is_entry_free"
@@ -390,6 +393,7 @@ function TournamentCreateForm() {
                 </div>
                 <FormControl>
                   <Switch
+                    disabled={watch('is_entry_free')}
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -403,42 +407,63 @@ function TournamentCreateForm() {
             })}
           >
             {fields.map((fld, index) => {
-              return(
-                <div className="border-accent space-y-3 rounded-lg border p-5" key={fld.id}>
+              return (
+                <div
+                  className="border-accent space-y-3 rounded-lg border p-5"
+                  key={fld.id}
+                >
                   <div className="text-title">{fld.place}# place prize</div>
-                    <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-title">Custom</FormLabel>
-                        <FormDescription>
-                          If enabled, the prize pool will be calculated based on the
-                          registrations entry fee
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch onCheckedChange={(val) => setValue(`prizes.${index}.custom` as const, !val)}  {...register(`prizes.${index}.custom` as const)} />
-                      </FormControl>
-                    </FormItem>
-                    <Input
-                      type="text"
-                      disabled={watch(`prizes.${index}.custom` as const)}
-                      placeholder="100"
-                      {...register(`prizes.${index}.amount` as const)}
-                    />
-                    <Textarea placeholder="Description of the prize pool" {...register(`prizes.${index}.content`)}/>
-                    <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => remove(index)}>
-                      <TrashIcon className="mr-4 h-6 w-6" />
-                      <div>Remove</div>
-                    </button>
+                  <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-title">Custom</FormLabel>
+                      <FormDescription>
+                        If enabled, the prize pool will be calculated based on
+                        the registrations entry fee
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        onCheckedChange={(val) =>
+                          setValue(`prizes.${index}.custom` as const, !val)
+                        }
+                        {...register(`prizes.${index}.custom` as const)}
+                      />
+                    </FormControl>
+                  </FormItem>
+                  <Input
+                    type="text"
+                    disabled={watch(`prizes.${index}.custom` as const)}
+                    placeholder="100"
+                    {...register(`prizes.${index}.amount` as const)}
+                  />
+                  <Textarea
+                    placeholder="Description of the prize pool"
+                    {...register(`prizes.${index}.content`)}
+                  />
+                  <button
+                    type="button"
+                    className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-sm text-red-500 transition-all hover:bg-red-500"
+                    onClick={() => remove(index)}
+                  >
+                    <TrashIcon className="mr-2 h-4 w-4" />
+                    Remove
+                  </button>
                 </div>
-              )
+              );
             })}
-            <button type="button" className="w-full border-accent flex items-center justify-center rounded-lg border p-5" onClick={() => append({
-              custom: true,
-              place: fields.length + 1,
-              amount: 0,
-              content: '',
-            })}>
-              <PlusIcon className="mr-4 h-6 w-6" />
+            <button
+              type="button"
+              className="border-accent flex w-full items-center justify-center rounded-lg border p-5 text-sm"
+              onClick={() =>
+                append({
+                  custom: true,
+                  place: fields.length + 1,
+                  amount: 0,
+                  content: '',
+                })
+              }
+            >
+              <PlusIcon className="mr-2 h-4 w-4" />
               <div>Add {fields.length + 1}# place</div>
             </button>
           </div>

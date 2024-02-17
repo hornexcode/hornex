@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@/websocket/app'; // websocket
 
 import ModalsContainer from '@/components/modal-views/container';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toaster';
 import { AuthContextProvider } from '@/lib/auth/auth-context';
 import { NotificationContextProvider } from '@/lib/websocket';
 import classnames from 'classnames';
@@ -52,13 +52,9 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
           )}
         >
           <SessionProvider session={pageProps.session}>
-            <AuthContextProvider>
-              <NotificationContextProvider>
-                {getLayout(<Component {...pageProps} />)}
-                <ModalsContainer />
-              </NotificationContextProvider>
-              {/* <SettingsDrawer /> */}
-            </AuthContextProvider>
+            {getLayout(<Component {...pageProps} />)}
+            <ModalsContainer />
+            {/* <SettingsDrawer /> */}
             <ToastContainer
               theme="dark"
               style={{

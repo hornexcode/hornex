@@ -53,6 +53,7 @@ module.exports = {
         'medium-dark': '#21252d',
         'light-dark': '#292e34',
         'sidebar-body': '#F8FAFC',
+        destructive: '#ff4d4f',
       },
       spacing: {
         13: '3.375rem',

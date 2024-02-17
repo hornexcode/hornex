@@ -6,6 +6,7 @@ import { LoggedUser } from '@/domain';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { useIsMounted } from '@/hooks/use-is-mounted';
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
+import { LogInIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -59,10 +60,16 @@ const Header = () => {
         )}
 
         {!session && (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center space-x-4">
             <Link href="/login">
               <div className="flex items-center text-sm text-white">
-                Login <ArrowUpRightIcon className="ml-2 h-5 w-5 text-white" />
+                Login <LogInIcon className="ml-2 h-5 w-5 text-white" />
+              </div>
+            </Link>
+            <Link href="/register">
+              <div className="flex items-center text-sm text-white">
+                Register{' '}
+                <ArrowUpRightIcon className="ml-2 h-5 w-5 text-white" />
               </div>
             </Link>
           </div>

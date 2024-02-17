@@ -8,8 +8,8 @@ export const routes = {
     method: Method.POST,
     schema: null,
   },
-  register: {
-    path: 'v1/auth/register',
+  signUp: {
+    path: 'v1/users',
     method: Method.POST,
     schema: null,
   },
