@@ -5,16 +5,10 @@ import { useAuthContext } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 function HomePage() {
   const { t } = useTranslation('common');
-  const router = useRouter();
-
-  const { state, logout } = useAuthContext();
-  if (state.isAuthenticated) {
-    router.push(routes.compete);
-  }
 
   return (
     <>
