@@ -24,18 +24,18 @@ import React, { FC } from 'react';
 const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
   return (
     <div className="flex">
-      <div className="border-accent bg-medium-dark flex w-full items-center rounded border p-4 shadow-sm">
+      <div className="border-accent bg-medium-dark flex w-full items-center justify-around rounded border p-4 shadow-sm">
         {/* image */}
         <div className="flex w-12 items-center">
           <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
         </div>
         {/* name */}
-        <div className="block lg:w-[200px]">
+        <div className="block px-4 lg:w-[200px]">
           <div className="text-title text-sm">{tournament.name}</div>
           <div className="text-body text-xs">{tournament.game}</div>
         </div>
         {/* status */}
-        <div className="block lg:w-[200px]">
+        <div className="block px-4 lg:w-[200px]">
           <div className="grid grid-cols-2 space-y-2">
             <div className="col-span-2">
               <div className="flex justify-between">
@@ -68,6 +68,16 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                   ></div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        {/* Dates */}
+        <div className="flex px-4">
+          <div className="block">
+            <div className="text-body text-xs">Start Date</div>
+            <div className="text-title text-sm">
+              {tournament.start_date} {tournament.start_time}
+              {new Date().getTimezoneOffset() / -60}
             </div>
           </div>
         </div>
