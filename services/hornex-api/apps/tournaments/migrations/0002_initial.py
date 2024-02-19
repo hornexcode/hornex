@@ -6,74 +6,135 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('teams', '0002_initial'),
-        ('tournaments', '0001_initial'),
+        ("teams", "0002_initial"),
+        ("tournaments", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='checkin',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="checkin",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='leagueoflegendsleague',
-            unique_together={('tier', 'rank')},
+            name="leagueoflegendsleague",
+            unique_together={("tier", "rank")},
         ),
         migrations.AddField(
-            model_name='tournament',
-            name='organizer',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, to=settings.AUTH_USER_MODEL),
+            model_name="tournament",
+            name="organizer",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.RESTRICT, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='tournament',
-            name='teams',
-            field=models.ManyToManyField(blank=True, related_name='tournaments', to='teams.team'),
+            model_name="tournament",
+            name="teams",
+            field=models.ManyToManyField(blank=True, related_name="tournaments", to="teams.team"),
         ),
         migrations.AddField(
-            model_name='checkin',
-            name='tournament',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='checkins', to='tournaments.tournament'),
+            model_name="checkin",
+            name="tournament",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="checkins",
+                to="tournaments.tournament",
+            ),
         ),
         migrations.AddField(
-            model_name='match',
-            name='tournament',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tournaments.tournament'),
+            model_name="match",
+            name="tournament",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="tournaments.tournament"
+            ),
         ),
         migrations.AddField(
-            model_name='prize',
-            name='tournament',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tournaments.tournament'),
+            model_name="prize",
+            name="tournament",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="tournaments.tournament"
+            ),
         ),
         migrations.AddField(
-            model_name='registration',
-            name='team',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='teams.team'),
+            model_name="registration",
+            name="team",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="teams.team"),
         ),
         migrations.AddField(
-            model_name='registration',
-            name='tournament',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tournaments.tournament'),
+            model_name="registration",
+            name="tournament",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="tournaments.tournament"
+            ),
         ),
         migrations.CreateModel(
-            name='LeagueOfLegendsTournament',
+            name="LeagueOfLegendsTournament",
             fields=[
-                ('tournament_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='tournaments.tournament')),
-                ('pick', models.CharField(choices=[('BLIND_PICK', 'Blind Pick'), ('DRAFT_MODE', 'Draft Mode'), ('ALL_RANDOM', 'All Random'), ('TOURNAMENT_DRAFT', 'Tournament Draft')], default='BLIND_PICK', max_length=50)),
-                ('map', models.CharField(choices=[('SUMMONERS_RIFT', 'Summoners Rift'), ('TWISTED_TREELINE', 'Twisted Treeline'), ('HOWLING_ABYSS', 'Howling Abyss')], default='SUMMONERS_RIFT', max_length=50)),
-                ('spectator', models.CharField(choices=[('NONE', 'None'), ('LOBBYONLY', 'Lobbyonly'), ('ALL', 'All')], default='LOBBYONLY', max_length=50)),
-                ('riot_tournament_id', models.IntegerField(blank=True, null=True)),
-                ('classifications', models.ManyToManyField(to='tournaments.leagueoflegendsleague')),
-                ('provider', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='tournaments.leagueoflegendsprovider')),
+                (
+                    "tournament_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="tournaments.tournament",
+                    ),
+                ),
+                (
+                    "pick",
+                    models.CharField(
+                        choices=[
+                            ("BLIND_PICK", "Blind Pick"),
+                            ("DRAFT_MODE", "Draft Mode"),
+                            ("ALL_RANDOM", "All Random"),
+                            ("TOURNAMENT_DRAFT", "Tournament Draft"),
+                        ],
+                        default="BLIND_PICK",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "map",
+                    models.CharField(
+                        choices=[
+                            ("SUMMONERS_RIFT", "Summoners Rift"),
+                            ("TWISTED_TREELINE", "Twisted Treeline"),
+                            ("HOWLING_ABYSS", "Howling Abyss"),
+                        ],
+                        default="SUMMONERS_RIFT",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "spectator",
+                    models.CharField(
+                        choices=[("NONE", "None"), ("LOBBYONLY", "Lobbyonly"), ("ALL", "All")],
+                        default="LOBBYONLY",
+                        max_length=50,
+                    ),
+                ),
+                ("riot_tournament_id", models.IntegerField(blank=True, null=True)),
+                ("classifications", models.ManyToManyField(to="tournaments.leagueoflegendsleague")),
+                (
+                    "provider",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="tournaments.leagueoflegendsprovider",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
-            bases=('tournaments.tournament',),
+            bases=("tournaments.tournament",),
         ),
     ]

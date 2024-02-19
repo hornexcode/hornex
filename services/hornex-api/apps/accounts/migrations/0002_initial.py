@@ -6,29 +6,39 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('accounts', '0001_initial'),
-        ('tournaments', '0001_initial'),
+        ("accounts", "0001_initial"),
+        ("tournaments", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='gameid',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='game_id', to=settings.AUTH_USER_MODEL),
+            model_name="gameid",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="game_id",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='leagueoflegendssummoner',
-            name='ello',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='tournaments.leagueoflegendsleague'),
+            model_name="leagueoflegendssummoner",
+            name="ello",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="tournaments.leagueoflegendsleague",
+            ),
         ),
         migrations.AddField(
-            model_name='leagueoflegendssummoner',
-            name='game_id',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.gameid'),
+            model_name="leagueoflegendssummoner",
+            name="game_id",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="accounts.gameid"
+            ),
         ),
     ]

@@ -9,109 +9,226 @@ import apps.tournaments.validators
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('teams', '0001_initial'),
+        ("teams", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LeagueOfLegendsLeague',
+            name="LeagueOfLegendsLeague",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tier', models.CharField(choices=[('IRON', 'Iron'), ('BRONZE', 'Bronze'), ('SILVER', 'Silver'), ('GOLD', 'Gold'), ('PLATINUM', 'Platinum'), ('EMERALD', 'Emerald'), ('DIAMOND', 'Diamond'), ('MASTER', 'Master'), ('GRANDMASTER', 'Grandmaster'), ('CHALLENGER', 'Challenger')], max_length=25)),
-                ('rank', models.CharField(choices=[('I', 'I'), ('II', 'Ii'), ('III', 'Iii'), ('IV', 'Iv')], max_length=25)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "tier",
+                    models.CharField(
+                        choices=[
+                            ("IRON", "Iron"),
+                            ("BRONZE", "Bronze"),
+                            ("SILVER", "Silver"),
+                            ("GOLD", "Gold"),
+                            ("PLATINUM", "Platinum"),
+                            ("EMERALD", "Emerald"),
+                            ("DIAMOND", "Diamond"),
+                            ("MASTER", "Master"),
+                            ("GRANDMASTER", "Grandmaster"),
+                            ("CHALLENGER", "Challenger"),
+                        ],
+                        max_length=25,
+                    ),
+                ),
+                (
+                    "rank",
+                    models.CharField(
+                        choices=[("I", "I"), ("II", "Ii"), ("III", "Iii"), ("IV", "Iv")],
+                        max_length=25,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'ordering': ['tier', 'rank'],
+                "ordering": ["tier", "rank"],
             },
         ),
         migrations.CreateModel(
-            name='LeagueOfLegendsProvider',
+            name="LeagueOfLegendsProvider",
             fields=[
-                ('id', models.IntegerField(editable=False, primary_key=True, serialize=False)),
-                ('region', models.CharField(choices=[('BR', 'Br'), ('EUNE', 'Eune'), ('EUW', 'Euw'), ('JP', 'Jp'), ('KR', 'Kr'), ('LAN', 'Lan'), ('LAS', 'Las'), ('NA', 'Na'), ('OCE', 'Oce'), ('TR', 'Tr'), ('RU', 'Ru')], default='BR', max_length=10)),
-                ('url', models.URLField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ("id", models.IntegerField(editable=False, primary_key=True, serialize=False)),
+                (
+                    "region",
+                    models.CharField(
+                        choices=[
+                            ("BR", "Br"),
+                            ("EUNE", "Eune"),
+                            ("EUW", "Euw"),
+                            ("JP", "Jp"),
+                            ("KR", "Kr"),
+                            ("LAN", "Lan"),
+                            ("LAS", "Las"),
+                            ("NA", "Na"),
+                            ("OCE", "Oce"),
+                            ("TR", "Tr"),
+                            ("RU", "Ru"),
+                        ],
+                        default="BR",
+                        max_length=10,
+                    ),
+                ),
+                ("url", models.URLField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Tournament',
+            name="Tournament",
             fields=[
-                ('game', models.CharField(choices=[('league-of-legends', 'League Of Legends')], default='league-of-legends', max_length=50)),
-                ('platform', models.CharField(choices=[('pc', 'Pc')], default='pc', max_length=50)),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('description', models.TextField(blank=True)),
-                ('published', models.BooleanField(default=False)),
-                ('phase', models.CharField(choices=[('registration_open', 'Registration Open'), ('results_tracking', 'Results Tracking'), ('payment_pending', 'Payment Pending'), ('finished_and_paid', 'Finished And Paid')], default='registration_open', max_length=50)),
-                ('registration_start_date', models.DateTimeField()),
-                ('registration_end_date', models.DateTimeField()),
-                ('check_in_duration', models.IntegerField(blank=True, null=True)),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('start_time', models.TimeField()),
-                ('end_time', models.TimeField()),
-                ('feature_image', models.CharField(blank=True, max_length=255)),
-                ('is_entry_free', models.BooleanField(default=False, help_text='No entry fee')),
-                ('entry_fee', models.IntegerField(blank=True, default=0, null=True)),
-                ('prize_pool_enabled', models.BooleanField(default=True)),
-                ('max_teams', models.IntegerField(default=32)),
-                ('team_size', models.IntegerField(default=5, validators=[apps.tournaments.validators.validate_team_size])),
-                ('open_classification', models.BooleanField(default=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('challonge_tournament_id', models.IntegerField(blank=True, null=True)),
-                ('challonge_tournament_url', models.URLField(blank=True, max_length=500)),
+                (
+                    "game",
+                    models.CharField(
+                        choices=[("league-of-legends", "League Of Legends")],
+                        default="league-of-legends",
+                        max_length=50,
+                    ),
+                ),
+                ("platform", models.CharField(choices=[("pc", "Pc")], default="pc", max_length=50)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("description", models.TextField(blank=True)),
+                ("published", models.BooleanField(default=False)),
+                (
+                    "phase",
+                    models.CharField(
+                        choices=[
+                            ("registration_open", "Registration Open"),
+                            ("results_tracking", "Results Tracking"),
+                            ("payment_pending", "Payment Pending"),
+                            ("finished_and_paid", "Finished And Paid"),
+                        ],
+                        default="registration_open",
+                        max_length=50,
+                    ),
+                ),
+                ("registration_start_date", models.DateTimeField()),
+                ("registration_end_date", models.DateTimeField()),
+                ("check_in_duration", models.IntegerField(blank=True, null=True)),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                ("start_time", models.TimeField()),
+                ("end_time", models.TimeField()),
+                ("feature_image", models.CharField(blank=True, max_length=255)),
+                ("is_entry_free", models.BooleanField(default=False, help_text="No entry fee")),
+                ("entry_fee", models.IntegerField(blank=True, default=0, null=True)),
+                ("prize_pool_enabled", models.BooleanField(default=True)),
+                ("max_teams", models.IntegerField(default=32)),
+                (
+                    "team_size",
+                    models.IntegerField(
+                        default=5, validators=[apps.tournaments.validators.validate_team_size]
+                    ),
+                ),
+                ("open_classification", models.BooleanField(default=False)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("challonge_tournament_id", models.IntegerField(blank=True, null=True)),
+                ("challonge_tournament_url", models.URLField(blank=True, max_length=500)),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Match',
+            name="Match",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('team_a_id', models.UUIDField()),
-                ('team_b_id', models.UUIDField()),
-                ('winner_id', models.UUIDField(blank=True, null=True)),
-                ('loser_id', models.UUIDField(blank=True, null=True)),
-                ('is_wo', models.BooleanField()),
-                ('status', models.CharField(choices=[('future', 'Future'), ('past', 'Past'), ('live', 'Live')], default='future', max_length=50)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("team_a_id", models.UUIDField()),
+                ("team_b_id", models.UUIDField()),
+                ("winner_id", models.UUIDField(blank=True, null=True)),
+                ("loser_id", models.UUIDField(blank=True, null=True)),
+                ("is_wo", models.BooleanField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("future", "Future"), ("past", "Past"), ("live", "Live")],
+                        default="future",
+                        max_length=50,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Prize',
+            name="Prize",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('place', models.IntegerField()),
-                ('is_money', models.BooleanField(default=False)),
-                ('amount', models.FloatField()),
-                ('content', models.TextField(default='')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("place", models.IntegerField()),
+                ("is_money", models.BooleanField(default=False)),
+                ("amount", models.FloatField()),
+                ("content", models.TextField(default="")),
             ],
         ),
         migrations.CreateModel(
-            name='Registration',
+            name="Registration",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('game_slug', models.CharField(max_length=255)),
-                ('platform_slug', models.CharField(max_length=255)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('cancelled', 'Cancelled')], default='pending', max_length=50)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("game_slug", models.CharField(max_length=255)),
+                ("platform_slug", models.CharField(max_length=255)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("accepted", "Accepted"),
+                            ("rejected", "Rejected"),
+                            ("cancelled", "Cancelled"),
+                        ],
+                        default="pending",
+                        max_length=50,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Checkin',
+            name="Checkin",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='teams.team')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "team",
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="teams.team"),
+                ),
             ],
         ),
     ]
