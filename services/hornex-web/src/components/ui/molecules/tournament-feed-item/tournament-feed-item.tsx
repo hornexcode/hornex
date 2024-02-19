@@ -10,10 +10,18 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 
-const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
+const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
+  tournament,
+  className,
+}) => {
   const router = useRouter();
   return (
-    <div className="shadow-light bg-light-dark rounded">
+    <div
+      className={clsx(
+        'shadow-light bg-light-dark max-w-[230px] rounded',
+        className
+      )}
+    >
       <div className="bg-medium-dark highlight-white-5 rounded rounded-t">
         <div className="block px-5 py-4">
           <Link

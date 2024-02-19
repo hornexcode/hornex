@@ -1,9 +1,11 @@
 import { LangToggler } from '../molecules';
 import { Separator } from '../separator';
+import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import routes from '@/config/routes';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import { FileBadge, Home, SwordsIcon, Users2 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,14 +16,15 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-light-dark shadow-card fixed top-14 z-20 flex h-full w-[180px] flex-col  border-r border-zinc-700 p-4',
+        'bg-light-dark shadow-card fixed top-0 z-50 flex h-full w-[200px] flex-col border-r border-zinc-700 px-8 py-4',
         className
       )}
     >
-      <div className="flex items-center">
-        <div className="text-title mb-8 flex h-[20] w-[180px] items-center text-sm font-bold uppercase">
-          {t('sidebar.title')}
-        </div>
+      <div className="text-title mb-10 flex h-[20] w-[200px] items-center text-xl font-bold">
+        <Link className="mr-4 block font-extrabold text-white" href="/">
+          <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
+        </Link>
+        HORNEX
       </div>
       <ul className="flex w-full flex-col space-y-2 text-xs">
         <li className="">
