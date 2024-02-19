@@ -1,3 +1,4 @@
+import { getStatus } from '@/lib/models';
 import { TournamentTableRowProps } from './tournament-table-row.types';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import clsx from 'clsx';
@@ -15,8 +16,8 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
         </div>
         {/* name */}
         <div className="block lg:w-[200px]">
-          <div className="text-title text-sm">First tornament enabler</div>
-          <div className="text-body text-xs">league of legends</div>
+          <div className="text-title text-sm">{tournament.name}</div>
+          <div className="text-body text-xs">{tournament.game}</div>
         </div>
         {/* status */}
         <div className="block lg:w-[200px]">
@@ -33,7 +34,7 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                 <div className="relative flex">
                   <span className="absolute -left-3 top-1 h-2 w-2 rounded-full bg-green-400"></span>
                   <span className="text-xs font-bold uppercase text-green-400">
-                    open
+                    {getStatus(tournament)}
                   </span>
                 </div>
               </div>
