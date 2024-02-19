@@ -22,16 +22,37 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
+import moment from 'moment';
 import { useFieldArray, useForm } from 'react-hook-form';
 import z from 'zod';
 
+const { post: createTournament } = dataLoader<{}, {}>('createTournament');
+
 export function TournamentCreateForm() {
+  const { toast } = useToast();
   // 1. Define your form.
   const form = useForm<z.infer<typeof createFormSchema>>({
-    resolver: zodResolver(createFormSchema),
+    resolver: async (data) => {
+      try {
+        const parsedData = await createFormSchema.parseAsync(data);
+
+        return {
+          values: {
+            ...parsedData,
+            start_date: moment(parsedData.start_date).format('YYYY-MM-DD'),
+            end_date: moment(parsedData.end_date).format('YYYY-MM-DD'),
+          },
+          errors: {},
+        };
+      } catch (error: any) {
+        return { values: {}, errors: error.errors };
+      }
+    },
     defaultValues: {
       name: '',
     },
@@ -43,18 +64,25 @@ export function TournamentCreateForm() {
     control,
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof createFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    const tz = new Date().getTimezoneOffset() / 60;
-    await fetch('http://localhost:9876/v1/webhooks/timezone', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ timezone: tz, ...values }),
-    });
+    try {
+      const resp = await createTournament({}, values);
+
+      if (resp.error) {
+        console.log(resp.error);
+        return toast({ title: 'Error', description: resp.error.message });
+      }
+
+      toast({
+        title: 'Tournament created.',
+        description: 'Tournament created successfully.',
+      });
+    } catch (err) {
+      return toast({
+        title: 'Validation Error',
+        description: JSON.stringify(err),
+      });
+    }
   }
 
   return (
@@ -314,7 +342,7 @@ export function TournamentCreateForm() {
           render={({ field }) => (
             <FormItem className="border-light-dark flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-title">Is entry fee?</FormLabel>
+                <FormLabel className="text-title">Is entry free?</FormLabel>
                 <FormDescription>
                   If checked, the tournament will be free to enter and no
                   payment will be needed.

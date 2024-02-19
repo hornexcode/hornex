@@ -13,6 +13,8 @@ from lib.challonge import Tournament as ChallongeTournament
 
 logger = structlog.get_logger(__name__)
 
+CHECK_IN_DURATION = 15
+
 
 class CreateTournamentUseCaseParams:
     game: str
@@ -72,7 +74,7 @@ class CreateTournamentUseCaseParams:
         organizer_id = serializers.UUIDField()
         registration_start_date = serializers.DateTimeField()
         registration_end_date = serializers.DateTimeField()
-        check_in_duration = serializers.CharField()
+        # check_in_duration = serializers.CharField()
         start_date = serializers.DateField()
         end_date = serializers.DateField()
         start_time = serializers.TimeField()
@@ -84,7 +86,7 @@ class CreateTournamentUseCaseParams:
         open_classification = serializers.BooleanField()
         size = serializers.CharField()
         team_size = serializers.CharField()
-        map_name = serializers.CharField()
+        # map_na me = serializers.CharField()
         prizes = PrizeSerializer(many=True)
 
     def validate(self, **kwargs):
@@ -108,7 +110,7 @@ class CreateTournamentUseCaseParams:
                 found_places.append(place)
 
         if len(found_places) != len(required_places):
-            raise serializers.ValidationError("Prizes for places 1, 2, and 3 are required.")
+            raise ValidationError({"error": "Prizes for places 1, 2, and 3 are required."})
 
 
 class CreateTournamentUseCase:
@@ -149,7 +151,7 @@ class CreateTournamentUseCase:
             organizer=organizer,
             registration_start_date=registration_start_date,
             registration_end_date=registration_end_date,
-            check_in_duration=int(params.check_in_duration),
+            check_in_duration=CHECK_IN_DURATION,
             start_date=start_date,
             end_date=end_date,
             start_time=start_time,

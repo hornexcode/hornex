@@ -183,6 +183,10 @@ export const routes = {
   listTournaments: {
     path: 'v1/organizer/tournaments',
     method: Method.GET,
+  },
+  createTournament: {
+    path: 'v1/organizer/tournaments',
+    method: Method.POST,
     schema: null,
   },
 };
