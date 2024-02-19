@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from apps.leagueoflegends.models import Tournament
+from apps.tournaments.models import LeagueOfLegendsTournament
 
 
 class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
     classification = serializers.StringRelatedField()
 
     class Meta:
-        model = Tournament
+        model = LeagueOfLegendsTournament
         fields = "__all__"
 
     def get_classification(self, obj):

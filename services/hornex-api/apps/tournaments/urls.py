@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 
 from apps.tournaments.views import (
     RegistrationViewSet,
@@ -8,14 +8,19 @@ from apps.tournaments.views import (
     check_in,
     pariticipant_checked_in,
     team_check_in_status,
+    tournaments_controller,
 )
 
 # set namespace
 app_name = "tournaments"
 
 urlpatterns = [
-    # admin
-    path("/admin", include("apps.tournaments.admin.urls", namespace="admin")),
+    # organizer
+    path(
+        "/organizer/tournaments",
+        tournaments_controller,
+        name="dashboard-tournaments-controller",
+    ),
     # web
     path(
         "/tournaments/<str:id>/registrations",

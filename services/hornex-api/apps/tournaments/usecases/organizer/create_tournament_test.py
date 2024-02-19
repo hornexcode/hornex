@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from apps.tournaments.models import Prize
-from apps.tournaments.usecases.create_tournament import (
+from apps.tournaments.usecases.organizer.create_tournament import (
     CreateTournamentUseCase,
     CreateTournamentUseCaseParams,
 )
