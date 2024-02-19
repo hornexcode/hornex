@@ -8,7 +8,7 @@ export const createFormSchema = z.object({
   description: z.string().optional(),
   registration_start_date: z.date(),
   registration_end_date: z.date(),
-  check_in_duration: z.number(),
+  // check_in_duration: z.number(), disabled for now
   start_date: z.date(),
   end_date: z.date(),
   start_time: z.string(),
@@ -16,7 +16,7 @@ export const createFormSchema = z.object({
   feature_image: z.string().optional(),
   is_entry_free: z.boolean(),
   entry_fee: z.number().optional(),
-  prize_pool_enabled: z.boolean(),
+  prize_pool_enabled: z.boolean().default(false),
   open_classification: z.boolean(),
   size: z.string(),
   team_size: z.string(),

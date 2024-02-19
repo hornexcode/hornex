@@ -9,6 +9,9 @@ import {
 } from '@/components/ui/select';
 
 const InputTime = ({ ...props }) => {
+  // -03:00
+  const tzOffeset = (new Date().getTimezoneOffset() / -60).toString();
+  const timezone = `GMT${tzOffeset}`;
   const times = [
     { label: '00:00', value: '00:00' },
     { label: '00:30', value: '00:30' },
@@ -60,14 +63,15 @@ const InputTime = ({ ...props }) => {
     { label: '23:30', value: '23:30' },
   ];
   return (
-    <Select {...props}>
+    <Select onValueChange={props.onChange} value={props.value}>
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="Select a timezone" />
       </SelectTrigger>
       <SelectContent>
         {times.map((time, idx) => (
           <SelectItem key={idx} value={time.value}>
-            {time.label}
+            {time.label}{' '}
+            <span className="font-title text-xs">({timezone})</span>
           </SelectItem>
         ))}
       </SelectContent>

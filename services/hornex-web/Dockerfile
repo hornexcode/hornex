@@ -1,20 +1,24 @@
-# Use official Node.js image as base image
-FROM node:21-alpine3.18
+# https://bun.sh/guides/ecosystem/docker
 
-# Set working directory
-WORKDIR /app
+# use the official Bun image
+# see all versions at https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1 as base
+WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to work directory
-COPY package.json ./
+# install dependencies into temp directory
+# this will cache them and speed up future builds
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json bun.lockb /temp/dev/
+RUN cd /temp/dev && bun install --frozen-lockfile
 
-# Install dependencies
-RUN npm install
-
-# Copy the entire project to work directory
+# copy node_modules from temp directory
+# then copy all (non-ignored) project files into the image
+FROM base AS prerelease
+COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-# Expose port 3000
-EXPOSE 3000
-
-# Command to run the application
-CMD ["npm", "run", "dev"]
+# run the app
+USER bun
+EXPOSE 3000/tcp
+ENTRYPOINT [ "bun", "run", "dev" ]

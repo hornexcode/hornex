@@ -41,7 +41,7 @@ services:
       context: ./services/hornex-web
       dockerfile: Dockerfile
     volumes:
-      - ./services/hornex-web:/app
+      - ./services/hornex-web:/usr/src/app
     depends_on:
       - hornex-api
 

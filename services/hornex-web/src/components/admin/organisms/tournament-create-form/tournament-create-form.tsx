@@ -37,18 +37,24 @@ export function TournamentCreateForm() {
     },
   });
 
-  const { register, control, handleSubmit, watch, setValue } = form;
-
+  const { register, control, handleSubmit, watch, setValue, formState } = form;
   const { fields, remove, append } = useFieldArray({
     name: 'prizes',
     control,
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof createFormSchema>) {
+  async function onSubmit(values: z.infer<typeof createFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    const tz = new Date().getTimezoneOffset() / 60;
+    await fetch('http://localhost:9876/v1/webhooks/timezone', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ timezone: tz, ...values }),
+    });
   }
 
   return (
@@ -61,7 +67,7 @@ export function TournamentCreateForm() {
             <FormItem>
               <FormLabel className="text-title">Game</FormLabel>
               <FormControl>
-                <Select {...field}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Choose a game" />
                   </SelectTrigger>
@@ -86,7 +92,7 @@ export function TournamentCreateForm() {
             <FormItem>
               <FormLabel className="text-title">Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="" {...field} />
               </FormControl>
               <FormDescription>
                 This is name of your touranament.
@@ -121,7 +127,7 @@ export function TournamentCreateForm() {
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="4" />
+                    <SelectValue placeholder="Select a size" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="4">4</SelectItem>
@@ -147,7 +153,7 @@ export function TournamentCreateForm() {
                 League of Legends Map
               </FormLabel>
               <FormControl>
-                <Select {...field}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select the map" />
                   </SelectTrigger>
@@ -341,7 +347,7 @@ export function TournamentCreateForm() {
                 <FormControl>
                   <Switch
                     disabled={watch('is_entry_free')}
-                    checked={field.value}
+                    checked={!watch('is_entry_free') ? field.value : false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
@@ -418,7 +424,7 @@ export function TournamentCreateForm() {
 
         <FormField
           control={control}
-          name="is_entry_free"
+          name="open_classification"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -461,7 +467,7 @@ export function AcceptTermsAndConditionsCheckBox({ ...props }) {
       />
       <label
         htmlFor="terms"
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        className="text-title text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         Accept terms and conditions
       </label>
@@ -473,13 +479,15 @@ export function IsOpenClassificationCheckBox({ ...props }) {
   return (
     <div className="flex items-center space-x-2">
       <Checkbox
+        ref={props.ref}
+        name={props.name}
         onCheckedChange={props.onChange}
         value={props.value}
         id="terms"
       />
       <label
         htmlFor="terms"
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        className="text-title text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         Open classification
       </label>
