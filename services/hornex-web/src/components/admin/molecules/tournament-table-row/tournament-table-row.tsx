@@ -1,6 +1,6 @@
-import { getStatus } from '@/lib/models';
 import { TournamentTableRowProps } from './tournament-table-row.types';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
+import { getStatus } from '@/lib/models';
 import clsx from 'clsx';
 import { Edit, UsersIcon } from 'lucide-react';
 import Image from 'next/image';
