@@ -6,7 +6,7 @@ import { Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const { useData: useTournaments } = dataLoader<Tournament[], {}>(
   'listTournaments'
