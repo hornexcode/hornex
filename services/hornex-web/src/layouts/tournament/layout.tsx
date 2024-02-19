@@ -1,7 +1,11 @@
-import Header from './header';
-import { Sidebar } from '@/components/ui/atoms/sidebar';
+import Header from '../header';
+import { Sidebar } from './sidebar';
 
-export const AppLayout = ({ children }: { children: React.ReactNode }) => {
+export const TournamentLayout = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   return (
     <div className="">
       <Sidebar />
