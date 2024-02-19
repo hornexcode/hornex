@@ -1,13 +1,6 @@
 import Button from '@/components/ui/atoms/button/button';
-import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
-import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
 import { AppLayout } from '@/layouts';
-import { Game, GetAvailableGamesResponse } from '@/lib/models/types';
-import { dataLoader as dataLoader } from '@/lib/request';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 
 const ThankYouPage = () => {
   return (
