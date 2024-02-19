@@ -14,8 +14,10 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { getStatus } from '@/lib/models';
+import { Cog8ToothIcon } from '@heroicons/react/20/solid';
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
-import { Edit, UsersIcon } from 'lucide-react';
+import { Edit, Edit3Icon, UsersIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { FC } from 'react';
 
@@ -58,7 +60,9 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                 <div className="bg-dark flex w-full rounded-lg">
                   <div
                     style={{
-                      width: `${(20 / 32) * 100}%`,
+                      width: `${
+                        (tournament.teams.length / tournament.max_teams) * 100
+                      }%`,
                     }}
                     className="h-2 rounded-lg bg-amber-500"
                   ></div>
@@ -71,7 +75,9 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
           <div data-cy="edit">
             <Sheet>
               <SheetTrigger asChild>
-                <Edit className="h-5 w-5" />
+                <div className="flex text-sm">
+                  <DotsHorizontalIcon className="h-5 w-5" />
+                </div>
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
@@ -105,7 +111,9 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                 </div>
                 <SheetFooter>
                   <SheetClose asChild>
-                    <Button type="submit">Save changes</Button>
+                    <Button shape="rounded" size="mini" type="submit">
+                      Save changes
+                    </Button>
                   </SheetClose>
                 </SheetFooter>
               </SheetContent>

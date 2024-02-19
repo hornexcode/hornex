@@ -1,6 +1,6 @@
 import { Tournament } from '@/lib/models';
 
-export type TournamentListTableProps = {
+export type TournamentTableProps = {
   tournaments: Tournament[];
   className?: string;
 };

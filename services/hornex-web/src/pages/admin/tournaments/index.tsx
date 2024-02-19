@@ -1,4 +1,4 @@
-import TournamentListTable from '@/components/admin/organisms/tournament-list-table';
+import TournamentTable from '@/components/admin/organisms/tournament-table';
 import Button from '@/components/ui/atoms/button';
 import { AppLayout } from '@/layouts';
 import { Tournament } from '@/lib/models';
@@ -33,7 +33,7 @@ function DashboardPage() {
       </div>
       <div className="mt-4">
         {!isLoading && tournaments && (
-          <TournamentListTable tournaments={tournaments} />
+          <TournamentTable tournaments={tournaments} />
         )}
       </div>
     </div>

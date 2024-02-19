@@ -34,6 +34,10 @@ from apps.tournaments.usecases.create_registration import (
     CreateRegistrationUseCase,
     CreateRegistrationUseCaseParams,
 )
+from apps.tournaments.usecases.organizer.create_tournament import (
+    CreateTournamentUseCase,
+    CreateTournamentUseCaseParams,
+)
 from core.route import extract_game_and_platform
 from jwt_token.authentication import JWTAuthentication
 from lib.challonge import Tournament as ChallongeTournamentAPIResource
@@ -303,5 +307,24 @@ def check_in(request, *args, **kwargs):
 
         return Response(
             {"message": "Checkin successful"},
+            status=status.HTTP_200_OK,
+        )
+
+
+@api_view(["POST", "GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def tournaments_controller(request):
+    if request.method == "POST":
+        tournament = CreateTournamentUseCase().execute(
+            CreateTournamentUseCaseParams(**request.data)
+        )
+        return Response({"id": tournament.id}, status=status.HTTP_201_CREATED)
+    if request.method == "GET":
+        user = request.user
+        tournaments = LeagueOfLegendsTournament.objects.filter(organizer=user).all()
+
+        return Response(
+            LeagueOfLegendsTournamentSerializer(tournaments, many=True).data,
             status=status.HTTP_200_OK,
         )

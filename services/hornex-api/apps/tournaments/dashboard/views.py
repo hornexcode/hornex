@@ -26,7 +26,9 @@ def tournaments_controller(request):
         )
         return Response({"id": tournament.id}, status=status.HTTP_201_CREATED)
     if request.method == "GET":
-        tournaments = LeagueOfLegendsTournament.objects.all()
+        user = request.user
+
+        tournaments = LeagueOfLegendsTournament.objects.filter(organizer=user).all()
 
         return Response(
             LeagueOfLegendsTournamentSerializer(tournaments, many=True).data,
