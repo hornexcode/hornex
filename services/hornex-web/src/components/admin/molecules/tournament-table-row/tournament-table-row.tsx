@@ -1,5 +1,18 @@
 import { TournamentTableRowProps } from './tournament-table-row.types';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
+import Button from '@/components/ui/atoms/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { getStatus } from '@/lib/models';
 import clsx from 'clsx';
 import { Edit, UsersIcon } from 'lucide-react';
@@ -27,7 +40,7 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                 <div className="flex items-center">
                   <UsersIcon className="text-body mr-1 h-5 w-4" />
                   <span className="font-display text-body pr-4 text-xs font-bold">
-                    20/32
+                    {tournament.teams.length}/{tournament.max_teams}
                   </span>
                 </div>
                 {/* phase status */}
@@ -56,7 +69,47 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
         </div>
         <div className="hover:text-title ml-auto cursor-pointer">
           <div data-cy="edit">
-            <Edit className="h-5 w-5" />
+            <Sheet>
+              <SheetTrigger asChild>
+                <Edit className="h-5 w-5" />
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Edit profile</SheetTitle>
+                  <SheetDescription>
+                    Make changes to your profile here. Click save when
+                    you&apos;re done.
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      value="Pedro Duarte"
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="username" className="text-right">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      value="@peduarte"
+                      className="col-span-3"
+                    />
+                  </div>
+                </div>
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <Button type="submit">Save changes</Button>
+                  </SheetClose>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
