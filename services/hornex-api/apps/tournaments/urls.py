@@ -14,8 +14,8 @@ from apps.tournaments.views import (
 app_name = "tournaments"
 
 urlpatterns = [
-    # admin
-    path("/admin", include("apps.tournaments.admin.urls", namespace="admin")),
+    # organizer
+    path("/organizer", include("apps.tournaments.organizer.urls", namespace="organizer")),
     # web
     path(
         "/tournaments/<str:id>/registrations",

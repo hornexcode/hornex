@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.tournaments.admin.views import tournaments_controller
+from apps.tournaments.organizer.views import tournaments_controller
 
 app_name = "tournaments"
 
@@ -8,6 +8,6 @@ urlpatterns = [
     path(
         "/tournaments",
         tournaments_controller,
-        name="register",
+        name="organizer-tournaments-controller",
     ),
 ]

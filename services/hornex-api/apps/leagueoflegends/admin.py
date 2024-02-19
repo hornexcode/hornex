@@ -9,9 +9,9 @@ from apps.leagueoflegends.models import (
 )
 
 
-@admin.register(Tournament)
-class TournamentAdmin(admin.ModelAdmin):
-    list_display = ["name", "challonge_tournament_id", "phase"]
+# @admin.register(Tournament)
+# class TournamentAdmin(admin.ModelAdmin):
+# list_display = ["name", "challonge_tournament_id", "phase"]
 
 
-admin.site.register([LeagueEntry, Summoner, Session, Provider])
+# admin.site.register([LeagueEntry, Summoner, Session, Provider])

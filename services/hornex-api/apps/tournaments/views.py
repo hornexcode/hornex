@@ -127,12 +127,6 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     @transaction.atomic
     def register(self, request, **kwargs):
-        print(
-            {
-                **request.data,
-                "tournament": kwargs["id"],
-            }
-        )
         uc = CreateRegistrationUseCase()
 
         registration = uc.execute(

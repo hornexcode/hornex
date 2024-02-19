@@ -180,4 +180,9 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  listTournaments: {
+    path: 'v1/organizer/tournaments',
+    method: Method.GET,
+    schema: null,
+  },
 };
