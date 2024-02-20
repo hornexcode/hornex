@@ -1,9 +1,17 @@
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { LongArrowLeft } from '@/components/ui/atoms/icons/long-arrow-left';
 import routes from '@/config/routes';
-import { Cog6ToothIcon } from '@heroicons/react/20/solid';
+import { Bars2Icon, Cog6ToothIcon } from '@heroicons/react/20/solid';
+import { DashboardIcon } from '@radix-ui/react-icons';
 import classNames from 'classnames';
-import { Edit2Icon, FileBadge, Home, SwordsIcon, Users2 } from 'lucide-react';
+import {
+  Edit2Icon,
+  FileBadge,
+  Gamepad2Icon,
+  Home,
+  SwordsIcon,
+  Users2,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -41,9 +49,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <Edit2Icon className="text-body mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
+                <DashboardIcon className="text-body mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-body text-sm">Tournament details</span>
+              <span className="text-body text-sm">Dashbboard</span>
             </div>
           </Link>
         </li>
@@ -55,11 +63,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <FileBadge className="text-body mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
+                <Gamepad2Icon className="text-body mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-body text-sm">
-                {t('sidebar.registrations')}
-              </span>
+              <span className="text-body text-sm">Games</span>
             </div>
           </Link>
         </li>
