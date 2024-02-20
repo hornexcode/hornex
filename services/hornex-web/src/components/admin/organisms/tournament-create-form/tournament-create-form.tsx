@@ -28,6 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import { useFieldArray, useForm } from 'react-hook-form';
 import z from 'zod';
 
@@ -35,26 +36,13 @@ const { post: createTournament } = dataLoader<{}, {}>('createTournament');
 
 export function TournamentCreateForm() {
   const { toast } = useToast();
+  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof createFormSchema>>({
-    resolver: async (data) => {
-      try {
-        const parsedData = await createFormSchema.parseAsync(data);
-
-        return {
-          values: {
-            ...parsedData,
-            start_date: moment(parsedData.start_date).format('YYYY-MM-DD'),
-            end_date: moment(parsedData.end_date).format('YYYY-MM-DD'),
-          },
-          errors: {},
-        };
-      } catch (error: any) {
-        return { values: {}, errors: error.errors };
-      }
-    },
+    resolver: zodResolver(createFormSchema),
     defaultValues: {
       name: '',
+      is_entry_free: false,
     },
   });
 
@@ -66,24 +54,33 @@ export function TournamentCreateForm() {
 
   async function onSubmit(values: z.infer<typeof createFormSchema>) {
     try {
-      const resp = await createTournament({}, values);
+      const resp = await createTournament(
+        {},
+        {
+          ...values,
+          start_date: moment(values.start_date).format('YYYY-MM-DD'),
+          end_date: moment(values.end_date).format('YYYY-MM-DD'),
+        }
+      );
 
-      if (resp.error) {
-        console.log(resp.error);
+      if (resp.error)
         return toast({ title: 'Error', description: resp.error.message });
-      }
 
       toast({
-        title: 'Tournament created.',
+        title: 'Tournament created',
         description: 'Tournament created successfully.',
       });
+
+      return router.push('/admin/tournaments');
     } catch (err) {
       return toast({
-        title: 'Validation Error',
+        title: 'Error creating tournament',
         description: JSON.stringify(err),
       });
     }
   }
+
+  console.log('@ERRORS', formState.errors);
 
   return (
     <Form {...form}>
@@ -120,10 +117,10 @@ export function TournamentCreateForm() {
             <FormItem>
               <FormLabel className="text-title">Name</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input placeholder="Champions Cup" {...field} />
               </FormControl>
               <FormDescription>
-                This is name of your touranament.
+                This is name of your tournament.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -211,7 +208,7 @@ export function TournamentCreateForm() {
                     <SelectValue placeholder="Select a size" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="system">5</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -357,6 +354,29 @@ export function TournamentCreateForm() {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={control}
+          name="entry_fee"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-title">Entry Fee</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  placeholder="1000"
+                  disabled={watch('is_entry_free')}
+                />
+              </FormControl>
+              <FormDescription>
+                This is the charging value for enter the tournament.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="border-accent rounded-lg border">
           <FormField
             control={control}
@@ -396,24 +416,23 @@ export function TournamentCreateForm() {
                   <div className="text-title">{fld.place}# place prize</div>
                   <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-title">Custom</FormLabel>
+                      <FormLabel className="text-title">Money prize</FormLabel>
                       <FormDescription>
-                        If enabled, the prize pool will be calculated based on
-                        the registrations entry fee
+                        If enabled, the prize will be paid in money
                       </FormDescription>
                     </div>
                     <FormControl>
                       <Switch
                         onCheckedChange={(val) =>
-                          setValue(`prizes.${index}.custom` as const, !val)
+                          setValue(`prizes.${index}.is_money` as const, val)
                         }
-                        {...register(`prizes.${index}.custom` as const)}
+                        {...register(`prizes.${index}.is_money` as const)}
                       />
                     </FormControl>
                   </FormItem>
                   <Input
                     type="text"
-                    disabled={watch(`prizes.${index}.custom` as const)}
+                    disabled={watch(`prizes.${index}.is_money` as const)}
                     placeholder="100"
                     {...register(`prizes.${index}.amount` as const)}
                   />
@@ -437,9 +456,9 @@ export function TournamentCreateForm() {
               className="border-accent flex w-full items-center justify-center rounded-lg border p-5 text-sm"
               onClick={() =>
                 append({
-                  custom: true,
+                  is_money: true,
                   place: fields.length + 1,
-                  amount: 0,
+                  amount: '0',
                   content: '',
                 })
               }
@@ -467,7 +486,7 @@ export function TournamentCreateForm() {
         />
         <FormField
           control={control}
-          name="is_entry_free"
+          name="terms"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -489,7 +508,7 @@ export function AcceptTermsAndConditionsCheckBox({ ...props }) {
   return (
     <div className="flex items-center space-x-2">
       <Checkbox
-        onCheckedChange={props.onchange}
+        onCheckedChange={props.onChange}
         value={props.value}
         id="terms"
       />
@@ -511,10 +530,10 @@ export function IsOpenClassificationCheckBox({ ...props }) {
         name={props.name}
         onCheckedChange={props.onChange}
         value={props.value}
-        id="terms"
+        id="open_classification"
       />
       <label
-        htmlFor="terms"
+        htmlFor="open_classification"
         className="text-title text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         Open classification

@@ -7,7 +7,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
-from apps.tournaments.models import Prize, Tournament
+from apps.tournaments.models import LeagueOfLegendsTournament, Prize
 from apps.users.models import User
 from lib.challonge import Tournament as ChallongeTournament
 
@@ -66,7 +66,7 @@ class CreateTournamentUseCaseParams:
             place = serializers.IntegerField()
             is_money = serializers.BooleanField()
             amount = serializers.FloatField()
-            content = serializers.CharField()
+            content = serializers.CharField(required=False)
 
         game = serializers.CharField()
         name = serializers.CharField()
@@ -97,7 +97,7 @@ class CreateTournamentUseCaseParams:
         if params.get("prize_pool_enabled") and params.get("is_entry_free"):
             raise ValidationError({"error": "Prize pool cannot be enabled when the entry is free"})
 
-        if not params.get("prize_pool_enabled"):
+        if not params.get("prize_pool_enabled") and not params.get("is_entry_free"):
             self.validate_prizes(params.get("prizes", []))
 
     def validate_prizes(self, prizes):
@@ -119,33 +119,47 @@ class CreateTournamentUseCase:
     """
 
     @transaction.atomic
-    def execute(self, params: CreateTournamentUseCaseParams) -> Tournament:
+    def execute(self, params: CreateTournamentUseCaseParams) -> LeagueOfLegendsTournament:
         try:
             organizer = User.objects.get(id=params.organizer_id)
         except User.DoesNotExist:
             raise ValidationError({"error": "User not found"})
 
         registration_start_date = datetime.strptime(
-            params.registration_start_date, "%Y-%m-%dT%H:%M:%S"
+            params.registration_start_date, "%Y-%m-%dT%H:%M:%S.000Z"
         )
-        registration_end_date = datetime.strptime(params.registration_end_date, "%Y-%m-%dT%H:%M:%S")
+        registration_end_date = datetime.strptime(
+            params.registration_end_date, "%Y-%m-%dT%H:%M:%S.000Z"
+        )
         start_date = datetime.strptime(params.start_date, "%Y-%m-%d").date()
         end_date = datetime.strptime(params.end_date, "%Y-%m-%d").date()
         start_time = datetime.strptime(params.start_time, "%H:%M").time()
         end_time = datetime.strptime(params.end_time, "%H:%M").time()
 
-        if registration_start_date >= registration_end_date:
+        start_at = datetime.combine(start_date, start_time)
+
+        if registration_start_date > registration_end_date:
             raise ValidationError(
                 {"error": "Registration start date is greater than registration end date"}
             )
 
-        if start_date >= end_date:
+        # Challonge constraint
+        if start_at <= datetime.now():
+            raise ValidationError({"error": "Start date needs to be in the future"})
+
+        if start_date > end_date:
             raise ValidationError({"error": "Start date is greater than end date"})
 
         if registration_end_date.date() > start_date:
             raise ValidationError({"error": "Registration end date is greater than start date"})
 
-        tournament = Tournament.objects.create(
+        if params.is_entry_free:
+            params.entry_fee = 0
+
+        if not params.is_entry_free and not params.entry_fee or float(params.entry_fee) < 1:
+            raise ValidationError({"error": "Invalid entry fee"})
+
+        tournament = LeagueOfLegendsTournament.objects.create(
             name=params.name,
             description=params.description,
             organizer=organizer,
@@ -174,13 +188,10 @@ class CreateTournamentUseCase:
                     content=prize.get("content"),
                 )
 
-        start_at = datetime.combine(tournament.start_date, tournament.start_time).strftime(
-            "%Y-%m-%dT%H:%M:%S%+00:00"
-        )
         ch_tournament = ChallongeTournament.create(
             name=tournament.name,
             teams=True,
-            start_at=start_at,
+            start_at=start_at.strftime("%Y-%m-%dT%H:%M:%S%+00:00"),
             check_in_duration=tournament.check_in_duration,
             game=tournament.game,
         )

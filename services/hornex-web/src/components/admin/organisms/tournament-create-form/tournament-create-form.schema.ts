@@ -15,7 +15,7 @@ export const createFormSchema = z.object({
   end_time: z.string(),
   feature_image: z.string().optional(),
   is_entry_free: z.boolean(),
-  entry_fee: z.number().optional(),
+  entry_fee: z.string().optional(),
   prize_pool_enabled: z.boolean().default(false),
   open_classification: z.boolean(),
   size: z.string(),
@@ -24,11 +24,12 @@ export const createFormSchema = z.object({
   prizes: z
     .array(
       z.object({
-        custom: z.boolean(),
         place: z.number(),
-        amount: z.number(),
+        is_money: z.boolean(),
+        amount: z.string(),
         content: z.string().optional(),
       })
     )
     .optional(),
+  terms: z.boolean(),
 });
