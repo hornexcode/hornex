@@ -171,7 +171,7 @@ class CreateTournamentUseCase:
 
         if not params.prize_pool_enabled:
             for prize in params.prizes:
-                if prize.get("is_money") and prize.get("amount") and int(prize.get("amount")) < 1:
+                if prize.get("is_money") and not prize.get("amount"):
                     raise ValidationError({"error": f"Invalid amount for #{prize.get('place')}"})
 
                 if not prize.get("is_money") and prize.get("content") == "":
