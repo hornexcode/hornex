@@ -22,7 +22,6 @@ class CreateTournamentUseCaseParams:
     description: str
     organizer_id: str
     registration_start_date: str
-    registration_end_date: str
     check_in_duration: str
     start_date: str
     end_date: str
@@ -30,7 +29,7 @@ class CreateTournamentUseCaseParams:
     end_time: str
     feature_image: str
     is_entry_free: bool
-    entry_fee: str
+    entry_fee: float
     prize_pool_enabled: bool
     open_classification: bool
     size: str
@@ -45,7 +44,6 @@ class CreateTournamentUseCaseParams:
         self.description = kwargs.get("description")
         self.organizer_id = kwargs.get("organizer_id")
         self.registration_start_date = kwargs.get("registration_start_date")
-        self.registration_end_date = kwargs.get("registration_end_date")
         self.check_in_duration = kwargs.get("check_in_duration")
         self.start_date = kwargs.get("start_date")
         self.end_date = kwargs.get("end_date")
@@ -66,14 +64,13 @@ class CreateTournamentUseCaseParams:
             place = serializers.IntegerField()
             is_money = serializers.BooleanField()
             amount = serializers.FloatField()
-            content = serializers.CharField(required=False)
+            content = serializers.CharField(required=False, allow_blank=True)
 
         game = serializers.CharField()
         name = serializers.CharField()
         description = serializers.CharField()
         organizer_id = serializers.UUIDField()
         registration_start_date = serializers.DateTimeField()
-        registration_end_date = serializers.DateTimeField()
         # check_in_duration = serializers.CharField()
         start_date = serializers.DateField()
         end_date = serializers.DateField()
@@ -86,7 +83,7 @@ class CreateTournamentUseCaseParams:
         open_classification = serializers.BooleanField()
         size = serializers.CharField()
         team_size = serializers.CharField()
-        # map_na me = serializers.CharField()
+        # map_name = serializers.CharField()
         prizes = PrizeSerializer(many=True)
 
     def validate(self, **kwargs):
@@ -97,7 +94,7 @@ class CreateTournamentUseCaseParams:
         if params.get("prize_pool_enabled") and params.get("is_entry_free"):
             raise ValidationError({"error": "Prize pool cannot be enabled when the entry is free"})
 
-        if not params.get("prize_pool_enabled") and not params.get("is_entry_free"):
+        if not params.get("prize_pool_enabled"):
             self.validate_prizes(params.get("prizes", []))
 
     def validate_prizes(self, prizes):
@@ -128,35 +125,28 @@ class CreateTournamentUseCase:
         registration_start_date = datetime.strptime(
             params.registration_start_date, "%Y-%m-%dT%H:%M:%S.000Z"
         )
-        registration_end_date = datetime.strptime(
-            params.registration_end_date, "%Y-%m-%dT%H:%M:%S.000Z"
-        )
         start_date = datetime.strptime(params.start_date, "%Y-%m-%d").date()
         end_date = datetime.strptime(params.end_date, "%Y-%m-%d").date()
         start_time = datetime.strptime(params.start_time, "%H:%M").time()
         end_time = datetime.strptime(params.end_time, "%H:%M").time()
 
         start_at = datetime.combine(start_date, start_time)
-
-        if registration_start_date > registration_end_date:
-            raise ValidationError(
-                {"error": "Registration start date is greater than registration end date"}
-            )
+        end_at = datetime.combine(end_date, end_time)
 
         # Challonge constraint
         if start_at <= datetime.now():
             raise ValidationError({"error": "Start date needs to be in the future"})
 
-        if start_date > end_date:
+        if start_at > end_at:
             raise ValidationError({"error": "Start date is greater than end date"})
 
-        if registration_end_date.date() > start_date:
-            raise ValidationError({"error": "Registration end date is greater than start date"})
+        if registration_start_date > start_at:
+            raise ValidationError({"error": "Registration start date is greater than start date"})
 
         if params.is_entry_free:
             params.entry_fee = 0
 
-        if not params.is_entry_free and not params.entry_fee or float(params.entry_fee) < 1:
+        if not params.is_entry_free and not params.entry_fee:
             raise ValidationError({"error": "Invalid entry fee"})
 
         tournament = LeagueOfLegendsTournament.objects.create(
@@ -164,14 +154,15 @@ class CreateTournamentUseCase:
             description=params.description,
             organizer=organizer,
             registration_start_date=registration_start_date,
-            registration_end_date=registration_end_date,
+            # TO BE REMOVED
+            registration_end_date=registration_start_date,
             check_in_duration=CHECK_IN_DURATION,
             start_date=start_date,
             end_date=end_date,
             start_time=start_time,
             end_time=end_time,
             is_entry_free=params.is_entry_free,
-            entry_fee=float(params.entry_fee),
+            entry_fee=params.entry_fee,
             prize_pool_enabled=params.prize_pool_enabled,
             open_classification=params.open_classification,
             max_teams=int(params.size),
@@ -180,6 +171,12 @@ class CreateTournamentUseCase:
 
         if not params.prize_pool_enabled:
             for prize in params.prizes:
+                if prize.get("is_money") and prize.get("amount") and int(prize.get("amount")) < 1:
+                    raise ValidationError({"error": f"Invalid amount for #{prize.get('place')}"})
+
+                if not prize.get("is_money") and prize.get("content") == "":
+                    raise ValidationError({"error": "No money prizes must have description"})
+
                 Prize.objects.create(
                     tournament=tournament,
                     place=prize.get("place"),

@@ -1,12 +1,12 @@
-import React, { useReducer } from 'react';
 import { Input, InputProps } from '../ui/input';
+import React, { ChangeEventHandler, useReducer } from 'react';
 
 interface MoneyInputProps extends InputProps {
   locales?: Intl.LocalesArgument;
   options?: Intl.NumberFormatOptions;
 }
 
-export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(
+const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(
   (props, ref) => {
     const moneyFormatter = Intl.NumberFormat(props.locales, props.options);
 
@@ -17,19 +17,19 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(
       return moneyFormatter.format(Number(digits) / 100);
     }, initialValue);
 
-    function handleChange(formattedValue: string, realChangeFn: Function) {
-      const digits = formattedValue.replace(/\D/g, '');
-      const realValue = Number(digits) / 100;
-      realChangeFn(realValue);
-    }
-
     return (
       <Input
         placeholder={props.placeholder}
         {...props}
         onChange={(e) => {
           setValue(e.target.value);
-          handleChange(e.target.value, props.onChange as Function);
+
+          const digits = e.target.value.replace(/\D/g, '');
+          const realValue: unknown = Number(digits) / 100;
+          props.onChange?.({
+            ...e,
+            target: { ...e.target, value: realValue as string },
+          });
         }}
         value={value}
         ref={ref}
@@ -37,3 +37,7 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(
     );
   }
 );
+
+MoneyInput.displayName = 'MoneyInput';
+
+export { MoneyInput };

@@ -253,7 +253,7 @@ class Prize(models.Model):
     content = models.TextField(default="")
 
     def __str__(self) -> str:
-        return f"Prize ({self.id}) | {self.tournament.name}"
+        return f"Prize ({self.id}) | {self.tournament.name} - {self.place}º"
 
 
 class Registration(models.Model):

@@ -44,6 +44,7 @@ export function TournamentCreateForm() {
     defaultValues: {
       name: '',
       is_entry_free: false,
+      open_classification: false,
       terms: false,
     },
   });
@@ -240,25 +241,6 @@ export function TournamentCreateForm() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={control}
-            name="registration_end_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-title">
-                  Registration End Date
-                </FormLabel>
-                <FormControl>
-                  <DatePicker date={field.value} onSelect={field.onChange} />
-                </FormControl>
-                <FormDescription>
-                  This define when the registration period will end.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <FormField
@@ -366,6 +348,7 @@ export function TournamentCreateForm() {
               <FormControl>
                 <MoneyInput
                   {...field}
+                  value={watch('is_entry_free') ? 0.0 : field.value}
                   placeholder="R$ 10,00"
                   disabled={watch('is_entry_free')}
                   // Brazilian currency config
@@ -418,56 +401,60 @@ export function TournamentCreateForm() {
               hidden: watch('prize_pool_enabled'),
             })}
           >
-            {fields.map((fld, index) => {
-              return (
-                <div
-                  className="border-accent space-y-3 rounded-lg border p-5"
-                  key={fld.id}
+            {fields.map((fld, index) => (
+              <div
+                className="border-accent space-y-3 rounded-lg border p-5"
+                key={fld.id}
+              >
+                <div className="text-title">{fld.place}# place prize</div>
+                <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-title">Money prize</FormLabel>
+                    <FormDescription>
+                      If enabled, the prize will be paid in money
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      onCheckedChange={(val) =>
+                        setValue(`prizes.${index}.is_money` as const, val)
+                      }
+                      {...register(`prizes.${index}.is_money` as const)}
+                    />
+                  </FormControl>
+                </FormItem>
+
+                <Input
+                  type="number"
+                  placeholder="100"
+                  {...register(`prizes.${index}.amount` as const)}
+                  disabled={!watch(`prizes.${index}.is_money` as const)}
+                />
+                <FormMessage>
+                  {formState.errors.prizes &&
+                    formState.errors.prizes[index]?.amount?.message}
+                </FormMessage>
+
+                <Textarea
+                  placeholder="Prizer description"
+                  {...register(`prizes.${index}.content`)}
+                />
+                <button
+                  type="button"
+                  className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-sm text-red-500 transition-all hover:bg-red-500"
+                  onClick={() => remove(index)}
                 >
-                  <div className="text-title">{fld.place}# place prize</div>
-                  <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-title">Money prize</FormLabel>
-                      <FormDescription>
-                        If enabled, the prize will be paid in money
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        onCheckedChange={(val) =>
-                          setValue(`prizes.${index}.is_money` as const, val)
-                        }
-                        {...register(`prizes.${index}.is_money` as const)}
-                      />
-                    </FormControl>
-                  </FormItem>
-                  <Input
-                    type="text"
-                    disabled={watch(`prizes.${index}.is_money` as const)}
-                    placeholder="100"
-                    {...register(`prizes.${index}.amount` as const)}
-                  />
-                  <Textarea
-                    placeholder="Description of the prize pool"
-                    {...register(`prizes.${index}.content`)}
-                  />
-                  <button
-                    type="button"
-                    className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-sm text-red-500 transition-all hover:bg-red-500"
-                    onClick={() => remove(index)}
-                  >
-                    <TrashIcon className="mr-2 h-4 w-4" />
-                    Remove
-                  </button>
-                </div>
-              );
-            })}
+                  <TrashIcon className="mr-2 h-4 w-4" />
+                  Remove
+                </button>
+              </div>
+            ))}
             <button
               type="button"
               className="border-accent flex w-full items-center justify-center rounded-lg border p-5 text-sm"
               onClick={() =>
                 append({
-                  is_money: true,
+                  is_money: false,
                   place: fields.length + 1,
                   amount: '0',
                   content: '',
