@@ -171,7 +171,7 @@ class CreateTournamentUseCase:
             start_time=start_time,
             end_time=end_time,
             is_entry_free=params.is_entry_free,
-            entry_fee=params.entry_fee,
+            entry_fee=float(params.entry_fee),
             prize_pool_enabled=params.prize_pool_enabled,
             open_classification=params.open_classification,
             max_teams=int(params.size),

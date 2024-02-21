@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { MoneyInput } from '@/components/ui/input-money';
 import { InputTime } from '@/components/ui/input-time';
 import {
   Select,
@@ -43,6 +44,7 @@ export function TournamentCreateForm() {
     defaultValues: {
       name: '',
       is_entry_free: false,
+      terms: false,
     },
   });
 
@@ -362,11 +364,20 @@ export function TournamentCreateForm() {
             <FormItem>
               <FormLabel className="text-title">Entry Fee</FormLabel>
               <FormControl>
-                <Input
+                <MoneyInput
                   {...field}
-                  type="number"
-                  placeholder="1000"
+                  placeholder="R$ 10,00"
                   disabled={watch('is_entry_free')}
+                  // Brazilian currency config
+                  locales="pt-BR"
+                  options={{
+                    currency: 'BRL',
+                    currencyDisplay: 'symbol',
+                    currencySign: 'standard',
+                    style: 'currency',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }}
                 />
               </FormControl>
               <FormDescription>
