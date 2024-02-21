@@ -71,9 +71,6 @@ module.exports = {
       fontFamily: {
         body: ['__Source_Sans_3_24fffc', 'JetBrains Mono', 'monospace'],
       },
-      fontSize: {
-        '13px': ['13px', '18px'],
-      },
       borderWidth: {
         3: '3px',
       },

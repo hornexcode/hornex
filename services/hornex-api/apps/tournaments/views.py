@@ -11,7 +11,7 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from apps.leagueoflegends.serializers import (
@@ -28,6 +28,7 @@ from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registra
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.serializers import (
     RegistrationReadSerializer,
+    TestModeTournamentSerializer,
     TournamentSerializer,
 )
 from apps.tournaments.usecases.create_registration import (
@@ -115,6 +116,15 @@ class TournamentViewSet(viewsets.ModelViewSet):
         if obj.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
             return LeagueOfLegendsTournament.objects.get(id=obj.id)
         return obj
+
+
+# remove
+class TestModeTournamentViewSet(viewsets.ModelViewSet):
+    queryset = Tournament.objects.all()
+    serializer_class = TestModeTournamentSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    authentication_classes = [JWTAuthentication]
+    lookup_field = "id"
 
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):

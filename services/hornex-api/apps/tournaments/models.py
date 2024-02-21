@@ -18,21 +18,27 @@ MINIMUM_PARTICIPANTS = 0
 
 
 class Tournament(BaseModel):
-    class PhaseType(models.TextChoices):
+    class StatusEnum(models.TextChoices):
+        DRAFT = "draft"
         REGISTRATION_OPEN = "registration_open"
-        RESULTS_TRACKING = "results_tracking"
-        PAYMENT_PENDING = "payment_pending"
-        FINISHED_AND_PAID = "finished_and_paid"
+        CHECK_IN = "check_in"
+        IN_PROGRESS = "in_progress"
+        FINISHED = "finished"
+
+    class CurrencyEnum(models.TextChoices):
+        USD = "USD"
+        BRL = "BRL"
+        EUR = "EUR"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     published = models.BooleanField(default=False)
-    phase = models.CharField(
+    status = models.CharField(
         max_length=50,
-        choices=PhaseType.choices,
-        default=PhaseType.REGISTRATION_OPEN,
+        choices=StatusEnum.choices,
+        default=StatusEnum.REGISTRATION_OPEN,
     )
 
     registration_start_date = models.DateTimeField()
@@ -48,6 +54,9 @@ class Tournament(BaseModel):
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
     entry_fee = models.IntegerField(default=0, null=True, blank=True)  # in cents
+    currency = models.CharField(
+        max_length=3, choices=CurrencyEnum.choices, default=CurrencyEnum.BRL
+    )
     prize_pool_enabled = models.BooleanField(default=True)
 
     max_teams = models.IntegerField(default=32)
@@ -111,7 +120,7 @@ class Tournament(BaseModel):
         if not self._has_start_datetime():
             raise ValidationError(detail=errors.TournamentHasNoStartDateTime)
 
-        self.phase = Tournament.PhaseType.RESULTS_TRACKING
+        self.status = Tournament.StatusEnum.IN_PROGRESS
         self.save()
 
         self.generate_brackets()
@@ -224,9 +233,6 @@ class Tournament(BaseModel):
         return accepted_registrations + pending_registrations >= self.max_teams
 
     def is_checkin_open(self) -> bool:
-        if self.phase != Tournament.PhaseType.REGISTRATION_OPEN:
-            return False
-
         now = datetime.now()
         start_at = datetime.combine(self.start_date, self.start_time)
         checkin_opens_at = start_at - timedelta(minutes=self.check_in_duration)

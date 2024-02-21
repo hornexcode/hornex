@@ -17,22 +17,28 @@ import { getStatus, getStatus } from '@/lib/models';
 import { Cog8ToothIcon } from '@heroicons/react/20/solid';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
-import { Edit, Edit3Icon, UsersIcon } from 'lucide-react';
+import { UsersIcon } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { FC } from 'react';
 
 const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
   return (
     <div className="flex">
-      <div className="border-accent bg-medium-dark flex w-full items-center justify-around rounded border p-4 shadow-sm">
+      <div className="border-accent bg-medium-dark flex w-full items-center rounded border p-4 shadow-sm">
         {/* image */}
-        <div className="flex w-12 items-center">
-          <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
+        <div className="flex w-9 items-center">
+          <Image className="mx-auto w-7" src={HornexLogo} alt="Hornex logo" />
         </div>
         {/* name */}
-        <div className="block px-4 lg:w-[200px]">
-          <div className="text-title text-sm">{tournament.name}</div>
-          <div className="text-body text-xs">{tournament.game}</div>
+        <div className="block px-4 lg:w-[400px]">
+          <Link
+            href={`/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`}
+            className="text-title hover:underline"
+          >
+            {tournament.name}
+          </Link>
+          <div className="text-body text-sm">{getGame(tournament)}</div>
         </div>
         {/* status */}
         <div className="block px-4 lg:w-[200px]">
@@ -79,55 +85,6 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
               {tournament.start_date} {tournament.start_time}
               {new Date().getTimezoneOffset() / -60}
             </div>
-          </div>
-        </div>
-        <div className="hover:text-title ml-auto cursor-pointer">
-          <div data-cy="edit">
-            <Sheet>
-              <SheetTrigger asChild>
-                <div className="flex text-sm">
-                  <DotsHorizontalIcon className="h-5 w-5" />
-                </div>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Edit profile</SheetTitle>
-                  <SheetDescription>
-                    Make changes to your profile here. Click save when
-                    you&apos;re done.
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
-                      Name
-                    </Label>
-                    <Input
-                      id="name"
-                      value="Pedro Duarte"
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="username" className="text-right">
-                      Username
-                    </Label>
-                    <Input
-                      id="username"
-                      value="@peduarte"
-                      className="col-span-3"
-                    />
-                  </div>
-                </div>
-                <SheetFooter>
-                  <SheetClose asChild>
-                    <Button shape="rounded" size="mini" type="submit">
-                      Save changes
-                    </Button>
-                  </SheetClose>
-                </SheetFooter>
-              </SheetContent>
-            </Sheet>
           </div>
         </div>
       </div>

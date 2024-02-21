@@ -72,7 +72,7 @@ class TournamentFactory:
             game=kwargs.get("game", BaseTournament.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", BaseTournament.PlatformType.PC),
             published=kwargs.get("published", True),
-            phase=kwargs.get("phase", BaseTournament.PhaseType.REGISTRATION_OPEN),
+            status=kwargs.get("status", BaseTournament.StatusEnum.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
             registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
@@ -103,7 +103,7 @@ class LeagueOfLegendsTournamentFactory:
             game=kwargs.get("game", Tournament.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", Tournament.PlatformType.PC),
             published=kwargs.get("published", True),
-            phase=kwargs.get("phase", Tournament.PhaseType.REGISTRATION_OPEN),
+            status=kwargs.get("status", Tournament.StatusEnum.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
             registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(

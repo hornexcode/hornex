@@ -58,6 +58,7 @@ urlpatterns = [
     path("api/v1/games", include("apps.games.urls")),
     path("api/v1/payments", include("apps.payments.urls")),
     path("api/v1/notifications", include("apps.notifications.urls")),
+    path("api/v1/configs", include("apps.configs.urls")),
     # webhooks
     # health check
     path("api/v1/health/check", health),

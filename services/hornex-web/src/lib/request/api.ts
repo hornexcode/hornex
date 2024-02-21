@@ -138,13 +138,17 @@ export const dataLoader = <T, Data = unknown>(
       }).then(getResponseObject);
     },
 
-    patch: async (
+    submit: async (
       params: ParamMap = {},
       payload?: Data
     ): Promise<FetchResponse<T>> => {
       return fetcher(route.href(params), {
-        method: 'PATCH',
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: payload ? JSON.stringify(payload) : '',
+        signal,
       }).then(getResponseObject);
     },
 

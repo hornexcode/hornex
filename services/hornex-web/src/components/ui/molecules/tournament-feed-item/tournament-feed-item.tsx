@@ -33,7 +33,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
               ? tournament.name.substring(0, 20) + '...'
               : tournament.name}
           </Link>
-          <div className="text-body mb-1 text-sm">
+          <div className="text-body mb-1">
             {moment(tournament.start_date).format('MMMM Do YYYY')}
           </div>
         </div>
@@ -50,10 +50,8 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
 
       {/* League of Legends Metadata */}
       <div className="block px-5 pt-5">
-        <div className="font-display text-xs font-medium uppercase text-white">
-          Classification
-        </div>
-        <div className="text-xs text-gray-400">
+        <div className="text-body font-medium">Classification</div>
+        <div className="text-title text-sm">
           {tournament.classifications.join(', ')}
         </div>
       </div>

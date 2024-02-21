@@ -40,18 +40,18 @@ export const Sidebar = ({ className }: { className?: string }) => {
         >
           <div className="mb-2 flex items-center rounded-lg">
             <LongArrowLeft className="text-title mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
-            <span className="text-title text-sm font-bold">Back</span>
+            <span className="text-title font-bold">Back</span>
           </div>
         </Link>
       </div>
-      <ul className="flex w-full flex-col space-y-2 text-xs">
+      <ul className="flex w-full flex-col space-y-2">
         <li className="">
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
               <div>
                 <DashboardIcon className="text-body mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-body text-sm">Dashbboard</span>
+              <span className="text-body">Dashbboard</span>
             </div>
           </Link>
         </li>
@@ -65,7 +65,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <Gamepad2Icon className="text-body mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-body text-sm">Games</span>
+              <span className="text-body ">Games</span>
             </div>
           </Link>
         </li>

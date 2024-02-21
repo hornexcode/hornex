@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "apps.notifications.apps.NotificationsConfig",
     "apps.accounts.apps.AccountsConfig",
     "apps.leagueoflegends.apps.LeagueoflegendsConfig",
+    "apps.configs.apps.ConfigsConfig",
 ]
 
 MIDDLEWARE = [

@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.tournaments.views import (
     RegistrationViewSet,
+    TestModeTournamentViewSet,
     TournamentReadOnlyViewSet,
     TournamentRegistrationViewSet,
     TournamentViewSet,
@@ -62,6 +63,12 @@ urlpatterns = [
     path(
         "/<str:platform>/<str:game>/tournaments/<str:id>/details",
         TournamentViewSet.as_view({"get": "retrieve"}),
+        name="details",
+    ),
+    # TEST_MODE
+    path(
+        "/admin/test-mode/tournaments/<str:id>",
+        TestModeTournamentViewSet.as_view({"patch": "partial_update"}),
         name="details",
     ),
 ]

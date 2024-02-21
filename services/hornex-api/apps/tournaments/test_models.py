@@ -31,9 +31,6 @@ class TestUnitTournamentModel(TestCase):
     def test_tournament_game(self):
         self.assertEqual(self.tournament.game, "League of Legends")
 
-    def test_tournament_phase(self):
-        self.assertEqual(self.tournament.phase, Tournament.PhaseType.REGISTRATION_OPEN)
-
     def test_tournament_registration_start_date(self):
         self.assertEqual(self.tournament.registration_start_date, self.now)
 

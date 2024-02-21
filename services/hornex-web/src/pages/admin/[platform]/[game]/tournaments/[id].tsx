@@ -1,32 +1,128 @@
+import {
+  openRegistrationHandler,
+  useOpenRegistrationHandler,
+} from './admin-tournament-details.handlers';
+import TournamentStatusStepper from '@/components/admin/molecules/tournament-status-stepper/tournament-status-stepper';
 import Button from '@/components/ui/atoms/button';
-import { Button as Btn, buttonVariants } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { useConfig } from '@/contexts/config';
 import { TournamentLayout } from '@/layouts/tournament';
-import { Tournament } from '@/lib/models';
+import {
+  getClassifications,
+  getEntryFee,
+  getPotentialPrizePool,
+  getStartAt,
+  getStatus,
+  getStatusStep,
+  Tournament,
+} from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import { Edit2Icon } from 'lucide-react';
+import clsx from 'clsx';
+import moment from 'moment';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
+const { fetch: getServerTournament } = dataLoader<Tournament>('getTournament');
+const { useData: getClientTournament } =
+  dataLoader<Tournament>('getTournament');
 
 export type TournamentDetailsProps = {
   tournament: Tournament;
 };
 
 const TournamentDetails = ({
-  pageProps: { tournament },
+  pageProps: { tournament: initialTournament, game, platform },
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [tournament, setTournament] = React.useState(initialTournament);
+  const [loading, setLoading] = React.useState(false);
+
+  const { data: refreshed, error: refreshedError } = getClientTournament({
+    game,
+    platform,
+    tournamentId: tournament.id,
+  });
+
+  useEffect(() => {
+    if (refreshed && !refreshedError) {
+      setTournament(refreshed);
+    }
+  }, [refreshed]);
+
+  const tournamentStep = getStatusStep(initialTournament || tournament);
+  const { config } = useConfig({ name: 'test_mode' });
+
+  const onOpenRegistrationHandler = async () => {
+    setLoading(true);
+    const { data, error } = await openRegistrationHandler({
+      tournamentId: tournament.id,
+    });
+    if (data && !error) setTournament(data);
+    setLoading(false);
+  };
+
+  const renderStatusContent = () => {
+    switch (tournament.status) {
+      case 'draft':
+        return (
+          <>
+            <p className="text-title py-2 font-normal">
+              Registration start date:{' '}
+              <span className="font-bold">
+                {moment(tournament.registration_start_date).format('YYYY-MM-D')}
+              </span>
+              <div className="text-xs font-semibold">
+                date format: (year-month-day)
+              </div>
+            </p>
+            <Button
+              onClick={onOpenRegistrationHandler}
+              disabled={loading}
+              isLoading={loading}
+              shape="rounded"
+              className="mt-4"
+              size="mini"
+            >
+              Open registration
+            </Button>
+          </>
+        );
+      case 'registration_open':
+        return (
+          <>
+            <p className="text-title py-2 font-normal">
+              The tournament registration will finish at{' '}
+              <span className="font-bold">
+                {moment(tournament.registration_end_date).format('YYYY-MM-D')}
+              </span>
+              <div className="text-xs font-semibold">
+                date format: (year-month-day)
+              </div>
+              .
+            </p>
+            <Button shape="rounded" disabled className="mt-4" size="mini">
+              Close registration
+            </Button>
+          </>
+        );
+    }
+  };
   return (
-    <div className="container mx-auto space-y-8 pt-8">
+    <div className="container mx-auto space-y-12 pt-8">
       {/* General info */}
       <div className="flex items-center pb-4">
         <h1 className="text-title text-xl font-bold">{tournament.name}</h1>
-        <Button className="ml-auto" size="mini">
-          <div className="flex items-center">
-            <Edit2Icon size={14} className="mr-2" />
-            Edit
+        <div className="ml-auto flex items-center">
+          {/* <Button className="" size="mini">
+            <div className="flex items-center">
+              <Edit2Icon size={14} className="mr-2" />
+              Edit
+            </div>
+          </Button> */}
+          <div className="ml-4 flex items-center">
+            <p className="text-title mr-2 font-semibold underline">Test mode</p>
+            <Switch checked />
           </div>
-        </Button>
+        </div>
       </div>
 
       {/*  */}
@@ -34,120 +130,90 @@ const TournamentDetails = ({
         <div className="col-span-2">
           <div className="text-body border-light-dark flex border-t">
             <div className="border-light-dark border-r p-3">
-              <div className="text-sm">Start date</div>
+              <div className="">Start date</div>
               <div className="text-title font-normal">
-                {tournament.start_date} {tournament.start_time}
+                {getStartAt(tournament)}
               </div>
             </div>
             <div className="border-light-dark border-r p-3">
-              <div className="text-sm">Teams registered</div>
+              <div className="">Teams registered</div>
               <div className="text-title font-normal">
                 {tournament.teams.length}/{tournament.max_teams}
               </div>
             </div>
+
             <div className="border-light-dark border-r p-3">
-              <div className="text-sm">Status</div>
-              <div className="text-title font-normal">Registration open</div>
+              <div className="">Classification</div>
+              <div className="text-title font-normal">
+                {getClassifications(tournament)}
+              </div>
             </div>
             <div className="border-light-dark border-r p-3">
-              <div className="text-sm">Classification</div>
-              <div className="text-title font-normal">Bronze I, II, III</div>
+              <div className="">Entry Fee</div>
+              <div className="text-title font-normal">
+                {getEntryFee(tournament)}
+              </div>
             </div>
             <div className="border-light-dark border-r p-3">
-              <div className="text-sm">Entry Fee</div>
-              <div className="text-title font-normal">Free</div>
-            </div>
-            <div className="border-light-dark border-r p-3">
-              <div className="text-sm">Prize Pool</div>
-              <div className="text-title font-normal">R$ 0</div>
+              <div className="">Prize Pool</div>
+              <div className="text-title font-normal">
+                {getPotentialPrizePool(tournament)}
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-span-1">
-          <span className="text-body text-sm">Tournament status</span>
+        <div className="border-light-dark col-span-1 rounded border p-4">
+          <span className="text-title">Tournament status</span>
           <div className="flex items-center justify-between pb-2">
             <span className="font-semibold text-amber-500">
-              Registration open
+              {getStatus(tournament)}
             </span>
-            <div className="rounded bg-gray-200 px-2 py-1 text-xs text-gray-500">
-              step 3 / 4
+            <div className="bg-title rounded px-2 py-1 text-xs text-gray-500">
+              step {tournamentStep[0]} / {tournamentStep[1]}
             </div>
           </div>
-          <ProgressBar steps={5} currentStep={2} />
-          <p className="text-body py-2 font-normal">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt,
-            debitis.
-          </p>
-          <Button shape="rounded" className="mt-4" size="mini">
-            Close registration
-          </Button>
+          <TournamentStatusStepper
+            steps={tournamentStep[1]}
+            currentStep={tournamentStep[0]}
+          />
+          {renderStatusContent()}
         </div>
       </div>
 
-      {/* prizes */}
-      <div className="text-title border-light-dark space-y-3 rounded border p-4">
-        <div>
-          <p className="font-bold">Prizes</p>
-        </div>
-        {/* 1 */}
-        <div className="border-light-dark flex items-center justify-between rounded border p-3">
+      {/* prize pool */}
+      <div className={clsx(!tournament.prize_pool_enabled && 'hidden')}>
+        <h4 className="text-title mb-3 text-lg font-bold">Prize Pool</h4>
+        <div className="text-title border-light-dark block rounded border p-4">
           <div>
-            <p className="text-sm font-bold">#1 place</p>
-            <p className="font-normal">R$ 100,00</p>
+            <p className="font-bold">Prize pool</p>
+            <p className="font-normal">
+              The prize pool is the total amount of money that will be given to
+              the winners of the tournament.
+            </p>
+            <ul className="p-3">
+              <li className="text-title font-semibold">1st place: $1000.00</li>
+              <li className="text-title font-semibold">2nd place: $500.00</li>
+              <li className="text-title font-semibold">3rd place: $250.00</li>
+              <li className="text-title font-semibold">4rd place: $150.00</li>
+            </ul>
           </div>
-          <Btn size={'sm'} variant="outline">
-            Edit
-          </Btn>
-        </div>
-        {/* 2 */}
-        <div className="border-light-dark flex items-center justify-between rounded border p-3">
-          <div>
-            <p className="text-sm font-bold">#2 place</p>
-            <p className="font-normal">R$ 40,00</p>
-          </div>
-          <Button shape="rounded" size="mini">
-            Edit
-          </Button>
         </div>
       </div>
-
       {/* danger zone */}
-      <div className="text-title border-light-dark flex items-center justify-between rounded border p-4">
-        <div>
-          <p className="font-bold">Delete this tournament</p>
-          <p className="font-normal">
-            Once you delete a tournament, there is no going back. Please be
-            certain.{' '}
-          </p>
+      <div>
+        <h4 className="text-title mb-3 text-lg font-bold">Danger Zone</h4>
+        <div className="text-title border-light-dark flex items-center justify-between rounded border p-4">
+          <div>
+            <p className="font-bold">Delete this tournament</p>
+            <p className="font-normal">
+              Once you delete a tournament, there is no going back. Please be
+              certain.{' '}
+            </p>
+          </div>
+          <Button color="danger" shape="rounded" size="mini">
+            Delete
+          </Button>
         </div>
-        <Button color="danger" shape="rounded" size="mini">
-          Delete
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-type ProgressBarProps = {
-  steps: number;
-  currentStep: number;
-};
-const ProgressBar: React.FC<ProgressBarProps> = ({ steps, currentStep }) => {
-  return (
-    <div className="relative flex h-[12px] w-[100%] items-center">
-      {/* gray bar */}
-      <div
-        role="progressbar"
-        className="absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between bg-gray-100"
-      ></div>
-      {/* green bar */}
-      <div className="absolute top-0 flex h-[100%] w-[calc(25%+1px)] items-center justify-between rounded-lg bg-amber-400"></div>
-      <div className="relative flex w-[calc(100%-4px)] items-center justify-between">
-        <div></div>
-        <div className="relative h-2 w-2 rounded-full bg-black/40"></div>
-        <div className="ring-dark relative h-2 w-2 rounded-full bg-white ring"></div>
-        <div className="ring-dark relative h-2 w-2 rounded-full bg-white ring"></div>
-        <div className="ring-dark relative h-2 w-2 rounded-full bg-white ring"></div>
       </div>
     </div>
   );
@@ -161,11 +227,10 @@ export const getServerSideProps = (async ({
   query: { game, platform, id },
   req,
 }) => {
-  const { data: tournament, error } = await getTournament(
+  const { data: tournament, error } = await getServerTournament(
     { game: game, platform, tournamentId: id },
     req
   );
-  console.log(error);
 
   if (!tournament || error) {
     return {
@@ -177,10 +242,13 @@ export const getServerSideProps = (async ({
     props: {
       pageProps: {
         tournament,
+        game,
+        platform,
       },
     },
   };
 }) satisfies GetServerSideProps<{
   pageProps: TournamentDetailsProps;
 }>;
+
 export default TournamentDetails;

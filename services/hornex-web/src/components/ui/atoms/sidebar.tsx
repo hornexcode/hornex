@@ -28,14 +28,14 @@ export const Sidebar = ({ className }: { className?: string }) => {
         </Link>
         HORNEX
       </div>
-      <ul className="flex w-full flex-col space-y-2 text-xs">
+      <ul className="flex w-full flex-col space-y-2">
         <li className="">
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
               <div>
                 <Home className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">{t('sidebar.home')}</span>
+              <span className="text-title">{t('sidebar.home')}</span>
             </div>
           </Link>
         </li>
@@ -48,7 +48,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <SwordsIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">{t('sidebar.compete')}</span>
+              <span className="text-title">{t('sidebar.compete')}</span>
             </div>
           </Link>
         </li>
@@ -61,9 +61,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <FileBadge className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">
-                {t('sidebar.registrations')}
-              </span>
+              <span className="text-title">{t('sidebar.registrations')}</span>
             </div>
           </Link>
         </li>
@@ -76,14 +74,14 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <Users2 className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">{t('sidebar.teams')}</span>
+              <span className="text-title">{t('sidebar.teams')}</span>
             </div>
           </Link>
         </li>
       </ul>
       <Separator className="my-4" />
       <div className="flex items-center">
-        <div className="text-body mb-4 flex h-[20] w-[180px] items-center text-sm font-bold">
+        <div className="text-body mb-4 flex h-[20] w-[180px] items-center font-bold">
           Organizers
         </div>
       </div>
@@ -101,9 +99,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div>
                 <Cog6ToothIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
               </div>
-              <span className="text-title text-sm">
-                {t('sidebar.organize')}
-              </span>
+              <span className="text-title">{t('sidebar.organize')}</span>
             </div>
           </Link>
         </li>
