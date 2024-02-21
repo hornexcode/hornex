@@ -74,7 +74,6 @@ class TournamentFactory:
             published=kwargs.get("published", True),
             status=kwargs.get("status", BaseTournament.StatusEnum.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
-            registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
                 "start_date",
                 now + td(days=15),
@@ -105,7 +104,6 @@ class LeagueOfLegendsTournamentFactory:
             published=kwargs.get("published", True),
             status=kwargs.get("status", Tournament.StatusEnum.REGISTRATION_OPEN),
             registration_start_date=kwargs.get("registration_start_date", now),
-            registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
                 "start_date",
                 now + td(days=15),

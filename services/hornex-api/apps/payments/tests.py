@@ -49,7 +49,6 @@ class TestPaymentRegistration(
             start_time=now,
             end_time=now + td(hours=1),
             registration_start_date=now,
-            registration_end_date=now + td(days=7),
             organizer=self.user,
         )
 

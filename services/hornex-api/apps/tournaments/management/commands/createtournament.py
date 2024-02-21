@@ -35,7 +35,6 @@ class Command(BaseCommand):
             name="Second Tournament Enabler Summoner 2k24",
             description="This is a test tournament",
             registration_start_date=now,
-            registration_end_date=now + td(minutes=40),
             start_date=now + td(days=3),
             end_date=now + td(days=6),
             start_time=time(9, 40, 0),

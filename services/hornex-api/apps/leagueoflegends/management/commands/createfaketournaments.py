@@ -18,7 +18,6 @@ class Command(BaseCommand):
             name="Torneio de League of Legends",
             organizer=user,
             registration_start_date=now,
-            registration_end_date=now + td(days=2),
             start_date=now + td(days=3),
             end_date=now + td(days=4),
             start_time=now,

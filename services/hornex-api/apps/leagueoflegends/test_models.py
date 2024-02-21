@@ -16,7 +16,6 @@ class TestUnitTournamentModel(TestCase):
             max_teams=8,
             entry_fee=10,
             registration_start_date=now,
-            registration_end_date=now + td(days=7),
             start_date=now + td(days=7),
             end_date=now + td(days=9),
             start_time="10:00:00",

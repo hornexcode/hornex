@@ -7,16 +7,15 @@ export const tournamentSchema = z.object({
   description: z.string(),
   published: z.boolean(),
   status: z.enum([
-    'draft',
-    'registration_open',
-    'in_progress',
-    'check_in',
+    'announced',
+    'registering',
+    'running',
     'finished',
+    'cancelled',
   ]),
   currency: z.enum(['USD', 'EUR', 'BRL']),
   start_date: z.string(),
   registration_start_date: z.date(),
-  registration_end_date: z.date(),
   check_in_duration: z.number(),
   end_date: z.string(),
   start_time: z.string(),
@@ -95,15 +94,15 @@ export function getGame(tournament: Tournament): TournamentGame {
 
 export function getStatusStep(tournament: Tournament) {
   switch (tournament.status) {
-    case 'draft':
-      return [1, 5];
-    case 'registration_open':
-      return [2, 5];
-    case 'check_in':
-      return [3, 5];
-    case 'in_progress':
-      return [4, 5];
+    case 'announced':
+      return [1, 4];
+    case 'registering':
+      return [2, 4];
+    case 'running':
+      return [3, 4];
     case 'finished':
-      return [5, 5];
+      return [4, 4];
+    default:
+      return [0, 0];
   }
 }

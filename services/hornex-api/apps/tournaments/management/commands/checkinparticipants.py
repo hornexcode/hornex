@@ -43,7 +43,6 @@ class Command(BaseCommand):
             end_time=now + td(minutes=30),
             check_in_duration=30,
             registration_start_date=now,
-            registration_end_date=now + td(minutes=20),
             feature_image="tmt-6.jpeg",
             published=True,  # change to is_published
             entry_fee=500,  # 5.00

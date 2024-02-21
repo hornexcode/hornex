@@ -17,7 +17,6 @@ class TestUnitTournamentModel(TestCase):
             max_teams=8,
             entry_fee=10,
             registration_start_date=now,
-            registration_end_date=now + td(days=7),
             start_date=now + td(days=7),
             end_date=now + td(days=9),
             start_time="10:00:00",
@@ -33,9 +32,6 @@ class TestUnitTournamentModel(TestCase):
 
     def test_tournament_registration_start_date(self):
         self.assertEqual(self.tournament.registration_start_date, self.now)
-
-    def test_tournament_registration_end_date(self):
-        self.assertEqual(self.tournament.registration_end_date, self.now + td(days=7))
 
     def test_has_start_datetime(self):
         self.assertEqual(self.tournament._has_start_datetime(), True)

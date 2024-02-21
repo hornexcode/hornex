@@ -31,12 +31,6 @@ class TournamentSerializer(serializers.ModelSerializer):
         return obj.get_classifications()
 
 
-class TestModeTournamentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tournament
-        fields = "__all__"
-
-
 class RegistrationCreateSerializer(serializers.Serializer):
     team = serializers.UUIDField()
     tournament = serializers.UUIDField()

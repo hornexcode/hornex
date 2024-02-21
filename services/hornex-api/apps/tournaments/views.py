@@ -118,15 +118,6 @@ class TournamentViewSet(viewsets.ModelViewSet):
         return obj
 
 
-# remove
-class TestModeTournamentViewSet(viewsets.ModelViewSet):
-    queryset = Tournament.objects.all()
-    serializer_class = TestModeTournamentSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    authentication_classes = [JWTAuthentication]
-    lookup_field = "id"
-
-
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     """
     Manage registrations for a tournament

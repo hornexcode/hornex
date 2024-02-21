@@ -88,7 +88,6 @@ def create_tournaments():
         end_time=now + td(days=14),
         check_in_duration=50,
         registration_start_date=now,
-        registration_end_date=now + td(days=7),
         feature_image="tmt-6.jpeg",
         published=True,  # change to is_published
         entry_fee=100,

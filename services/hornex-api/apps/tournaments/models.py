@@ -19,11 +19,11 @@ MINIMUM_PARTICIPANTS = 0
 
 class Tournament(BaseModel):
     class StatusEnum(models.TextChoices):
-        DRAFT = "draft"
-        REGISTRATION_OPEN = "registration_open"
-        CHECK_IN = "check_in"
-        IN_PROGRESS = "in_progress"
+        ANNOUNCED = "announced"
+        REGISTERING = "registering"
+        RUNNING = "running"
         FINISHED = "finished"
+        CANCELLED = "cancelled"
 
     class CurrencyEnum(models.TextChoices):
         USD = "USD"
@@ -38,11 +38,10 @@ class Tournament(BaseModel):
     status = models.CharField(
         max_length=50,
         choices=StatusEnum.choices,
-        default=StatusEnum.REGISTRATION_OPEN,
+        default=StatusEnum.ANNOUNCED,
     )
 
     registration_start_date = models.DateTimeField()
-    registration_end_date = models.DateTimeField()
     check_in_duration = models.IntegerField(null=True, blank=True)
 
     start_date = models.DateField()
