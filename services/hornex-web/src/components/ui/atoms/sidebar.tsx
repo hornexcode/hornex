@@ -5,11 +5,13 @@ import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import { FileBadge, Home, SwordsIcon, Users2 } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const Sidebar = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
+  const { status } = useSession();
 
   return (
     <div
@@ -85,7 +87,11 @@ export const Sidebar = ({ className }: { className?: string }) => {
       <ul>
         <li className="">
           <Link
-            href={`/admin/tournaments`}
+            href={`/${
+              status === 'authenticated'
+                ? routes.admin.tournaments
+                : routes.signIn
+            }`}
             className="group cursor-pointer transition-all"
           >
             <div className="mb-2 flex items-center rounded-lg">
