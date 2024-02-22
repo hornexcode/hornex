@@ -15,11 +15,10 @@ const { useData: useTournaments } = dataLoader<Tournament[], {}>(
 function DashboardPage() {
   const { data: tournaments, error, isLoading } = useTournaments({});
   const router = useRouter();
-  const { status } = useSession();
-
-  useEffect(() => {
-    status === 'unauthenticated' && router.push(`/${routes.signIn}`);
-  }, []);
+  const { data: session } = useSession();
+  if (!session) {
+    router.push(routes.signIn);
+  }
 
   return (
     <div className="container mx-auto pt-8">
