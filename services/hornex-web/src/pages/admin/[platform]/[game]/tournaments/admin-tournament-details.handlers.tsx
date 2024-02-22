@@ -1,19 +1,33 @@
-import { Tournament } from '@/lib/models';
+import { Tournament, TournamentPhase } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import { useState } from 'react';
+import moment from 'moment';
 
 const { submit: updateTournament } = dataLoader<
   Tournament,
   Partial<Tournament>
->('test_mode:updateTournament');
+>('organizer:tournaments:update');
 
 const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
   updateTournament(
     { tournamentId },
     {
-      status: 'registration_open',
+      status: 'registering',
       registration_start_date: new Date(),
     }
   );
 
-export { openRegistrationHandler };
+const { submit: startTournament } = dataLoader<
+  Tournament,
+  { timestamp: number; now: Date }
+>('organizer:tournaments:start');
+
+const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
+  startTournament(
+    { tournamentId },
+    {
+      timestamp: Date.now(),
+      now: new Date(),
+    }
+  );
+
+export { openRegistrationHandler, startTournamentHandler };

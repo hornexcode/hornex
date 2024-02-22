@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import structlog
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,7 +13,7 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.leagueoflegends.serializers import (
@@ -28,7 +30,6 @@ from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registra
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.serializers import (
     RegistrationReadSerializer,
-    TestModeTournamentSerializer,
     TournamentSerializer,
 )
 from apps.tournaments.usecases.create_registration import (
@@ -62,8 +63,8 @@ platform_qp = openapi.Parameter(
 )
 
 
-class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = LeagueOfLegendsTournament.objects.all()
+class PublicTournamentViewSet(viewsets.ModelViewSet):
+    queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
     lookup_field = "id"
     filter_backends = (
@@ -73,40 +74,54 @@ class TournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     )
     pagination_class = TournamentPagination
 
-    @swagger_auto_schema(
-        operation_description="GET /api/v1/tournaments",
-        operation_summary="List and filter paginated tournaments",
-        manual_parameters=[game_qp, platform_qp],
-    )
-    def list(self, request, *args, **kwargs):
-        game, _ = extract_game_and_platform(kwargs)
-
+    def get_queryset(self):
+        game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
             self.queryset = LeagueOfLegendsTournament.objects.all()
-
-        return super().list(request, *args, **kwargs)
-
-
-class TournamentViewSet(viewsets.ModelViewSet):
-    queryset = Tournament.objects.all()
-    serializer_class = TournamentSerializer
-    lookup_field = "id"
-
-    def get_object(self, *args, **kwargs):
-        # game = kwargs.get("game")
-
-        # league of legends
-        self.queryset = LeagueOfLegendsTournament.objects.all()
-
-        return super().get_object()
+        return super().get_queryset()
 
     def retrieve(self, request, *args, **kwargs):
         game, _ = extract_game_and_platform(kwargs)
-
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
             self.queryset = LeagueOfLegendsTournament.objects.all()
 
         return super().retrieve(request, *args, **kwargs)
+
+    def construct_object(self) -> Tournament:
+        """
+        Returns the tournament object based on the game type
+        """
+        obj = self.get_object()
+        if obj.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
+            return LeagueOfLegendsTournament.objects.get(id=obj.id)
+        return obj
+
+
+class OrganizerTournamentViewSet(viewsets.ModelViewSet):
+    queryset = Tournament.objects.all()
+    serializer_class = TournamentSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    lookup_field = "id"
+
+    def get_object(self, *args, **kwargs):
+        # league of legends
+        self.queryset = LeagueOfLegendsTournament.objects.all()
+        return super().get_object()
+
+    @action(detail=True, methods=["post"])
+    def start(self, request, *args, **kwargs):
+        tournament = self.construct_object()
+        timestamp = datetime.fromisoformat(request.data.get("now"))
+        # timestamp = datetime.utcfromtimestamp(int(request.data.get("timestamp")) / 1000.0).replace(
+        #     tzinfo=UTC
+        # )
+        tournament.start(timestamp=timestamp)
+        serializer = self.get_serializer(tournament)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
 
     def construct_object(self) -> Tournament:
         """

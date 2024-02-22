@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import React from 'react';
 
 const { useData: useTournaments } = dataLoader<Tournament[], {}>(
-  'listTournaments'
+  'organizer:tournaments'
 );
 
 function DashboardPage() {

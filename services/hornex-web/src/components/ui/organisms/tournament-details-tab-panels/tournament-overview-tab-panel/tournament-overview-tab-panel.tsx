@@ -14,23 +14,23 @@ export const TournamentOverviewTabPanel: FC<
       <div className="block">
         <h3 className="text-title mb-4 text-lg font-bold">Game info</h3>
         <div className="flex flex-wrap items-center">
-          <div className="block border-r border-dashed border-gray-700 pr-6 text-sm">
+          <div className="block border-r border-dashed border-gray-700 pr-6 ">
             <h4 className="mb-2 leading-none tracking-wide">Game</h4>
             <span className="font-semibold text-amber-400">
               League of Legends
             </span>
           </div>
-          <div className="block border-r border-dashed border-gray-700 px-6 text-sm">
+          <div className="block border-r border-dashed border-gray-700 px-6 ">
             <h4 className="mb-2 leading-none tracking-wide">Platform</h4>
             <span className="font-semibold text-amber-400">PC</span>
           </div>
-          <div className="block border-r border-dashed border-gray-700 px-6 text-sm">
+          <div className="block border-r border-dashed border-gray-700 px-6 ">
             <h4 className="mb-2 leading-none tracking-wide">Format</h4>
             <span className="font-semibold text-amber-400">
               {tournament.team_size}x{tournament.team_size}
             </span>
           </div>
-          <div className="block border-gray-700 px-6 text-sm">
+          <div className="block border-gray-700 px-6 ">
             <h4 className="mb-2 leading-none tracking-wide">Map</h4>
             <span className="font-semibold text-amber-400">Summoners Rift</span>
           </div>
@@ -40,7 +40,7 @@ export const TournamentOverviewTabPanel: FC<
         <h3 className="text-title mb-4 text-lg font-bold">Registered teams</h3>
         <div className="grid grid-cols-4">
           <div>
-            <ul className="text-sm underline">
+            <ul className=" underline">
               <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
                 <div className="flex items-center">
                   Pain Gaming <EyeIcon className="ml-2 w-4" />
@@ -59,7 +59,7 @@ export const TournamentOverviewTabPanel: FC<
             </ul>
           </div>
           <div>
-            <ul className="text-sm underline">
+            <ul className=" underline">
               <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
                 <div className="flex items-center">
                   Pain Gaming <EyeIcon className="ml-2 w-4" />

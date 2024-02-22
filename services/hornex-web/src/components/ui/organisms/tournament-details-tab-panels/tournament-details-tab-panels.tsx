@@ -36,7 +36,7 @@ const TournamentDetailsTabPanels = ({
                   key={tab}
                   className={({ selected }) =>
                     clsx(
-                      'text-title -mb-1.5 whitespace-nowrap border-b-2 border-transparent py-4 text-sm font-medium tracking-wide outline-none transition-colors hover:text-white',
+                      'text-title -mb-1.5 whitespace-nowrap border-b-2 border-transparent py-4 font-medium tracking-wide outline-none transition-colors hover:text-white',
                       selected ? ' border-white ' : 'text-title'
                     )
                   }

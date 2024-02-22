@@ -1,10 +1,10 @@
 from django.urls import path
 
 from apps.tournaments.views import (
+    OrganizerTournamentViewSet,
+    PublicTournamentViewSet,
     RegistrationViewSet,
-    TournamentReadOnlyViewSet,
     TournamentRegistrationViewSet,
-    TournamentViewSet,
     check_in,
     pariticipant_checked_in,
     team_check_in_status,
@@ -23,7 +23,12 @@ urlpatterns = [
     ),
     path(
         "/organizer/tournaments/<str:id>",
-        TournamentViewSet.as_view({"patch": "partial_update"}),
+        OrganizerTournamentViewSet.as_view({"patch": "partial_update"}),
+        name="details",
+    ),
+    path(
+        "/organizer/tournaments/<str:id>/start",
+        OrganizerTournamentViewSet.as_view({"post": "start"}),
         name="details",
     ),
     # web
@@ -57,16 +62,15 @@ urlpatterns = [
         pariticipant_checked_in,
         name="participant-checked-in",
     ),
-    # @deprecated
     path(
         "/<str:platform>/<str:game>/tournaments",
-        TournamentReadOnlyViewSet.as_view({"get": "list"}),
+        PublicTournamentViewSet.as_view({"get": "list"}),
         name="list",
     ),
-    # @deprecated
+    # Returns details of a tournament
     path(
         "/<str:platform>/<str:game>/tournaments/<str:id>/details",
-        TournamentViewSet.as_view({"get": "retrieve"}),
+        PublicTournamentViewSet.as_view({"get": "retrieve"}),
         name="details",
     ),
     # TEST_MODE

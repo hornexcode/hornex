@@ -1,4 +1,4 @@
-import { TournamentTableRowProps } from './tournament-table-row.types';
+import { TournamentTableRowProps } from './tournament-row.types';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import Button from '@/components/ui/atoms/button';
 import { Input } from '@/components/ui/input';

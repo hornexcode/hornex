@@ -1,6 +1,7 @@
 import uuid
 from abc import abstractmethod
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
+from typing import Optional
 
 import structlog
 from django.conf import settings
@@ -18,7 +19,7 @@ MINIMUM_PARTICIPANTS = 0
 
 
 class Tournament(BaseModel):
-    class StatusEnum(models.TextChoices):
+    class StatusOptions(models.TextChoices):
         ANNOUNCED = "announced"
         REGISTERING = "registering"
         RUNNING = "running"
@@ -37,8 +38,8 @@ class Tournament(BaseModel):
     published = models.BooleanField(default=False)
     status = models.CharField(
         max_length=50,
-        choices=StatusEnum.choices,
-        default=StatusEnum.ANNOUNCED,
+        choices=StatusOptions.choices,
+        default=StatusOptions.ANNOUNCED,
     )
 
     registration_start_date = models.DateTimeField()
@@ -115,14 +116,15 @@ class Tournament(BaseModel):
     def _has_start_datetime(self):
         return bool(self.start_date) and bool(self.start_time)
 
-    def start(self):
-        if not self._has_start_datetime():
-            raise ValidationError(detail=errors.TournamentHasNoStartDateTime)
+    def start(self, timestamp: Optional[datetime]):
+        if not timestamp:
+            timestamp = datetime.now()
 
-        self.status = Tournament.StatusEnum.IN_PROGRESS
+        self.status = Tournament.StatusOptions.RUNNING
+        if datetime.combine(self.start_date, self.start_time, tzinfo=UTC) > timestamp:
+            self.start_date = timestamp.date()
+            self.start_time = timestamp.time()
         self.save()
-
-        self.generate_brackets()
 
     def get_number_of_rounds(self):
         num_of_teams = self._get_number_of_teams()

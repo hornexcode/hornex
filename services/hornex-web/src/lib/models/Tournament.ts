@@ -40,11 +40,11 @@ export const tournamentSchema = z.object({
 export type Tournament = z.infer<typeof tournamentSchema>;
 
 export const status: Record<string, string> = {
-  draft: 'Draft',
-  registration_open: 'Registration Open',
-  check_in: 'Check In',
-  in_progress: 'In Progress',
+  announced: 'Announced',
+  registering: 'Registration Open',
+  running: 'Running',
   finished: 'Finished',
+  cancelled: 'Cancelled',
 };
 
 export type TournamentPhase = keyof typeof status;
@@ -64,21 +64,11 @@ export function getClassifications(tournament: Tournament) {
   return tournament.classifications.join(', ');
 }
 
-export function getPotentialPrizePool(tournament: Tournament) {
-  return tournament.prize_pool_enabled
-    ? `${tournament.currency} ${(
-        (tournament.entry_fee * tournament.max_teams * tournament.team_size) /
-        100
-      ).toFixed(2)}`
-    : 'N/A';
-}
-
 export function getStartAt(tournament: Tournament) {
   return (
     moment(new Date(tournament.start_date)).format('DD/MM/YYYY') +
     ' at ' +
-    tournament.start_time +
-    `${new Date().getTimezoneOffset() / -60}`
+    moment(new Date(tournament.start_time)).format('hh:mm A')
   );
 }
 
@@ -105,4 +95,13 @@ export function getStatusStep(tournament: Tournament) {
     default:
       return [0, 0];
   }
+}
+
+export function getPotentialPrizePool(tournnament: Tournament): number {
+  return tournnament.prize_pool_enabled
+    ? tournnament.entry_fee *
+        tournnament.max_teams *
+        tournnament.team_size *
+        0.7
+    : 0;
 }

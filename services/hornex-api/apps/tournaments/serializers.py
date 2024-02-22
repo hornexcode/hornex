@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import serializers
 
 from apps.tournaments.models import (
@@ -44,6 +46,7 @@ class RegistrationReadSerializer(serializers.ModelSerializer):
 
 class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
     classifications = serializers.StringRelatedField()
+    start_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = LeagueOfLegendsTournament
@@ -54,3 +57,6 @@ class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
             f"{classification.tier} {classification.rank}"
             for classification in obj.classifications.all()
         ]
+
+    def get_start_at(self, obj):
+        return datetime.combine(obj.start_date, obj.start_time)

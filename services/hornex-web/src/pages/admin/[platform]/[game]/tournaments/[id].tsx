@@ -1,11 +1,11 @@
 import {
   openRegistrationHandler,
-  useOpenRegistrationHandler,
+  startTournamentHandler,
 } from './admin-tournament-details.handlers';
 import TournamentStatusStepper from '@/components/admin/molecules/tournament-status-stepper/tournament-status-stepper';
 import Button from '@/components/ui/atoms/button';
 import { Switch } from '@/components/ui/switch';
-import { useConfig } from '@/contexts/config';
+import { toast } from '@/components/ui/use-toast';
 import { TournamentLayout } from '@/layouts/tournament';
 import {
   getClassifications,
@@ -17,6 +17,8 @@ import {
   Tournament,
 } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
+import { combineDateAndTime, toCurrency } from '@/lib/utils';
+import { datetime } from '@/utils/datetime';
 import clsx from 'clsx';
 import moment from 'moment';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -48,9 +50,6 @@ const TournamentDetails = ({
     }
   }, [refreshed]);
 
-  const tournamentStep = getStatusStep(initialTournament || tournament);
-  const { config } = useConfig({ name: 'test_mode' });
-
   const onOpenRegistrationHandler = async () => {
     setLoading(true);
     const { data, error } = await openRegistrationHandler({
@@ -60,12 +59,34 @@ const TournamentDetails = ({
     setLoading(false);
   };
 
+  const onStartTournamentHandler = async () => {
+    setLoading(true);
+    const { data, error } = await startTournamentHandler({
+      tournamentId: tournament.id,
+    });
+    if (error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+      });
+    }
+    if (data && !error) {
+      setTournament(data);
+      toast({
+        title: 'Success',
+        description: 'Tournament started successfully',
+      });
+    }
+    setLoading(false);
+  };
+
+  const steps = getStatusStep(initialTournament || tournament);
   const renderStatusContent = () => {
     switch (tournament.status) {
-      case 'draft':
+      case 'announced':
         return (
           <>
-            <p className="text-title py-2 font-normal">
+            <div className="text-title py-2 font-normal">
               Registration start date:{' '}
               <span className="font-bold">
                 {moment(tournament.registration_start_date).format('YYYY-MM-D')}
@@ -73,7 +94,7 @@ const TournamentDetails = ({
               <div className="text-xs font-semibold">
                 date format: (year-month-day)
               </div>
-            </p>
+            </div>
             <Button
               onClick={onOpenRegistrationHandler}
               disabled={loading}
@@ -86,26 +107,53 @@ const TournamentDetails = ({
             </Button>
           </>
         );
-      case 'registration_open':
+      case 'registering':
         return (
           <>
-            <p className="text-title py-2 font-normal">
-              The tournament registration will finish at{' '}
+            <div className="text-title py-2 font-normal">
+              Registration end date:{' '}
               <span className="font-bold">
-                {moment(tournament.registration_end_date).format('YYYY-MM-D')}
+                {moment(tournament.registration_start_date).format('YYYY-MM-D')}
               </span>
               <div className="text-xs font-semibold">
                 date format: (year-month-day)
               </div>
-              .
-            </p>
-            <Button shape="rounded" disabled className="mt-4" size="mini">
-              Close registration
+            </div>
+            <Button
+              onClick={onStartTournamentHandler}
+              shape="rounded"
+              className="mt-4"
+              size="mini"
+            >
+              Start tournament
+            </Button>
+          </>
+        );
+      case 'running':
+        return (
+          <>
+            <div className="text-title py-2 font-normal">
+              Registration end date:{' '}
+              <span className="font-bold">
+                {moment(tournament.registration_start_date).format('YYYY-MM-D')}
+              </span>
+              <div className="text-xs font-semibold">
+                date format: (year-month-day)
+              </div>
+            </div>
+            <Button
+              onClick={onStartTournamentHandler}
+              shape="rounded"
+              className="mt-4"
+              size="mini"
+            >
+              Finish tournament
             </Button>
           </>
         );
     }
   };
+
   return (
     <div className="container mx-auto space-y-12 pt-8">
       {/* General info */}
@@ -128,36 +176,60 @@ const TournamentDetails = ({
       {/*  */}
       <div className="grid grid-cols-3 gap-8">
         <div className="col-span-2">
-          <div className="text-body border-light-dark flex border-t">
-            <div className="border-light-dark border-r p-3">
-              <div className="">Start date</div>
-              <div className="text-title font-normal">
-                {getStartAt(tournament)}
-              </div>
-            </div>
-            <div className="border-light-dark border-r p-3">
-              <div className="">Teams registered</div>
-              <div className="text-title font-normal">
+          <div className="text-body border-light-dark flex flex-wrap items-center">
+            <div className="border-light-dark border-r border-t p-3">
+              <div className="text-title font-bold">Teams registered</div>
+              <div className="text-title font-display text-sm font-normal">
                 {tournament.teams.length}/{tournament.max_teams}
               </div>
             </div>
-
-            <div className="border-light-dark border-r p-3">
-              <div className="">Classification</div>
-              <div className="text-title font-normal">
+            <div className="border-light-dark border-r border-t p-3">
+              <div className="text-title font-bold">Classification</div>
+              <div className="text-title font-display text-sm font-normal">
                 {getClassifications(tournament)}
               </div>
             </div>
-            <div className="border-light-dark border-r p-3">
-              <div className="">Entry Fee</div>
-              <div className="text-title font-normal">
+            <div className="border-light-dark border-r border-t p-3 ">
+              <div className="text-title font-bold">Entry Fee</div>
+              <div className="text-title font-display text-sm font-normal">
                 {getEntryFee(tournament)}
               </div>
             </div>
-            <div className="border-light-dark border-r p-3">
-              <div className="">Prize Pool</div>
-              <div className="text-title font-normal">
-                {getPotentialPrizePool(tournament)}
+            <div className="border-light-dark border-r border-t p-3">
+              <div className="text-title font-bold">Prize Pool</div>
+              <div className="text-title font-display text-sm font-normal">
+                {tournament.currency}{' '}
+                {toCurrency(getPotentialPrizePool(tournament))}
+              </div>
+            </div>
+            <div className="border-light-dark border-r border-t p-3">
+              <div className="text-title font-bold">
+                Registration start date
+              </div>
+              <div className="text-title font-display text-sm font-normal">
+                {datetime(tournament.registration_start_date, { time: false })}
+              </div>
+            </div>
+            <div className="border-light-dark border-r border-t p-3">
+              <div className="text-title font-bold">Registration end date</div>
+              <div className="text-title font-display text-sm font-normal">
+                {moment(tournament.end_date).format('YYYY-MM-D')}
+              </div>
+            </div>
+            <div className="border-light-dark border-r border-t p-3">
+              <div className="text-title font-bold">Start date</div>
+              <div className="text-title font-display text-sm font-normal">
+                {moment(
+                  new Date(
+                    `${tournament.start_date}T${tournament.start_time}+00:00`
+                  )
+                ).format('YYYY-MM-D hh:mm A')}
+              </div>
+            </div>
+            <div className="border-light-dark border-r border-t p-3">
+              <div className="text-title font-bold">Check-in window</div>
+              <div className="text-title font-display text-sm font-normal">
+                {tournament.check_in_duration} minutes
               </div>
             </div>
           </div>
@@ -169,13 +241,10 @@ const TournamentDetails = ({
               {getStatus(tournament)}
             </span>
             <div className="bg-title rounded px-2 py-1 text-xs text-gray-500">
-              step {tournamentStep[0]} / {tournamentStep[1]}
+              step {steps[0]} / {steps[1]}
             </div>
           </div>
-          <TournamentStatusStepper
-            steps={tournamentStep[1]}
-            currentStep={tournamentStep[0]}
-          />
+          <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
           {renderStatusContent()}
         </div>
       </div>
@@ -183,19 +252,46 @@ const TournamentDetails = ({
       {/* prize pool */}
       <div className={clsx(!tournament.prize_pool_enabled && 'hidden')}>
         <h4 className="text-title mb-3 text-lg font-bold">Prize Pool</h4>
-        <div className="text-title border-light-dark block rounded border p-4">
-          <div>
-            <p className="font-bold">Prize pool</p>
-            <p className="font-normal">
-              The prize pool is the total amount of money that will be given to
-              the winners of the tournament.
-            </p>
-            <ul className="p-3">
-              <li className="text-title font-semibold">1st place: $1000.00</li>
-              <li className="text-title font-semibold">2nd place: $500.00</li>
-              <li className="text-title font-semibold">3rd place: $250.00</li>
-              <li className="text-title font-semibold">4rd place: $150.00</li>
-            </ul>
+        <div className="flex">
+          {/* 1st place */}
+          <div className="text-title border-light-dark border-r border-t p-3">
+            <div>
+              <p className="font-bold">#1st place</p>
+              <p className="font-normal">
+                {tournament.currency}{' '}
+                {toCurrency(getPotentialPrizePool(tournament) * 0.5)}
+              </p>
+            </div>
+          </div>
+          {/* 2st place */}
+          <div className="text-title border-light-dark border-r border-t p-3">
+            <div>
+              <p className="font-bold">#2st place</p>
+              <p className="font-normal">
+                {tournament.currency}{' '}
+                {toCurrency(getPotentialPrizePool(tournament) * 0.25)}
+              </p>
+            </div>
+          </div>
+          {/* 3st place */}
+          <div className="text-title border-light-dark border-r border-t p-3">
+            <div>
+              <p className="font-bold">#3st place</p>
+              <p className="font-normal">
+                {tournament.currency}{' '}
+                {toCurrency(getPotentialPrizePool(tournament) * 0.15)}
+              </p>
+            </div>
+          </div>
+          {/* 4st place */}
+          <div className="text-title border-light-dark border-r border-t p-3">
+            <div>
+              <p className="font-bold">#4st place</p>
+              <p className="font-normal">
+                {tournament.currency}{' '}
+                {toCurrency(getPotentialPrizePool(tournament) * 0.1)}
+              </p>
+            </div>
           </div>
         </div>
       </div>
