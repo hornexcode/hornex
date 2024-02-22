@@ -11,6 +11,10 @@ const routes = {
   platform: 'platform',
   teams: 'teams',
   createTeam: 'teams/create',
+  signIn: 'sign-in',
+  admin: {
+    tournaments: 'admin/tournaments',
+  },
 };
 
 export default routes;

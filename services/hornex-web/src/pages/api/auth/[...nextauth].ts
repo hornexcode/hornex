@@ -15,7 +15,7 @@ type NextAuthOptionsCallback = (
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
-const nextAuthOptions: NextAuthOptionsCallback = (req, res) => ({
+export const nextAuthOptions: NextAuthOptionsCallback = (req, res) => ({
   // https://next-auth.js.org/configuration/providers/oauth
   session: {
     strategy: 'jwt',

@@ -1,10 +1,12 @@
 import TournamentTable from '@/components/admin/organisms/tournament-table';
 import Button from '@/components/ui/atoms/button';
+import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 import { Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { useRouter } from 'next/router';
-import React from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useEffect } from 'react';
 
 const { useData: useTournaments } = dataLoader<Tournament[], {}>(
   'listTournaments'
@@ -13,6 +15,10 @@ const { useData: useTournaments } = dataLoader<Tournament[], {}>(
 function DashboardPage() {
   const { data: tournaments, error, isLoading } = useTournaments({});
   const router = useRouter();
+  const { data: session } = useSession();
+  if (!session) {
+    router.push(routes.signIn);
+  }
 
   return (
     <div className="container mx-auto pt-8">
