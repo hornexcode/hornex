@@ -317,7 +317,7 @@ def check_in(request, *args, **kwargs):
 def tournaments_controller(request):
     if request.method == "POST":
         tournament = CreateTournamentUseCase().execute(
-            CreateTournamentUseCaseParams(**request.data)
+            CreateTournamentUseCaseParams(**{**request.data, "organizer_id": request.user.id})
         )
         return Response({"id": tournament.id}, status=status.HTTP_201_CREATED)
     if request.method == "GET":

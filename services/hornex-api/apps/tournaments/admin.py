@@ -5,11 +5,11 @@ from apps.tournaments.models import (
     Checkin,
     LeagueOfLegendsLeague,
     LeagueOfLegendsTournament,
+    Prize,
     Registration,
 )
 
-admin.site.register(LeagueOfLegendsLeague)
-admin.site.register(LeagueOfLegendsTournament)
+admin.site.register([LeagueOfLegendsLeague, LeagueOfLegendsTournament, Prize, Checkin])
 
 
 class RegistrationAdmin(admin.ModelAdmin):
@@ -37,4 +37,3 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Registration, RegistrationAdmin)
-admin.site.register(Checkin)

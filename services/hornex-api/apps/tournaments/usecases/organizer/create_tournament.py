@@ -7,11 +7,13 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
-from apps.tournaments.models import Prize, Tournament
+from apps.tournaments.models import LeagueOfLegendsTournament, Prize
 from apps.users.models import User
 from lib.challonge import Tournament as ChallongeTournament
 
 logger = structlog.get_logger(__name__)
+
+CHECK_IN_DURATION = 15
 
 
 class CreateTournamentUseCaseParams:
@@ -20,7 +22,6 @@ class CreateTournamentUseCaseParams:
     description: str
     organizer_id: str
     registration_start_date: str
-    registration_end_date: str
     check_in_duration: str
     start_date: str
     end_date: str
@@ -28,7 +29,7 @@ class CreateTournamentUseCaseParams:
     end_time: str
     feature_image: str
     is_entry_free: bool
-    entry_fee: str
+    entry_fee: float
     prize_pool_enabled: bool
     open_classification: bool
     size: str
@@ -43,7 +44,6 @@ class CreateTournamentUseCaseParams:
         self.description = kwargs.get("description")
         self.organizer_id = kwargs.get("organizer_id")
         self.registration_start_date = kwargs.get("registration_start_date")
-        self.registration_end_date = kwargs.get("registration_end_date")
         self.check_in_duration = kwargs.get("check_in_duration")
         self.start_date = kwargs.get("start_date")
         self.end_date = kwargs.get("end_date")
@@ -64,15 +64,14 @@ class CreateTournamentUseCaseParams:
             place = serializers.IntegerField()
             is_money = serializers.BooleanField()
             amount = serializers.FloatField()
-            content = serializers.CharField()
+            content = serializers.CharField(required=False, allow_blank=True)
 
         game = serializers.CharField()
         name = serializers.CharField()
         description = serializers.CharField()
         organizer_id = serializers.UUIDField()
         registration_start_date = serializers.DateTimeField()
-        registration_end_date = serializers.DateTimeField()
-        check_in_duration = serializers.CharField()
+        # check_in_duration = serializers.CharField()
         start_date = serializers.DateField()
         end_date = serializers.DateField()
         start_time = serializers.TimeField()
@@ -84,7 +83,7 @@ class CreateTournamentUseCaseParams:
         open_classification = serializers.BooleanField()
         size = serializers.CharField()
         team_size = serializers.CharField()
-        map_name = serializers.CharField()
+        # map_name = serializers.CharField()
         prizes = PrizeSerializer(many=True)
 
     def validate(self, **kwargs):
@@ -108,7 +107,7 @@ class CreateTournamentUseCaseParams:
                 found_places.append(place)
 
         if len(found_places) != len(required_places):
-            raise serializers.ValidationError("Prizes for places 1, 2, and 3 are required.")
+            raise ValidationError({"error": "Prizes for places 1, 2, and 3 are required."})
 
 
 class CreateTournamentUseCase:
@@ -117,39 +116,47 @@ class CreateTournamentUseCase:
     """
 
     @transaction.atomic
-    def execute(self, params: CreateTournamentUseCaseParams) -> Tournament:
+    def execute(self, params: CreateTournamentUseCaseParams) -> LeagueOfLegendsTournament:
         try:
             organizer = User.objects.get(id=params.organizer_id)
         except User.DoesNotExist:
             raise ValidationError({"error": "User not found"})
 
         registration_start_date = datetime.strptime(
-            params.registration_start_date, "%Y-%m-%dT%H:%M:%S"
+            params.registration_start_date, "%Y-%m-%dT%H:%M:%S.000Z"
         )
-        registration_end_date = datetime.strptime(params.registration_end_date, "%Y-%m-%dT%H:%M:%S")
         start_date = datetime.strptime(params.start_date, "%Y-%m-%d").date()
         end_date = datetime.strptime(params.end_date, "%Y-%m-%d").date()
         start_time = datetime.strptime(params.start_time, "%H:%M").time()
         end_time = datetime.strptime(params.end_time, "%H:%M").time()
 
-        if registration_start_date >= registration_end_date:
-            raise ValidationError(
-                {"error": "Registration start date is greater than registration end date"}
-            )
+        start_at = datetime.combine(start_date, start_time)
+        end_at = datetime.combine(end_date, end_time)
 
-        if start_date >= end_date:
+        # Challonge constraint
+        if start_at <= datetime.now():
+            raise ValidationError({"error": "Start date needs to be in the future"})
+
+        if start_at > end_at:
             raise ValidationError({"error": "Start date is greater than end date"})
 
-        if registration_end_date.date() > start_date:
-            raise ValidationError({"error": "Registration end date is greater than start date"})
+        if registration_start_date > start_at:
+            raise ValidationError({"error": "Registration start date is greater than start date"})
 
-        tournament = Tournament.objects.create(
+        if params.is_entry_free:
+            params.entry_fee = 0
+
+        if not params.is_entry_free and not params.entry_fee:
+            raise ValidationError({"error": "Invalid entry fee"})
+
+        tournament = LeagueOfLegendsTournament.objects.create(
             name=params.name,
             description=params.description,
             organizer=organizer,
             registration_start_date=registration_start_date,
-            registration_end_date=registration_end_date,
-            check_in_duration=int(params.check_in_duration),
+            # TO BE REMOVED
+            registration_end_date=registration_start_date,
+            check_in_duration=CHECK_IN_DURATION,
             start_date=start_date,
             end_date=end_date,
             start_time=start_time,
@@ -164,6 +171,12 @@ class CreateTournamentUseCase:
 
         if not params.prize_pool_enabled:
             for prize in params.prizes:
+                if prize.get("is_money") and not prize.get("amount"):
+                    raise ValidationError({"error": f"Invalid amount for #{prize.get('place')}"})
+
+                if not prize.get("is_money") and prize.get("content") == "":
+                    raise ValidationError({"error": "No money prizes must have description"})
+
                 Prize.objects.create(
                     tournament=tournament,
                     place=prize.get("place"),
@@ -172,13 +185,10 @@ class CreateTournamentUseCase:
                     content=prize.get("content"),
                 )
 
-        start_at = datetime.combine(tournament.start_date, tournament.start_time).strftime(
-            "%Y-%m-%dT%H:%M:%S%+00:00"
-        )
         ch_tournament = ChallongeTournament.create(
             name=tournament.name,
             teams=True,
-            start_at=start_at,
+            start_at=start_at.strftime("%Y-%m-%dT%H:%M:%S%+00:00"),
             check_in_duration=tournament.check_in_duration,
             game=tournament.game,
         )

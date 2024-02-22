@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { MoneyInput } from '@/components/ui/input-money';
 import { InputTime } from '@/components/ui/input-time';
 import {
   Select,
@@ -22,18 +23,29 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
+import moment from 'moment';
+import { useRouter } from 'next/router';
 import { useFieldArray, useForm } from 'react-hook-form';
 import z from 'zod';
 
+const { post: createTournament } = dataLoader<{}, {}>('createTournament');
+
 export function TournamentCreateForm() {
+  const { toast } = useToast();
+  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof createFormSchema>>({
     resolver: zodResolver(createFormSchema),
     defaultValues: {
       name: '',
+      is_entry_free: false,
+      open_classification: false,
+      terms: false,
     },
   });
 
@@ -43,19 +55,35 @@ export function TournamentCreateForm() {
     control,
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof createFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    const tz = new Date().getTimezoneOffset() / 60;
-    await fetch('http://localhost:9876/v1/webhooks/timezone', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ timezone: tz, ...values }),
-    });
+    try {
+      const resp = await createTournament(
+        {},
+        {
+          ...values,
+          start_date: moment(values.start_date).format('YYYY-MM-DD'),
+          end_date: moment(values.end_date).format('YYYY-MM-DD'),
+        }
+      );
+
+      if (resp.error)
+        return toast({ title: 'Error', description: resp.error.message });
+
+      toast({
+        title: 'Tournament created',
+        description: 'Tournament created successfully.',
+      });
+
+      return router.push('/admin/tournaments');
+    } catch (err) {
+      return toast({
+        title: 'Error creating tournament',
+        description: JSON.stringify(err),
+      });
+    }
   }
+
+  console.log('@ERRORS', formState.errors);
 
   return (
     <Form {...form}>
@@ -92,10 +120,10 @@ export function TournamentCreateForm() {
             <FormItem>
               <FormLabel className="text-title">Name</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input placeholder="Champions Cup" {...field} />
               </FormControl>
               <FormDescription>
-                This is name of your touranament.
+                This is name of your tournament.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -183,7 +211,7 @@ export function TournamentCreateForm() {
                     <SelectValue placeholder="Select a size" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="system">5</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -208,25 +236,6 @@ export function TournamentCreateForm() {
                 </FormControl>
                 <FormDescription>
                   This define when the registration period will start.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="registration_end_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-title">
-                  Registration End Date
-                </FormLabel>
-                <FormControl>
-                  <DatePicker date={field.value} onSelect={field.onChange} />
-                </FormControl>
-                <FormDescription>
-                  This define when the registration period will end.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -314,7 +323,7 @@ export function TournamentCreateForm() {
           render={({ field }) => (
             <FormItem className="border-light-dark flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-title">Is entry fee?</FormLabel>
+                <FormLabel className="text-title">Is entry free?</FormLabel>
                 <FormDescription>
                   If checked, the tournament will be free to enter and no
                   payment will be needed.
@@ -329,6 +338,39 @@ export function TournamentCreateForm() {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={control}
+          name="entry_fee"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-title">Entry Fee</FormLabel>
+              <FormControl>
+                <MoneyInput
+                  {...field}
+                  value={watch('is_entry_free') ? 0.0 : field.value}
+                  placeholder="R$ 10,00"
+                  disabled={watch('is_entry_free')}
+                  // Brazilian currency config
+                  locales="pt-BR"
+                  options={{
+                    currency: 'BRL',
+                    currencyDisplay: 'symbol',
+                    currencySign: 'standard',
+                    style: 'currency',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                This is the charging value for enter the tournament.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="border-accent rounded-lg border">
           <FormField
             control={control}
@@ -359,59 +401,62 @@ export function TournamentCreateForm() {
               hidden: watch('prize_pool_enabled'),
             })}
           >
-            {fields.map((fld, index) => {
-              return (
-                <div
-                  className="border-accent space-y-3 rounded-lg border p-5"
-                  key={fld.id}
+            {fields.map((fld, index) => (
+              <div
+                className="border-accent space-y-3 rounded-lg border p-5"
+                key={fld.id}
+              >
+                <div className="text-title">{fld.place}# place prize</div>
+                <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-title">Money prize</FormLabel>
+                    <FormDescription>
+                      If enabled, the prize will be paid in money
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      onCheckedChange={(val) =>
+                        setValue(`prizes.${index}.is_money` as const, val)
+                      }
+                      {...register(`prizes.${index}.is_money` as const)}
+                    />
+                  </FormControl>
+                </FormItem>
+
+                <Input
+                  type="number"
+                  placeholder="100"
+                  {...register(`prizes.${index}.amount` as const)}
+                  disabled={!watch(`prizes.${index}.is_money` as const)}
+                />
+                <FormMessage>
+                  {formState.errors.prizes &&
+                    formState.errors.prizes[index]?.amount?.message}
+                </FormMessage>
+
+                <Textarea
+                  placeholder="Prizer description"
+                  {...register(`prizes.${index}.content`)}
+                />
+                <button
+                  type="button"
+                  className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-sm text-red-500 transition-all hover:bg-red-500"
+                  onClick={() => remove(index)}
                 >
-                  <div className="text-title">{fld.place}# place prize</div>
-                  <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-title">Custom</FormLabel>
-                      <FormDescription>
-                        If enabled, the prize pool will be calculated based on
-                        the registrations entry fee
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        onCheckedChange={(val) =>
-                          setValue(`prizes.${index}.custom` as const, !val)
-                        }
-                        {...register(`prizes.${index}.custom` as const)}
-                      />
-                    </FormControl>
-                  </FormItem>
-                  <Input
-                    type="text"
-                    disabled={watch(`prizes.${index}.custom` as const)}
-                    placeholder="100"
-                    {...register(`prizes.${index}.amount` as const)}
-                  />
-                  <Textarea
-                    placeholder="Description of the prize pool"
-                    {...register(`prizes.${index}.content`)}
-                  />
-                  <button
-                    type="button"
-                    className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-sm text-red-500 transition-all hover:bg-red-500"
-                    onClick={() => remove(index)}
-                  >
-                    <TrashIcon className="mr-2 h-4 w-4" />
-                    Remove
-                  </button>
-                </div>
-              );
-            })}
+                  <TrashIcon className="mr-2 h-4 w-4" />
+                  Remove
+                </button>
+              </div>
+            ))}
             <button
               type="button"
               className="border-accent flex w-full items-center justify-center rounded-lg border p-5 text-sm"
               onClick={() =>
                 append({
-                  custom: true,
+                  is_money: false,
                   place: fields.length + 1,
-                  amount: 0,
+                  amount: '0',
                   content: '',
                 })
               }
@@ -439,7 +484,7 @@ export function TournamentCreateForm() {
         />
         <FormField
           control={control}
-          name="is_entry_free"
+          name="terms"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -461,7 +506,7 @@ export function AcceptTermsAndConditionsCheckBox({ ...props }) {
   return (
     <div className="flex items-center space-x-2">
       <Checkbox
-        onCheckedChange={props.onchange}
+        onCheckedChange={props.onChange}
         value={props.value}
         id="terms"
       />
@@ -483,10 +528,10 @@ export function IsOpenClassificationCheckBox({ ...props }) {
         name={props.name}
         onCheckedChange={props.onChange}
         value={props.value}
-        id="terms"
+        id="open_classification"
       />
       <label
-        htmlFor="terms"
+        htmlFor="open_classification"
         className="text-title text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         Open classification
