@@ -71,7 +71,7 @@ class CreateTournamentUseCaseParams:
         description = serializers.CharField()
         organizer_id = serializers.UUIDField()
         registration_start_date = serializers.DateTimeField()
-        check_in_duration = serializers.CharField()
+        # check_in_duration = serializers.CharField()
         start_date = serializers.DateField()
         end_date = serializers.DateField()
         start_time = serializers.TimeField()
@@ -130,10 +130,8 @@ class CreateTournamentUseCase:
         start_time = datetime.strptime(params.start_time, "%H:%M").time()
         end_time = datetime.strptime(params.end_time, "%H:%M").time()
 
-        if registration_start_date >= start_date:
-            raise ValidationError(
-                {"error": "Registration start date is greater than registration end date"}
-            )
+        start_at = datetime.combine(start_date, start_time)
+        end_at = datetime.combine(end_date, end_time)
 
         # Challonge constraint
         if start_at <= datetime.now():
@@ -142,12 +140,21 @@ class CreateTournamentUseCase:
         if start_at > end_at:
             raise ValidationError({"error": "Start date is greater than end date"})
 
-        tournament = Tournament.objects.create(
+        if registration_start_date > start_at:
+            raise ValidationError({"error": "Registration start date is greater than start date"})
+
+        if params.is_entry_free:
+            params.entry_fee = 0
+
+        if not params.is_entry_free and not params.entry_fee:
+            raise ValidationError({"error": "Invalid entry fee"})
+
+        tournament = LeagueOfLegendsTournament.objects.create(
             name=params.name,
             description=params.description,
             organizer=organizer,
             registration_start_date=registration_start_date,
-            check_in_duration=int(params.check_in_duration),
+            check_in_duration=CHECK_IN_DURATION,
             start_date=start_date,
             end_date=end_date,
             start_time=start_time,

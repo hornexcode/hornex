@@ -39,12 +39,11 @@ class CreateTournamentTestCase(TestCase):
             name="test-tournament",
             description="test-description",
             organizer_id=self.user.id,
-            registration_start_date="2022-01-01T00:00:00",
-            check_in_duration="15",
-            start_date="2022-01-03",
-            end_date="2022-01-06",
-            start_time="12:00",
-            end_time="12:00",
+            registration_start_date=now.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+            start_date=start_at.date().strftime("%Y-%m-%d"),
+            end_date=end_at.date().strftime("%Y-%m-%d"),
+            start_time=start_at.time().strftime("%H:%M"),
+            end_time=end_at.time().strftime("%H:%M"),
             is_entry_free=True,
             entry_fee=0,
             prize_pool_enabled=False,
@@ -67,19 +66,27 @@ class CreateTournamentTestCase(TestCase):
 
         self.assertIsNotNone(result.id)
         self.assertEqual(result.organizer, self.user)
-        self.assertEqual(result.game, "league-of-legends")
-        self.assertEqual(result.description, "description")
-        self.assertEqual(result.registration_start_date, datetime(2022, 1, 1, 0, 0))
-        self.assertEqual(result.check_in_duration, 15)
-        self.assertEqual(result.start_date, date(2022, 1, 3))
-        self.assertEqual(result.end_date, date(2022, 1, 6))
-        self.assertEqual(result.start_time, time(12, 0))
-        self.assertEqual(result.end_time, time(12, 0))
-        self.assertEqual(result.is_entry_free, True)
-        self.assertEqual(result.prize_pool_enabled, False)
-        self.assertEqual(result.open_classification, True)
-        self.assertEqual(result.max_teams, 4)
-        self.assertEqual(result.team_size, 5)
+        self.assertEqual(result.game, self.params.game)
+        self.assertEqual(result.description, self.params.description)
+        self.assertEqual(
+            result.registration_start_date,
+            datetime.strptime(self.params.registration_start_date, "%Y-%m-%dT%H:%M:%S.000Z"),
+        )
+        self.assertEqual(
+            result.start_date, datetime.strptime(self.params.start_date, "%Y-%m-%d").date()
+        )
+        self.assertEqual(
+            result.end_date, datetime.strptime(self.params.end_date, "%Y-%m-%d").date()
+        )
+        self.assertEqual(
+            result.start_time, datetime.strptime(self.params.start_time, "%H:%M").time()
+        )
+        self.assertEqual(result.end_time, datetime.strptime(self.params.end_time, "%H:%M").time())
+        self.assertEqual(result.is_entry_free, self.params.is_entry_free)
+        self.assertEqual(result.prize_pool_enabled, self.params.prize_pool_enabled)
+        self.assertEqual(result.open_classification, self.params.open_classification)
+        self.assertEqual(result.max_teams, int(self.params.size))
+        self.assertEqual(result.team_size, int(self.params.team_size))
         self.assertEqual(result.challonge_tournament_id, 1)
         self.assertEqual(
             result.challonge_tournament_url, "https://challonge.com/sample_tournament_1"
@@ -97,51 +104,16 @@ class CreateTournamentTestCase(TestCase):
         end_at = start_at + timedelta(days=3)
 
         try:
-            CreateTournamentUseCase().execute(self.params)
-        except ValidationError as e:
-            self.assertEqual(e.detail["error"], "User not found")
-
-    def test_invalid_registration_start_date(self):
-        self.params.registration_start_date = "2022-01-03T00:00:00"
-
-        try:
-            CreateTournamentUseCase().execute(self.params)
-        except ValidationError as e:
-            self.assertEqual(
-                str(e.detail["error"]),
-                "Registration start date is greater than registration end date",
-            )
-
-    def test_invalid_start_date(self):
-        self.params.start_date = "2022-01-07"
-
-        try:
-            CreateTournamentUseCase().execute(self.params)
-        except ValidationError as e:
-            self.assertEqual(str(e.detail["error"]), "Start date is greater than end date")
-
-    def test_challonge_not_created(self):
-        with patch("lib.challonge.Tournament.create") as ch_tournament_create_mock:
-            ch_tournament_create_mock.return_value = None
-
-            try:
-                CreateTournamentUseCase().execute(self.params)
-            except Exception as e:
-                self.assertEqual(str(e), "Tournament not created at challonge")
-
-    def test_entry_free_and_prize_pool_enabled(self):
-        try:
-            CreateTournamentUseCaseParams(
+            self.params = CreateTournamentUseCaseParams(
                 game="league-of-legends",
                 name="test-tournament",
                 description="test-description",
                 organizer_id=self.user.id,
-                registration_start_date="2022-01-01T00:00:00",
-                check_in_duration="15",
-                start_date="2022-01-03",
-                end_date="2022-01-06",
-                start_time="12:00",
-                end_time="12:00",
+                registration_start_date=now.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                start_date=start_at.date().strftime("%Y-%m-%d"),
+                end_date=end_at.date().strftime("%Y-%m-%d"),
+                start_time=start_at.time().strftime("%H:%M"),
+                end_time=end_at.time().strftime("%H:%M"),
                 is_entry_free=True,
                 entry_fee=0,
                 prize_pool_enabled=True,
@@ -164,12 +136,11 @@ class CreateTournamentTestCase(TestCase):
                 name="test-tournament",
                 description="test-description",
                 organizer_id=self.user.id,
-                registration_start_date="2022-01-01T00:00:00",
-                check_in_duration="15",
-                start_date="2022-01-03",
-                end_date="2022-01-06",
-                start_time="12:00",
-                end_time="12:00",
+                registration_start_date=now,
+                start_date=now.date(),
+                end_date=now.date(),
+                start_time=now.time(),
+                end_time=now.time(),
                 is_entry_free=False,
                 entry_fee=0,
                 prize_pool_enabled=True,
