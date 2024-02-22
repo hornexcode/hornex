@@ -1,21 +1,6 @@
 import { TournamentTableRowProps } from './tournament-row.types';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
-import Button from '@/components/ui/atoms/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-import { getStatus, getStatus } from '@/lib/models';
-import { Cog8ToothIcon } from '@heroicons/react/20/solid';
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import { getGame, getStatus } from '@/lib/models';
 import clsx from 'clsx';
 import { UsersIcon } from 'lucide-react';
 import Image from 'next/image';
