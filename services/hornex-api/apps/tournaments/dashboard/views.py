@@ -8,7 +8,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.tournaments.models import LeagueOfLegendsTournament
-from apps.tournaments.requests.serializers import CreateTournamentSerializer
 from apps.tournaments.serializers import LeagueOfLegendsTournamentSerializer
 from apps.tournaments.usecases.organizer.create_tournament import (
     CreateTournamentUseCase,
@@ -22,18 +21,8 @@ from jwt_token.authentication import JWTAuthentication
 @authentication_classes([JWTAuthentication])
 def tournaments_controller(request):
     if request.method == "POST":
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        serializered = CreateTournamentSerializer(**request.data)
-        serializered.is_valid()
-
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        print(serializered)
-        print(serializered.data)
-
-        return Response("HELLOW")
-
         tournament = CreateTournamentUseCase().execute(
-            CreateTournamentUseCaseParams(**serializered.data)
+            CreateTournamentUseCaseParams(**request.data)
         )
         return Response({"id": tournament.id}, status=status.HTTP_201_CREATED)
     if request.method == "GET":
