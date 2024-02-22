@@ -6,7 +6,6 @@ from datetime import date, datetime, time
 
 import structlog
 from django.db import transaction
-from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from apps.tournaments.models import LeagueOfLegendsTournament, Prize
@@ -24,13 +23,6 @@ class PrizeParams:
     is_money: bool
     amount: int
     content: str | None
-
-
-class PrizeSerializer(serializers.Serializer):
-    place = serializers.IntegerField()
-    is_money = serializers.BooleanField()
-    amount = serializers.FloatField()
-    content = serializers.CharField(required=False, allow_blank=True)
 
 
 @dataclass
@@ -52,63 +44,8 @@ class CreateTournamentUseCaseParams:
     open_classification: bool
     size: int
     team_size: int
-    map_name: str
+    map: str
     prizes: list[PrizeParams]
-
-    def __init__(self, **kwargs):
-        self.validate(**kwargs)
-        self.game = str(kwargs.get("game"))
-        self.name = str(kwargs.get("name"))
-        self.description = str(kwargs.get("description"))
-        self.organizer_id = uuid.UUID(kwargs.get("organizer_id"))
-
-        # registration_start_date = datetime.strptime(
-        #     params.registration_start_date, "%Y-%m-%dT%H:%M:%S.000Z"
-        # )
-        # start_date = datetime.strptime(params.start_date, "%Y-%m-%d").date()
-        # end_date = datetime.strptime(params.end_date, "%Y-%m-%d").date()
-        # start_time = datetime.strptime(params.start_time, "%H:%M").time()
-        # end_time = datetime.strptime(params.end_time, "%H:%M").time()
-        self.registration_start_date = kwargs.get("registration_start_date")
-        self.check_in_duration = kwargs.get("check_in_duration")
-        self.start_date = kwargs.get("start_date")
-        self.end_date = kwargs.get("end_date")
-        self.start_time = kwargs.get("start_time")
-        self.end_time = kwargs.get("end_time")
-        self.feature_image = kwargs.get("feature_image")
-        self.is_entry_free = kwargs.get("is_entry_free")
-        self.entry_fee = kwargs.get("entry_fee")
-        self.prize_pool_enabled = kwargs.get("prize_pool_enabled")
-        self.open_classification = kwargs.get("open_classification")
-        self.size = kwargs.get("size")
-        self.team_size = kwargs.get("team_size")
-        self.map_name = kwargs.get("map_name")
-        self.prizes = kwargs.get("prizes")
-
-    class Validator(serializers.Serializer):
-        game = serializers.CharField()
-        name = serializers.CharField()
-        description = serializers.CharField()
-        organizer_id = serializers.UUIDField()
-        registration_start_date = serializers.DateTimeField()
-        # check_in_duration = serializers.CharField()
-        start_date = serializers.DateField()
-        end_date = serializers.DateField()
-        start_time = serializers.TimeField()
-        end_time = serializers.TimeField()
-        feature_image = serializers.URLField(required=False)
-        is_entry_free = serializers.BooleanField()
-        entry_fee = serializers.FloatField(required=False)
-        prize_pool_enabled = serializers.BooleanField()
-        open_classification = serializers.BooleanField()
-        size = serializers.CharField()
-        team_size = serializers.CharField()
-        # map_name = serializers.CharField()
-        prizes = PrizeSerializer(many=True)
-
-    def validate(self, **kwargs) -> Validator:
-        params = self.Validator(data=kwargs)
-        params.is_valid(raise_exception=True)
 
 
 class CreateTournamentUseCase:
