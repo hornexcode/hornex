@@ -1,3 +1,4 @@
+from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 
@@ -13,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user = User.objects.first()
 
-        now = dt.utcnow()
+        now = dt.now(tz=UTC)
         tournament = Tournament.objects.create(
             name="Torneio de League of Legends",
             organizer=user,

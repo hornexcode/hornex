@@ -1,3 +1,4 @@
+from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 from unittest.mock import patch
@@ -38,7 +39,7 @@ class TestPaymentRegistration(
     def test_create_payment_registration_success(self, mock_payment_gateway):
         mock_payment_gateway.return_value = EfiMock()
 
-        now = dt.now()
+        now = dt.now(tz=UTC)
         tournament = Tournament.objects.create(
             name="test-name",
             description="test-description",

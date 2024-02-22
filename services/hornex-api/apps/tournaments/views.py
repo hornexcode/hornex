@@ -28,6 +28,7 @@ from apps.tournaments.filters import (
 )
 from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
+from apps.tournaments.requests import TournamentCreateSerializer
 from apps.tournaments.serializers import (
     RegistrationReadSerializer,
     TournamentSerializer,
@@ -100,37 +101,53 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
 class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
+    presenter_class = TournamentSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     lookup_field = "id"
 
-    def get_object(self, *args, **kwargs):
-        # league of legends
-        self.queryset = LeagueOfLegendsTournament.objects.all()
-        return super().get_object()
+    def get_presenter(self):
+        return self.presenter_class
+
+    def create(self, request, *args, **kwargs):
+        params = TournamentCreateSerializer(data=request.data)
+        params.is_valid(raise_exception=True)
+
+        uc = CreateTournamentUseCase()
+        tournament = uc.execute(
+            CreateTournamentUseCaseParams(
+                **{
+                    **params,
+                    "organizer_id": request.user.id,
+                }
+            ),
+        )
+
+        presenter = self.get_presenter(tournament)
+
+        return Response(
+            presenter.data,
+            status=status.HTTP_201_CREATED,
+        )
 
     @action(detail=True, methods=["post"])
     def start(self, request, *args, **kwargs):
-        tournament = self.construct_object()
+        tournament = self.get_object()
         timestamp = datetime.fromisoformat(request.data.get("now"))
-        # timestamp = datetime.utcfromtimestamp(int(request.data.get("timestamp")) / 1000.0).replace(
-        #     tzinfo=UTC
-        # )
         tournament.start(timestamp=timestamp)
-        serializer = self.get_serializer(tournament)
+
+        presenter = self.get_presenter(tournament)
         return Response(
-            serializer.data,
+            presenter.data,
             status=status.HTTP_200_OK,
         )
 
-    def construct_object(self) -> Tournament:
-        """
-        Returns the tournament object based on the game type
-        """
-        obj = self.get_object()
-        if obj.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            return LeagueOfLegendsTournament.objects.get(id=obj.id)
-        return obj
+    def get_queryset(self):
+        game, _ = extract_game_and_platform(self.kwargs)
+        if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
+            self.queryset = LeagueOfLegendsTournament.objects.filter(organizer=self.request.user)
+
+        return super().get_queryset()
 
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):

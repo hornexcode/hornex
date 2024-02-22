@@ -1,5 +1,7 @@
+from datetime import UTC
+from datetime import datetime as dt
+
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
@@ -63,7 +65,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
         try:
             notifications = Notification.objects.filter(
                 id__in=notifications_ids, recipient_id=recipient_id
-            ).update(read_at=timezone.now())
+            ).update(read_at=dt.now(tz=UTC))
         except ValidationError as e:
             return Response(e, status=status.HTTP_400_BAD_REQUEST)
 

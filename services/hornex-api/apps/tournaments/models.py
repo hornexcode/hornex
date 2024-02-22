@@ -118,7 +118,7 @@ class Tournament(BaseModel):
 
     def start(self, timestamp: Optional[datetime]):
         if not timestamp:
-            timestamp = datetime.now()
+            timestamp = datetime.now(tz=UTC)
 
         self.status = Tournament.StatusOptions.RUNNING
         if datetime.combine(self.start_date, self.start_time, tzinfo=UTC) > timestamp:
@@ -217,7 +217,7 @@ class Tournament(BaseModel):
 
     @property
     def is_full(self):
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
 
         accepted_registrations = Registration.objects.filter(
             tournament=self, status=Registration.RegistrationStatusOptions.ACCEPTED
@@ -234,7 +234,7 @@ class Tournament(BaseModel):
         return accepted_registrations + pending_registrations >= self.max_teams
 
     def is_checkin_open(self) -> bool:
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         start_at = datetime.combine(self.start_date, self.start_time)
         checkin_opens_at = start_at - timedelta(minutes=self.check_in_duration)
 

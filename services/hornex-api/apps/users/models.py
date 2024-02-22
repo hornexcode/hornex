@@ -1,4 +1,6 @@
 import uuid
+from datetime import UTC
+from datetime import datetime as dt
 
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -6,14 +8,13 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
-from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
         if not email:
             raise ValueError("Users must have an email address")
-        now = timezone.now()
+        now = dt.now(tz=UTC)
         email = self.normalize_email(email)
         user = self.model(
             email=email,

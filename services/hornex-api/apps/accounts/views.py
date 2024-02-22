@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 
@@ -68,7 +69,7 @@ def oauth_login_callback(request):
     )
 
     # expires_in to expires_at
-    expires_at = dt.now() + td(seconds=token.expires_in)
+    expires_at = dt.now(tz=UTC) + td(seconds=token.expires_in)
     Session.objects.create(
         game_id=gid,
         scope=token.scope,
