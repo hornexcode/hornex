@@ -1,3 +1,4 @@
+from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 
@@ -64,7 +65,7 @@ class TournamentFactory:
         """
         Create a new tournament with the given organizer and kwargs.
         """
-        now = dt.now()
+        now = dt.now(tz=UTC)
         return BaseTournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),
@@ -72,9 +73,8 @@ class TournamentFactory:
             game=kwargs.get("game", BaseTournament.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", BaseTournament.PlatformType.PC),
             published=kwargs.get("published", True),
-            phase=kwargs.get("phase", BaseTournament.PhaseType.REGISTRATION_OPEN),
+            status=kwargs.get("status", BaseTournament.StatusOptions.REGISTERING),
             registration_start_date=kwargs.get("registration_start_date", now),
-            registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
                 "start_date",
                 now + td(days=15),
@@ -95,7 +95,7 @@ class LeagueOfLegendsTournamentFactory:
         """
         Create a new league of legends tournament with the given organizer and kwargs.
         """
-        now = dt.now()
+        now = dt.now(tz=UTC)
         tmt = Tournament.objects.create(
             name=kwargs.get("name", fake.name()),
             description=kwargs.get("description", "Tournament description"),
@@ -103,9 +103,8 @@ class LeagueOfLegendsTournamentFactory:
             game=kwargs.get("game", Tournament.GameType.LEAGUE_OF_LEGENDS),
             platform=kwargs.get("platform", Tournament.PlatformType.PC),
             published=kwargs.get("published", True),
-            phase=kwargs.get("phase", Tournament.PhaseType.REGISTRATION_OPEN),
+            status=kwargs.get("status", Tournament.StatusOptions.REGISTERING),
             registration_start_date=kwargs.get("registration_start_date", now),
-            registration_end_date=kwargs.get("registration_end_date", now + td(days=7)),
             start_date=kwargs.get(
                 "start_date",
                 now + td(days=15),

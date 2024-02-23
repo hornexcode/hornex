@@ -10,10 +10,18 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 
-const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
+const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
+  tournament,
+  className,
+}) => {
   const router = useRouter();
   return (
-    <div className="shadow-light bg-light-dark rounded">
+    <div
+      className={clsx(
+        'shadow-light bg-light-dark max-w-[230px] rounded',
+        className
+      )}
+    >
       <div className="bg-medium-dark highlight-white-5 rounded rounded-t">
         <div className="block px-5 py-4">
           <Link
@@ -25,7 +33,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
               ? tournament.name.substring(0, 20) + '...'
               : tournament.name}
           </Link>
-          <div className="text-body mb-1 text-sm">
+          <div className="text-body mb-1">
             {moment(tournament.start_date).format('MMMM Do YYYY')}
           </div>
         </div>
@@ -42,10 +50,8 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({ tournament }) => {
 
       {/* League of Legends Metadata */}
       <div className="block px-5 pt-5">
-        <div className="font-display text-xs font-medium uppercase text-white">
-          Classification
-        </div>
-        <div className="text-xs text-gray-400">
+        <div className="text-body font-medium">Classification</div>
+        <div className="text-title text-sm">
           {tournament.classifications.join(', ')}
         </div>
       </div>

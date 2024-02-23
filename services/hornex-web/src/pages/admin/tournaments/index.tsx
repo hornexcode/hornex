@@ -6,14 +6,14 @@ import { Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const { useData: useTournaments } = dataLoader<Tournament[], {}>(
-  'listTournaments'
+  'organizer:tournaments'
 );
 
 function DashboardPage() {
-  const { data: tournaments, error, isLoading } = useTournaments({});
+  const { data: tournaments, isLoading } = useTournaments({});
   const router = useRouter();
   const { data: session } = useSession();
   if (!session) {
@@ -22,7 +22,7 @@ function DashboardPage() {
 
   return (
     <div className="container mx-auto pt-8">
-      <div className="text-title font-title text-3xl font-bold">
+      <div className="text-title text-3xl font-bold">
         Tournament Organizer Admin
       </div>
       <div>

@@ -1,4 +1,5 @@
 import time
+from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 
@@ -20,7 +21,7 @@ class Command(BaseCommand):
     help = "Creates a stub tournament"
 
     def handle(self, *args, **options):
-        now = dt.utcnow()
+        now = dt.now(tz=UTC)
         logger.info("Creating tournament...", now=now)
 
         tester = User.objects.create(name="admin", email="tester@hornex.gg", password="test")
@@ -43,7 +44,6 @@ class Command(BaseCommand):
             end_time=now + td(minutes=30),
             check_in_duration=30,
             registration_start_date=now,
-            registration_end_date=now + td(minutes=20),
             feature_image="tmt-6.jpeg",
             published=True,  # change to is_published
             entry_fee=500,  # 5.00

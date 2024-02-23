@@ -1,0 +1,33 @@
+import { Tournament, TournamentPhase } from '@/lib/models';
+import { dataLoader } from '@/lib/request';
+import moment from 'moment';
+
+const { submit: updateTournament } = dataLoader<
+  Tournament,
+  Partial<Tournament>
+>('organizer:tournaments:update');
+
+const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
+  updateTournament(
+    { tournamentId },
+    {
+      status: 'registering',
+      registration_start_date: new Date(),
+    }
+  );
+
+const { submit: startTournament } = dataLoader<
+  Tournament,
+  { timestamp: number; now: Date }
+>('organizer:tournaments:start');
+
+const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
+  startTournament(
+    { tournamentId },
+    {
+      timestamp: Date.now(),
+      now: new Date(),
+    }
+  );
+
+export { openRegistrationHandler, startTournamentHandler };

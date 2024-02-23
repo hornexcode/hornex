@@ -20,7 +20,6 @@ import { Registration } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
 import classnames from 'classnames';
-import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { FC, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';

@@ -1,20 +1,27 @@
+import moment from 'moment';
 import z from 'zod';
 
-export const tournament = z.object({
+export const tournamentSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
   published: z.boolean(),
-  status: z.string(),
+  status: z.enum([
+    'announced',
+    'registering',
+    'running',
+    'finished',
+    'cancelled',
+  ]),
+  currency: z.enum(['USD', 'EUR', 'BRL']),
   start_date: z.string(),
   registration_start_date: z.date(),
-  registration_end_date: z.date(),
   check_in_duration: z.number(),
   end_date: z.string(),
   start_time: z.string(),
   end_time: z.string(),
   is_entry_free: z.boolean(),
-  is_prize_pool_fixed: z.boolean(),
+  prize_pool_enabled: z.boolean(),
   prize_pool: z.number(),
   entry_fee: z.number(),
   max_teams: z.number(),
@@ -30,23 +37,71 @@ export const tournament = z.object({
   open_classification: z.boolean(),
   challonge_tournament_url: z.string(),
 });
-export type Tournament = z.infer<typeof tournament>;
+export type Tournament = z.infer<typeof tournamentSchema>;
 
-export type TournamentStatus = 'Open' | 'In progress' | '';
+export const status: Record<string, string> = {
+  announced: 'Announced',
+  registering: 'Registration Open',
+  running: 'Running',
+  finished: 'Finished',
+  cancelled: 'Cancelled',
+};
 
-export function getStatus(tournament: Tournament): TournamentStatus {
-  const startAt = +new Date(
-    `${tournament.start_date}T${tournament.start_time}`
+export type TournamentPhase = keyof typeof status;
+
+export function getStatus(tournament: Tournament) {
+  return status[tournament.status];
+}
+
+export function getEntryFee(tournament: Tournament) {
+  return tournament.is_entry_free
+    ? 'Free'
+    : `${tournament.currency} ${(tournament.entry_fee / 100).toFixed(2)}`;
+}
+
+export function getClassifications(tournament: Tournament) {
+  if (tournament.open_classification) return 'All';
+  return tournament.classifications.join(', ');
+}
+
+export function getStartAt(tournament: Tournament) {
+  return (
+    moment(new Date(tournament.start_date)).format('DD/MM/YYYY') +
+    ' at ' +
+    moment(new Date(tournament.start_time)).format('hh:mm A')
   );
-  const endAt = +new Date(`${tournament.end_date}T${tournament.end_time}`);
+}
 
-  const now = +new Date();
-  if (now < +new Date(tournament.start_date)) {
-    return 'Open';
-  }
-  if (now > startAt && now < endAt) {
-    return 'In progress';
-  }
+const game: Record<string, string> = {
+  'league-of-legends': 'League of Legends',
+};
 
-  return 'Open';
+export type TournamentGame = keyof typeof game;
+
+export function getGame(tournament: Tournament): TournamentGame {
+  return game[tournament.game];
+}
+
+export function getStatusStep(tournament: Tournament) {
+  switch (tournament.status) {
+    case 'announced':
+      return [1, 4];
+    case 'registering':
+      return [2, 4];
+    case 'running':
+      return [3, 4];
+    case 'finished':
+      return [4, 4];
+    default:
+      return [0, 0];
+  }
+}
+
+export function getPotentialPrizePool(tournnament: Tournament): number {
+  return tournnament.prize_pool_enabled
+    ? tournnament.entry_fee *
+        tournnament.max_teams *
+        tournnament.team_size *
+        0.7
+    : 0;
 }

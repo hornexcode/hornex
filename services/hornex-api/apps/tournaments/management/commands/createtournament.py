@@ -1,5 +1,5 @@
+from datetime import UTC, time
 from datetime import datetime as dt
-from datetime import time
 from datetime import timedelta as td
 
 import structlog
@@ -29,13 +29,12 @@ class Command(BaseCommand):
             rank="I",
         )
 
-        now = dt.now()
+        now = dt.now(tz=UTC)
 
         LeagueOfLegendsTournament.objects.create(
             name="Second Tournament Enabler Summoner 2k24",
             description="This is a test tournament",
             registration_start_date=now,
-            registration_end_date=now + td(minutes=40),
             start_date=now + td(days=3),
             end_date=now + td(days=6),
             start_time=time(9, 40, 0),

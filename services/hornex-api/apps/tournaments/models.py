@@ -1,6 +1,7 @@
 import uuid
 from abc import abstractmethod
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
+from typing import Optional
 
 import structlog
 from django.conf import settings
@@ -18,25 +19,30 @@ MINIMUM_PARTICIPANTS = 0
 
 
 class Tournament(BaseModel):
-    class PhaseType(models.TextChoices):
-        REGISTRATION_OPEN = "registration_open"
-        RESULTS_TRACKING = "results_tracking"
-        PAYMENT_PENDING = "payment_pending"
-        FINISHED_AND_PAID = "finished_and_paid"
+    class StatusOptions(models.TextChoices):
+        ANNOUNCED = "announced"
+        REGISTERING = "registering"
+        RUNNING = "running"
+        FINISHED = "finished"
+        CANCELLED = "cancelled"
+
+    class CurrencyEnum(models.TextChoices):
+        USD = "USD"
+        BRL = "BRL"
+        EUR = "EUR"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     published = models.BooleanField(default=False)
-    phase = models.CharField(
+    status = models.CharField(
         max_length=50,
-        choices=PhaseType.choices,
-        default=PhaseType.REGISTRATION_OPEN,
+        choices=StatusOptions.choices,
+        default=StatusOptions.ANNOUNCED,
     )
 
     registration_start_date = models.DateTimeField()
-    registration_end_date = models.DateTimeField()
     check_in_duration = models.IntegerField(null=True, blank=True)
 
     start_date = models.DateField()
@@ -48,6 +54,9 @@ class Tournament(BaseModel):
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
     entry_fee = models.IntegerField(default=0, null=True, blank=True)  # in cents
+    currency = models.CharField(
+        max_length=3, choices=CurrencyEnum.choices, default=CurrencyEnum.BRL
+    )
     prize_pool_enabled = models.BooleanField(default=True)
 
     max_teams = models.IntegerField(default=32)
@@ -107,14 +116,15 @@ class Tournament(BaseModel):
     def _has_start_datetime(self):
         return bool(self.start_date) and bool(self.start_time)
 
-    def start(self):
-        if not self._has_start_datetime():
-            raise ValidationError(detail=errors.TournamentHasNoStartDateTime)
+    def start(self, timestamp: Optional[datetime]):
+        if not timestamp:
+            timestamp = datetime.now(tz=UTC)
 
-        self.phase = Tournament.PhaseType.RESULTS_TRACKING
+        self.status = Tournament.StatusOptions.RUNNING
+        if datetime.combine(self.start_date, self.start_time, tzinfo=UTC) > timestamp:
+            self.start_date = timestamp.date()
+            self.start_time = timestamp.time()
         self.save()
-
-        self.generate_brackets()
 
     def get_number_of_rounds(self):
         num_of_teams = self._get_number_of_teams()
@@ -207,7 +217,7 @@ class Tournament(BaseModel):
 
     @property
     def is_full(self):
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
 
         accepted_registrations = Registration.objects.filter(
             tournament=self, status=Registration.RegistrationStatusOptions.ACCEPTED
@@ -224,10 +234,7 @@ class Tournament(BaseModel):
         return accepted_registrations + pending_registrations >= self.max_teams
 
     def is_checkin_open(self) -> bool:
-        if self.phase != Tournament.PhaseType.REGISTRATION_OPEN:
-            return False
-
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         start_at = datetime.combine(self.start_date, self.start_time)
         checkin_opens_at = start_at - timedelta(minutes=self.check_in_duration)
 

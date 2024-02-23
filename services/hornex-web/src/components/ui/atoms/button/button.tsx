@@ -5,6 +5,7 @@ import {
   LoaderVariantTypes,
 } from '@/components/ui/atoms/loader';
 import cn from 'classnames';
+import { Loader, Loader2 } from 'lucide-react';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 type ShapeNames = 'rounded' | 'pill' | 'circle';
@@ -128,7 +129,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={buttonRef}
         onClick={clickHandler}
         className={cn(
-          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-bold outline-none transition-all sm:text-sm',
+          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center font-bold outline-none transition-all',
           buttonColorClassNames,
           !disabled
             ? buttonColorClassNames
@@ -148,13 +149,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         {...buttonProps}
       >
-        <span className={cn(isLoading && 'invisible opacity-0')}>
-          {children}
-        </span>
-
         {isLoading && (
-          <ButtonLoader size={loaderSize} variant={loaderVariant} />
+          // <ButtonLoader size={loaderSize} variant={loaderVariant} />
+          <Loader2 className="mr-2 w-4 animate-spin opacity-50" />
         )}
+        {/* <span className={cn(isLoading && 'invisible opacity-0')}> */}
+        <span className={cn(isLoading && 'opacity-50')}>{children}</span>
 
         {dripShow && (
           <ButtonDrip

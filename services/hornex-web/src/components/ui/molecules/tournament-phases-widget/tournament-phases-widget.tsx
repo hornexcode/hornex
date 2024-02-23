@@ -25,7 +25,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
 
     if (status === 'In progress') {
       return (
-        <div className="text-center text-sm text-amber-500">
+        <div className="text-center text-amber-500">
           🚀 <span className="pl-2">In progress...</span>
         </div>
       );
@@ -38,7 +38,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
       <div className="bg-light-dark shadow-card space-y-2 rounded-md">
         <div className="bg-medium-dark highlight-white-5 rounded-t">
           <div className="border-b border-gray-600 p-4">
-            <h4 className="leading-2 text-title text-sm font-extrabold">
+            <h4 className="leading-2 text-title font-extrabold">
               Tournament Phases
             </h4>
           </div>
@@ -61,11 +61,11 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
                   )}
                 />
               </div>
-              <time className="text-body mb-1 text-xs leading-none">
+              <time className="text-body mb-1 text-sm leading-none">
                 Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
               </time>
 
-              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+              <h3 className="-mb-1  font-semibold text-gray-900 dark:text-white">
                 <div className="flex items-center">
                   <span>Registration Open</span>
                 </div>
@@ -76,11 +76,11 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
               <div className="absolute -left-2 mt-3.5 rounded-full">
                 <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
               </div>
-              <time className="text-body mb-1 text-xs leading-none">
+              <time className="text-body mb-1 text-sm leading-none">
                 Closes at {moment(tournament.end_date).format('MMM Do')}{' '}
               </time>
 
-              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
                 <span>Tracking results</span>
               </h3>
             </li>
@@ -89,11 +89,11 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
               <div className="absolute -left-2 mt-3.5 rounded-full">
                 <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
               </div>
-              <time className="text-body mb-1 text-xs leading-none">
+              <time className="text-body mb-1 text-sm leading-none">
                 Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
               </time>
 
-              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
                 Payment
               </h3>
             </li>
@@ -102,11 +102,11 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
               <div className="absolute -left-2 mt-3.5 rounded-full">
                 <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
               </div>
-              <time className="text-body mb-1 text-xs leading-none">
+              <time className="text-body mb-1 text-sm leading-none">
                 Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
               </time>
 
-              <h3 className="-mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
                 Done
               </h3>
             </li>

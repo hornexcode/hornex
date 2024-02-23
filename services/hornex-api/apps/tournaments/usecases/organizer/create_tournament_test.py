@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -30,7 +30,7 @@ class CreateTournamentTestCase(TestCase):
             {"place": 3, "is_money": False, "amount": 0, "content": "test-content-3"},
         ]
 
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         start_at = now + timedelta(days=1)
         end_at = start_at + timedelta(days=3)
 
@@ -99,7 +99,7 @@ class CreateTournamentTestCase(TestCase):
             self.assertEqual(prize.content, self.prizes[i]["content"])
 
     def test_enabled_prize_pool_with_free_entry(self):
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         start_at = now + timedelta(days=1)
         end_at = start_at + timedelta(days=3)
 
@@ -129,7 +129,7 @@ class CreateTournamentTestCase(TestCase):
             )
 
     def test_invalid_prizes(self):
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         try:
             CreateTournamentUseCaseParams(
                 game="league-of-legends",
@@ -166,7 +166,7 @@ class CreateTournamentTestCase(TestCase):
             self.assertEqual(e.detail["error"], "User not found")
 
     def test_past_start_date(self):
-        self.params.start_date = datetime.now().date().strftime("%Y-%m-%d")
+        self.params.start_date = datetime.now(tz=UTC).date().strftime("%Y-%m-%d")
 
         try:
             CreateTournamentUseCase().execute(self.params)
@@ -177,7 +177,7 @@ class CreateTournamentTestCase(TestCase):
             )
 
     def test_invalid_registration_start_date(self):
-        self.params.registration_start_date = (datetime.now() + timedelta(days=10)).strftime(
+        self.params.registration_start_date = (datetime.now(tz=UTC) + timedelta(days=10)).strftime(
             "%Y-%m-%dT%H:%M:%S.000Z"
         )
 
@@ -190,7 +190,9 @@ class CreateTournamentTestCase(TestCase):
             )
 
     def test_invalid_start_date(self):
-        self.params.start_date = (datetime.now() + timedelta(days=10)).date().strftime("%Y-%m-%d")
+        self.params.start_date = (
+            (datetime.now(tz=UTC) + timedelta(days=10)).date().strftime("%Y-%m-%d")
+        )
 
         try:
             CreateTournamentUseCase().execute(self.params)
