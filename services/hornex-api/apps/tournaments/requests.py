@@ -26,3 +26,8 @@ class TournamentCreateSerializer(serializers.Serializer):
     size = serializers.CharField()
     team_size = serializers.CharField()
     prizes = PrizeSerializer(many=True)
+
+
+class RegisterSerializer(serializers.Serializer):
+    users = serializers.ListField(child=serializers.ListField(child=serializers.CharField()))
+    team = serializers.CharField()

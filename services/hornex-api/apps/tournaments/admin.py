@@ -5,6 +5,7 @@ from apps.tournaments.models import (
     Checkin,
     LeagueOfLegendsLeague,
     LeagueOfLegendsTournament,
+    Participant,
     Prize,
     Registration,
 )
@@ -37,3 +38,4 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Registration, RegistrationAdmin)
+admin.site.register(Participant)
