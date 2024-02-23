@@ -1,10 +1,13 @@
-import { Registration, Tournament } from '@/lib/models';
+import { Participant, Registration, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
   combineDateAndTime,
   isCheckInClosed,
   isCheckInOpen,
 } from '@/lib/utils';
+import Loading from '@/pages/[platform]/[game]/tournaments/[id]/loading';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import React, {
   createContext,
   ReactNode,
@@ -18,6 +21,7 @@ const { get: getRegistrations } =
 
 export const TournamentContext = createContext<{
   tournament: Tournament;
+  participants: Participant[];
   isRegistered: boolean;
   isCheckInOpened: boolean;
   isLoading: boolean;
@@ -26,34 +30,30 @@ export const TournamentContext = createContext<{
   isRegistered: false,
   isCheckInOpened: false,
   isLoading: false,
+  participants: [],
 });
 
 export type TournamentContextProviderProps = {
   children: ReactNode;
   tournament: Tournament;
+  participants: Participant[];
 };
 
 export const TournamentContextProvider = ({
   children,
   tournament,
+  participants,
 }: TournamentContextProviderProps) => {
+  const { data: session } = useSession();
+
   const [isLoading, setIsLoading] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
+
+  const [isRegistered, setIsRegistered] = useState(
+    !!participants.find((u) => u.email === session?.user?.email)
+  );
   const [isCheckInOpened, setIsCheckInOpened] = useState(false);
 
-  useEffect(() => {
-    async function loadRegistrations() {
-      const { data: registrations } = await getRegistrations({}, {});
-      const currentRegistration = registrations?.find(
-        (registration) => registration.tournament === tournament.id
-      );
-      if (currentRegistration) {
-        setIsRegistered(true);
-      }
-    }
-    loadRegistrations();
-  }, []);
-
+  console.log('abc', isRegistered);
   useEffect(() => {
     const checkinIsNotOpenAndHasNotClosed =
       !isCheckInOpen(tournament) && !isCheckInClosed(tournament);
@@ -97,9 +97,24 @@ export const TournamentContextProvider = ({
 
   return (
     <TournamentContext.Provider
-      value={{ tournament, isRegistered, isCheckInOpened, isLoading }}
+      value={{
+        tournament,
+        isRegistered,
+        isCheckInOpened,
+        isLoading,
+        participants,
+      }}
     >
-      {children}
+      <>
+        <div className="p-4">
+          <table className="border-light-dark rounded border p-3">
+            <tr>
+              <td>{tournament.id}</td>
+            </tr>
+          </table>
+        </div>
+        {children}
+      </>
     </TournamentContext.Provider>
   );
 };

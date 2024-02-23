@@ -2,6 +2,7 @@ import { RegisterButton } from '../../atoms/register-button';
 import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import Button from '@/components/ui/atoms/button/button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
+import { useTournament } from '@/contexts/tournament';
 import { TeamCheckInStatus, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
@@ -18,14 +19,12 @@ import Image from 'next/image';
 import React, { FC, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 
-const { useData: useTournament } = dataLoader<Tournament>('getTournament');
 const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
   'getTeamCheckInStatus'
 );
 const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
 
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
-  tournament: initialTournament,
   connectedGameId,
   registration,
   isCheckedIn: initialIsCheckedIn,
@@ -33,17 +32,8 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
-
-  let tournament: Tournament = initialTournament;
-  const { data: tournamentData, error } = useTournament({
-    tournamentId: tournament.id,
-    platform: 'pc',
-    game: 'league-of-legends',
-  });
-
-  if (tournamentData && !error) {
-    tournament = tournamentData;
-  }
+  const { tournament, isRegistered } = useTournament();
+  console.log(isRegistered);
 
   // Controll the check in state
   useEffect(() => {
@@ -80,7 +70,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
   const {
     data: checkInStatusData,
-    error: checkInError,
     isLoading: checkInStatusIsLoading,
     mutate: checkInStatusMutate,
   } = useTeamCheckIns({
@@ -221,7 +210,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </div>
 
             {/* Register button */}
-            <RegisterButton className="ml-4" isRegistered={!!registration} />
+            <RegisterButton className="ml-4" isRegistered={isRegistered} />
 
             {/* Check-in button */}
             {registration &&

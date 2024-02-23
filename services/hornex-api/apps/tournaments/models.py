@@ -470,7 +470,9 @@ class Participant(models.Model):
     team = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(
+        Tournament, related_name="participants", on_delete=models.CASCADE
+    )
 
     class Meta:
         indexes = [models.Index(fields=["team"], name="team_idx")]

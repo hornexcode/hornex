@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from apps.tournaments.models import (
     LeagueOfLegendsTournament,
+    Participant,
     Registration,
     Tournament,
 )
@@ -60,3 +61,9 @@ class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
 
     def get_start_at(self, obj):
         return datetime.combine(obj.start_date, obj.start_time)
+
+
+class ParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Participant
+        fields = "__all__"

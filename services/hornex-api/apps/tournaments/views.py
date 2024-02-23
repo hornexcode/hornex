@@ -31,6 +31,7 @@ from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registra
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import RegisterSerializer, TournamentCreateSerializer
 from apps.tournaments.serializers import (
+    ParticipantSerializer,
     RegistrationReadSerializer,
     TournamentSerializer,
 )
@@ -100,7 +101,7 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
         return obj
 
     @action(detail=True, methods=["get"])
-    def list_registered_teams(self, request, *args, **kwargs):
+    def teams(self, request, *args, **kwargs):
         uc = ListRegisteredTeamsUseCase()
         teams = uc.execute(params=ListRegisteredTeamsParams(tournament_id=kwargs["id"]))
 
@@ -118,6 +119,13 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
                 )
             data.append(item)
         return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def participants(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        participants = tournament.participants.all()
+        serializer = ParticipantSerializer(participants, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class OrganizerTournamentViewSet(viewsets.ModelViewSet):

@@ -180,8 +180,12 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
-  listRegisteredTeams: {
-    path: 'v1/tournaments/[tournamentId]/registered-teams',
+  listTournamentParticipants: {
+    path: 'v1/tournaments/[tournamentId]/participants',
+    method: Method.GET,
+  },
+  listTournamentTeams: {
+    path: 'v1/tournaments/[tournamentId]/teams',
     method: Method.GET,
   },
   'organizer:tournaments': {
