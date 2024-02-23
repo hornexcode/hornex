@@ -4,6 +4,7 @@ from datetime import datetime as dt
 
 from django.db import models
 
+from apps.accounts.models import GameID
 from apps.common.models import BaseModel
 
 
@@ -11,7 +12,7 @@ class Team(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100, blank=True)
-    members = models.ManyToManyField("users.User", through="Member", related_name="teams")
+    members = models.ManyToManyField(GameID, through="Member", related_name="teams")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -27,20 +28,20 @@ class Team(BaseModel):
             raise Exception(f"Team {self.name} does not have {amount} members.")
         return True
 
-    def add_member(self, user, is_admin=False):
-        Member.objects.create(team=self, user=user, is_admin=is_admin)
+    def is_member(self, game_id: GameID):
+        return self.members.filter(id=game_id.id).exists()
 
-    def is_member(self, user):
-        return self.members.filter(id=user.id).exists()
+    def add_member(self, game_id, is_admin=False):
+        Member.objects.create(team=self, game_id=game_id, is_admin=is_admin)
 
 
 class Member(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return f"{self.user.email} ({self.user.id})"
+        return f"{self.game_id.email} of ({self.team.name})"
 
 
 class Invite(models.Model):

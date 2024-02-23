@@ -20,7 +20,9 @@ class TermsAndConditionsAgreement(models.Model):
 
 class GameID(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField("users.User", on_delete=models.CASCADE, related_name="game_id")
+    user = models.OneToOneField(
+        "users.User", on_delete=models.CASCADE, related_name="game_id", null=True, blank=True
+    )
 
     class GameOptions(models.TextChoices):
         LEAGUE_OF_LEGENDS = "league-of-legends"
@@ -38,7 +40,7 @@ class GameID(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return self.nickname
+        return f"{self.email} | {self.nickname}"
 
     def set_league_of_legends_code(self, code: str) -> None:
         self.metadata = {"league_of_legends_code": code}

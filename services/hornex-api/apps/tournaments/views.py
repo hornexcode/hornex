@@ -16,6 +16,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from apps.accounts.models import GameID
 from apps.leagueoflegends.serializers import (
     LeagueOfLegendsTournamentSerializer,
 )
@@ -207,7 +208,9 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
 
     def list(self, request):
-        teams = Team.objects.filter(members__in=[request.user]).values_list("id", flat=True)
+        game_id = GameID.objects.filter(user=request.user).all()
+
+        teams = Team.objects.filter(members__in=[game_id or None]).values_list("id", flat=True)
         self.queryset = self.queryset.filter(
             team__in=teams,
             status__in=[
@@ -252,7 +255,7 @@ def team_check_in_status(request, *args, **kwargs):
             team = Team.objects.get(id=kwargs["team"])
 
             # check if user belongs to team
-            if not Member.objects.filter(user=request.user).exists():
+            if not Member.objects.filter(game_id=request.user.game_id).exists():
                 return Response(
                     {"error": errors.UserDoesNotBelongToTeamError},
                     status=status.HTTP_403_FORBIDDEN,

@@ -79,19 +79,19 @@ class TeamViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        operation_description="POST /api/v1/teams/mount",
+        operation_summary="Mount a team",
+    )
     def mount_team(self, request, *args, **kwargs):
-        params = MountTeamParams
+        params = MountTeamParams(data={**request.data, "user_id": request.user.id})
         params.is_valid(raise_exception=True)
 
         uc = MountTeamUseCase()
 
-        try:
-            team = uc.execute(MountTeamInput(**params.validated_data))
-        except Exception as e:
-            logger.error("Error mounting team", error=e)
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        output = uc.execute(MountTeamInput(**params.validated_data))
 
-        return Response(TeamSerializer(team).data, status=status.HTTP_201_CREATED)
+        return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
 
 
 class InviteViewSet(viewsets.ModelViewSet):

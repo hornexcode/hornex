@@ -17,6 +17,7 @@ import django  # noqa: E402
 
 django.setup()
 
+from apps.accounts.models import GameID  # noqa: E402
 from apps.games.models import Game  # noqa: E402
 from apps.platforms.models import Platform  # noqa: E402
 from apps.teams.models import Team  # noqa: E402
@@ -34,6 +35,7 @@ def create_superuser():
         user = User.objects.create_superuser(
             email="admin@hornex.gg", name="Admin", password="admin"
         )
+        GameID.objects.create(email=user.email, user=user)
         logger.info("Admin superuser created!", email=user.email, password="admin")
         return user
     except Exception:
