@@ -30,7 +30,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   return (
     <div className="mx-auto px-8 pt-8">
       {/* connect account */}
-      {!gameId && <ConnectAccountButton />}
+      {/* {!gameId && <ConnectAccountButton />} */}
       <TournamentDetailsHeadline
         connectedGameId={gameId}
         tournament={tournament}

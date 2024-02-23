@@ -28,14 +28,16 @@ from apps.tournaments.filters import (
 )
 from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
-from apps.tournaments.requests import TournamentCreateSerializer
+from apps.tournaments.requests import RegisterSerializer, TournamentCreateSerializer
 from apps.tournaments.serializers import (
     RegistrationReadSerializer,
     TournamentSerializer,
 )
-from apps.tournaments.usecases.create_registration import (
-    CreateRegistrationUseCase,
-    CreateRegistrationUseCaseParams,
+from apps.tournaments.usecases import (
+    ListRegisteredTeamsParams,
+    ListRegisteredTeamsUseCase,
+    RegisterParams,
+    RegisterUseCase,
 )
 from apps.tournaments.usecases.organizer.create_tournament import (
     CreateTournamentUseCase,
@@ -46,7 +48,6 @@ from jwt_token.authentication import JWTAuthentication
 from lib.challonge import Tournament as ChallongeTournamentAPIResource
 
 logger = structlog.get_logger(__name__)
-# from apps.leagueoflegends.usecases import RegisterTeam
 
 MINIMUM_PARTICIPANTS = 20
 
@@ -96,6 +97,26 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
         if obj.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
             return LeagueOfLegendsTournament.objects.get(id=obj.id)
         return obj
+
+    @action(detail=True, methods=["get"])
+    def list_registered_teams(self, request, *args, **kwargs):
+        uc = ListRegisteredTeamsUseCase()
+        teams = uc.execute(params=ListRegisteredTeamsParams(tournament_id=kwargs["id"]))
+
+        data = []
+        for team, participants in teams.items():
+            item = {}
+            item["name"] = team
+            item["participants"] = []
+            for participant in participants:
+                item["participants"].append(
+                    {
+                        "id": participant["id"],
+                        "nickname": participant["nickname"],
+                    }
+                )
+            data.append(item)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class OrganizerTournamentViewSet(viewsets.ModelViewSet):
@@ -164,21 +185,14 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     @transaction.atomic
     def register(self, request, **kwargs):
-        uc = CreateRegistrationUseCase()
-
-        registration = uc.execute(
-            CreateRegistrationUseCaseParams(
-                **{
-                    **request.data,
-                    "tournament": kwargs["id"],
-                }
-            ),
+        params = RegisterSerializer(data=request.data)
+        params.is_valid(raise_exception=True)
+        uc = RegisterUseCase()
+        uc.execute(
+            RegisterParams(**{**params.validated_data, "tournament_id": kwargs["id"]}),
         )
 
-        return Response(
-            RegistrationReadSerializer(registration).data,
-            status=status.HTTP_201_CREATED,
-        )
+        return Response(None, status=status.HTTP_201_CREATED)
 
 
 class RegistrationViewSet(viewsets.ModelViewSet):

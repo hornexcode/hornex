@@ -52,7 +52,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             </div>
           </Link>
         </li>
-        <li className="">
+        {/* <li className="">
           <Link
             href={`/${routes.compete}`}
             className="group cursor-pointer transition-all"
@@ -64,8 +64,8 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <span className="text-title">{t('sidebar.registrations')}</span>
             </div>
           </Link>
-        </li>
-        <li className="">
+        </li> */}
+        {/* <li className="">
           <Link
             href={`/${routes.compete}`}
             className="group cursor-pointer transition-all"
@@ -77,10 +77,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <span className="text-title">{t('sidebar.teams')}</span>
             </div>
           </Link>
-        </li>
-      </ul>
-      <Separator className="my-4" />
-      <ul>
+        </li> */}
         <li className="">
           <Link
             href={`/${

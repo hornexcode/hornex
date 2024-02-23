@@ -464,3 +464,16 @@ class LeagueOfLegendsTournament(Tournament):
 
     def __str__(self) -> str:
         return f"{self.name} ({self.id})"
+
+
+class Participant(models.Model):
+    team = models.CharField(max_length=255)
+    nickname = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(unique=True)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [models.Index(fields=["team"], name="team_idx")]
+
+    def __str__(self) -> str:
+        return self.nickname

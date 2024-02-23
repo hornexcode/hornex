@@ -1,6 +1,19 @@
 import { EyeIcon } from '@/components/ui/atoms/icons';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tournament } from '@/lib/models';
+import { dataLoader } from '@/lib/request';
+import { DotFilledIcon } from '@radix-ui/react-icons';
+import { DotIcon } from 'lucide-react';
 import { FC } from 'react';
+
+type RegisteredTeam = {
+  name: string;
+  participants: { id: number; nickname: string }[];
+};
+
+const { useData: listRegisteredTeams } = dataLoader<RegisteredTeam[]>(
+  'listRegisteredTeams'
+);
 
 type TournamentOverviewTabPanelProps = {
   tournament: Tournament;
@@ -9,6 +22,12 @@ type TournamentOverviewTabPanelProps = {
 export const TournamentOverviewTabPanel: FC<
   TournamentOverviewTabPanelProps
 > = ({ tournament }) => {
+  const { data: registeredTeams, error } = listRegisteredTeams({
+    tournamentId: tournament.id,
+  });
+
+  console.log(registeredTeams);
+
   return (
     <div className="box space-y-12">
       <div className="block">
@@ -38,46 +57,22 @@ export const TournamentOverviewTabPanel: FC<
       </div>
       <div className="block">
         <h3 className="text-title mb-4 text-lg font-bold">Registered teams</h3>
-        <div className="grid grid-cols-4">
-          <div>
-            <ul className=" underline">
-              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
+        {!registeredTeams && !error && (
+          <Skeleton className="bg-light-dark h-[40px] w-full rounded" />
+        )}
+        <ul className="border-light-dark flex flex-wrap rounded border p-3 underline">
+          {registeredTeams !== undefined &&
+            registeredTeams.map((team, idx) => (
+              <li
+                key={idx}
+                className="mr-6 pb-1 hover:cursor-pointer hover:text-amber-400"
+              >
                 <div className="flex items-center">
-                  Pain Gaming <EyeIcon className="ml-2 w-4" />
+                  {team.name} <DotFilledIcon className="ml-2 w-4" />
                 </div>
               </li>
-              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
-                <div className="flex items-center">
-                  NFT <EyeIcon className="ml-2 w-4" />
-                </div>
-              </li>
-              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
-                <div className="flex items-center">
-                  Flamengo <EyeIcon className="ml-2 w-4" />
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <ul className=" underline">
-              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
-                <div className="flex items-center">
-                  Pain Gaming <EyeIcon className="ml-2 w-4" />
-                </div>
-              </li>
-              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
-                <div className="flex items-center">
-                  NFT <EyeIcon className="ml-2 w-4" />
-                </div>
-              </li>
-              <li className="pb-1 hover:cursor-pointer hover:text-amber-400">
-                <div className="flex items-center">
-                  Flamengo <EyeIcon className="ml-2 w-4" />
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
+            ))}
+        </ul>
       </div>
       <div className="block">
         <h3 className="text-title text-lg font-bold">Sponsors & Partners</h3>
