@@ -26,8 +26,9 @@ class GameID(models.Model):
         LEAGUE_OF_LEGENDS = "league-of-legends"
         CS_GO = "cs-go"
 
+    email = models.EmailField()
     game = models.CharField(max_length=50, choices=GameOptions.choices)
-    nickname = models.CharField(max_length=255)
+    nickname = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=False)
 
     metadata = models.JSONField(null=True, blank=True)

@@ -1,4 +1,6 @@
 import Loader from '../../atoms/loader';
+import SelectTeamTab from '../../molecules/select-team-tab';
+import { Separator } from '../../separator';
 import { useStepContext } from './register-team-modal-view';
 import { useModal } from '@/components/modal-views/context';
 import {
@@ -105,8 +107,10 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
           Registration
         </h4>
       </div>
-
-      <div className="relative">
+      <div className="mx-auto p-3">
+        <SelectTeamTab />
+      </div>
+      {/* <div className="relative">
         <div
           className={classnames(
             't-0 r-0 bg-light-dark absolute z-10 h-full w-full',
@@ -153,6 +157,12 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
           </div>
 
           <div className="flex items-center">
+            <Separator className="flex-1 bg-gray-400" />
+            <div className="px-2">OR</div>
+            <Separator className="flex-1 bg-gray-400" />
+          </div>
+
+          <div className="flex items-center">
             <Button
               onClick={() => closeModal()}
               color="gray"
@@ -169,7 +179,7 @@ export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
             />
           </div>
         </form>
-      </div>
+      </div> */}
     </div>
   );
 };

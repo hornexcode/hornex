@@ -18,9 +18,9 @@ import django  # noqa: E402
 django.setup()
 
 from apps.games.models import Game  # noqa: E402
-from apps.leagueoflegends.models import LeagueEntry, Tournament  # noqa: E402
 from apps.platforms.models import Platform  # noqa: E402
 from apps.teams.models import Team  # noqa: E402
+from apps.tournaments.models import LeagueOfLegendsTournament as Tournament  # noqa: E402
 from apps.users.models import User  # noqa: E402
 
 fake = faker.Faker()
@@ -71,13 +71,7 @@ def create_tournaments():
     logger.info("Creating tournaments...")
     now = dt.now(tz=tz.utc)  # noqa
 
-    bronze_tier, _ = LeagueEntry.objects.get_or_create(
-        tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I
-    )
-    silver_tier, _ = LeagueEntry.objects.get_or_create(
-        tier=LeagueEntry.TierOptions.SILVER, rank=LeagueEntry.RankOptions.I
-    )
-    t = Tournament.objects.create(
+    Tournament.objects.create(
         name="Torneio do Hornex",
         description="Torneio de League of Legends do Hornex",
         game=Tournament.GameType.LEAGUE_OF_LEGENDS,
@@ -90,12 +84,14 @@ def create_tournaments():
         registration_start_date=now,
         feature_image="tmt-6.jpeg",
         published=True,  # change to is_published
-        entry_fee=100,
+        entry_fee=2000,
         max_teams=32,
         team_size=5,
-        is_classification_open=False,
+        status=Tournament.StatusOptions.REGISTERING,
+        prize_pool_enabled=True,
+        open_classification=True,
+        is_entry_free=False,
     )
-    t.allowed_league_entries.set([bronze_tier, silver_tier])
 
 
 def create_teams():
@@ -122,4 +118,4 @@ create_superuser()
 create_platforms()
 create_games()
 # create_teams()
-# create_tournaments()
+create_tournaments()

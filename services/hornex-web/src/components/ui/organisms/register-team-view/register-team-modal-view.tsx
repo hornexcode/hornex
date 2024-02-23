@@ -33,24 +33,30 @@ const RegistrationView = () => {
   // get params
   const router = useRouter();
 
-  const {
-    data: teams,
-    error: teamsError,
-    isLoading: loadingTeams,
-  } = getTeams({
-    platform: router.query.platform as string,
-    game: router.query.game as string,
-  });
+  const { data: teams, isLoading: loadingTeams } = getTeams(
+    {
+      platform: router.query.platform as string,
+      game: router.query.game as string,
+    },
+    {
+      revalidateIfStale: false,
+    }
+  );
 
   const {
     data: tournament,
     error: tournamentError,
     isLoading: loadingTournament,
-  } = getTournament({
-    tournamentId: router.query.id as string,
-    platform: router.query.platform as string,
-    game: router.query.game as string,
-  });
+  } = getTournament(
+    {
+      tournamentId: router.query.id as string,
+      platform: router.query.platform as string,
+      game: router.query.game as string,
+    },
+    {
+      revalidateIfStale: false,
+    }
+  );
 
   if (loadingTeams || loadingTournament) {
     return (

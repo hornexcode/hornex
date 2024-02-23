@@ -21,12 +21,14 @@ from apps.teams.errors import (
     invite_not_found,
 )
 from apps.teams.models import Invite, Team
+from apps.teams.request import MountTeamParams
 from apps.teams.serializers import (
     InviteListSerializer,
     InviteSerializer,
     TeamSerializer,
     UserInviteSerializer,
 )
+from apps.teams.usecases import MountTeamInput, MountTeamUseCase
 from core.route import extract_game_and_platform
 from jwt_token.authentication import JWTAuthentication
 
@@ -76,6 +78,20 @@ class TeamViewSet(viewsets.ModelViewSet):
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
+
+    def mount_team(self, request, *args, **kwargs):
+        params = MountTeamParams
+        params.is_valid(raise_exception=True)
+
+        uc = MountTeamUseCase()
+
+        try:
+            team = uc.execute(MountTeamInput(**params.validated_data))
+        except Exception as e:
+            logger.error("Error mounting team", error=e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(TeamSerializer(team).data, status=status.HTTP_201_CREATED)
 
 
 class InviteViewSet(viewsets.ModelViewSet):
