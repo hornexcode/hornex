@@ -5,22 +5,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tournaments', '0002_initial'),
+        ("tournaments", "0002_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Participant',
+            name="Participant",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('team', models.CharField(max_length=255)),
-                ('nickname', models.CharField(max_length=255)),
-                ('tournament', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tournaments.tournament')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("team", models.CharField(max_length=255)),
+                ("nickname", models.CharField(max_length=255)),
+                (
+                    "tournament",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="tournaments.tournament"
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('team', 'nickname')},
+                "unique_together": {("team", "nickname")},
             },
         ),
     ]

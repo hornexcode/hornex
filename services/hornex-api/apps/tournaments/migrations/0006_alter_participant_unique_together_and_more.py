@@ -4,24 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tournaments', '0005_participant_email'),
+        ("tournaments", "0005_participant_email"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='participant',
+            name="participant",
             unique_together=set(),
         ),
         migrations.AlterField(
-            model_name='participant',
-            name='email',
+            model_name="participant",
+            name="email",
             field=models.EmailField(max_length=254, unique=True),
         ),
         migrations.AlterField(
-            model_name='participant',
-            name='nickname',
+            model_name="participant",
+            name="nickname",
             field=models.CharField(max_length=255, unique=True),
         ),
     ]
