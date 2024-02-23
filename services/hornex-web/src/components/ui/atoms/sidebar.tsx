@@ -23,17 +23,17 @@ export const Sidebar = ({ className }: { className?: string }) => {
       )}
     >
       <div className="text-title mb-10 flex h-[20] w-[200px] items-center text-xl font-bold">
-        <Link className="mr-4 block font-extrabold text-white" href="/">
+        <Link className="text-brand mr-4 block font-extrabold" href="/">
           <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
         </Link>
         HORNEX
       </div>
-      <ul className="flex w-full flex-col space-y-2">
+      <ul className="flex w-full flex-col space-y-1">
         <li className="">
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <Home className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+                <Home className="text-brand mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.home')}</span>
             </div>
@@ -46,7 +46,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <SwordsIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+                <SwordsIcon className="text-brand mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.compete')}</span>
             </div>
@@ -59,7 +59,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <FileBadge className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+                <FileBadge className="text-brand mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.registrations')}</span>
             </div>
@@ -72,7 +72,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="flex items-center rounded-lg">
               <div>
-                <Users2 className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+                <Users2 className="text-brand mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.teams')}</span>
             </div>
@@ -80,11 +80,6 @@ export const Sidebar = ({ className }: { className?: string }) => {
         </li>
       </ul>
       <Separator className="my-4" />
-      <div className="flex items-center">
-        <div className="text-body mb-4 flex h-[20] w-[180px] items-center font-bold">
-          Organizers
-        </div>
-      </div>
       <ul>
         <li className="">
           <Link
@@ -97,7 +92,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <Cog6ToothIcon className="mr-4 h-4 w-4 text-white shadow-xl transition-transform group-hover:scale-110" />
+                <Cog6ToothIcon className="text-brand mr-4 h-4 w-4 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.organize')}</span>
             </div>

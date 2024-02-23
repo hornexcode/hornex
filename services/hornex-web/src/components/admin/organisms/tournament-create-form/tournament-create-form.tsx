@@ -439,7 +439,7 @@ export function TournamentCreateForm() {
                 />
                 <button
                   type="button"
-                  className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-sm text-red-500 transition-all hover:bg-red-500"
+                  className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-red-500 transition-all hover:bg-red-500"
                   onClick={() => remove(index)}
                 >
                   <TrashIcon className="mr-2 h-4 w-4" />
@@ -449,7 +449,7 @@ export function TournamentCreateForm() {
             ))}
             <button
               type="button"
-              className="border-accent flex w-full items-center justify-center rounded-lg border p-5 text-sm"
+              className="border-accent flex w-full items-center justify-center rounded-lg border p-5"
               onClick={() =>
                 append({
                   is_money: false,
@@ -510,7 +510,7 @@ export function AcceptTermsAndConditionsCheckBox({ ...props }) {
       />
       <label
         htmlFor="terms"
-        className="text-title text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        className="text-title font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         Accept terms and conditions
       </label>
@@ -530,7 +530,7 @@ export function IsOpenClassificationCheckBox({ ...props }) {
       />
       <label
         htmlFor="open_classification"
-        className="text-title text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        className="text-title font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         Open classification
       </label>

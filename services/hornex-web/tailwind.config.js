@@ -40,7 +40,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        brand: 'rgb(var(--color-brand) / <alpha-value>)',
+        brand: '#f59e0b',
         body: '#95a5a6',
         title: '#eaeded',
         dark: '#16191f',

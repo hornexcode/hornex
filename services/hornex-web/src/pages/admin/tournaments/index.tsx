@@ -13,7 +13,7 @@ const { useData: useTournaments } = dataLoader<Tournament[], {}>(
 );
 
 function DashboardPage() {
-  const { data: tournaments, error, isLoading } = useTournaments({});
+  const { data: tournaments, isLoading } = useTournaments({});
   const router = useRouter();
   const { data: session } = useSession();
   if (!session) {
@@ -22,7 +22,7 @@ function DashboardPage() {
 
   return (
     <div className="container mx-auto pt-8">
-      <div className="text-title font-title text-3xl font-bold">
+      <div className="text-title text-3xl font-bold">
         Tournament Organizer Admin
       </div>
       <div>
