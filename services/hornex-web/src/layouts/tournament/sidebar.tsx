@@ -23,7 +23,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-light-dark shadow-card fixed top-0 z-50 flex h-full w-[200px] flex-col border-r border-zinc-700 px-8 py-4',
+        'bg-light-dark shadow-card fixed top-0 z-50 flex h-full w-[250px] flex-col border-r border-zinc-700 px-8 py-4',
         className
       )}
     >

@@ -1,5 +1,6 @@
 import { TournamentFeedItemProps } from './tournament-feed-item.types';
 import Button from '@/components/ui/atoms/button/button';
+import { getStatus } from '@/lib/models';
 import { toCurrency } from '@/lib/utils';
 import { UsersIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
@@ -34,7 +35,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
               : tournament.name}
           </Link>
           <div className="text-body mb-1">
-            {moment(tournament.start_date).format('MMMM Do YYYY')}
+            {moment(tournament.start_date).format('MMMM Do YYYY, h:mm a')}
           </div>
         </div>
       </div>
@@ -46,14 +47,6 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
           height={1080}
           alt="Cover Image"
         />
-      </div>
-
-      {/* League of Legends Metadata */}
-      <div className="block px-5 pt-5">
-        <div className="text-body font-medium">Classification</div>
-        <div className="text-title text-sm">
-          {tournament.classifications.join(', ')}
-        </div>
       </div>
 
       <div className="grid grid-cols-2 space-y-2 p-5">
@@ -69,7 +62,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
             <div className="relative flex">
               <span className="absolute -left-3 top-1 h-2 w-2 rounded-full bg-green-400"></span>
               <span className="text-xs font-bold uppercase text-green-400">
-                open
+                {getStatus(tournament)}
               </span>
             </div>
           </div>
@@ -92,20 +85,6 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
       </div>
 
       <div className="shadow-light flex items-end rounded-b-lg border-t border-dashed border-gray-600 px-5 py-4">
-        <div className="block">
-          <span className="text-xs text-slate-400">Prize Pool</span>
-          <div className="flex items-center space-x-1">
-            <DollarSign className="h-4 w-4 text-white" />
-            <span className="text-white">
-              {toCurrency(
-                tournament.entry_fee *
-                  tournament.max_teams *
-                  tournament.team_size *
-                  0.7
-              )}
-            </span>
-          </div>
-        </div>
         <div className="ml-auto text-right">
           <Button
             shape="rounded"
@@ -117,7 +96,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
             }
           >
             <div className="flex items-center">
-              <span className="">Jogar</span>
+              <span className="">Play</span>
             </div>
           </Button>
         </div>

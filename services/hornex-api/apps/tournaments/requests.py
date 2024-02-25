@@ -3,9 +3,7 @@ from rest_framework import serializers
 
 class PrizeSerializer(serializers.Serializer):
     place = serializers.IntegerField()
-    is_money = serializers.BooleanField()
-    amount = serializers.FloatField()
-    content = serializers.CharField(required=False, allow_blank=True)
+    content = serializers.CharField()
 
 
 class TournamentCreateSerializer(serializers.Serializer):
@@ -13,11 +11,8 @@ class TournamentCreateSerializer(serializers.Serializer):
     name = serializers.CharField()
     description = serializers.CharField()
     registration_start_date = serializers.DateTimeField()
-    # check_in_duration = serializers.CharField()
     start_date = serializers.DateField()
-    end_date = serializers.DateField()
     start_time = serializers.TimeField()
-    end_time = serializers.TimeField()
     feature_image = serializers.URLField(required=False)
     is_entry_free = serializers.BooleanField()
     entry_fee = serializers.FloatField(required=False)
@@ -26,8 +21,19 @@ class TournamentCreateSerializer(serializers.Serializer):
     size = serializers.CharField()
     team_size = serializers.CharField()
     prizes = PrizeSerializer(many=True)
+    map = serializers.CharField()
+    terms = serializers.BooleanField()
 
 
 class RegisterSerializer(serializers.Serializer):
-    users = serializers.ListField(child=serializers.ListField(child=serializers.CharField()))
-    team = serializers.CharField()
+    class PlayerSerializer(serializers.Serializer):
+        nickname = serializers.CharField()
+        email = serializers.EmailField()
+
+    team_name = serializers.CharField()
+
+    player1 = PlayerSerializer()
+    player2 = PlayerSerializer()
+    player3 = PlayerSerializer()
+    player4 = PlayerSerializer()
+    player5 = PlayerSerializer()

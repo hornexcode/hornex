@@ -1,23 +1,11 @@
-import { Participant, Registration, Tournament } from '@/lib/models';
+import { Participant, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
   combineDateAndTime,
   isCheckInClosed,
   isCheckInOpen,
 } from '@/lib/utils';
-import Loading from '@/pages/[platform]/[game]/tournaments/[id]/loading';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
-import React, {
-  createContext,
-  ReactNode,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
-
-const { get: getRegistrations } =
-  dataLoader<Registration[]>('getRegistrations');
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
 
 export const TournamentContext = createContext<{
   tournament: Tournament;
@@ -25,35 +13,41 @@ export const TournamentContext = createContext<{
   isRegistered: boolean;
   isCheckInOpened: boolean;
   isLoading: boolean;
+  refreshParticipants: () => Promise<void>;
 }>({
   tournament: {} as Tournament,
   isRegistered: false,
   isCheckInOpened: false,
   isLoading: false,
   participants: [],
+  refreshParticipants: async () => {},
 });
 
 export type TournamentContextProviderProps = {
   children: ReactNode;
   tournament: Tournament;
   participants: Participant[];
+  isRegistered: boolean;
 };
+
+const { submit: listTournamentParticipants } = dataLoader<
+  Participant[],
+  { id: string }
+>('listTournamentParticipants');
 
 export const TournamentContextProvider = ({
   children,
   tournament,
-  participants,
+  participants: initialParticipants,
+  isRegistered: initialRegistrationState,
 }: TournamentContextProviderProps) => {
-  const { data: session } = useSession();
-
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isRegistered, setIsRegistered] = useState(
-    !!participants.find((u) => u.email === session?.user?.email)
-  );
+  const [participants, setParticipants] =
+    useState<Participant[]>(initialParticipants);
   const [isCheckInOpened, setIsCheckInOpened] = useState(false);
 
-  console.log('abc', isRegistered);
+  const [isRegistered, setIsRegistered] = useState(initialRegistrationState);
+
   useEffect(() => {
     const checkinIsNotOpenAndHasNotClosed =
       !isCheckInOpen(tournament) && !isCheckInClosed(tournament);
@@ -95,6 +89,18 @@ export const TournamentContextProvider = ({
     setIsCheckInOpened(isCheckInOpen(tournament));
   }, []);
 
+  const refreshParticipants = async () => {
+    setIsLoading(true);
+    // fetch participants
+    const { data: participants } = await listTournamentParticipants({
+      id: tournament.id,
+    });
+    if (participants) {
+      setParticipants(participants);
+    }
+    setIsLoading(false);
+  };
+
   return (
     <TournamentContext.Provider
       value={{
@@ -103,18 +109,10 @@ export const TournamentContextProvider = ({
         isCheckInOpened,
         isLoading,
         participants,
+        refreshParticipants,
       }}
     >
-      <>
-        <div className="p-4">
-          <table className="border-light-dark rounded border p-3">
-            <tr>
-              <td>{tournament.id}</td>
-            </tr>
-          </table>
-        </div>
-        {children}
-      </>
+      {children}
     </TournamentContext.Provider>
   );
 };

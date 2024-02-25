@@ -1,28 +1,22 @@
 import { RegisterButton } from '../../atoms/register-button';
 import { Skeleton } from '../../skeleton';
 import { useTournament } from '@/contexts/tournament';
-import { getStatus, TournamentStatus } from '@/lib/models';
+import { Tournament } from '@/lib/models';
 import clsx from 'clsx';
 import { CheckCircle2 } from 'lucide-react';
 import moment from 'moment';
-import { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 
-type TournamentPhasesWidgetProps = {};
+type TournamentPhasesWidgetProps = {
+  tournament: Tournament;
+  isRegistered: boolean;
+};
 
-export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
-  const { tournament, isLoading, isRegistered } = useTournament();
-
-  const [status, setStatus] = useState<TournamentStatus>('');
-
-  useEffect(() => {
-    setStatus(getStatus(tournament));
-  }, [tournament]);
-
+export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
+  tournament,
+  isRegistered,
+}) => {
   const renderButton = () => {
-    if (isLoading) {
-      return <Skeleton className="bg-medium-dark h-[40px] w-full rounded" />;
-    }
-
     if (status === 'In progress') {
       return (
         <div className="text-center text-amber-500">
@@ -33,6 +27,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
 
     return <RegisterButton isRegistered={isRegistered} className="w-full" />;
   };
+
   return (
     <div className="pr-8">
       <div className="bg-light-dark shadow-card space-y-2 rounded-md">
@@ -76,9 +71,6 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = () => {
               <div className="absolute -left-2 mt-3.5 rounded-full">
                 <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
               </div>
-              <time className="text-body mb-1 text-sm leading-none">
-                Closes at {moment(tournament.end_date).format('MMM Do')}{' '}
-              </time>
 
               <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
                 <span>Tracking results</span>

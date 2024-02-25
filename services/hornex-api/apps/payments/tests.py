@@ -46,9 +46,7 @@ class TestPaymentRegistration(
             entry_fee=100,
             max_teams=1,
             start_date=now + td(days=7),
-            end_date=now + td(days=8),
             start_time=now,
-            end_time=now + td(hours=1),
             registration_start_date=now,
             organizer=self.user,
         )

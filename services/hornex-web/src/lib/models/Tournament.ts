@@ -17,9 +17,7 @@ export const tournamentSchema = z.object({
   start_date: z.string(),
   registration_start_date: z.date(),
   check_in_duration: z.number(),
-  end_date: z.string(),
   start_time: z.string(),
-  end_time: z.string(),
   is_entry_free: z.boolean(),
   prize_pool_enabled: z.boolean(),
   prize_pool: z.number(),
@@ -36,6 +34,7 @@ export const tournamentSchema = z.object({
   feature_image: z.string(),
   open_classification: z.boolean(),
   challonge_tournament_url: z.string(),
+  total_participants: z.number(),
 });
 export type Tournament = z.infer<typeof tournamentSchema>;
 

@@ -180,7 +180,8 @@ const TournamentDetails = ({
             <div className="border-light-dark border-r border-t p-3">
               <div className="text-title font-bold">Teams registered</div>
               <div className="text-title font-display text-sm font-normal">
-                {tournament.teams.length}/{tournament.max_teams}
+                {tournament.total_participants / tournament.team_size}/
+                {tournament.max_teams}
               </div>
             </div>
             <div className="border-light-dark border-r border-t p-3">
@@ -198,8 +199,11 @@ const TournamentDetails = ({
             <div className="border-light-dark border-r border-t p-3">
               <div className="text-title font-bold">Prize Pool</div>
               <div className="text-title font-display text-sm font-normal">
-                {tournament.currency}{' '}
-                {toCurrency(getPotentialPrizePool(tournament))}
+                {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
+                {tournament.prize_pool_enabled &&
+                  `${tournament.currency} ${toCurrency(
+                    getPotentialPrizePool(tournament)
+                  )}`}
               </div>
             </div>
             <div className="border-light-dark border-r border-t p-3">
@@ -208,12 +212,6 @@ const TournamentDetails = ({
               </div>
               <div className="text-title font-display text-sm font-normal">
                 {datetime(tournament.registration_start_date, { time: false })}
-              </div>
-            </div>
-            <div className="border-light-dark border-r border-t p-3">
-              <div className="text-title font-bold">Registration end date</div>
-              <div className="text-title font-display text-sm font-normal">
-                {moment(tournament.end_date).format('YYYY-MM-D')}
               </div>
             </div>
             <div className="border-light-dark border-r border-t p-3">

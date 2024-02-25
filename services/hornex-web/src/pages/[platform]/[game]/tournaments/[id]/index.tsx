@@ -9,7 +9,13 @@ import {
   Tournament,
 } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
+import { makeClientReqObj, makeClientResObj } from '@/lib/request/util';
+import {
+  nextAuthOptions,
+  optionalNextAuthOptions,
+} from '@/pages/api/auth/[...nextauth]';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getServerSession } from 'next-auth';
 import { Suspense } from 'react';
 
 export type GameID = {
@@ -40,6 +46,7 @@ type TournamentProps = {
   gameIds: GameID[];
   registrations: Registration[];
   participantCheckedInStatus: boolean;
+  isRegistered: boolean;
 };
 
 const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
@@ -48,10 +55,12 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   registrations = [],
   participants,
   participantCheckedInStatus,
+  isRegistered,
 }: TournamentProps) => {
   return (
     <Suspense fallback={<Loading />}>
       <TournamentContextProvider
+        isRegistered={isRegistered}
         participants={participants}
         tournament={tournament}
       >
@@ -59,6 +68,7 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           tournament={tournament}
           gameIds={gameIds}
           registrations={registrations}
+          isRegistered={isRegistered}
           participantCheckedInStatus={participantCheckedInStatus}
         />
       </TournamentContextProvider>
@@ -71,6 +81,21 @@ Tournament.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerSession(
+    ctx.req,
+    ctx.res,
+    optionalNextAuthOptions
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/sign-in',
+      },
+    };
+  }
+
   const { data: tournament, error: tournamentError } = await getTournament(
     {
       tournamentId: ctx.query.id || '',
@@ -112,11 +137,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ctx.req
     );
 
-  const { data: participants } = await listTournamentParticipants(
+  const { data: participants, error } = await listTournamentParticipants(
     {
       tournamentId: tournament.id,
     },
     ctx.req
+  );
+
+  const isRegistered = !!participants?.find(
+    (participant) => participant.email === session.user?.email
   );
 
   return {
@@ -126,6 +155,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       gameIds,
       registrations,
       participants,
+      isRegistered: isRegistered,
       participantCheckedInStatus:
         participantCheckedInStatusData?.checked_in || false,
     },

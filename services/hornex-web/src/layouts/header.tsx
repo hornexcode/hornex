@@ -33,7 +33,7 @@ const Header = () => {
   const { user } = session || {};
 
   return (
-    <header className="bg-medium-dark fixed top-0 z-40 h-14 w-[calc(100%-200px)] border-b border-gray-700 px-4 shadow-lg">
+    <header className="bg-medium-dark fixed top-0 z-40 h-14 w-[calc(100%-250px)] border-b border-gray-700 px-4 shadow-lg">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="flex items-center">
           {isMounted && ['xs', 'sm', 'md', 'lg'].indexOf(breakpoint) == -1 && (

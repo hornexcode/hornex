@@ -33,7 +33,8 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                 <div className="flex items-center">
                   <UsersIcon className="text-body mr-1 h-5 w-4" />
                   <span className="font-display text-body pr-4 text-xs font-bold">
-                    {tournament.teams.length}/{tournament.max_teams}
+                    {tournament.total_participants / tournament.team_size}/
+                    {tournament.max_teams}
                   </span>
                 </div>
                 {/* phase status */}
@@ -52,7 +53,10 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                   <div
                     style={{
                       width: `${
-                        (tournament.teams.length / tournament.max_teams) * 100
+                        (tournament.total_participants /
+                          tournament.team_size /
+                          tournament.max_teams) *
+                        100
                       }%`,
                     }}
                     className="h-2 rounded-lg bg-amber-500"

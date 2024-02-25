@@ -13,7 +13,7 @@ const CompetePage = ({
   games,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <div className="mx-auto space-y-8 p-8">
+    <div className="container mx-auto pt-8">
       <section id="available-games">
         <div className="space-y-10">
           <div className="">

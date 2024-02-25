@@ -17,7 +17,7 @@ const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
       {/* green bar */}
       <div
         style={{ width: `${progressBarWidth + 0.5}%` }}
-        className={clsx('absolute top-0  h-[100%] rounded-lg bg-amber-400')}
+        className={clsx('absolute top-0  h-[100%] rounded-lg bg-amber-500')}
       ></div>
       <div className="relative flex w-[calc(100%-4px)] items-center justify-between">
         <div></div>
@@ -31,7 +31,7 @@ const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
         {new Array(steps - currentStep).fill(0).map((_, idx) => (
           <div
             key={idx}
-            className="ring-dark bg-title relative h-2 w-2 rounded-full ring"
+            className="ring-medium-dark bg-title relative h-2 w-2 rounded-full ring"
           ></div>
         ))}
       </div>

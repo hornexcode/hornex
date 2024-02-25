@@ -1,8 +1,18 @@
-import { ConnectAccountButton } from '../../atoms/connect-account-button';
-import TournamentDetailsTabPanels from '../../organisms/tournament-details-tab-panels/tournament-details-tab-panels';
+import Button from '../../atoms/button';
+import { RegisterButton } from '../../atoms/register-button';
+import { TournamentPhasesWidget } from '../../molecules';
+import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
+import TournamentStatusStepper from '@/components/admin/molecules/tournament-status-stepper';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
-import { Registration, Tournament } from '@/lib/models';
+import {
+  getStatus,
+  getStatusStep,
+  Registration,
+  Tournament,
+} from '@/lib/models';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
+import { CheckCircledIcon } from '@radix-ui/react-icons';
+import { CheckCircle, UsersIcon } from 'lucide-react';
 import { FC } from 'react';
 
 type TournamentDetailsTemplateProps = {
@@ -10,10 +20,12 @@ type TournamentDetailsTemplateProps = {
   gameIds: GameID[];
   participantCheckedInStatus?: boolean;
   registrations: Registration[];
+  isRegistered: boolean;
 };
 
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   tournament,
+  isRegistered,
   gameIds,
   participantCheckedInStatus,
   registrations,
@@ -27,6 +39,8 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
     (registration) => registration.tournament === tournament.id
   );
 
+  const steps = getStatusStep(tournament);
+
   return (
     <div className="mx-auto px-8 pt-8">
       {/* connect account */}
@@ -37,7 +51,48 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
         registration={currentRegistration}
         isCheckedIn={participantCheckedInStatus}
       />
-      <TournamentDetailsTabPanels tournament={tournament} />
+      {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
+      <div className="grid grid-cols-3 gap-4 space-y-4">
+        <div className="col-span-1 pt-4">
+          <div className="bg-medium-dark col-span-1 rounded p-4 shadow-lg">
+            <span className="text-title">Tournament status</span>
+            <div className="flex items-center justify-between pb-2">
+              <span className="text-amber-500">{getStatus(tournament)}</span>
+              <div className="bg-title rounded px-2 py-1 text-xs text-gray-500">
+                step {steps[0]} / {steps[1]}
+              </div>
+            </div>
+            <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
+            <div className="py-3">
+              <div className="text-title flex items-center">
+                <div className="font-title text-2xl">
+                  {tournament.total_participants / tournament.team_size}/32
+                </div>
+                <UsersIcon className="ml-2 h-6 w-6" />
+              </div>
+              <div className="text-body font-normal tracking-wide">
+                teams registered
+              </div>
+            </div>
+            <div className="flex justify-center py-3 text-center text-amber-500">
+              {isRegistered ? (
+                <>
+                  <CheckCircledIcon className="mr-2 h-6 w-6" />
+                  <p>You are registered</p>
+                </>
+              ) : (
+                <RegisterButton
+                  className="w-full"
+                  isRegistered={isRegistered}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="col-span-2">
+          <TournamentTabPanels tournament={tournament} />
+        </div>
+      </div>
     </div>
   );
 };

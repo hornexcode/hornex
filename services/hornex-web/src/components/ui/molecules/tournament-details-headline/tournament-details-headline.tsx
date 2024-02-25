@@ -3,7 +3,7 @@ import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import Button from '@/components/ui/atoms/button/button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { useTournament } from '@/contexts/tournament';
-import { TeamCheckInStatus, Tournament } from '@/lib/models';
+import { getStatus, TeamCheckInStatus, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
   combineDateAndTime,
@@ -13,8 +13,8 @@ import {
   toCurrency,
 } from '@/lib/utils';
 import classnames from 'classnames';
+import clsx from 'clsx';
 import { CheckCheckIcon, RefreshCcw } from 'lucide-react';
-import moment from 'moment';
 import Image from 'next/image';
 import React, { FC, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
@@ -32,8 +32,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
-  const { tournament, isRegistered } = useTournament();
-  console.log(isRegistered);
+  const { tournament, isRegistered, participants } = useTournament();
 
   // Controll the check in state
   useEffect(() => {
@@ -80,7 +79,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const renderCheckInStatus = (checkedInTotal: number, teamSize: number) => {
     return (
       <div className="flex flex-col justify-between space-y-2">
-        <div className="font-body text-xs text-gray-400">Check-in status</div>
+        <div className="font-body text-sm text-gray-400">Check-in status</div>
         <div
           className={classnames(
             'flex w-20 items-center justify-between',
@@ -102,7 +101,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           ))}
         </div>
         <div className="text-title flex justify-between text-sm">
-          <div className="font-display text-xs">
+          <div className="font-display text-sm">
             {checkedInTotal}/{teamSize}
           </div>
           <div
@@ -160,7 +159,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           <div className="flex items-start">
             <h4 className="text-title text-lg font-extrabold">
               {tournament.name}
-              <div className="text-body text-xs">
+              <div className="text-body text-sm">
                 Organized by <span className="text-title">@hornex</span>
               </div>
             </h4>
@@ -170,9 +169,18 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           <div className="flex items-center self-start">
             {/* TODO: make this a molecule component */}
             <div className="flex items-center">
+              <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">
+                <div className="text-sm text-green-400">
+                  {getStatus(tournament)}
+                </div>
+                <div className="text-title font-display text-sm">
+                  {participants.length / tournament.team_size}/
+                  {tournament.max_teams}
+                </div>
+              </div>
               {/* Classification */}
               <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">
-                <div className="text-body text-xs">Classifications</div>
+                <div className="text-body text-sm">Classifications</div>
                 <div className="text-title font-display text-sm">
                   {!tournament.open_classification
                     ? tournament.classifications.map((c) => c).join(', ')
@@ -181,32 +189,35 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               </div>
 
               {/* Prize Pool */}
-              <div className="flex items-center border-r-2 border-dotted border-gray-700 px-8">
+              <div
+                className={clsx(
+                  'flex items-center border-r-2 border-dotted border-gray-700 px-8',
+                  !tournament.prize_pool_enabled && 'hidden'
+                )}
+              >
                 <div>
-                  <div className="text-body text-xs">Potential Prize Pool</div>
-                  {!tournament.is_entry_free && (
-                    <div className="text-title font-display text-sm">
-                      R${' '}
-                      {toCurrency(
-                        tournament.entry_fee *
-                          tournament.max_teams *
-                          tournament.team_size *
-                          0.7
-                      )}
-                    </div>
-                  )}
+                  <div className="text-body text-sm">Potential Prize Pool</div>
+                  <div className="text-title font-display text-sm">
+                    R${' '}
+                    {toCurrency(
+                      tournament.entry_fee *
+                        tournament.max_teams *
+                        tournament.team_size *
+                        0.7
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Entry fee */}
-              {!tournament.is_entry_free && (
-                <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
-                  <div className="text-body text-xs">Entry fee</div>
-                  <div className="text-title font-display text-sm">
-                    R$ {toCurrency(tournament.entry_fee)}
-                  </div>
+              <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
+                <div className="text-body text-sm">Entry fee</div>
+                <div className="text-title font-display text-sm">
+                  {tournament.is_entry_free
+                    ? 'Free'
+                    : `R$ ${toCurrency(tournament.entry_fee)}`}
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Register button */}
@@ -223,7 +234,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                       { hidden: isCheckedIn }
                     )}
                   >
-                    <div className="text-body text-xs">Check-in ends in:</div>
+                    <div className="text-body text-sm">Check-in ends in:</div>
                     <div className="mb-1 mr-2 flex items-center">
                       <div className="text-title font-display text-sm">
                         <Countdown

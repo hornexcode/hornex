@@ -8,7 +8,6 @@ from apps.tournaments.views import (
     check_in,
     pariticipant_checked_in,
     team_check_in_status,
-    tournaments_controller,
 )
 
 # set namespace
@@ -18,7 +17,7 @@ urlpatterns = [
     # organizer
     path(
         "/organizer/tournaments",
-        tournaments_controller,
+        OrganizerTournamentViewSet.as_view({"post": "create", "get": "list"}),
         name="dashboard-tournaments-controller",
     ),
     path(
@@ -46,6 +45,11 @@ urlpatterns = [
         "/tournaments/<str:id>/participants",
         PublicTournamentViewSet.as_view({"get": "participants"}),
         name="list-participants",
+    ),
+    path(
+        "/tournaments/<str:id>/prizes",
+        PublicTournamentViewSet.as_view({"get": "prizes"}),
+        name="list-prizes",
     ),
     path(
         "/registrations",

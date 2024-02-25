@@ -6,8 +6,7 @@ export type SelectTeamStepProps = {};
 
 export const SelectTeamStep: FC<SelectTeamStepProps> = ({}) => {
   return (
-    <div className="bg-light-dark h-min-[200px] w-[420px] rounded border border-gray-700">
-      {/* <RegistrationStepper /> */}
+    <div className="bg-light-dark h-min-[200px] w-[500px] rounded border border-gray-700">
       <div className="bg-medium-dark flex items-center p-5">
         <LolFlatIcon className="mr-2 h-8 w-8" />
         <h4 className="text-title text-left text-xl font-bold -tracking-tight">

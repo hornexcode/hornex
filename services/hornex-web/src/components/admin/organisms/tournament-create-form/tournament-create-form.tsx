@@ -49,7 +49,7 @@ export function TournamentCreateForm() {
     },
   });
 
-  const { register, control, handleSubmit, watch, setValue, formState } = form;
+  const { register, control, handleSubmit, watch } = form;
   const { fields, remove, append } = useFieldArray({
     name: 'prizes',
     control,
@@ -62,7 +62,6 @@ export function TournamentCreateForm() {
         {
           ...values,
           start_date: moment(values.start_date).format('YYYY-MM-DD'),
-          end_date: moment(values.end_date).format('YYYY-MM-DD'),
         }
       );
 
@@ -184,7 +183,7 @@ export function TournamentCreateForm() {
                     <SelectValue placeholder="Select the map" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="summoners-rift">
+                    <SelectItem value="SUMMONERS_RIFT">
                       Summoners Rift
                     </SelectItem>
                   </SelectContent>
@@ -269,45 +268,6 @@ export function TournamentCreateForm() {
                 </FormControl>
                 <FormDescription>
                   The time the tournament will start
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={control}
-            name="end_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-title">
-                  Tournament End Date
-                </FormLabel>
-                <FormControl>
-                  <DatePicker date={field.value} onSelect={field.onChange} />
-                </FormControl>
-                <FormDescription>
-                  This define when the registration period will start.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="end_time"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-title">
-                  Tournament End Time
-                </FormLabel>
-                <FormControl>
-                  <InputTime {...field} />
-                </FormControl>
-                <FormDescription>
-                  This define when the registration period will end.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -405,34 +365,6 @@ export function TournamentCreateForm() {
                 key={fld.id}
               >
                 <div className="text-title">{fld.place}# place prize</div>
-                <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-title">Money prize</FormLabel>
-                    <FormDescription>
-                      If enabled, the prize will be paid in money
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      onCheckedChange={(val) =>
-                        setValue(`prizes.${index}.is_money` as const, val)
-                      }
-                      {...register(`prizes.${index}.is_money` as const)}
-                    />
-                  </FormControl>
-                </FormItem>
-
-                <Input
-                  type="number"
-                  placeholder="100"
-                  {...register(`prizes.${index}.amount` as const)}
-                  disabled={!watch(`prizes.${index}.is_money` as const)}
-                />
-                <FormMessage>
-                  {formState.errors.prizes &&
-                    formState.errors.prizes[index]?.amount?.message}
-                </FormMessage>
-
                 <Textarea
                   placeholder="Prizer description"
                   {...register(`prizes.${index}.content`)}
@@ -452,9 +384,7 @@ export function TournamentCreateForm() {
               className="border-accent flex w-full items-center justify-center rounded-lg border p-5"
               onClick={() =>
                 append({
-                  is_money: false,
                   place: fields.length + 1,
-                  amount: '0',
                   content: '',
                 })
               }

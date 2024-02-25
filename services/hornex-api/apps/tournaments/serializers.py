@@ -1,10 +1,9 @@
-from datetime import datetime
-
 from rest_framework import serializers
 
 from apps.tournaments.models import (
     LeagueOfLegendsTournament,
     Participant,
+    Prize,
     Registration,
     Tournament,
 )
@@ -14,7 +13,6 @@ class TournamentListSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     name = serializers.CharField(read_only=True)
     start_time = serializers.DateTimeField(read_only=True)
-    end_time = serializers.DateTimeField(read_only=True)
     game = serializers.PrimaryKeyRelatedField(read_only=True)
     status = serializers.CharField(read_only=True)
     potential_prize_pool = serializers.IntegerField(read_only=True)
@@ -24,14 +22,14 @@ class TournamentListSerializer(serializers.Serializer):
 
 
 class TournamentSerializer(serializers.ModelSerializer):
-    classifications = serializers.SerializerMethodField()
+    total_participants = serializers.SerializerMethodField()
 
     class Meta:
         model = Tournament
         fields = "__all__"
 
-    def get_classifications(self, obj):
-        return obj.get_classifications()
+    def get_total_participants(self, obj):
+        return obj.participants.count()
 
 
 class RegistrationCreateSerializer(serializers.Serializer):
@@ -47,7 +45,7 @@ class RegistrationReadSerializer(serializers.ModelSerializer):
 
 class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
     classifications = serializers.StringRelatedField()
-    start_at = serializers.DateTimeField(read_only=True)
+    total_participants = serializers.SerializerMethodField()
 
     class Meta:
         model = LeagueOfLegendsTournament
@@ -59,11 +57,17 @@ class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
             for classification in obj.classifications.all()
         ]
 
-    def get_start_at(self, obj):
-        return datetime.combine(obj.start_date, obj.start_time)
+    def get_total_participants(self, obj):
+        return obj.participants.count()
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Participant
+        fields = "__all__"
+
+
+class PrizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prize
         fields = "__all__"

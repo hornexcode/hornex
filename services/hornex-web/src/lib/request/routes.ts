@@ -188,6 +188,10 @@ export const routes = {
     path: 'v1/tournaments/[tournamentId]/teams',
     method: Method.GET,
   },
+  listTournamentPrizes: {
+    path: 'v1/tournaments/[tournamentId]/prizes',
+    method: Method.GET,
+  },
   'organizer:tournaments': {
     path: 'v1/organizer/tournaments',
     method: Method.GET,
