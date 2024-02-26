@@ -1,4 +1,4 @@
-import TournamentStatusStepper from '../../molecules/tournament-status-stepper';
+import TournamentStatusStepper from '../tournament-status-stepper';
 import Button from '@/components/ui/atoms/button';
 import { toast } from '@/components/ui/use-toast';
 import { useTournament } from '@/contexts/organizer';

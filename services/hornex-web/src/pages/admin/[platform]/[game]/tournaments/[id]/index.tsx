@@ -3,7 +3,7 @@ import {
   startTournamentHandler,
 } from './admin-tournament-details.handlers';
 import TournamentStatusStepper from '@/components/admin/molecules/tournament-status-stepper/tournament-status-stepper';
-import AdminTournamentTabNav from '@/components/admin/templates/admin-tournament-tab-nav';
+import AdminTournamentTabNav from '@/components/admin/organisms/admin-tournament-tab-nav';
 import Button from '@/components/ui/atoms/button';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/components/ui/use-toast';
