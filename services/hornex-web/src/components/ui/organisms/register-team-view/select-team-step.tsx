@@ -1,5 +1,5 @@
-import SelectTeamTab from '../../molecules/select-team-tab';
 import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
+import SelectTeamTab from '@/components/ui/molecules/select-team-tab';
 import { FC } from 'react';
 
 export type SelectTeamStepProps = {};

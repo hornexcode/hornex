@@ -1,4 +1,4 @@
-import TournamentStatusStepper from '../tournament-status-stepper';
+import TournamentStatusStepper from '../../../ui/organisms/tournament-status-stepper';
 import Button from '@/components/ui/atoms/button';
 import { toast } from '@/components/ui/use-toast';
 import { useTournament } from '@/contexts/organizer';
@@ -17,7 +17,7 @@ import {
 } from '@/pages/admin/[platform]/[game]/tournaments/[id]/admin-tournament-details.handlers';
 import { datetime } from '@/utils/datetime';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
   const { tournament, setTournament } = useTournament();
@@ -25,6 +25,10 @@ const AdminTournamentGeneralInfo = () => {
     getStatusStep((tournament || {}) as Tournament)
   );
   const [loading, setLoading] = React.useState(false);
+
+  useEffect(() => {
+    setSteps(getStatusStep((tournament || {}) as Tournament));
+  }, [tournament]);
 
   if (!tournament) {
     return <p>Failed to load tournament metadata</p>;
@@ -69,7 +73,7 @@ const AdminTournamentGeneralInfo = () => {
       case 'announced':
         return (
           <>
-            <div className="text-title py-2 font-normal">
+            <div className="text-muted py-2">
               Registration start date:{' '}
               <span className="font-bold">
                 {moment(tournament.registration_start_date).format('YYYY-MM-D')}
@@ -93,7 +97,7 @@ const AdminTournamentGeneralInfo = () => {
       case 'registering':
         return (
           <>
-            <div className="text-title py-2 font-normal">
+            <div className="text-muted py-2">
               Registration end date:{' '}
               <span className="font-bold">
                 {moment(tournament.registration_start_date).format('YYYY-MM-D')}
@@ -115,7 +119,7 @@ const AdminTournamentGeneralInfo = () => {
       case 'running':
         return (
           <>
-            <div className="text-title py-2 font-normal">
+            <div className="text-muted py-2">
               Registration end date:{' '}
               <span className="font-bold">
                 {moment(tournament.registration_start_date).format('YYYY-MM-D')}
@@ -140,29 +144,29 @@ const AdminTournamentGeneralInfo = () => {
   return (
     <div className="grid grid-cols-3 gap-8">
       <div className="col-span-2">
-        <div className="text-body border-light-dark flex flex-wrap items-center">
-          <div className="border-light-dark border-r border-t p-3">
+        <div className="text-backround bg-light-dark shadow-sketch flex flex-wrap items-center rounded">
+          <div className="p-3">
             <div className="text-title font-bold">Teams registered</div>
-            <div className="text-title font-display text-sm font-normal">
+            <div className="text-muted font-display text-sm">
               {tournament.total_participants / tournament.team_size}/
               {tournament.max_teams}
             </div>
           </div>
-          <div className="border-light-dark border-r border-t p-3">
+          <div className="p-3">
             <div className="text-title font-bold">Classification</div>
-            <div className="text-title font-display text-sm font-normal">
+            <div className="text-muted font-display text-sm">
               {getClassifications(tournament)}
             </div>
           </div>
-          <div className="border-light-dark border-r border-t p-3 ">
+          <div className="p-3 ">
             <div className="text-title font-bold">Entry Fee</div>
-            <div className="text-title font-display text-sm font-normal">
+            <div className="text-muted font-display text-sm">
               {getEntryFee(tournament)}
             </div>
           </div>
-          <div className="border-light-dark border-r border-t p-3">
+          <div className="p-3">
             <div className="text-title font-bold">Prize Pool</div>
-            <div className="text-title font-display text-sm font-normal">
+            <div className="text-muted font-display text-sm">
               {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
               {tournament.prize_pool_enabled &&
                 `${tournament.currency} ${toCurrency(
@@ -170,15 +174,15 @@ const AdminTournamentGeneralInfo = () => {
                 )}`}
             </div>
           </div>
-          <div className="border-light-dark border-r border-t p-3">
+          <div className="p-3">
             <div className="text-title font-bold">Registration start date</div>
-            <div className="text-title font-display text-sm font-normal">
+            <div className="text-muted font-display text-sm">
               {datetime(tournament.registration_start_date, { time: false })}
             </div>
           </div>
-          <div className="border-light-dark border-r border-t p-3">
+          <div className="p-3">
             <div className="text-title font-bold">Start date</div>
-            <div className="text-title font-display text-sm font-normal">
+            <div className="text-muted font-display text-sm">
               {moment(
                 new Date(
                   `${tournament.start_date}T${tournament.start_time}+00:00`
@@ -186,16 +190,16 @@ const AdminTournamentGeneralInfo = () => {
               ).format('YYYY-MM-D hh:mm A')}
             </div>
           </div>
-          <div className="border-light-dark border-r border-t p-3">
+          <div className="p-3">
             <div className="text-title font-bold">Check-in window</div>
-            <div className="text-title font-display text-sm font-normal">
+            <div className="text-muted font-display text-sm">
               {tournament.check_in_duration} minutes
             </div>
           </div>
         </div>
       </div>
-      <div className="border-light-dark col-span-1 rounded border p-4">
-        <span className="text-title">Tournament status</span>
+      <div className="bg-medium-dark shadow-sketch col-span-1 rounded p-4">
+        <span className="text-muted">Tournament status</span>
         <div className="flex items-center justify-between pb-2">
           <span className="font-semibold text-amber-500">
             {getStatus(tournament)}

@@ -132,7 +132,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   };
 
   return (
-    <>
+    <div className="shadow-sketch rounded">
       {/* end debugger */}
       <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image
@@ -155,7 +155,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           )}
         </div>
       </div>
-      <div className="shadow-card bg-medium-dark flex rounded-b p-4">
+      <div className="bg-medium-dark flex rounded-b p-4">
         <div className="i flex w-full justify-between">
           {/* Tournament name */}
           <div className="flex items-start">
@@ -287,7 +287,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

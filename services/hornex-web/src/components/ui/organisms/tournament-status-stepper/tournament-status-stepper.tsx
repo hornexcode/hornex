@@ -2,7 +2,7 @@ import { TournamentStatusStepperProps } from './tournament-status-stepper.types'
 import clsx from 'clsx';
 import React, { FC } from 'react';
 
-const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
+const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
   steps,
   currentStep,
 }) => {
@@ -17,7 +17,7 @@ const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
       {/* green bar */}
       <div
         style={{ width: `${progressBarWidth + 0.5}%` }}
-        className={clsx('absolute top-0  h-[100%] rounded-lg bg-amber-500')}
+        className={clsx('bg-brand absolute  top-0 h-[100%] rounded-lg')}
       ></div>
       <div className="relative flex w-[calc(100%-4px)] items-center justify-between">
         <div></div>
@@ -39,4 +39,4 @@ const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
   );
 };
 
-export default TournamentStatusStepper;
+export default AdminTournamentStatusStepper;

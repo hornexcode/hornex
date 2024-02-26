@@ -3,6 +3,7 @@ import Button from '@/components/ui/atoms/button/button';
 import { getStatus } from '@/lib/models';
 import { toCurrency } from '@/lib/utils';
 import { UsersIcon } from '@heroicons/react/20/solid';
+import { ClockIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import { DollarSign, SwordIcon, Swords } from 'lucide-react';
 import moment from 'moment';
@@ -19,7 +20,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
   return (
     <div
       className={clsx(
-        'shadow-light bg-light-dark max-w-[230px] rounded',
+        'shadow-sketch bg-light-dark max-w-[230px] rounded',
         className
       )}
     >
@@ -34,9 +35,6 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
               ? tournament.name.substring(0, 20) + '...'
               : tournament.name}
           </Link>
-          <div className="text-body mb-1">
-            {moment(tournament.start_date).format('MMMM Do YYYY, h:mm a')}
-          </div>
         </div>
       </div>
 
@@ -49,12 +47,19 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
         />
       </div>
 
+      <div className="border-background flex items-center border-b p-4">
+        <ClockIcon className="text-muted mr-1 h-5 w-4" />
+        <div className="text-muted">
+          {moment(tournament.start_date).format('MMMM Do, h:mm a')}
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 space-y-2 p-5">
         <div className="col-span-2">
           <div className="flex justify-between">
             <div className="flex items-center">
-              <UsersIcon className="text-body mr-1 h-5 w-4" />
-              <span className="font-display text-body pr-4 text-xs font-bold">
+              <UsersIcon className="text-muted mr-1 h-5 w-4" />
+              <span className="font-display text-muted pr-4 text-xs font-bold">
                 {tournament.teams.length}/{tournament.max_teams}
               </span>
             </div>
@@ -70,7 +75,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
         <div className="col-span-2">
           <div className={clsx('flex w-full')}>
             {/* build a progress bar */}
-            <div className="bg-medium-dark flex w-full rounded-lg">
+            <div className="bg-background flex w-full rounded-lg">
               <div
                 style={{
                   width: `${
@@ -84,7 +89,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
         </div>
       </div>
 
-      <div className="shadow-light flex items-end rounded-b-lg border-t border-dashed border-gray-600 px-5 py-4">
+      <div className="border-background flex items-end rounded-b-lg border-t px-5 py-4">
         <div className="ml-auto text-right">
           <Button
             shape="rounded"

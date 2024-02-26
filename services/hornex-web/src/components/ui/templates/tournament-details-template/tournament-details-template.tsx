@@ -1,9 +1,7 @@
-import Button from '../../atoms/button';
 import { RegisterButton } from '../../atoms/register-button';
-import { TournamentPhasesWidget } from '../../molecules';
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
-import TournamentStatusStepper from '@/components/admin/molecules/tournament-status-stepper';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
+import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
 import {
   getStatus,
   getStatusStep,
@@ -12,7 +10,7 @@ import {
 } from '@/lib/models';
 import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { CheckCircle, UsersIcon } from 'lucide-react';
+import { UsersIcon } from 'lucide-react';
 import { FC } from 'react';
 
 type TournamentDetailsTemplateProps = {
@@ -54,7 +52,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
       {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
       <div className="grid grid-cols-3 gap-4 space-y-4">
         <div className="col-span-1 pt-4">
-          <div className="bg-medium-dark col-span-1 rounded p-4 shadow-lg">
+          <div className="bg-medium-dark shadow-sketch col-span-1 rounded p-4">
             <span className="text-title">Tournament status</span>
             <div className="flex items-center justify-between pb-2">
               <span className="text-amber-500">{getStatus(tournament)}</span>

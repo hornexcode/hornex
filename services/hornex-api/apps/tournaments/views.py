@@ -17,9 +17,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.accounts.models import GameID
-from apps.leagueoflegends.serializers import (
-    LeagueOfLegendsTournamentSerializer,
-)
 from apps.leagueoflegends.tasks import participant_registered
 from apps.teams.models import Member, Team
 from apps.tournaments import errors

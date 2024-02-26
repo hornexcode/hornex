@@ -44,7 +44,7 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
       <NextThemesProvider attribute="class" defaultTheme="dark">
         <div
           className={classnames(
-            'dark:bg-dark/90 bg-title font-semibold text-zinc-500 antialiased',
+            'dark:bg-background font-semibold text-zinc-500 antialiased',
             source_Sans_3.className,
             kanit.variable
           )}

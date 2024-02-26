@@ -41,7 +41,10 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
         <TabsTrigger value="brackets">Brackets</TabsTrigger>
         <TabsTrigger value="standings">Standings</TabsTrigger>
       </TabsList>
-      <TabsContent value="overview" className="p-3">
+      <TabsContent
+        value="overview"
+        className="bg-light-dark shadow-sketch rounded p-4"
+      >
         <div className="box space-y-12">
           <div className="block">
             <h3 className="mb-4 text-sm">Game & Region</h3>
