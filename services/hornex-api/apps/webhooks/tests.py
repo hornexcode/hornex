@@ -1,9 +1,5 @@
 import uuid
-from test.factories import (
-    LeagueOfLegendsTournamentFactory,
-    TeamFactory,
-    UserFactory,
-)
+from test.factories import GameIdFactory, LeagueOfLegendsTournamentFactory, TeamFactory, UserFactory
 from unittest.mock import patch
 
 from django.urls import reverse
@@ -16,9 +12,10 @@ from apps.tournaments.models import Registration, Tournament
 class TestWebhooks(APITestCase):
     def setUp(self) -> None:
         self.user = UserFactory.new()
+        self.game_id = GameIdFactory.new(user=self.user)
         self.team = TeamFactory.new(created_by=self.user)
         for _ in range(0, 4):
-            self.team.add_member(UserFactory.new())
+            self.team.add_member(GameIdFactory.new())
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(
             organizer=UserFactory.new(),

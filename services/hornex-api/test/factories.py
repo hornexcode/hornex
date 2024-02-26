@@ -161,12 +161,14 @@ class MatchFactory:
 
 class GameIdFactory:
     @staticmethod
-    def new(user: User, **kwargs):
+    def new(**kwargs):
         """
         Create a new GameId with the given kwargs.
         """
+        user = kwargs.get("user", UserFactory.new())
 
         return GameID.objects.create(
+            email=fake.email(),
             user=user,
             game=kwargs.get("game", GameID.GameOptions.LEAGUE_OF_LEGENDS),
             nickname=fake.name(),

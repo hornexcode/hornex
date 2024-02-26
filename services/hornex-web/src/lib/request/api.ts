@@ -189,11 +189,11 @@ export const dataLoader = <T, Data = unknown>(
               return r.json();
             }
             throw new Error(r.statusText);
-          })
-        // {
-        //   revalidateOnFocus: false,
-        //   ...config,
-        // }
+          }),
+        {
+          revalidateOnFocus: false,
+          ...config,
+        }
       );
     },
 
