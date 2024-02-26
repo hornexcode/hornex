@@ -12,10 +12,12 @@ import {
   isCheckInOpen,
   toCurrency,
 } from '@/lib/utils';
+import { DiscordLogoIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
 import classnames from 'classnames';
 import clsx from 'clsx';
-import { CheckCheckIcon, RefreshCcw } from 'lucide-react';
+import { CheckCheckIcon, Facebook, RefreshCcw, Twitch } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 
@@ -169,14 +171,17 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           <div className="flex items-center self-start">
             {/* TODO: make this a molecule component */}
             <div className="flex items-center">
-              <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">
-                <div className="text-sm text-green-400">
-                  {getStatus(tournament)}
-                </div>
-                <div className="text-title font-display text-sm">
-                  {participants.length / tournament.team_size}/
-                  {tournament.max_teams}
-                </div>
+              <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
+                <Link href={`/tournament/${tournament.id}/participants`}>
+                  <DiscordLogoIcon className="h-6 w-6" />
+                </Link>
+                <Link href={`/tournament/${tournament.id}/participants`}>
+                  <TwitterLogoIcon className="h-6 w-6" />
+                </Link>
+
+                <Link href={`/tournament/${tournament.id}/participants`}>
+                  <Twitch className="h-5 w-5" />
+                </Link>
               </div>
               {/* Classification */}
               <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">

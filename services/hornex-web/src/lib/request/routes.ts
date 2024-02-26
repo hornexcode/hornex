@@ -213,4 +213,8 @@ export const routes = {
     path: 'v1/teams/mount',
     method: Method.POST,
   },
+  'organizer:tournaments:matches': {
+    path: 'v1/organizer/tournaments/[tournamentId]/matches',
+    method: Method.GET,
+  },
 };

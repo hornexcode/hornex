@@ -74,11 +74,11 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
                 teams registered
               </div>
             </div>
-            <div className="flex justify-center py-3 text-center text-amber-500">
+            <div className="flex items-center justify-center py-3 text-center text-amber-500">
               {isRegistered ? (
                 <>
-                  <CheckCircledIcon className="mr-2 h-6 w-6" />
-                  <p>You are registered</p>
+                  <CheckCircledIcon className="mr-2 h-4 w-4" />
+                  <p>Registered</p>
                 </>
               ) : (
                 <RegisterButton
