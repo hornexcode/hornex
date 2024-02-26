@@ -1,5 +1,5 @@
 import uuid
-from test.factories import InviteFactory, TeamFactory, UserFactory
+from test.factories import GameIdFactory, InviteFactory, TeamFactory, UserFactory
 from unittest.mock import patch
 
 from django.urls import include, path, reverse
@@ -144,6 +144,7 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         }
 
         self.user = User.objects.create_user(**self.credentials)
+        self.game_id = GameIdFactory.new(user=self.user)
 
         # Generating a JWT token for the test user
         self.refresh = RefreshToken.for_user(self.user)

@@ -63,7 +63,7 @@ class Invite(models.Model):
         return "pending"
 
     def accept(self):
-        self.team.add_member(self.user)
+        self.team.add_member(self.user.game_id)
         self.accepted_at = dt.now(tz=UTC)
         self.save()
 
