@@ -11,7 +11,7 @@ from apps.teams.views import (
 
 urlpatterns = [
     path(
-        "/mount",
+        "/tournaments/<str:id>/mount",
         TeamViewSet.as_view({"post": "mount_team"}),
         name="team-mount",
     ),
