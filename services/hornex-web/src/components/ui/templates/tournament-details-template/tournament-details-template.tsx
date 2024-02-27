@@ -50,28 +50,30 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
         isCheckedIn={participantCheckedInStatus}
       />
       {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
-      <div className="grid grid-cols-3 gap-4 space-y-4">
-        <div className="col-span-1 pt-4">
-          <div className="bg-medium-dark shadow-card col-span-1 rounded p-4">
-            <span className="text-title text-lg font-extrabold">
+      <div className="mt-8 flex space-x-8">
+        <div className="lg:w-[300px]">
+          <div className="bg-medium-dark shadow-card col-span-1 space-y-4 rounded p-4">
+            <span className="text-title font-extrabold uppercase">
               Tournament status
             </span>
-            <div className="flex items-center justify-between pb-2">
-              <span className="text-brand">{getStatus(tournament)}</span>
-              <div className="text-xs text-gray-500">
-                step {steps[0]} / {steps[1]}
-              </div>
-            </div>
-            <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
-            <div className="py-3">
-              <div className="text-title flex items-center">
-                <div className="font-title text-2xl">
-                  {tournament.total_participants / tournament.team_size}/32
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-brand">{getStatus(tournament)}</span>
+                <div className="text-xs text-gray-500">
+                  step {steps[0]} / {steps[1]}
                 </div>
-                <UsersIcon className="ml-2 h-6 w-6" />
               </div>
-              <div className="text-body font-normal tracking-wide">
-                teams registered
+              <TournamentStatusStepper
+                steps={steps[1]}
+                currentStep={steps[0]}
+              />
+              <div className="">
+                <div className="text-title flex items-center">
+                  <div className="font-title text-xl">
+                    {tournament.total_participants / tournament.team_size}/32
+                  </div>
+                  <UsersIcon className="ml-2 h-5 w-5" />
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-center py-3 text-center text-amber-500">
@@ -89,7 +91,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
             </div>
           </div>
         </div>
-        <div className="col-span-2">
+        <div className="flex flex-1">
           <TournamentTabPanels tournament={tournament} />
         </div>
       </div>

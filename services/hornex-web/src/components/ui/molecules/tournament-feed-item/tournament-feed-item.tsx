@@ -24,7 +24,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
         className
       )}
     >
-      <div className="bg-medium-dark highlight-white-5 rounded rounded-t">
+      <div className="bg-dark rounded-t">
         <div className="block px-5 py-4">
           <Link
             href="/nft-details"
@@ -40,7 +40,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
 
       <div className="block">
         <Image
-          src={`/images/tournaments/${tournament.feature_image}`}
+          src={`/images/tournaments/tmt-7.jpeg`}
           width={1920}
           height={1080}
           alt="Cover Image"
@@ -48,8 +48,8 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
       </div>
 
       <div className="border-background flex items-center border-b p-4">
-        <ClockIcon className="text-muted mr-1 h-5 w-4" />
-        <div className="text-muted">
+        <ClockIcon className="text-title mr-1 h-5 w-4" />
+        <div className="text-title">
           {moment(tournament.start_date).format('MMMM Do, h:mm a')}
         </div>
       </div>
