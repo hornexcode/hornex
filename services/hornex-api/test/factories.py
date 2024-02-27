@@ -5,8 +5,8 @@ from datetime import timedelta as td
 import faker
 
 from apps.accounts.models import GameID
-from apps.teams.models import Invite, RegisteredTeam, Team
-from apps.tournaments.models import LeagueOfLegendsLeague, Match
+from apps.teams.models import Invite, Team
+from apps.tournaments.models import LeagueOfLegendsLeague, Match, RegisteredTeam
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Tournament as BaseTournament
 from apps.users.models import User

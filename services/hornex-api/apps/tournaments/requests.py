@@ -37,3 +37,14 @@ class RegisterSerializer(serializers.Serializer):
     player3 = PlayerSerializer()
     player4 = PlayerSerializer()
     player5 = PlayerSerializer()
+    users = serializers.ListField(child=serializers.ListField(child=serializers.CharField()))
+    team = serializers.CharField()
+
+
+class MountTeamParams(serializers.Serializer):
+    name = serializers.CharField(max_length=255)
+    user_id = serializers.UUIDField()
+    member_1_email = serializers.EmailField()
+    member_2_email = serializers.EmailField()
+    member_3_email = serializers.EmailField()
+    member_4_email = serializers.EmailField()

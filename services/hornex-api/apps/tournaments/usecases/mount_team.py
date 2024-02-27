@@ -46,12 +46,13 @@ class MountTeamUseCase:
             params.member_3_email,
             params.member_4_email,
         ]:
-            user = User.objects.filter(email=member_email).first()
-            if not user:
-                raise ValidationError({"error": f"User not found for {member_email}"})
+            try:
+                user = User.objects.get(email=member_email)
+                game_id = GameID.objects.get(email=member_email)
 
-            game_id = GameID.objects.filter(email=member_email).first()
-            if not game_id:
+            except User.DoesNotExist:
+                raise ValidationError({"error": f"User not found for {member_email}"})
+            except GameID.DoesNotExist:
                 raise ValidationError(
                     {
                         "error": f"User {member_email} does not connected its account with League "
