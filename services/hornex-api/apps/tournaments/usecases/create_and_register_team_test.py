@@ -8,13 +8,13 @@ from rest_framework.validators import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.teams.models import Team
-from apps.tournaments.usecases import MountTeamInput, MountTeamUseCase
+from apps.tournaments.usecases import CreateAndRegisterTeamInput, CreateAndRegisterTeamUseCase
 from apps.users.models import User
 
 fake = faker.Faker()
 
 
-class MountTeamUseCaseTest(TestCase):
+class CreateAndRegisterTeamUseCaseTest(TestCase):
     def setUp(self) -> None:
         self.credentials = {
             "email": "admin@hornex.gg",
@@ -29,8 +29,8 @@ class MountTeamUseCaseTest(TestCase):
         users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        params = MountTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
-        output = MountTeamUseCase().execute(params)
+        params = CreateAndRegisterTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
+        output = CreateAndRegisterTeamUseCase().execute(params)
 
         self.assertEqual(output.team.name, params.name)
         self.assertEqual(output.team.created_by, self.user)
@@ -41,10 +41,10 @@ class MountTeamUseCaseTest(TestCase):
         users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        params = MountTeamInput(user_id=self.user.id, name="Testeam", **users_payload)
+        params = CreateAndRegisterTeamInput(user_id=self.user.id, name="Testeam", **users_payload)
 
         try:
-            MountTeamUseCase().execute(params)
+            CreateAndRegisterTeamUseCase().execute(params)
         except ValidationError as e:
             self.assertEqual(str(e.detail["error"]), "Team name already in use")
 
@@ -54,10 +54,10 @@ class MountTeamUseCaseTest(TestCase):
         [GameIdFactory.new(user=user, email=user.email) for user in users]
         users_payload["member_4_email"] = "fake@email.com"
 
-        params = MountTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
+        params = CreateAndRegisterTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
 
         try:
-            MountTeamUseCase().execute(params)
+            CreateAndRegisterTeamUseCase().execute(params)
         except ValidationError as e:
             self.assertEqual(
                 str(e.detail["error"]),
@@ -70,10 +70,10 @@ class MountTeamUseCaseTest(TestCase):
         user = users.pop()
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        params = MountTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
+        params = CreateAndRegisterTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
 
         try:
-            MountTeamUseCase().execute(params)
+            CreateAndRegisterTeamUseCase().execute(params)
         except ValidationError as e:
             self.assertEqual(
                 str(e.detail["error"]),
@@ -81,7 +81,7 @@ class MountTeamUseCaseTest(TestCase):
             )
 
 
-class TestMountTeam(APITestCase, URLPatternsTestCase):
+class CreateAndRegisterTeam(APITestCase, URLPatternsTestCase):
     urlpatterns = [
         path("/tournaments", include("apps.tournaments.urls")),
     ]
@@ -108,7 +108,7 @@ class TestMountTeam(APITestCase, URLPatternsTestCase):
         name = "Drakx"
         users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
 
-        url = reverse("tournaments:team-mount", kwargs={"id": self.tournament.id})
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
 
         resp = self.client.post(
             url,
@@ -130,7 +130,7 @@ class TestMountTeam(APITestCase, URLPatternsTestCase):
         users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        url = reverse("tournaments:team-mount", kwargs={"id": self.tournament.id})
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
 
         resp = self.client.post(
             url,
@@ -150,7 +150,7 @@ class TestMountTeam(APITestCase, URLPatternsTestCase):
         [GameIdFactory.new(user=user, email=user.email) for user in users]
         users_payload["member_4_email"] = "fake@email.com"
 
-        url = reverse("tournaments:team-mount", kwargs={"id": self.tournament.id})
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
 
         resp = self.client.post(
             url,
@@ -169,7 +169,7 @@ class TestMountTeam(APITestCase, URLPatternsTestCase):
         user = users.pop()
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        url = reverse("tournaments:team-mount", kwargs={"id": self.tournament.id})
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
 
         resp = self.client.post(
             url,

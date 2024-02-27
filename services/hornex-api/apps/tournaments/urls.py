@@ -6,8 +6,9 @@ from apps.tournaments.views import (
     RegistrationViewSet,
     TournamentRegistrationViewSet,
     check_in,
-    mount_team,
+    create_and_register_team,
     participant_checked_in,
+    register_team,
     team_check_in_status,
 )
 
@@ -94,9 +95,14 @@ urlpatterns = [
         name="list-registered-teams",
     ),
     path(
-        "/tournaments/<str:id>/teams/mount",
-        mount_team,
-        name="team-mount",
+        "/tournaments/<str:id>/register-team",
+        register_team,
+        name="register_team",
+    ),
+    path(
+        "/tournaments/<str:id>/create-and-register-team",
+        create_and_register_team,
+        name="create_and_register_team",
     ),
     # TEST_MODE
 ]
