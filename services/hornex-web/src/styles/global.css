@@ -12,13 +12,13 @@
       'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
       'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
       'Noto Color Emoji';
-    @apply bg-body;
-    font-size: 14px;
+    @apply bg-dark;
+    font-size: 13px;
     -webkit-tap-highlight-color: transparent;
   }
 
   html.dark {
-    @apply bg-dark text-white;
+    @apply bg-dark text-title;
   }
 
   html,

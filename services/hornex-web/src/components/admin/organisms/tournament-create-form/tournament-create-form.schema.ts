@@ -9,15 +9,10 @@ export const createFormSchema = z.object({
   registration_start_date: z.date(),
   // check_in_duration: z.number(), disabled for now
   start_date: z.date(),
-  end_date: z.date(),
   start_time: z.string(),
-  end_time: z.string(),
   feature_image: z.string().optional(),
   is_entry_free: z.boolean(),
-  entry_fee: z
-    .number()
-    .min(1, { message: 'Entry fee must be at least R$ 1.00' })
-    .optional(),
+  entry_fee: z.number().optional(),
   prize_pool_enabled: z.boolean().default(false),
   open_classification: z.boolean(),
   size: z.string(),
@@ -27,8 +22,6 @@ export const createFormSchema = z.object({
     .array(
       z.object({
         place: z.number(),
-        is_money: z.boolean(),
-        amount: z.string(),
         content: z.string().optional(),
       })
     )

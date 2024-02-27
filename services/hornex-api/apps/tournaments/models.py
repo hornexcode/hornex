@@ -46,10 +46,9 @@ class Tournament(BaseModel):
     check_in_duration = models.IntegerField(null=True, blank=True)
 
     start_date = models.DateField()
-    end_date = models.DateField()
     start_time = models.TimeField()
-    end_time = models.TimeField()
 
+    finished_at = models.DateTimeField(null=True, blank=True)
     feature_image = models.CharField(max_length=255, blank=True)
 
     is_entry_free = models.BooleanField(default=False, help_text="No entry fee")
@@ -253,11 +252,12 @@ class Tournament(BaseModel):
 
 
 class Prize(models.Model):
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, related_name="prizes", on_delete=models.CASCADE)
     place = models.IntegerField()
-    is_money = models.BooleanField(default=False)
-    amount = models.FloatField()  # cents
     content = models.TextField(default="")
+
+    class Meta:
+        ordering = ["place"]
 
     def __str__(self) -> str:
         return f"Prize ({self.id}) | {self.tournament.name} - {self.place}º"
@@ -453,7 +453,7 @@ class LeagueOfLegendsTournament(Tournament):
         choices=SpectatorOptions.choices,
         default=SpectatorOptions.LOBBYONLY,
     )
-    classifications = models.ManyToManyField(LeagueOfLegendsLeague)
+    classifications = models.ManyToManyField(LeagueOfLegendsLeague, blank=True)
     riot_tournament_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
@@ -470,7 +470,9 @@ class Participant(models.Model):
     team = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(
+        Tournament, related_name="participants", on_delete=models.CASCADE
+    )
 
     class Meta:
         indexes = [models.Index(fields=["team"], name="team_idx")]

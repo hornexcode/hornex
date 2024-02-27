@@ -2,7 +2,7 @@ import { TournamentStatusStepperProps } from './tournament-status-stepper.types'
 import clsx from 'clsx';
 import React, { FC } from 'react';
 
-const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
+const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
   steps,
   currentStep,
 }) => {
@@ -12,26 +12,26 @@ const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
       {/* gray bar */}
       <div
         role="stepper"
-        className="absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between bg-gray-100"
+        className="absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between bg-black/25"
       ></div>
       {/* green bar */}
       <div
         style={{ width: `${progressBarWidth + 0.5}%` }}
-        className={clsx('absolute top-0  h-[100%] rounded-lg bg-amber-400')}
+        className={clsx('bg-brand absolute  top-0 h-[100%] rounded-lg')}
       ></div>
       <div className="relative flex w-[calc(100%-4px)] items-center justify-between">
         <div></div>
         {/* current */}
         {new Array(currentStep).fill(0).map((_, idx) => (
           <div
-            className="bg-dark relative h-2 w-2 rounded-full"
+            className="bg-dark relative h-2.5 w-2.5 rounded-full"
             key={idx}
           ></div>
         ))}
         {new Array(steps - currentStep).fill(0).map((_, idx) => (
           <div
             key={idx}
-            className="ring-dark bg-title relative h-2 w-2 rounded-full ring"
+            className="ring-medium-dark bg-title relative h-2 w-2 rounded-full ring"
           ></div>
         ))}
       </div>
@@ -39,4 +39,4 @@ const TournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
   );
 };
 
-export default TournamentStatusStepper;
+export default AdminTournamentStatusStepper;

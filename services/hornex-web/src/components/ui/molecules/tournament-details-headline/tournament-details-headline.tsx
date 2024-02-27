@@ -2,7 +2,8 @@ import { RegisterButton } from '../../atoms/register-button';
 import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import Button from '@/components/ui/atoms/button/button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
-import { TeamCheckInStatus, Tournament } from '@/lib/models';
+import { useTournament } from '@/contexts/tournament';
+import { getStatus, TeamCheckInStatus, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
   combineDateAndTime,
@@ -11,21 +12,21 @@ import {
   isCheckInOpen,
   toCurrency,
 } from '@/lib/utils';
+import { DiscordLogoIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
 import classnames from 'classnames';
-import { CheckCheckIcon, RefreshCcw } from 'lucide-react';
-import moment from 'moment';
+import clsx from 'clsx';
+import { CheckCheckIcon, Facebook, RefreshCcw, Twitch } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 
-const { useData: useTournament } = dataLoader<Tournament>('getTournament');
 const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
   'getTeamCheckInStatus'
 );
 const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
 
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
-  tournament: initialTournament,
   connectedGameId,
   registration,
   isCheckedIn: initialIsCheckedIn,
@@ -33,17 +34,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
-
-  let tournament: Tournament = initialTournament;
-  const { data: tournamentData, error } = useTournament({
-    tournamentId: tournament.id,
-    platform: 'pc',
-    game: 'league-of-legends',
-  });
-
-  if (tournamentData && !error) {
-    tournament = tournamentData;
-  }
+  const { tournament, isRegistered, participants } = useTournament();
 
   // Controll the check in state
   useEffect(() => {
@@ -80,7 +71,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
   const {
     data: checkInStatusData,
-    error: checkInError,
     isLoading: checkInStatusIsLoading,
     mutate: checkInStatusMutate,
   } = useTeamCheckIns({
@@ -91,7 +81,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const renderCheckInStatus = (checkedInTotal: number, teamSize: number) => {
     return (
       <div className="flex flex-col justify-between space-y-2">
-        <div className="font-body text-xs text-gray-400">Check-in status</div>
+        <div className="font-body text-sm text-gray-400">Check-in status</div>
         <div
           className={classnames(
             'flex w-20 items-center justify-between',
@@ -113,7 +103,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           ))}
         </div>
         <div className="text-title flex justify-between text-sm">
-          <div className="font-display text-xs">
+          <div className="font-display text-sm">
             {checkedInTotal}/{teamSize}
           </div>
           <div
@@ -142,7 +132,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   };
 
   return (
-    <>
+    <div className="shadow-sketch rounded">
       {/* end debugger */}
       <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image
@@ -165,25 +155,37 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           )}
         </div>
       </div>
-      <div className="shadow-card bg-medium-dark flex rounded-b p-4">
+      <div className="bg-medium-dark flex rounded-b p-4">
         <div className="i flex w-full justify-between">
           {/* Tournament name */}
-          <div className="flex items-start">
-            <h4 className="text-title text-lg font-extrabold">
+          <div className="flex items-center">
+            <h4 className="text-title mr-4 text-lg font-extrabold">
               {tournament.name}
-              <div className="text-body text-xs">
-                Organized by <span className="text-title">@hornex</span>
-              </div>
             </h4>
+            <div className="text-body text-sm">
+              Organized by <span className="text-title">@hornex</span>
+            </div>
           </div>
 
           {/* right */}
           <div className="flex items-center self-start">
             {/* TODO: make this a molecule component */}
             <div className="flex items-center">
+              <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
+                <Link href={`/tournament/${tournament.id}/participants`}>
+                  <DiscordLogoIcon className="h-6 w-6" />
+                </Link>
+                <Link href={`/tournament/${tournament.id}/participants`}>
+                  <TwitterLogoIcon className="h-6 w-6" />
+                </Link>
+
+                <Link href={`/tournament/${tournament.id}/participants`}>
+                  <Twitch className="h-5 w-5" />
+                </Link>
+              </div>
               {/* Classification */}
               <div className="flex flex-col border-r-2 border-dotted border-gray-700 px-8">
-                <div className="text-body text-xs">Classifications</div>
+                <div className="text-body text-sm">Classifications</div>
                 <div className="text-title font-display text-sm">
                   {!tournament.open_classification
                     ? tournament.classifications.map((c) => c).join(', ')
@@ -192,36 +194,39 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               </div>
 
               {/* Prize Pool */}
-              <div className="flex items-center border-r-2 border-dotted border-gray-700 px-8">
+              <div
+                className={clsx(
+                  'flex items-center border-r-2 border-dotted border-gray-700 px-8',
+                  !tournament.prize_pool_enabled && 'hidden'
+                )}
+              >
                 <div>
-                  <div className="text-body text-xs">Potential Prize Pool</div>
-                  {!tournament.is_entry_free && (
-                    <div className="text-title font-display text-sm">
-                      R${' '}
-                      {toCurrency(
-                        tournament.entry_fee *
-                          tournament.max_teams *
-                          tournament.team_size *
-                          0.7
-                      )}
-                    </div>
-                  )}
+                  <div className="text-body text-sm">Potential Prize Pool</div>
+                  <div className="text-title font-display text-sm">
+                    R${' '}
+                    {toCurrency(
+                      tournament.entry_fee *
+                        tournament.max_teams *
+                        tournament.team_size *
+                        0.7
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Entry fee */}
-              {!tournament.is_entry_free && (
-                <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
-                  <div className="text-body text-xs">Entry fee</div>
-                  <div className="text-title font-display text-sm">
-                    R$ {toCurrency(tournament.entry_fee)}
-                  </div>
+              <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
+                <div className="text-body text-sm">Entry fee</div>
+                <div className="text-title font-display text-sm">
+                  {tournament.is_entry_free
+                    ? 'Free'
+                    : `R$ ${toCurrency(tournament.entry_fee)}`}
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Register button */}
-            <RegisterButton className="ml-4" isRegistered={!!registration} />
+            <RegisterButton className="ml-4" isRegistered={isRegistered} />
 
             {/* Check-in button */}
             {registration &&
@@ -234,7 +239,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
                       { hidden: isCheckedIn }
                     )}
                   >
-                    <div className="text-body text-xs">Check-in ends in:</div>
+                    <div className="text-body text-sm">Check-in ends in:</div>
                     <div className="mb-1 mr-2 flex items-center">
                       <div className="text-title font-display text-sm">
                         <Countdown
@@ -282,7 +287,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

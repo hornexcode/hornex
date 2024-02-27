@@ -17,9 +17,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.accounts.models import GameID
-from apps.leagueoflegends.serializers import (
-    LeagueOfLegendsTournamentSerializer,
-)
 from apps.leagueoflegends.tasks import participant_registered
 from apps.teams.models import Member, Team
 from apps.tournaments import errors
@@ -31,6 +28,9 @@ from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registra
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import RegisterSerializer, TournamentCreateSerializer
 from apps.tournaments.serializers import (
+    LeagueOfLegendsTournamentSerializer,
+    ParticipantSerializer,
+    PrizeSerializer,
     RegistrationReadSerializer,
     TournamentSerializer,
 )
@@ -81,26 +81,11 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
             self.queryset = LeagueOfLegendsTournament.objects.all()
+            self.serializer_class = LeagueOfLegendsTournamentSerializer
         return super().get_queryset()
 
-    def retrieve(self, request, *args, **kwargs):
-        game, _ = extract_game_and_platform(kwargs)
-        if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.all()
-
-        return super().retrieve(request, *args, **kwargs)
-
-    def construct_object(self) -> Tournament:
-        """
-        Returns the tournament object based on the game type
-        """
-        obj = self.get_object()
-        if obj.game == Tournament.GameType.LEAGUE_OF_LEGENDS:
-            return LeagueOfLegendsTournament.objects.get(id=obj.id)
-        return obj
-
     @action(detail=True, methods=["get"])
-    def list_registered_teams(self, request, *args, **kwargs):
+    def teams(self, request, *args, **kwargs):
         uc = ListRegisteredTeamsUseCase()
         teams = uc.execute(params=ListRegisteredTeamsParams(tournament_id=kwargs["id"]))
 
@@ -119,17 +104,27 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
             data.append(item)
         return Response(data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=["get"])
+    def participants(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        participants = tournament.participants.all()
+        serializer = ParticipantSerializer(participants, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def prizes(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        prizes = tournament.prizes.all()
+        serializer = PrizeSerializer(prizes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
-    presenter_class = TournamentSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     lookup_field = "id"
-
-    def get_presenter(self):
-        return self.presenter_class
 
     def create(self, request, *args, **kwargs):
         params = TournamentCreateSerializer(data=request.data)
@@ -138,17 +133,29 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         uc = CreateTournamentUseCase()
         tournament = uc.execute(
             CreateTournamentUseCaseParams(
-                **{
-                    **params,
-                    "organizer_id": request.user.id,
-                }
+                organizer_id=request.user.id,
+                game=params.validated_data["game"],
+                name=params.validated_data["name"],
+                description=params.validated_data["description"],
+                registration_start_date=params.validated_data["registration_start_date"],
+                start_date=params.validated_data["start_date"],
+                start_time=params.validated_data["start_time"],
+                is_entry_free=params.validated_data["is_entry_free"],
+                prize_pool_enabled=params.validated_data["prize_pool_enabled"],
+                open_classification=params.validated_data["open_classification"],
+                size=params.validated_data["size"],
+                team_size=params.validated_data["team_size"],
+                prizes=params.validated_data["prizes"],
+                map=params.validated_data["map"],
+                terms=params.validated_data["terms"],
+                entry_fee=params.validated_data.get("entry_fee"),
+                feature_image=params.validated_data.get("feature_image"),
             ),
         )
 
-        presenter = self.get_presenter(tournament)
-
+        serializer = self.serializer_class(instance=tournament)
         return Response(
-            presenter.data,
+            serializer.data,
             status=status.HTTP_201_CREATED,
         )
 
@@ -158,9 +165,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         timestamp = datetime.fromisoformat(request.data.get("now"))
         tournament.start(timestamp=timestamp)
 
-        presenter = self.get_presenter(tournament)
+        serializer = self.serializer_class(instance=tournament)
         return Response(
-            presenter.data,
+            serializer.data,
             status=status.HTTP_200_OK,
         )
 
@@ -193,7 +200,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
             RegisterParams(**{**params.validated_data, "tournament_id": kwargs["id"]}),
         )
 
-        return Response(None, status=status.HTTP_201_CREATED)
+        return Response({"message": "success"}, status=status.HTTP_201_CREATED)
 
 
 class RegistrationViewSet(viewsets.ModelViewSet):
@@ -375,6 +382,6 @@ def tournaments_controller(request):
         tournaments = LeagueOfLegendsTournament.objects.filter(organizer=user).all()
 
         return Response(
-            LeagueOfLegendsTournamentSerializer(tournaments, many=True).data,
+            TournamentSerializer(tournaments, many=True).data,
             status=status.HTTP_200_OK,
         )

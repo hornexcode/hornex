@@ -8,7 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
-import { Kanit, Source_Sans_3 } from 'next/font/google';
+import { JetBrains_Mono, Kanit, Source_Sans_3 } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { appWithI18Next } from 'ni18n';
@@ -24,6 +24,12 @@ type AppPropsWithLayout = AppProps & {
   game?: string;
   Component: NextPageWithLayout;
 };
+
+const jetbrains_mono = JetBrains_Mono({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 const source_Sans_3 = Source_Sans_3({
   weight: ['400', '500', '600', '700', '800'],
@@ -44,8 +50,8 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
       <NextThemesProvider attribute="class" defaultTheme="dark">
         <div
           className={classnames(
-            'bg-dark/90 font-semibold text-zinc-500 antialiased',
-            source_Sans_3.className,
+            'dark:bg-background text-muted min-h-[100vh] font-semibold antialiased',
+            jetbrains_mono.className,
             kanit.variable
           )}
         >

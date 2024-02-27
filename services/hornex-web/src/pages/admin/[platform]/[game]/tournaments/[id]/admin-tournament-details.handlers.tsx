@@ -1,6 +1,5 @@
-import { Tournament, TournamentPhase } from '@/lib/models';
+import { Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import moment from 'moment';
 
 const { submit: updateTournament } = dataLoader<
   Tournament,

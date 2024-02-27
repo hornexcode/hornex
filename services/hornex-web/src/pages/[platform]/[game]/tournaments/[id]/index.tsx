@@ -1,13 +1,22 @@
+import Loading from './loading';
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
 import { TournamentContextProvider } from '@/contexts/tournament';
 import { AppLayout } from '@/layouts';
 import {
+  Participant,
   ParticipantCheckedInStatus,
   Registration,
   Tournament,
 } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
+import { makeClientReqObj, makeClientResObj } from '@/lib/request/util';
+import {
+  nextAuthOptions,
+  optionalNextAuthOptions,
+} from '@/pages/api/auth/[...nextauth]';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getServerSession } from 'next-auth';
+import { Suspense } from 'react';
 
 export type GameID = {
   id: string;
@@ -22,6 +31,10 @@ const { fetch: getParticipantCheckInStatus } =
 const { fetch: getRegistrations } =
   dataLoader<Registration>('getRegistrations');
 
+const { fetch: listTournamentParticipants } = dataLoader<Participant[]>(
+  'listTournamentParticipants'
+);
+
 type TournamentProps = {
   params: {
     platform: string;
@@ -29,34 +42,37 @@ type TournamentProps = {
     id: string;
   };
   tournament: Tournament;
+  participants: Participant[];
   gameIds: GameID[];
   registrations: Registration[];
   participantCheckedInStatus: boolean;
+  isRegistered: boolean;
 };
 
 const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
-  params,
   tournament,
   gameIds,
   registrations = [],
+  participants,
   participantCheckedInStatus,
+  isRegistered,
 }: TournamentProps) => {
-  // TODO: add switch to render different types of tournament template
-  // switch (params.game) {
-  //   case LEAGUE_OF_LEGENDS:
-  //     return <TournamentDetailsTemplate />;
-  //   default:
-  //     break;
-  // }
   return (
-    <TournamentContextProvider tournament={tournament}>
-      <TournamentDetailsTemplate
+    <Suspense fallback={<Loading />}>
+      <TournamentContextProvider
+        isRegistered={isRegistered}
+        participants={participants}
         tournament={tournament}
-        gameIds={gameIds}
-        registrations={registrations}
-        participantCheckedInStatus={participantCheckedInStatus}
-      />
-    </TournamentContextProvider>
+      >
+        <TournamentDetailsTemplate
+          tournament={tournament}
+          gameIds={gameIds}
+          registrations={registrations}
+          isRegistered={isRegistered}
+          participantCheckedInStatus={participantCheckedInStatus}
+        />
+      </TournamentContextProvider>
+    </Suspense>
   );
 };
 
@@ -65,6 +81,21 @@ Tournament.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerSession(
+    ctx.req,
+    ctx.res,
+    optionalNextAuthOptions
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/sign-in',
+      },
+    };
+  }
+
   const { data: tournament, error: tournamentError } = await getTournament(
     {
       tournamentId: ctx.query.id || '',
@@ -106,12 +137,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ctx.req
     );
 
+  const { data: participants, error } = await listTournamentParticipants(
+    {
+      tournamentId: tournament.id,
+    },
+    ctx.req
+  );
+
+  const isRegistered = !!participants?.find(
+    (participant) => participant.email === session.user?.email
+  );
+
   return {
     props: {
       params: ctx.params,
       tournament,
       gameIds,
       registrations,
+      participants,
+      isRegistered: isRegistered,
       participantCheckedInStatus:
         participantCheckedInStatusData?.checked_in || false,
     },

@@ -1,4 +1,4 @@
-import { Tournament } from '@/lib/models';
+import { Participant, Tournament } from '@/lib/models';
 
 export type TournamentTableProps = {
   tournaments: Tournament[];

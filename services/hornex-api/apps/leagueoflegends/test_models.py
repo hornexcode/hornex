@@ -17,9 +17,7 @@ class TestUnitTournamentModel(TestCase):
             entry_fee=10,
             registration_start_date=now,
             start_date=now + td(days=7),
-            end_date=now + td(days=9),
             start_time="10:00:00",
-            end_time="12:00:00",
             organizer=UserFactory.new(),
         )
 

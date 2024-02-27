@@ -41,9 +41,7 @@ class CreateTournamentTestCase(TestCase):
             organizer_id=self.user.id,
             registration_start_date=now.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
             start_date=start_at.date().strftime("%Y-%m-%d"),
-            end_date=end_at.date().strftime("%Y-%m-%d"),
             start_time=start_at.time().strftime("%H:%M"),
-            end_time=end_at.time().strftime("%H:%M"),
             is_entry_free=True,
             entry_fee=0,
             prize_pool_enabled=False,
@@ -75,13 +73,11 @@ class CreateTournamentTestCase(TestCase):
         self.assertEqual(
             result.start_date, datetime.strptime(self.params.start_date, "%Y-%m-%d").date()
         )
-        self.assertEqual(
-            result.end_date, datetime.strptime(self.params.end_date, "%Y-%m-%d").date()
-        )
+
         self.assertEqual(
             result.start_time, datetime.strptime(self.params.start_time, "%H:%M").time()
         )
-        self.assertEqual(result.end_time, datetime.strptime(self.params.end_time, "%H:%M").time())
+
         self.assertEqual(result.is_entry_free, self.params.is_entry_free)
         self.assertEqual(result.prize_pool_enabled, self.params.prize_pool_enabled)
         self.assertEqual(result.open_classification, self.params.open_classification)
@@ -111,9 +107,7 @@ class CreateTournamentTestCase(TestCase):
                 organizer_id=self.user.id,
                 registration_start_date=now.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                 start_date=start_at.date().strftime("%Y-%m-%d"),
-                end_date=end_at.date().strftime("%Y-%m-%d"),
                 start_time=start_at.time().strftime("%H:%M"),
-                end_time=end_at.time().strftime("%H:%M"),
                 is_entry_free=True,
                 entry_fee=0,
                 prize_pool_enabled=True,
@@ -138,9 +132,7 @@ class CreateTournamentTestCase(TestCase):
                 organizer_id=self.user.id,
                 registration_start_date=now,
                 start_date=now.date(),
-                end_date=now.date(),
                 start_time=now.time(),
-                end_time=now.time(),
                 is_entry_free=False,
                 entry_fee=0,
                 prize_pool_enabled=True,

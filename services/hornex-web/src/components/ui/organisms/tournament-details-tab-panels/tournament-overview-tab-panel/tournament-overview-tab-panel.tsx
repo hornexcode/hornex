@@ -12,7 +12,7 @@ type RegisteredTeam = {
 };
 
 const { useData: listRegisteredTeams } = dataLoader<RegisteredTeam[]>(
-  'listRegisteredTeams'
+  'listTournamentTeams'
 );
 
 type TournamentOverviewTabPanelProps = {

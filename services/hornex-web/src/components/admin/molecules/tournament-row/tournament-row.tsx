@@ -10,7 +10,7 @@ import React, { FC } from 'react';
 const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
   return (
     <div className="flex">
-      <div className="border-accent bg-medium-dark flex w-full items-center rounded border p-4 shadow-sm">
+      <div className="shadow-card bg-medium-dark flex w-full items-center rounded p-4">
         {/* image */}
         <div className="flex w-9 items-center">
           <Image className="mx-auto w-7" src={HornexLogo} alt="Hornex logo" />
@@ -33,7 +33,8 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                 <div className="flex items-center">
                   <UsersIcon className="text-body mr-1 h-5 w-4" />
                   <span className="font-display text-body pr-4 text-xs font-bold">
-                    {tournament.teams.length}/{tournament.max_teams}
+                    {tournament.total_participants / tournament.team_size}/
+                    {tournament.max_teams}
                   </span>
                 </div>
                 {/* phase status */}
@@ -52,7 +53,10 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
                   <div
                     style={{
                       width: `${
-                        (tournament.teams.length / tournament.max_teams) * 100
+                        (tournament.total_participants /
+                          tournament.team_size /
+                          tournament.max_teams) *
+                        100
                       }%`,
                     }}
                     className="h-2 rounded-lg bg-amber-500"
