@@ -6,7 +6,8 @@ from apps.tournaments.views import (
     RegistrationViewSet,
     TournamentRegistrationViewSet,
     check_in,
-    pariticipant_checked_in,
+    mount_team,
+    participant_checked_in,
     team_check_in_status,
 )
 
@@ -73,7 +74,7 @@ urlpatterns = [
     ),
     path(
         "/tournaments/<str:tournament>/participant/checked-in",
-        pariticipant_checked_in,
+        participant_checked_in,
         name="participant-checked-in",
     ),
     path(
@@ -87,4 +88,15 @@ urlpatterns = [
         PublicTournamentViewSet.as_view({"get": "retrieve"}),
         name="details",
     ),
+    path(
+        "/tournaments/<str:id>/registered-teams",
+        PublicTournamentViewSet.as_view({"get": "list_registered_teams"}),
+        name="list-registered-teams",
+    ),
+    path(
+        "/tournaments/<str:id>/teams/mount",
+        mount_team,
+        name="team-mount",
+    ),
+    # TEST_MODE
 ]

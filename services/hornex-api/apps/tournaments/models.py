@@ -62,7 +62,7 @@ class Tournament(BaseModel):
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
     teams = models.ManyToManyField(
-        "teams.Team", related_name="tournaments", blank=True, through="teams.RegisteredTeam"
+        "teams.Team", related_name="tournaments", blank=True, through="RegisteredTeam"
     )
 
     open_classification = models.BooleanField(default=False)
@@ -481,3 +481,12 @@ class Participant(models.Model):
 
     def __str__(self) -> str:
         return self.nickname
+
+
+class RegisteredTeam(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    challonge_participant_id = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.team.name} at {self.tournament.name}"

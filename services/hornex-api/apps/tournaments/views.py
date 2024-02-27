@@ -19,6 +19,9 @@ from rest_framework.response import Response
 from apps.accounts.models import GameID
 from apps.leagueoflegends.tasks import participant_registered
 from apps.teams.models import Member, Team
+from apps.teams.serializers import (
+    TeamSerializer,
+)
 from apps.tournaments import errors
 from apps.tournaments.filters import (
     TournamentListFilter,
@@ -26,7 +29,11 @@ from apps.tournaments.filters import (
 )
 from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
-from apps.tournaments.requests import RegisterSerializer, TournamentCreateSerializer
+from apps.tournaments.requests import (
+    MountTeamParams,
+    RegisterSerializer,
+    TournamentCreateSerializer,
+)
 from apps.tournaments.serializers import (
     LeagueOfLegendsTournamentSerializer,
     ParticipantSerializer,
@@ -37,6 +44,8 @@ from apps.tournaments.serializers import (
 from apps.tournaments.usecases import (
     ListRegisteredTeamsParams,
     ListRegisteredTeamsUseCase,
+    MountTeamInput,
+    MountTeamUseCase,
     RegisterParams,
     RegisterUseCase,
 )
@@ -298,7 +307,7 @@ def team_check_in_status(request, *args, **kwargs):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def pariticipant_checked_in(request, *args, **kwargs):
+def participant_checked_in(request, *args, **kwargs):
     if request.method == "GET":
         try:
             tournament = Tournament.objects.get(id=kwargs["tournament"])
@@ -385,3 +394,23 @@ def tournaments_controller(request):
             TournamentSerializer(tournaments, many=True).data,
             status=status.HTTP_200_OK,
         )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+@swagger_auto_schema(
+    operation_description="POST /api/v1/teams/mount",
+    operation_summary="Mount a team",
+)
+def mount_team(request, id):
+    params = MountTeamParams(data={**request.data, "user_id": request.user.id})
+    params.is_valid(raise_exception=True)
+
+    uc = MountTeamUseCase()
+
+    output = uc.execute(MountTeamInput(**params.validated_data))
+
+    # TODO, register team at tournament - new useCase
+
+    return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
