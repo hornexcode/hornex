@@ -77,3 +77,12 @@ class Invite(models.Model):
 
     def __str__(self) -> str:  # noqa
         return f"Invite from {self.team.name} to {self.user.name} - ({self.status()})"
+
+
+class RegisteredTeam(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    tournament = models.ForeignKey("tournaments.Tournament", on_delete=models.CASCADE)
+    challonge_participant_id = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.team.name} at {self.tournament.name}"

@@ -61,7 +61,9 @@ class Tournament(BaseModel):
     max_teams = models.IntegerField(default=32)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    teams = models.ManyToManyField("teams.Team", related_name="tournaments", blank=True)
+    teams = models.ManyToManyField(
+        "teams.Team", related_name="tournaments", blank=True, through="teams.RegisteredTeam"
+    )
 
     open_classification = models.BooleanField(default=False)
 

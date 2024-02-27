@@ -91,6 +91,8 @@ class TeamViewSet(viewsets.ModelViewSet):
 
         output = uc.execute(MountTeamInput(**params.validated_data))
 
+        # TODO, register team at tournament - new useCase
+
         return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
 
 

@@ -5,7 +5,7 @@ from datetime import timedelta as td
 import faker
 
 from apps.accounts.models import GameID
-from apps.teams.models import Invite, Team
+from apps.teams.models import Invite, RegisteredTeam, Team
 from apps.tournaments.models import LeagueOfLegendsLeague, Match
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Tournament as BaseTournament
@@ -164,9 +164,20 @@ class GameIdFactory:
         user = kwargs.get("user", UserFactory.new())
 
         return GameID.objects.create(
-            email=fake.email(),
+            email=kwargs.get("email", fake.email()),
             user=user,
             game=kwargs.get("game", GameID.GameOptions.LEAGUE_OF_LEGENDS),
             nickname=fake.name(),
             is_active=kwargs.get("is_active", True),
+        )
+
+
+class RegisteredTeamFactory:
+    @staticmethod
+    def new(team: Team, tournament: Tournament, challonge_participant_id: int):
+        """
+        Create a new RegisteredTeam with the given params.
+        """
+        return RegisteredTeam.objects.create(
+            team=team, tournament=tournament, challonge_participant_id=challonge_participant_id
         )
