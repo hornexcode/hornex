@@ -10,7 +10,7 @@ import React, { FC } from 'react';
 const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
   return (
     <div className="flex">
-      <div className="border-accent bg-medium-dark flex w-full items-center rounded border p-4 shadow-sm">
+      <div className="shadow-card bg-medium-dark flex w-full items-center rounded p-4">
         {/* image */}
         <div className="flex w-9 items-center">
           <Image className="mx-auto w-7" src={HornexLogo} alt="Hornex logo" />

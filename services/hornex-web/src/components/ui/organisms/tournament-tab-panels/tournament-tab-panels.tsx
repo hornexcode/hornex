@@ -41,31 +41,28 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
         <TabsTrigger value="brackets">Brackets</TabsTrigger>
         <TabsTrigger value="standings">Standings</TabsTrigger>
       </TabsList>
-      <TabsContent
-        value="overview"
-        className="bg-light-dark shadow-sketch rounded p-4"
-      >
+      <TabsContent value="overview" className="bg-light-dark p-4">
         <div className="box space-y-12">
           <div className="block">
             <h3 className="mb-4 text-sm">Game & Region</h3>
             <div className="flex flex-wrap items-center">
-              <div className="border-light-dark block border-r border-t p-3">
-                <h4 className="mb-2 text-xs font-normal leading-none tracking-wide">
+              <div className="border-muted block border-r border-dashed pr-5">
+                <h4 className="mb-2 font-normal leading-none tracking-wide">
                   Game
                 </h4>
                 <span className="text-title text-lg font-normal">
                   League of Legends
                 </span>
               </div>
-              <div className="border-light-dark block border-r border-t p-3">
-                <h4 className="mb-2 text-xs font-normal leading-none tracking-wide">
+              <div className="border-muted block border-r border-dashed px-4">
+                <h4 className="mb-2 font-normal leading-none tracking-wide">
                   Region
                 </h4>
                 <span className="text-title text-lg font-normal">
                   🇧🇷 Brazil
                 </span>
               </div>
-              <div className="border-light-dark block border-r border-t p-3">
+              <div className="border-muted block border-r border-dashed px-4">
                 <h4 className="mb-2 text-xs font-normal leading-none tracking-wide">
                   Map
                 </h4>
@@ -78,16 +75,16 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
           <div className="block">
             <h3 className="mb-4 text-sm">Date & Time</h3>
             <div className="flex flex-wrap items-center">
-              <div className="border-light-dark block border-r border-t p-3">
-                <h4 className="mb-2 text-xs font-normal leading-none tracking-wide">
+              <div className="border-muted block border-r border-dashed pr-4">
+                <h4 className="mb-2 font-normal leading-none tracking-wide">
                   Date
                 </h4>
                 <span className="text-title text-lg font-normal">
                   {moment(tournament.start_date).format('MMMM Do, YYYY')}
                 </span>
               </div>
-              <div className="border-light-dark block border-r border-t p-3">
-                <h4 className="mb-2 text-xs font-normal leading-none tracking-wide">
+              <div className="border-muted block border-r border-dashed px-4">
+                <h4 className="mb-2 font-normal leading-none tracking-wide">
                   Time
                 </h4>
                 <span className="text-title text-lg font-normal">

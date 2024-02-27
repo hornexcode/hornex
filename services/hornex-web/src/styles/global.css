@@ -13,7 +13,7 @@
       'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
       'Noto Color Emoji';
     @apply bg-dark;
-    font-size: 14px;
+    font-size: 13px;
     -webkit-tap-highlight-color: transparent;
   }
 

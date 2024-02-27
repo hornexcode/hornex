@@ -38,7 +38,7 @@ export function DatePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="border-accent w-auto rounded-lg p-0"
+          className="border-muted w-auto rounded-lg p-0"
           align="start"
         >
           <Calendar

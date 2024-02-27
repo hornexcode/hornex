@@ -20,7 +20,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
   return (
     <div
       className={clsx(
-        'shadow-sketch bg-light-dark max-w-[230px] rounded',
+        'shadow-card bg-light-dark max-w-[230px] rounded',
         className
       )}
     >

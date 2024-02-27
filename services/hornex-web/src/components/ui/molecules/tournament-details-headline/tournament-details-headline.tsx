@@ -158,13 +158,13 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
       <div className="bg-medium-dark flex rounded-b p-4">
         <div className="i flex w-full justify-between">
           {/* Tournament name */}
-          <div className="flex items-start">
-            <h4 className="text-title text-lg font-extrabold">
+          <div className="flex items-center">
+            <h4 className="text-title mr-4 text-lg font-extrabold">
               {tournament.name}
-              <div className="text-body text-sm">
-                Organized by <span className="text-title">@hornex</span>
-              </div>
             </h4>
+            <div className="text-body text-sm">
+              Organized by <span className="text-title">@hornex</span>
+            </div>
           </div>
 
           {/* right */}

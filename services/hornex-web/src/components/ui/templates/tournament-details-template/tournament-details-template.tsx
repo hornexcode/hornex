@@ -52,11 +52,13 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
       {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
       <div className="grid grid-cols-3 gap-4 space-y-4">
         <div className="col-span-1 pt-4">
-          <div className="bg-medium-dark shadow-sketch col-span-1 rounded p-4">
-            <span className="text-title">Tournament status</span>
+          <div className="bg-medium-dark shadow-card col-span-1 rounded p-4">
+            <span className="text-title text-lg font-extrabold">
+              Tournament status
+            </span>
             <div className="flex items-center justify-between pb-2">
-              <span className="text-amber-500">{getStatus(tournament)}</span>
-              <div className="bg-title rounded px-2 py-1 text-xs text-gray-500">
+              <span className="text-brand">{getStatus(tournament)}</span>
+              <div className="text-xs text-gray-500">
                 step {steps[0]} / {steps[1]}
               </div>
             </div>

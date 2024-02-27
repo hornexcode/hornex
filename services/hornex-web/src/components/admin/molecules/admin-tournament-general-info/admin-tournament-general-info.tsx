@@ -144,29 +144,29 @@ const AdminTournamentGeneralInfo = () => {
   return (
     <div className="grid grid-cols-3 gap-8">
       <div className="col-span-2">
-        <div className="text-backround bg-light-dark shadow-sketch flex flex-wrap items-center rounded">
+        <div className="text-backround bg-light-dark shadow-card flex flex-wrap items-center rounded">
           <div className="p-3">
             <div className="text-title font-bold">Teams registered</div>
-            <div className="text-muted font-display text-sm">
+            <div className="text-muted font-display">
               {tournament.total_participants / tournament.team_size}/
               {tournament.max_teams}
             </div>
           </div>
           <div className="p-3">
             <div className="text-title font-bold">Classification</div>
-            <div className="text-muted font-display text-sm">
+            <div className="text-muted font-display">
               {getClassifications(tournament)}
             </div>
           </div>
           <div className="p-3 ">
             <div className="text-title font-bold">Entry Fee</div>
-            <div className="text-muted font-display text-sm">
+            <div className="text-muted font-display">
               {getEntryFee(tournament)}
             </div>
           </div>
           <div className="p-3">
             <div className="text-title font-bold">Prize Pool</div>
-            <div className="text-muted font-display text-sm">
+            <div className="text-muted font-display">
               {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
               {tournament.prize_pool_enabled &&
                 `${tournament.currency} ${toCurrency(
@@ -176,13 +176,13 @@ const AdminTournamentGeneralInfo = () => {
           </div>
           <div className="p-3">
             <div className="text-title font-bold">Registration start date</div>
-            <div className="text-muted font-display text-sm">
+            <div className="text-muted font-display">
               {datetime(tournament.registration_start_date, { time: false })}
             </div>
           </div>
           <div className="p-3">
             <div className="text-title font-bold">Start date</div>
-            <div className="text-muted font-display text-sm">
+            <div className="text-muted font-display">
               {moment(
                 new Date(
                   `${tournament.start_date}T${tournament.start_time}+00:00`
@@ -192,19 +192,19 @@ const AdminTournamentGeneralInfo = () => {
           </div>
           <div className="p-3">
             <div className="text-title font-bold">Check-in window</div>
-            <div className="text-muted font-display text-sm">
+            <div className="text-muted font-display">
               {tournament.check_in_duration} minutes
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-medium-dark shadow-sketch col-span-1 rounded p-4">
+      <div className="bg-medium-dark shadow-card col-span-1 rounded p-4">
         <span className="text-muted">Tournament status</span>
         <div className="flex items-center justify-between pb-2">
           <span className="font-semibold text-amber-500">
             {getStatus(tournament)}
           </span>
-          <div className="bg-title rounded px-2 py-1 text-xs text-gray-500">
+          <div className="text-xs text-gray-500">
             step {steps[0]} / {steps[1]}
           </div>
         </div>
