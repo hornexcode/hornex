@@ -1,7 +1,7 @@
 import TournamentStatusStepper from '../../../ui/organisms/tournament-status-stepper';
 import Button from '@/components/ui/atoms/button';
 import { toast } from '@/components/ui/use-toast';
-import { useTournament } from '@/contexts/organizer';
+import { useAdminTournament } from '@/contexts';
 import {
   getClassifications,
   getEntryFee,
@@ -20,7 +20,7 @@ import moment from 'moment';
 import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
-  const { tournament, setTournament } = useTournament();
+  const { tournament } = useAdminTournament();
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
   );
@@ -41,7 +41,6 @@ const AdminTournamentGeneralInfo = () => {
     });
 
     if (data && !error) {
-      setTournament(data);
       setSteps(getStatusStep(data));
     }
     setLoading(false);
@@ -59,7 +58,6 @@ const AdminTournamentGeneralInfo = () => {
       });
     }
     if (data && !error) {
-      setTournament(data);
       toast({
         title: 'Success',
         description: 'Tournament started successfully',

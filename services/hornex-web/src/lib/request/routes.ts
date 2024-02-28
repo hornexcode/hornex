@@ -201,11 +201,11 @@ export const routes = {
     method: Method.POST,
     schema: null,
   },
-  'organizer:tournaments:update': {
+  'organizer:tournament:update': {
     path: 'v1/organizer/tournaments/[tournamentId]',
     method: Method.PATCH,
   },
-  'organizer:tournaments:start': {
+  'organizer:tournament:start': {
     path: 'v1/organizer/tournaments/[tournamentId]/start',
     method: Method.POST,
   },
@@ -213,8 +213,12 @@ export const routes = {
     path: 'v1/teams/mount',
     method: Method.POST,
   },
-  'organizer:tournaments:matches': {
+  'organizer:tournament:matches': {
     path: 'v1/organizer/tournaments/[tournamentId]/matches',
+    method: Method.GET,
+  },
+  'organizer:tournament:teams': {
+    path: 'v1/organizer/tournaments/[tournamentId]/teams',
     method: Method.GET,
   },
 };

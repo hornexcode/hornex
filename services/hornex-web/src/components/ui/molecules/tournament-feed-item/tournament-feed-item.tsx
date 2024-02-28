@@ -1,11 +1,9 @@
 import { TournamentFeedItemProps } from './tournament-feed-item.types';
 import Button from '@/components/ui/atoms/button/button';
 import { getStatus } from '@/lib/models';
-import { toCurrency } from '@/lib/utils';
 import { UsersIcon } from '@heroicons/react/20/solid';
 import { ClockIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
-import { DollarSign, SwordIcon, Swords } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';

@@ -8,7 +8,12 @@ import { Toaster } from '@/components/ui/toaster';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
-import { JetBrains_Mono, Kanit, Source_Sans_3 } from 'next/font/google';
+import {
+  JetBrains_Mono,
+  Kanit,
+  Roboto_Condensed,
+  Source_Sans_3,
+} from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { appWithI18Next } from 'ni18n';
@@ -25,6 +30,12 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
+const roboto_condensed = Roboto_Condensed({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
 const jetbrains_mono = JetBrains_Mono({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
@@ -34,7 +45,7 @@ const jetbrains_mono = JetBrains_Mono({
 const source_Sans_3 = Source_Sans_3({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
-  display: 'swap',
+  variable: '--font-source-sans',
 });
 
 const kanit = Kanit({
@@ -51,8 +62,9 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
         <div
           className={classnames(
             'dark:bg-background text-muted min-h-[100vh] font-semibold antialiased',
-            jetbrains_mono.className,
-            source_Sans_3.className,
+            // jetbrains_mono.className,
+            source_Sans_3.variable,
+            roboto_condensed.className,
             kanit.variable
           )}
         >

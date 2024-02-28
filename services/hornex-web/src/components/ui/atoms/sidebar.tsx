@@ -23,7 +23,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
       <div className="text-title mb-6 flex h-[20] w-[200px] items-center font-extrabold">
         <LolFlatIcon className="mr-4 h-8 w-8" />
       </div>
-      <ul className="flex w-full flex-col space-y-2 text-lg font-normal">
+      <ul className="flex w-full flex-col space-y-2 text-lg">
         <li className="">
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
