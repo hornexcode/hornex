@@ -17,7 +17,7 @@ logger = structlog.get_logger(__name__)
 
 
 @dataclass
-class CreateAndRegisterTeamInput:
+class CreateAndRegisterTeamIntoTournamentInput:
     tournament_id: uuid.UUID
     user_id: uuid.UUID
     name: str
@@ -28,14 +28,16 @@ class CreateAndRegisterTeamInput:
 
 
 @dataclass
-class CreateAndRegisterTeamOutput:
+class CreateAndRegisterTeamIntoTournamentOutput:
     team: Team
 
 
 @dataclass
-class CreateAndRegisterTeamUseCase:
+class CreateAndRegisterTeamIntoTournamentUseCase:
     @transaction.atomic
-    def execute(self, params: CreateAndRegisterTeamInput) -> CreateAndRegisterTeamOutput:
+    def execute(
+        self, params: CreateAndRegisterTeamIntoTournamentInput
+    ) -> CreateAndRegisterTeamIntoTournamentOutput:
         user = get_object_or_404(User, id=params.user_id)
         tournament = get_object_or_404(Tournament, id=params.tournament_id)
 
@@ -78,4 +80,4 @@ class CreateAndRegisterTeamUseCase:
             tournament=tournament, team=team, challonge_participant_id=participant.id
         )
 
-        return CreateAndRegisterTeamOutput(team)
+        return CreateAndRegisterTeamIntoTournamentOutput(team)

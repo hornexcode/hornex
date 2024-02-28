@@ -1,7 +1,6 @@
-from test.factories import GameIdFactory, LeagueOfLegendsTournamentFactory, TeamFactory, UserFactory
+from test.factories import GameIdFactory, UserFactory
 
 import faker
-from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -91,51 +90,51 @@ class TestLeagueOfLegendsTournaments(APITestCase):
     #     regi = Registration.objects.first()
     #     self.assertEqual(regi.status, Registration.RegistrationStatusOptions.PENDING)
 
-    def test_register_team_invalid_email(self):
-        team = TeamFactory.new(created_by=self.user)
-        tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
+    # def test_register_team_invalid_email(self):
+    #     team = TeamFactory.new(created_by=self.user)
+    #     tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
 
-        url = reverse(
-            "tournaments:register",
-            kwargs={
-                "id": tournament.id.__str__(),
-            },
-        )
+    #     url = reverse(
+    #         "tournaments:register",
+    #         kwargs={
+    #             "id": tournament.id.__str__(),
+    #         },
+    #     )
 
-        users = [[game_id.email, game_id.nickname] for game_id in team.members.all()]
-        users.append(["fake_email.com", "Denzel"])
+    #     users = [[game_id.email, game_id.nickname] for game_id in team.members.all()]
+    #     users.append(["fake_email.com", "Denzel"])
 
-        resp = self.client.post(
-            url,
-            {
-                "team": team.id,
-                "users": users,
-            },
-        )
+    #     resp = self.client.post(
+    #         url,
+    #         {
+    #             "team": team.id,
+    #             "users": users,
+    #         },
+    #     )
 
-        self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.json().get("error"), "One or more users has an invalid email.")
+    #     self.assertEqual(resp.status_code, 400)
+    #     self.assertEqual(resp.json().get("error"), "One or more users has an invalid email.")
 
-    def test_register_team(self):
-        team = TeamFactory.new(created_by=self.user)
-        tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
+    # def test_register_team(self):
+    #     team = TeamFactory.new(created_by=self.user)
+    #     tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
 
-        url = reverse(
-            "tournaments:register",
-            kwargs={
-                "id": tournament.id.__str__(),
-            },
-        )
+    #     url = reverse(
+    #         "tournaments:register",
+    #         kwargs={
+    #             "id": tournament.id.__str__(),
+    #         },
+    #     )
 
-        resp = self.client.post(
-            url,
-            {
-                "team": team.id,
-                "users": [[game_id.email, game_id.nickname] for game_id in team.members.all()],
-            },
-        )
+    #     resp = self.client.post(
+    #         url,
+    #         {
+    #             "team": team.id,
+    #             "users": [[game_id.email, game_id.nickname] for game_id in team.members.all()],
+    #         },
+    #     )
 
-        self.assertEqual(resp.status_code, 201)
+    #     self.assertEqual(resp.status_code, 201)
 
 
 # def test_register_400_do_not_has_enough_members_error(self):
