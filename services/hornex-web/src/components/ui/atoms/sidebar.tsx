@@ -16,24 +16,24 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-medium-dark shadow-card fixed top-[calc(4rem+2px)] z-50 flex h-full w-[250px] flex-col border-r border-zinc-700 px-8 py-4',
+        'bg-dark fixed top-[calc(4rem)] z-50 flex h-full w-[250px] flex-col border-r border-neutral-700  px-8 py-4',
         className
       )}
     >
-      <div className="text-title mb-6 flex h-[20] w-[200px] items-center font-extrabold">
+      {/* <div className="text-title mb-6 flex h-[20] w-[200px] items-center font-extrabold">
         <LolFlatIcon className="mr-4 h-8 w-8" />
-      </div>
-      <ul className="flex w-full flex-col space-y-2 text-lg">
-        <li className="">
+      </div> */}
+      <ul className="font-source-sans mt-4 flex w-full flex-col space-y-2 text-lg font-normal">
+        {/* <li className="">
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <Home className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
+                <Home className="text-brand mr-4 h-6 w-6 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.home')}</span>
             </div>
           </Link>
-        </li>
+        </li> */}
         <li className="">
           <Link
             href={`/${routes.compete}`}
@@ -41,7 +41,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <SwordsIcon className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
+                <SwordsIcon className="text-brand mr-4 h-6 w-6 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.compete')}</span>
             </div>
@@ -54,7 +54,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <FileBadge className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
+                <FileBadge className="text-brand mr-4 h-6 w-6 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.registrations')}</span>
             </div>
@@ -67,7 +67,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="flex items-center rounded-lg">
               <div>
-                <Users2 className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
+                <Users2 className="text-brand mr-4 h-6 w-6 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.teams')}</span>
             </div>
@@ -84,7 +84,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <Cog6ToothIcon className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
+                <Cog6ToothIcon className="text-brand mr-4 h-6 w-6 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.organize')}</span>
             </div>
@@ -101,7 +101,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           >
             <div className="mb-2 flex items-center rounded-lg">
               <div>
-                <BadgeHelpIcon className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
+                <BadgeHelpIcon className="text-brand mr-4 h-6 w-6 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">Help</span>
             </div>

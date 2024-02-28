@@ -1,52 +1,74 @@
-import Button from '@/components/ui/atoms/button';
+import Baron from '@/assets/images/games/league-of-legends/baron.jpg';
+import SummonersRiftMap from '@/assets/images/games/league-of-legends/summoners-rift-map.png';
+import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
+import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
 import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
+import TournamentsFeedTemplate from '@/components/ui/templates/tournaments-feed-template/tournaments-feed-template';
 import { AppLayout } from '@/layouts';
-import { GetAvailableGamesResponse } from '@/lib/models/types';
+import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments';
 import { dataLoader as dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Link from 'next/link';
+import Image from 'next/image';
 
-const { fetch: getAvailableGames } =
-  dataLoader<GetAvailableGamesResponse>('getAvailableGames');
+const { useData: getTournaments } =
+  dataLoader<GetTournamentsResponse>('getTournaments');
+
+type TournamentsProps = {
+  game: string;
+  platform: string;
+};
+
+export const getServerSideProps = (async ({ query: { game, platform } }) => {
+  if (typeof game !== 'string' || typeof platform !== 'string') {
+    game = 'league-of-legends';
+    platform = 'pc';
+  }
+
+  return {
+    props: {
+      pageProps: {
+        game,
+        platform,
+      },
+    },
+  };
+}) satisfies GetServerSideProps<{
+  pageProps: TournamentsProps;
+}>;
 
 const CompetePage = ({
-  games,
+  pageProps: { game, platform },
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return (
-    <div className="container mx-auto pt-8">
-      <section id="available-games">
-        <div className="space-y-10">
-          <div className="">
-            <h2 className="text-title text-left text-xl font-bold leading-4 lg:text-xl">
-              Available Games
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href={`/pc/league-of-legends/tournaments`} className="group">
-              <div className="">
-                {/* header */}
+  const { data, error, isLoading } = getTournaments({ game, platform });
+  if (!data) return null;
 
-                <div className="relative h-[200px] w-full rounded bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat">
-                  <div className="p-4">
-                    <LolFlatIcon className="text-title mr-4 h-10 w-10" />
-                  </div>
-                  <div className="absolute bottom-2 left-2 w-full">
-                    <span className="text-title rounded-lg bg-black/50 px-2 text-xs">
-                      143 opened
-                    </span>
-                    <span className="text-title rounded-lg bg-black/50 px-2 text-xs">
-                      20 closed
-                    </span>
-                  </div>
-                </div>
-                <div className="bg-light-dark flex items-center p-4">
-                  <h4 className="text-title font-bold">League of Legends</h4>
-                </div>
-                {/* bottom */}
+  return (
+    <div className="container mx-auto pt-16">
+      <div className="relative h-[300px] w-full overflow-hidden bg-[url('/images/league-of-legends/baron.jpg')] bg-cover">
+        <div className="bg-dark/50 absolute top-0 h-full w-full"></div>
+        <div className="absolute top-0 h-full w-full bg-gradient-to-t from-black"></div>
+        <div className="absolute left-10 top-20 flex h-[300px]">
+          <div className="grid grid-cols-3 items-center justify-center">
+            <div className="col-span-2 p-4">
+              <LeagueOfLegendsLogo className="relative w-20 text-white" />
+              <div className="flex items-center">
+                <h1 className="font-beaufort text-6xl font-bold tracking-tight text-white">
+                  Tournaments
+                </h1>
               </div>
-            </Link>
+            </div>
+            {/* <div className="col-span-2">
+              <Image
+                className="responsive-img h-full w-full"
+                src={Baron}
+                alt="baron"
+              />
+            </div> */}
           </div>
         </div>
+      </div>
+      <section id="available-games">
+        <TournamentsFeedTemplate isLoading={isLoading} data={data} />
       </section>
     </div>
   );
@@ -54,16 +76,6 @@ const CompetePage = ({
 
 CompetePage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
-};
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { data: games } = await getAvailableGames({}, req);
-
-  return {
-    props: {
-      games: games || [],
-    },
-  };
 };
 
 export default CompetePage;

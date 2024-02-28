@@ -2,6 +2,7 @@ import MenuItems from './menu/_default';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
+import routes from '@/config/routes';
 import { LoggedUser } from '@/domain';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { useIsMounted } from '@/hooks/use-is-mounted';
@@ -34,7 +35,7 @@ const Header = () => {
   const { user } = session || {};
 
   return (
-    <header className="bg-medium-dark border-border fixed top-0 z-40 h-16 w-full border-b px-8">
+    <header className="bg-dark fixed top-0 z-40 h-16 w-full border-b border-neutral-700 px-8">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
         <div className="text-title flex w-[250px] items-center text-xl font-bold">
           <Link className="text-brand mr-4 block font-extrabold" href="/">
@@ -50,26 +51,26 @@ const Header = () => {
 
         {/* {isLoading && <>loading user metadata</>} */}
 
-        {user && (
+        {session && (
           <HeaderRightArea
             user={{
-              email: user.email!,
-              name: user.name!,
+              email: user?.email!,
+              name: user?.name!,
             }}
           />
         )}
 
         {!session && (
           <div className="flex items-center justify-center space-x-4">
-            <Link href="/login">
-              <div className="flex items-center text-sm text-white">
-                Login <LogInIcon className="ml-2 h-5 w-5 text-white" />
+            <Link href={`/${routes.signIn}`}>
+              <div className="text-title flex items-center">
+                Sign In <LogInIcon className="text-title ml-2 h-5 w-5" />
               </div>
             </Link>
             <Link href="/register">
-              <div className="flex items-center text-sm text-white">
-                Register{' '}
-                <ArrowUpRightIcon className="ml-2 h-5 w-5 text-white" />
+              <div className="text-title flex items-center">
+                Create account{' '}
+                <ArrowUpRightIcon className="text-title ml-2 h-5 w-5" />
               </div>
             </Link>
           </div>

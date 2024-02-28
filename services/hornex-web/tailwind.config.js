@@ -19,6 +19,7 @@ module.exports = {
       display: ['JetBrains mono', 'monospace'],
       title: ['var(--font-kanit)', 'JetBrains Mono', 'monospace'],
       'source-sans': ['var(--font-source-sans)', 'JetBrains Mono', 'monospace'],
+      beaufort: ['var(--font-beaufort)', 'JetBrains Mono', 'monospace'],
     },
     container: {
       padding: {
@@ -44,7 +45,8 @@ module.exports = {
         brand: '#e2b714',
         body: '#95a5a6',
         title: '#d1d0c5',
-        dark: '#16191f',
+        // dark: '#16191f',
+        dark: '#1b1b1f',
         primary: '#21252d',
         muted: '#646668',
         accent: '#21252d',
