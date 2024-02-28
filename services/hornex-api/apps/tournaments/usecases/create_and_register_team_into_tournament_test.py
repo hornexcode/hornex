@@ -1,4 +1,5 @@
 from test.factories import GameIdFactory, LeagueOfLegendsTournamentFactory, TeamFactory, UserFactory
+from unittest.mock import patch
 
 import faker
 from django.test import TestCase
@@ -8,13 +9,17 @@ from rest_framework.validators import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.teams.models import Team
-from apps.tournaments.usecases import CreateAndRegisterTeamInput, CreateAndRegisterTeamUseCase
+from apps.tournaments.usecases import (
+    CreateAndRegisterTeamIntoTournamentInput,
+    CreateAndRegisterTeamIntoTournamentUseCase,
+)
 from apps.users.models import User
+from lib.challonge._tournament import Participant
 
 fake = faker.Faker()
 
 
-class CreateAndRegisterTeamUseCaseTest(TestCase):
+class CreateAndRegisterTeamIntoTournamentUseCaseTest(TestCase):
     def setUp(self) -> None:
         self.credentials = {
             "email": "admin@hornex.gg",
@@ -29,8 +34,10 @@ class CreateAndRegisterTeamUseCaseTest(TestCase):
         users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        params = CreateAndRegisterTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
-        output = CreateAndRegisterTeamUseCase().execute(params)
+        params = CreateAndRegisterTeamIntoTournamentInput(
+            user_id=self.user.id, name=fake.name(), **users_payload
+        )
+        output = CreateAndRegisterTeamIntoTournamentUseCase().execute(params)
 
         self.assertEqual(output.team.name, params.name)
         self.assertEqual(output.team.created_by, self.user)
@@ -41,10 +48,12 @@ class CreateAndRegisterTeamUseCaseTest(TestCase):
         users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        params = CreateAndRegisterTeamInput(user_id=self.user.id, name="Testeam", **users_payload)
+        params = CreateAndRegisterTeamIntoTournamentInput(
+            user_id=self.user.id, name="Testeam", **users_payload
+        )
 
         try:
-            CreateAndRegisterTeamUseCase().execute(params)
+            CreateAndRegisterTeamIntoTournamentUseCase().execute(params)
         except ValidationError as e:
             self.assertEqual(str(e.detail["error"]), "Team name already in use")
 
@@ -54,10 +63,12 @@ class CreateAndRegisterTeamUseCaseTest(TestCase):
         [GameIdFactory.new(user=user, email=user.email) for user in users]
         users_payload["member_4_email"] = "fake@email.com"
 
-        params = CreateAndRegisterTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
+        params = CreateAndRegisterTeamIntoTournamentInput(
+            user_id=self.user.id, name=fake.name(), **users_payload
+        )
 
         try:
-            CreateAndRegisterTeamUseCase().execute(params)
+            CreateAndRegisterTeamIntoTournamentUseCase().execute(params)
         except ValidationError as e:
             self.assertEqual(
                 str(e.detail["error"]),
@@ -70,10 +81,12 @@ class CreateAndRegisterTeamUseCaseTest(TestCase):
         user = users.pop()
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        params = CreateAndRegisterTeamInput(user_id=self.user.id, name=fake.name(), **users_payload)
+        params = CreateAndRegisterTeamIntoTournamentInput(
+            user_id=self.user.id, name=fake.name(), **users_payload
+        )
 
         try:
-            CreateAndRegisterTeamUseCase().execute(params)
+            CreateAndRegisterTeamIntoTournamentUseCase().execute(params)
         except ValidationError as e:
             self.assertEqual(
                 str(e.detail["error"]),
@@ -81,7 +94,7 @@ class CreateAndRegisterTeamUseCaseTest(TestCase):
             )
 
 
-class CreateAndRegisterTeam(APITestCase, URLPatternsTestCase):
+class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
     urlpatterns = [
         path("/tournaments", include("apps.tournaments.urls")),
     ]
@@ -102,7 +115,16 @@ class CreateAndRegisterTeam(APITestCase, URLPatternsTestCase):
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
 
-    def test_mount_team(self):
+    @patch("lib.challonge.Tournament.add_team")
+    def test_mount_team(self, mock_add_team):
+        participant = Participant()
+        participant.id = 123
+        mock_add_team.return_value = participant
+
+        self.tournament.challonge_tournament_id = 123
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
         users = [UserFactory.new() for i in range(4)]
         game_ids = [GameIdFactory.new(user=user, email=user.email) for user in users]
         name = "Drakx"
@@ -117,6 +139,7 @@ class CreateAndRegisterTeam(APITestCase, URLPatternsTestCase):
 
         team = resp.json()
 
+        mock_add_team.assert_called_once()
         self.assertEqual(team.get("name"), name)
         self.assertEqual(team.get("created_by"), str(self.user.id))
         team = Team.objects.get(id=team.get("id"))
@@ -138,7 +161,6 @@ class CreateAndRegisterTeam(APITestCase, URLPatternsTestCase):
         )
 
         data = resp.json()
-        print("@RESP", resp, data)
 
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(data.get("error"), "Team name already in use")
@@ -183,3 +205,7 @@ class CreateAndRegisterTeam(APITestCase, URLPatternsTestCase):
             data.get("error"),
             f"User {user.email} does not connected its account with League Of Legends",
         )
+
+    @patch("lib.challonge.Tournament.add_team")
+    def test_failed_to_add_challonge_participant(self, mock_add_team):
+        pass

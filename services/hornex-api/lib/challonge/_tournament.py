@@ -332,7 +332,7 @@ class Tournament(ValueObject):
         cls,
         tournament: int,
         team_name: str,
-    ):
+    ) -> Participant:
         """
         Adds participants and/or seeds to a tournament (up until it is started)
         """
@@ -346,7 +346,12 @@ class Tournament(ValueObject):
 
         if not resp.ok:
             raise cls.on_response_error(resp)
-        return
+
+        logger.info(f"Participant {team_name} added to tournament {tournament}")
+
+        participant = Participant.construct_from(values=resp.json().get("participant"))
+
+        return cast(Participant, participant)
 
     @classmethod
     def add_participants(

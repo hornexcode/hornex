@@ -41,7 +41,7 @@ class RegisterSerializer(serializers.Serializer):
     team = serializers.CharField()
 
 
-class CreateAndRegisterTeamParams(serializers.Serializer):
+class CreateAndRegisterTeamIntoTournamentParams(serializers.Serializer):
     tournament_id = serializers.UUIDField()
     name = serializers.CharField(max_length=255)
     user_id = serializers.UUIDField()
@@ -51,11 +51,6 @@ class CreateAndRegisterTeamParams(serializers.Serializer):
     member_4_email = serializers.EmailField()
 
 
-class RegisterTeamParams(serializers.Serializer):
+class RegisterTeamIntoTournamentParams(serializers.Serializer):
     tournament_id = serializers.UUIDField()
-    name = serializers.CharField(max_length=255)
-    user_id = serializers.UUIDField()
-    member_1_email = serializers.EmailField()
-    member_2_email = serializers.EmailField()
-    member_3_email = serializers.EmailField()
-    member_4_email = serializers.EmailField()
+    team_id = serializers.UUIDField()

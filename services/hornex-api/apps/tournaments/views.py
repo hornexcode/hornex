@@ -30,8 +30,9 @@ from apps.tournaments.filters import (
 from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import (
-    CreateAndRegisterTeamParams,
+    CreateAndRegisterTeamIntoTournamentParams,
     RegisterSerializer,
+    RegisterTeamIntoTournamentParams,
     TournamentCreateSerializer,
 )
 from apps.tournaments.serializers import (
@@ -42,11 +43,13 @@ from apps.tournaments.serializers import (
     TournamentSerializer,
 )
 from apps.tournaments.usecases import (
-    CreateAndRegisterTeamInput,
-    CreateAndRegisterTeamUseCase,
+    CreateAndRegisterTeamIntoTournamentInput,
+    CreateAndRegisterTeamIntoTournamentUseCase,
     ListRegisteredTeamsParams,
     ListRegisteredTeamsUseCase,
     RegisterParams,
+    RegisterTeamIntoTournamentInput,
+    RegisterTeamIntoTournamentUseCase,
     RegisterUseCase,
 )
 from apps.tournaments.usecases.organizer.create_tournament import (
@@ -404,16 +407,14 @@ def tournaments_controller(request):
     operation_summary="Register a team into tournament",
 )
 def register_team(request, id):
-    params = CreateAndRegisterTeamParams(
-        data={**request.data, "user_id": request.user.id, "tournament_id": id}
-    )
+    params = RegisterTeamIntoTournamentParams(data={**request.data, "tournament_id": id})
     params.is_valid(raise_exception=True)
 
-    # uc = CreateAndRegisterTeamUseCase()
+    uc = RegisterTeamIntoTournamentUseCase()
 
-    # output = uc.execute(CreateAndRegisterTeamInput(**params.validated_data))
+    output = uc.execute(RegisterTeamIntoTournamentInput(**params.validated_data))
 
-    # return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
+    return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["POST"])
@@ -424,13 +425,13 @@ def register_team(request, id):
     operation_summary="Create and register a team into a tournament",
 )
 def create_and_register_team(request, id):
-    params = CreateAndRegisterTeamParams(
+    params = CreateAndRegisterTeamIntoTournamentParams(
         data={**request.data, "user_id": request.user.id, "tournament_id": id}
     )
     params.is_valid(raise_exception=True)
 
-    uc = CreateAndRegisterTeamUseCase()
+    uc = CreateAndRegisterTeamIntoTournamentUseCase()
 
-    output = uc.execute(CreateAndRegisterTeamInput(**params.validated_data))
+    output = uc.execute(CreateAndRegisterTeamIntoTournamentInput(**params.validated_data))
 
     return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
