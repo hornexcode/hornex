@@ -14,12 +14,25 @@ import {
   Roboto_Condensed,
   Source_Sans_3,
 } from 'next/font/google';
+import localFont from 'next/font/local';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { appWithI18Next } from 'ni18n';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
+
+// Font files can be colocated inside of `pages`
+const Beaufort_for_LOL = localFont({
+  src: [
+    {
+      path: '../styles/fonts/BeaufortforLOL/BeaufortforLOL-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-beaufort',
+});
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -36,12 +49,6 @@ const roboto_condensed = Roboto_Condensed({
   display: 'swap',
 });
 
-const jetbrains_mono = JetBrains_Mono({
-  weight: ['400', '500', '600', '700', '800'],
-  subsets: ['latin'],
-  display: 'swap',
-});
-
 const source_Sans_3 = Source_Sans_3({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
@@ -53,6 +60,7 @@ const kanit = Kanit({
   subsets: ['latin'],
   variable: '--font-kanit',
 });
+
 function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -62,10 +70,10 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
         <div
           className={classnames(
             'dark:bg-background text-muted min-h-[100vh] font-semibold antialiased',
-            // jetbrains_mono.className,
             source_Sans_3.variable,
             roboto_condensed.className,
-            kanit.variable
+            kanit.variable,
+            Beaufort_for_LOL.variable
           )}
         >
           <SessionProvider session={pageProps.session}>

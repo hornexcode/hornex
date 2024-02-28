@@ -1,16 +1,17 @@
 import Baron from '@/assets/images/games/league-of-legends/baron.jpg';
 import SummonersRiftMap from '@/assets/images/games/league-of-legends/summoners-rift-map.png';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
+import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
+import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
 import TournamentsFeedTemplate from '@/components/ui/templates/tournaments-feed-template/tournaments-feed-template';
 import { AppLayout } from '@/layouts';
-import { Tournament } from '@/lib/models';
 import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments';
 import { dataLoader as dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
 
 const { useData: getTournaments } =
-  dataLoader<GetTournamentsResponse[]>('getTournaments');
+  dataLoader<GetTournamentsResponse>('getTournaments');
 
 type TournamentsProps = {
   game: string;
@@ -39,36 +40,35 @@ const CompetePage = ({
   pageProps: { game, platform },
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data, error, isLoading } = getTournaments({ game, platform });
+  if (!data) return null;
 
   return (
-    <div className="">
-      <div className="relative h-[400px] w-full bg-[url('/images/league-of-legends/baron.jpg')] bg-auto">
-        <div className="absolute left-0 top-0 h-full w-full backdrop-blur-lg"></div>
-        <div className="bg-medium-dark/60 absolute left-0 top-0 h-full w-full"></div>
-        <div className="absolute left-0 top-10 flex h-[400px] items-center justify-center p-10">
-          <div className="col-span-1 flex h-full w-1/2 flex-1 flex-col justify-center p-4">
-            <Image src={HornexLogo} className="w-[64px]" alt="hornex" />
-            <h1 className="font-title text-6xl tracking-tight text-white">
-              First season
-            </h1>
-            <p className="text-title font-source-sans text-2xl font-normal">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Quibusdam, labore.
-            </p>
-          </div>
-          <div className="p-10">
-            <Image
-              className="h-full w-full"
-              src={SummonersRiftMap}
-              alt="baron"
-            />
+    <div className="container mx-auto pt-16">
+      <div className="relative h-[300px] w-full overflow-hidden bg-[url('/images/league-of-legends/baron.jpg')] bg-cover">
+        <div className="bg-dark/50 absolute top-0 h-full w-full"></div>
+        <div className="absolute top-0 h-full w-full bg-gradient-to-t from-black"></div>
+        <div className="absolute left-10 top-20 flex h-[300px]">
+          <div className="grid grid-cols-3 items-center justify-center">
+            <div className="col-span-2 p-4">
+              <LeagueOfLegendsLogo className="relative w-20 text-white" />
+              <div className="flex items-center">
+                <h1 className="font-beaufort text-6xl font-bold tracking-tight text-white">
+                  Tournaments
+                </h1>
+              </div>
+            </div>
+            {/* <div className="col-span-2">
+              <Image
+                className="responsive-img h-full w-full"
+                src={Baron}
+                alt="baron"
+              />
+            </div> */}
           </div>
         </div>
       </div>
       <section id="available-games">
-        <div className="space-y-10">
-          <TournamentsFeedTemplate isLoading={isLoading} tournaments={data} />
-        </div>
+        <TournamentsFeedTemplate isLoading={isLoading} data={data} />
       </section>
     </div>
   );

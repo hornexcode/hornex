@@ -1,11 +1,7 @@
 import { Tournament } from '@/lib/models';
+import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments';
 
 export type TournamentsPageTemplateProps = {
-  tournaments: {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: Tournament[];
-  };
+  data: GetTournamentsResponse;
   isLoading: boolean;
 };

@@ -5,17 +5,17 @@ import { FC } from 'react';
 
 const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
   isLoading,
-  tournaments,
+  data,
 }) => {
   return (
-    <div className="mx-auto px-8 pt-8">
+    <div className="pt-8">
       <div
         className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
       gap-5 2xl:grid-cols-[minmax(auto,_1fr)_240px]"
       >
         <div className="flex w-full flex-wrap">
           {!isLoading &&
-            tournaments.results.map((tournament) => (
+            data.results.map((tournament) => (
               <TournamentFeedItem
                 key={tournament.id}
                 tournament={tournament}
