@@ -1,3 +1,4 @@
+import { ConnectAccountButton } from '../../atoms/connect-account-button';
 import { RegisterButton } from '../../atoms/register-button';
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
@@ -42,7 +43,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({
   return (
     <div className="mx-auto px-8 pt-8">
       {/* connect account */}
-      {/* {!gameId && <ConnectAccountButton />} */}
+      {!gameId && <ConnectAccountButton />}
       <TournamentDetailsHeadline
         connectedGameId={gameId}
         tournament={tournament}

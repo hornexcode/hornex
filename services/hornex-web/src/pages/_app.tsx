@@ -52,7 +52,7 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
           className={classnames(
             'dark:bg-background text-muted min-h-[100vh] font-semibold antialiased',
             jetbrains_mono.className,
-            // source_Sans_3.className,
+            source_Sans_3.className,
             kanit.variable
           )}
         >

@@ -3,7 +3,7 @@ import { LolFlatIcon } from './icons/lol-flat-icon';
 import routes from '@/config/routes';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
-import { FileBadge, Home, SwordsIcon } from 'lucide-react';
+import { BadgeHelpIcon, FileBadge, Home, SwordsIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import React, { useEffect } from 'react';
@@ -23,7 +23,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
       <div className="text-title mb-6 flex h-[20] w-[200px] items-center font-extrabold">
         <LolFlatIcon className="mr-4 h-8 w-8" />
       </div>
-      <ul className="flex w-full flex-col space-y-1 font-normal">
+      <ul className="flex w-full flex-col space-y-2 text-lg font-normal">
         <li className="">
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
@@ -87,6 +87,23 @@ export const Sidebar = ({ className }: { className?: string }) => {
                 <Cog6ToothIcon className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
               </div>
               <span className="text-title">{t('sidebar.organize')}</span>
+            </div>
+          </Link>
+        </li>
+        <li className="">
+          <Link
+            href={`/${
+              status === 'authenticated'
+                ? routes.admin.tournaments
+                : routes.signIn
+            }`}
+            className="group cursor-pointer transition-all"
+          >
+            <div className="mb-2 flex items-center rounded-lg">
+              <div>
+                <BadgeHelpIcon className="text-brand mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110" />
+              </div>
+              <span className="text-title">Help</span>
             </div>
           </Link>
         </li>
