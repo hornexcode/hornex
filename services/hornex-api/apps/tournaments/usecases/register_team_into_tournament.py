@@ -42,8 +42,8 @@ class RegisterTeamIntoTournamentUseCase:
             if not game_id.is_active:
                 raise ValidationError(
                     {
-                        f"Player {game_id.user.name} ({game_id.email}) has no active League Of "
-                        "Legend account connected"
+                        "error": f"Player {game_id.user.name} ({game_id.email}) has no active"
+                        " League Of Legend account connected"
                     }
                 )
 

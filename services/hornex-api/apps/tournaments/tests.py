@@ -1,8 +1,15 @@
-from test.factories import GameIdFactory, UserFactory
+import uuid
+from test.factories import GameIdFactory, LeagueOfLegendsTournamentFactory, TeamFactory, UserFactory
+from unittest.mock import patch
 
 import faker
-from rest_framework.test import APITestCase
+from django.urls import include, path, reverse
+from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from apps.teams.models import Team
+from apps.users.models import User
+from lib.challonge._tournament import Participant
 
 fake = faker.Faker()
 
@@ -311,3 +318,291 @@ class TestLeagueOfLegendsTournaments(APITestCase):
 
 #     self.assertEqual(resp.status_code, 400)
 #     self.assertEqual(resp.json()["detail"], errors.TeamMemberIsNotAllowedToRegistrate)
+
+
+class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path("/tournaments", include("apps.tournaments.urls")),
+    ]
+
+    def setUp(self):
+        self.credentials = {
+            "email": "testuser",
+            "password": "testpass",
+        }
+
+        self.user = User.objects.create_user(**self.credentials)
+
+        self.refresh = RefreshToken.for_user(self.user)
+
+        self.game_id = GameIdFactory.new(user=self.user, email=self.user.email)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
+
+    @patch("lib.challonge.Tournament.add_team")
+    def test_create_and_register_team_into_tournament(self, mock_add_team):
+        participant = Participant()
+        participant.id = 123
+        mock_add_team.return_value = participant
+
+        self.tournament.challonge_tournament_id = 123
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        users = [UserFactory.new() for i in range(4)]
+        [GameIdFactory.new(user=user, email=user.email) for user in users]
+        name = "Drakx"
+        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+
+        resp = self.client.post(
+            url,
+            {"name": name, **users_payload},
+        )
+
+        team = resp.json()
+
+        mock_add_team.assert_called_once()
+        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.teams.all())
+
+    def test_create_and_register_team_into_tournament_team_already_exist_into_tournament(self):
+        name = "Drakx"
+        TeamFactory.new(name=name, created_by=self.user)
+        users = [UserFactory.new() for i in range(4)]
+        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        [GameIdFactory.new(user=user, email=user.email) for user in users]
+
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+
+        resp = self.client.post(
+            url,
+            {"name": name, **users_payload},
+        )
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(data.get("error"), "Team name already in use")
+
+    def test_create_and_register_team_into_tournament_user_not_found_into_tournament(self):
+        name = "Drakx"
+        users = [UserFactory.new() for i in range(3)]
+        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        [GameIdFactory.new(user=user, email=user.email) for user in users]
+        users_payload["member_4_email"] = "fake@email.com"
+
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+
+        resp = self.client.post(
+            url,
+            {"name": name, **users_payload},
+        )
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(data.get("error"), "User not found for fake@email.com")
+
+    def test_create_and_register_team_into_tournament_user_does_not_have_game_id_into_tournament(
+        self,
+    ):
+        name = "Drakx"
+        users = [UserFactory.new() for i in range(4)]
+        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        user = users.pop()
+        [GameIdFactory.new(user=user, email=user.email) for user in users]
+
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+
+        resp = self.client.post(
+            url,
+            {"name": name, **users_payload},
+        )
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            data.get("error"),
+            f"User {user.email} does not connected its account with League Of Legends",
+        )
+
+    @patch("lib.challonge.Tournament.add_team")
+    def test_failed_to_add_challonge_participant(self, mock_add_team):
+        mock_add_team.side_effect = Exception("Internal Server Error")
+
+        self.tournament.challonge_tournament_id = 123
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        users = [UserFactory.new() for i in range(4)]
+        [GameIdFactory.new(user=user, email=user.email) for user in users]
+        name = "Drakx"
+        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+
+        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+
+        try:
+            self.client.post(
+                url,
+                {"name": name, **users_payload},
+            )
+        except Exception as e:
+            self.assertEqual(str(e), "Failed to add participant at challonge")
+            self.assertEqual(len(self.tournament.teams.all()), 0)
+
+
+class RegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path("/tournaments", include("apps.tournaments.urls")),
+    ]
+
+    def setUp(self):
+        self.credentials = {
+            "email": "testuser",
+            "password": "testpass",
+        }
+
+        self.user = User.objects.create_user(**self.credentials)
+
+        self.refresh = RefreshToken.for_user(self.user)
+
+        self.game_id = GameIdFactory.new(user=self.user, email=self.user.email)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
+
+    @patch("lib.challonge.Tournament.add_team")
+    def test_register_team_into_tournament(self, mock_add_team):
+        participant = Participant()
+        participant.id = 123
+        mock_add_team.return_value = participant
+
+        self.tournament.challonge_tournament_id = 123
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        users = [UserFactory.new() for i in range(4)]
+        game_ids = [GameIdFactory.new(user=user, email=user.email) for user in users]
+        name = "Drakx"
+        team = TeamFactory.new(name=name, created_by=self.user)
+        [team.add_member(game_id=game_id) for game_id in [*game_ids, self.game_id]]
+
+        url = reverse("tournaments:register_team", kwargs={"id": self.tournament.id})
+
+        resp = self.client.post(
+            url,
+            {
+                "team_id": team.id,
+            },
+        )
+
+        team = resp.json()
+
+        mock_add_team.assert_called_once()
+        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.teams.all())
+
+    def test_register_team_tournament_not_found(self):
+        url = reverse("tournaments:register_team", kwargs={"id": uuid.uuid4()})
+
+        resp = self.client.post(
+            url,
+            {
+                "team_id": uuid.uuid4(),
+            },
+        )
+
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.json()["detail"], "Not found.")
+
+    def test_register_team_team_not_found(self):
+        url = reverse("tournaments:register_team", kwargs={"id": self.tournament.id})
+
+        resp = self.client.post(
+            url,
+            {
+                "team_id": uuid.uuid4(),
+            },
+        )
+
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.json()["detail"], "Not found.")
+
+    def test_register_team_team_does_not_have_enough_members(self):
+        users = [UserFactory.new() for i in range(3)]
+        game_ids = [GameIdFactory.new(user=user, email=user.email) for user in users]
+        name = "Drakx"
+        team = TeamFactory.new(name=name, created_by=self.user)
+        [team.add_member(game_id=game_id) for game_id in [*game_ids, self.game_id]]
+        url = reverse("tournaments:register_team", kwargs={"id": self.tournament.id})
+
+        resp = self.client.post(
+            url,
+            {
+                "team_id": team.id,
+            },
+        )
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(data.get("error"), "Team does not have enough members")
+
+    def test_register_team_team_member_has_no_active_lol_account_connected(self):
+        users = [UserFactory.new() for i in range(4)]
+        game_ids = [GameIdFactory.new(user=user, email=user.email) for user in users]
+        name = "Drakx"
+        team = TeamFactory.new(name=name, created_by=self.user)
+        [team.add_member(game_id=game_id) for game_id in [*game_ids, self.game_id]]
+        url = reverse("tournaments:register_team", kwargs={"id": self.tournament.id})
+
+        self.game_id.is_active = False
+        self.game_id.save()
+
+        resp = self.client.post(
+            url,
+            {
+                "team_id": team.id,
+            },
+        )
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            data.get("error"),
+            f"Player {self.game_id.user.name} ({self.game_id.email}) has no active League Of "
+            "Legend account connected",
+        )
+
+    @patch("lib.challonge.Tournament.add_team")
+    def test_failed_to_add_challonge_participant(self, mock_add_team):
+        mock_add_team.side_effect = Exception("Internal Server Error")
+
+        self.tournament.challonge_tournament_id = 123
+        self.tournament.save()
+        self.tournament.refresh_from_db()
+
+        users = [UserFactory.new() for i in range(4)]
+        game_ids = [GameIdFactory.new(user=user, email=user.email) for user in users]
+        name = "Drakx"
+        team = TeamFactory.new(name=name, created_by=self.user)
+        [team.add_member(game_id=game_id) for game_id in [*game_ids, self.game_id]]
+
+        url = reverse("tournaments:register_team", kwargs={"id": self.tournament.id})
+
+        try:
+            self.client.post(
+                url,
+                {
+                    "team_id": team.id,
+                },
+            )
+        except Exception as e:
+            mock_add_team.assert_called_once()
+            self.assertEqual(str(e), "Failed to add participant at challonge")
+            self.assertEqual(len(self.tournament.teams.all()), 0)
