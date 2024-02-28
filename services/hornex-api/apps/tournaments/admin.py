@@ -7,10 +7,13 @@ from apps.tournaments.models import (
     LeagueOfLegendsTournament,
     Participant,
     Prize,
+    RegisteredTeam,
     Registration,
 )
 
-admin.site.register([LeagueOfLegendsLeague, LeagueOfLegendsTournament, Prize, Checkin])
+admin.site.register(
+    [LeagueOfLegendsLeague, LeagueOfLegendsTournament, Prize, Checkin, RegisteredTeam]
+)
 
 
 class RegistrationAdmin(admin.ModelAdmin):

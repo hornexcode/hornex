@@ -1,21 +1,25 @@
 import AdminTournamentTeamRow from '../admin-tournament-team-row';
 import { useAdminTournament } from '@/contexts';
-import { Team } from '@/lib/models';
+import { getStartAt, getStatus, Team, TournamentPhase } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import React, { FC } from 'react';
 
 export type AdminTournamentTeamsTabContentProps = {};
 
-const { useData: useGetTournamentMatchesQuery } = dataLoader<Team[]>(
-  'organizer:tournament:matches'
-);
+const { useData: useGetTournamentRegisteredTeams } = dataLoader<
+  Pick<Team, 'id' | 'name'>[]
+>('organizer:tournament:teams');
 
 const AdminTournamentTeamsTabContent: FC<
   AdminTournamentTeamsTabContentProps
 > = () => {
   const { tournament } = useAdminTournament();
 
-  const { data: teams, error } = useGetTournamentMatchesQuery({
+  const {
+    data: registeredTeams,
+    error,
+    mutate,
+  } = useGetTournamentRegisteredTeams({
     tournamentId: tournament.id,
   });
 
@@ -30,10 +34,21 @@ const AdminTournamentTeamsTabContent: FC<
         </div>
       </div>
       <div className="">
-        <AdminTournamentTeamRow />
-        <AdminTournamentTeamRow />
-        <AdminTournamentTeamRow />
-        <AdminTournamentTeamRow />
+        {registeredTeams &&
+          registeredTeams.map((team) => (
+            <AdminTournamentTeamRow
+              key={team.id}
+              team={team}
+              onDelete={() => mutate()}
+              tournament_id={tournament.id}
+              tournament_started={
+                Date.now() >
+                new Date(
+                  `${tournament.start_date}T${tournament.start_time}+00:00`
+                ).getTime()
+              }
+            />
+          ))}
       </div>
     </div>
   );

@@ -32,6 +32,16 @@ urlpatterns = [
         OrganizerTournamentViewSet.as_view({"post": "start"}),
         name="details",
     ),
+    path(
+        "/organizer/tournaments/<str:id>/registered-teams",
+        OrganizerTournamentViewSet.as_view({"get": "registered_teams"}),
+        name="dashboard-registered-teams",
+    ),
+    path(
+        "/organizer/tournaments/<str:id>/registered-teams/<str:team_id>",
+        OrganizerTournamentViewSet.as_view({"delete": "remove_registered_team"}),
+        name="dashboard-registered-teams-details",
+    ),
     # web
     path(
         "/tournaments/<str:id>/registrations",

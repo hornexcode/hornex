@@ -39,6 +39,7 @@ from apps.tournaments.serializers import (
     LeagueOfLegendsTournamentSerializer,
     ParticipantSerializer,
     PrizeSerializer,
+    RegisteredTeamSerializer,
     RegistrationReadSerializer,
     TournamentSerializer,
 )
@@ -189,6 +190,26 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             self.queryset = LeagueOfLegendsTournament.objects.filter(organizer=self.request.user)
 
         return super().get_queryset()
+
+    def registered_teams(self, request, *args, **kwargs):
+        tournament = self.get_object()
+
+        teams = tournament.teams.all()
+        serialized = RegisteredTeamSerializer(teams, many=True)
+
+        return Response(serialized.data, status=status.HTTP_200_OK)
+
+    def remove_registered_team(self, request, *args, **kwargs):
+        tournament: Tournament = self.get_object()
+
+        if datetime.now() > datetime.combine(tournament.start_date, tournament.start_time):
+            return Response(
+                {"error": "Tournament already started"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        tournament.teams.remove(kwargs.get("team_id"))
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):

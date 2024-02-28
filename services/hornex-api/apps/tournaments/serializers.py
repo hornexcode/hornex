@@ -71,3 +71,8 @@ class PrizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prize
         fields = "__all__"
+
+
+class RegisteredTeamSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
