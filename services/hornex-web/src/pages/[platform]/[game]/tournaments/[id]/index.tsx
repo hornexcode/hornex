@@ -9,11 +9,7 @@ import {
   Tournament,
 } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import { makeClientReqObj, makeClientResObj } from '@/lib/request/util';
-import {
-  nextAuthOptions,
-  optionalNextAuthOptions,
-} from '@/pages/api/auth/[...nextauth]';
+import { optionalNextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getServerSession } from 'next-auth';
 import { Suspense } from 'react';

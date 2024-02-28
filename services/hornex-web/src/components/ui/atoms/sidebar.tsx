@@ -16,15 +16,15 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-medium-dark shadow-card fixed top-[calc(4rem+2px)] z-50 flex h-full w-[250px] flex-col border-r border-zinc-700 px-8 py-4',
+        'bg-dark/80 fixed top-[calc(4rem)] z-50 flex h-full w-[250px] flex-col border-r border-gray-700 px-8 py-4',
         className
       )}
     >
-      <div className="text-title mb-6 flex h-[20] w-[200px] items-center font-extrabold">
+      {/* <div className="text-title mb-6 flex h-[20] w-[200px] items-center font-extrabold">
         <LolFlatIcon className="mr-4 h-8 w-8" />
-      </div>
-      <ul className="flex w-full flex-col space-y-2 text-lg">
-        <li className="">
+      </div> */}
+      <ul className="font-source-sans flex w-full flex-col space-y-2 text-lg">
+        {/* <li className="">
           <Link href={`/`} className="group cursor-pointer transition-all">
             <div className="mb-2 flex items-center rounded-lg">
               <div>
@@ -33,7 +33,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <span className="text-title">{t('sidebar.home')}</span>
             </div>
           </Link>
-        </li>
+        </li> */}
         <li className="">
           <Link
             href={`/${routes.compete}`}

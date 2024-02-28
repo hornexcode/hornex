@@ -11,7 +11,7 @@ const routes = {
   platform: 'platform',
   teams: 'teams',
   createTeam: 'teams/create',
-  signIn: 'sign-in',
+  signIn: 'signin',
   admin: {
     tournaments: 'admin/tournaments',
   },
