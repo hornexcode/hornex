@@ -1,4 +1,5 @@
 import MenuItems from './menu/_default';
+import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
 import { LoggedUser } from '@/domain';
@@ -33,13 +34,19 @@ const Header = () => {
   const { user } = session || {};
 
   return (
-    <header className="bg-medium-dark shadow-card fixed top-0 z-40 h-14 w-[calc(100%-220px)] px-4">
+    <header className="bg-medium-dark border-border fixed top-0 z-40 h-16 w-full border-b px-8">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
-        <div className="flex items-center">
+        <div className="text-title flex w-[250px] items-center text-xl font-bold">
+          <Link className="text-brand mr-4 block font-extrabold" href="/">
+            <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
+          </Link>
+          HORNEX
+        </div>
+        {/* <div className="flex items-center">
           {isMounted && ['xs', 'sm', 'md', 'lg'].indexOf(breakpoint) == -1 && (
             <MenuItems />
           )}
-        </div>
+        </div> */}
 
         {/* {isLoading && <>loading user metadata</>} */}
 

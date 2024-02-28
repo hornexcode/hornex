@@ -2,7 +2,7 @@ import AdminTournamentGeneralInfo from '../../molecules/admin-tournament-general
 import AdminTournamentMatches from '../../molecules/admin-tournament-matches';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { Gamepad2Icon } from 'lucide-react';
+import { Gamepad2Icon, Users2Icon } from 'lucide-react';
 
 const AdminTournamentTabNav = () => {
   return (
@@ -16,6 +16,10 @@ const AdminTournamentTabNav = () => {
           <Gamepad2Icon className="mr-2 h-5 w-5" />
           Matches
         </TabsTrigger>
+        <TabsTrigger value="participants">
+          <Users2Icon className="mr-2 h-5 w-5" />
+          Participants
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="general-info">
         <AdminTournamentGeneralInfo />
@@ -23,6 +27,7 @@ const AdminTournamentTabNav = () => {
       <TabsContent value="matches">
         <AdminTournamentMatches />
       </TabsContent>
+      <TabsContent value="participants">Participants</TabsContent>
     </Tabs>
   );
 };
