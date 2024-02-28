@@ -18,6 +18,7 @@ module.exports = {
     fontFamily: {
       display: ['JetBrains mono', 'monospace'],
       title: ['var(--font-kanit)', 'JetBrains Mono', 'monospace'],
+      'source-sans': ['var(--font-source-sans)', 'JetBrains Mono', 'monospace'],
     },
     container: {
       padding: {
@@ -68,9 +69,6 @@ module.exports = {
       width: {
         'calc-320': 'calc(100% - 320px)',
         'calc-358': 'calc(100% - 358px)',
-      },
-      fontFamily: {
-        body: ['__Source_Sans_3_24fffc', 'JetBrains Mono', 'monospace'],
       },
       borderWidth: {
         3: '3px',

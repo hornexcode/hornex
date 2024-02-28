@@ -1,4 +1,4 @@
-import { AdminTournamentMatchesListProps } from './admin-tournament-matches.types';
+import { AdminTournamentMatchesTabContentProps } from './admin-tournament-matches-tab-content.types';
 import AdminTournamentMatch from '@/components/admin/molecules/admin-tournament-match/admin-tournament-match';
 import { dataLoader } from '@/lib/request';
 import { useRouter } from 'next/router';
@@ -9,11 +9,11 @@ type Match = {
 };
 
 const { useData: useGetTournamentMatchesQuery } = dataLoader<Match[]>(
-  'organizer:tournaments:matches'
+  'organizer:tournament:matches'
 );
 
-const AdminTournamentMatchesList: FC<
-  AdminTournamentMatchesListProps
+const AdminTournamentMatchesTabContent: FC<
+  AdminTournamentMatchesTabContentProps
 > = ({}) => {
   const router = useRouter();
   const { tournamentId } = router.query;
@@ -31,7 +31,7 @@ const AdminTournamentMatchesList: FC<
   // }
 
   // if (error) {
-  //   return <p>error loading matche</p>;
+  //   return <p>error loading matches</p>;
   // }
 
   return (
@@ -43,4 +43,4 @@ const AdminTournamentMatchesList: FC<
   );
 };
 
-export default AdminTournamentMatchesList;
+export default AdminTournamentMatchesTabContent;

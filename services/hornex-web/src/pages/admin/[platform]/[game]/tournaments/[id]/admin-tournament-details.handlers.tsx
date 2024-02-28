@@ -4,7 +4,7 @@ import { dataLoader } from '@/lib/request';
 const { submit: updateTournament } = dataLoader<
   Tournament,
   Partial<Tournament>
->('organizer:tournaments:update');
+>('organizer:tournament:update');
 
 const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
   updateTournament(
@@ -18,7 +18,7 @@ const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
 const { submit: startTournament } = dataLoader<
   Tournament,
   { timestamp: number; now: Date }
->('organizer:tournaments:start');
+>('organizer:tournament:start');
 
 const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
   startTournament(
