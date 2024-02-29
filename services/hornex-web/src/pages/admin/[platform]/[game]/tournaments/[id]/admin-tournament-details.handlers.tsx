@@ -29,4 +29,13 @@ const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
     }
   );
 
-export { openRegistrationHandler, startTournamentHandler };
+const { submit: checkInTournament } = dataLoader('org:tournament:check-in');
+
+const checkInTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
+  checkInTournament({ tournamentId });
+
+export {
+  checkInTournamentHandler,
+  openRegistrationHandler,
+  startTournamentHandler,
+};

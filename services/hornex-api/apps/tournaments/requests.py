@@ -54,3 +54,8 @@ class CreateAndRegisterTeamIntoTournamentParams(serializers.Serializer):
 class RegisterTeamIntoTournamentParams(serializers.Serializer):
     tournament_uuid = serializers.UUIDField()
     team_id = serializers.UUIDField()
+
+
+class CheckInTournamentParams(serializers.Serializer):
+    tournament_uuid = serializers.UUIDField()
+    organizer_id = serializers.UUIDField()

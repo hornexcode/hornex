@@ -2,7 +2,7 @@ import uuid
 from test.factories import (
     GameIdFactory,
     LeagueOfLegendsTournamentFactory,
-    RegisteredTeamFactory,
+    RegistrationFactory,
     TeamFactory,
     UserFactory,
 )
@@ -27,7 +27,7 @@ class TestWebhooks(APITestCase):
             organizer=UserFactory.new(),
         )
 
-        RegisteredTeamFactory.new(
+        RegistrationFactory.new(
             tournament=self.tournament, team=self.team, challonge_participant_id=123
         )
         self.registration = Registration.objects.create(

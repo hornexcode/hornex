@@ -86,8 +86,6 @@ class CreateTournamentUseCase:
         ch_tournament = ChallongeTournament.create(
             name=tournament.name,
             teams=True,
-            start_at=start_at.isoformat(),
-            check_in_duration=tournament.check_in_duration,
             game=tournament.game,
         )
 

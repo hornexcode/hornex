@@ -6,7 +6,7 @@ import faker
 
 from apps.accounts.models import GameID
 from apps.teams.models import Invite, Team
-from apps.tournaments.models import LeagueOfLegendsLeague, Match, RegisteredTeam
+from apps.tournaments.models import LeagueOfLegendsLeague, Match, Registration
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Tournament as BaseTournament
 from apps.users.models import User
@@ -107,6 +107,7 @@ class LeagueOfLegendsTournamentFactory:
                 "start_date",
                 now + td(days=15),
             ),
+            check_in_duration=15,
             start_time=kwargs.get("start_time", now + td(hours=15)),
             feature_image=kwargs.get("feature_image", "https://fakeimg.pl/300/"),
             is_entry_free=kwargs.get("is_entry_free", False),
@@ -172,12 +173,16 @@ class GameIdFactory:
         )
 
 
-class RegisteredTeamFactory:
+class RegistrationFactory:
     @staticmethod
     def new(team: Team, tournament: Tournament, challonge_participant_id: int):
         """
-        Create a new RegisteredTeam with the given params.
+        Create a new Registration with the given params.
         """
-        return RegisteredTeam.objects.create(
-            team=team, tournament=tournament, challonge_participant_id=challonge_participant_id
+        return Registration.objects.create(
+            team=team,
+            tournament=tournament,
+            challonge_participant_id=challonge_participant_id,
+            platform_slug="pc",
+            game_slug="league-of-legends",
         )

@@ -30,6 +30,7 @@ from apps.tournaments.filters import (
 from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import (
+    CheckInTournamentParams,
     CreateAndRegisterTeamIntoTournamentParams,
     RegisterSerializer,
     RegisterTeamIntoTournamentParams,
@@ -52,7 +53,9 @@ from apps.tournaments.usecases import (
     RegisterTeamIntoTournamentUseCase,
     RegisterUseCase,
 )
-from apps.tournaments.usecases.organizer.create_tournament import (
+from apps.tournaments.usecases.organizer import (
+    CheckInTournamentInput,
+    CheckInTournamentUseCase,
     CreateTournamentUseCase,
     CreateTournamentUseCaseParams,
 )
@@ -479,3 +482,17 @@ def create_and_register_team(request, uuid):
     output = uc.execute(CreateAndRegisterTeamIntoTournamentInput(**params.validated_data))
 
     return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def check_in_tournament(request, uuid):
+    params = CheckInTournamentParams(
+        data={"organizer_id": request.user.id, "tournament_uuid": uuid}
+    )
+    params.is_valid(raise_exception=True)
+
+    CheckInTournamentUseCase().execute(CheckInTournamentInput(**params.validated_data))
+
+    return Response(None, status=status.HTTP_204_NO_CONTENT)

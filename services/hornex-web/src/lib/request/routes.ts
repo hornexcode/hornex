@@ -217,6 +217,10 @@ export const routes = {
     path: 'v1/org/tournaments/[tournamentId]/start',
     method: Method.POST,
   },
+  'org:tournament:check-in': {
+    path: 'v1/org/tournaments/[tournamentId]/check-in',
+    method: Method.POST,
+  },
   mountTeam: {
     path: 'v1/teams/mount',
     method: Method.POST,
