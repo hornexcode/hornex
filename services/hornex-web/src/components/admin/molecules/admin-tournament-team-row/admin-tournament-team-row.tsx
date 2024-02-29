@@ -12,7 +12,7 @@ const AdminTournamentTeamRow: FC<AdminTournamentTeamRowProps> = ({
   registration,
 }) => {
   return (
-    <div className="bg-medium-dark  border-dark/20 flex items-center border-b">
+    <div className="bg-medium-dark  border-background flex items-center border-b">
       <div className="border-brand border-l-3 flex items-center space-x-4 p-4">
         <Image alt="hornex-logo" src={HornexLogo} width={32} height={32} />
         <div className="text-title font-roboto-condensed text-lg">

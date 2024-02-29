@@ -15,6 +15,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
   className,
 }) => {
   const router = useRouter();
+  const isFull = tournament.registered_teams.length === tournament.max_teams;
   return (
     <div
       className={clsx(
@@ -63,9 +64,9 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
             </div>
             {/* phase status */}
             <div className="relative flex">
-              <span className="absolute -left-3 top-1 h-2 w-2 rounded-full bg-green-400"></span>
-              <span className="font-source-sans text-xs font-bold uppercase text-green-400">
-                {getStatus(tournament)}
+              <span className="absolute -left-3 top-1.5 h-2 w-2 rounded-full bg-green-400"></span>
+              <span className="text-sm font-bold  text-green-400">
+                {isFull ? 'Full' : getStatus(tournament)}
               </span>
             </div>
           </div>
@@ -82,7 +83,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
                     100
                   }%`,
                 }}
-                className="h-2 rounded-lg bg-amber-400"
+                className="h-2 rounded-lg bg-green-400"
               ></div>
             </div>
           </div>

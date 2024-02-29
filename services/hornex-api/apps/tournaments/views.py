@@ -261,10 +261,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         tournament = Tournament.objects.get(uuid=kwargs["uuid"])
-        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
-        teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
         self.queryset = self.queryset.filter(
-            team__in=teams,
             tournament=tournament,
             status__in=[
                 Registration.RegistrationStatusOptions.PENDING,

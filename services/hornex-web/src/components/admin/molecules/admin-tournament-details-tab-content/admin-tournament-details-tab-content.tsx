@@ -201,6 +201,22 @@ const AdminTournamentGeneralInfo = () => {
         <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
         {renderStatusContent()}
       </div>
+      {/* danger zone */}
+      <div className="col-span-3">
+        <h4 className="text-title mb-3 text-lg font-bold">Danger Zone</h4>
+        <div className="text-title border-border flex items-center justify-between rounded border p-4">
+          <div>
+            <p className="font-bold">Delete this tournament</p>
+            <p className="font-normal">
+              Once you delete a tournament, there is no going back. Please be
+              certain.{' '}
+            </p>
+          </div>
+          <Button color="danger" shape="rounded" size="mini">
+            Delete
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -40,17 +40,6 @@ const AdminTournamentTeamsTabContent: FC<
 
   return (
     <div className="flex flex-col">
-      <div className="bg-medium-dark mb-2 flex items-center p-4">
-        <div className="flex w-[32px] items-center"></div>
-        <div className="flex items-center px-4">
-          <div className="text-muted font-roboto-condensed uppercase">name</div>
-        </div>
-        <div className="ml-auto flex items-center">
-          <div className="text-muted font-roboto-condensed uppercase">
-            Actions
-          </div>
-        </div>
-      </div>
       <div className="">
         {registrations.map((registration) => (
           <AdminTournamentTeamRow

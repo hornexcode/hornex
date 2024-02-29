@@ -31,7 +31,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
       )}
     >
       <div className="p-4">
-        <h4 className="text-title px-2 font-bold uppercase">Main</h4>
+        <h4 className="text-title px-2 text-sm font-bold uppercase">Main</h4>
         <ul className="mt-2 flex w-full flex-col text-lg font-[500] tracking-wide">
           <li
             className={cn(
@@ -102,7 +102,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
         </ul>
       </div>
       <div className="p-4">
-        <h4 className="text-title px-2 font-bold uppercase">Organizer</h4>
+        <h4 className="text-title px-2 text-sm font-bold uppercase">
+          Organizer
+        </h4>
         <ul className="mt-2 flex w-full flex-col text-lg font-[500] tracking-wide">
           <li
             className={cn(

@@ -83,23 +83,21 @@ const RegistrationRow = ({ registration }: { registration: Registration }) => {
       }}
     >
       <div className="col-span-6 flex items-center">
-        <div className="w-auto px-4">
-          <ListIcon className="text-title mr-4 w-[64px] px-4" />
-        </div>
+        <ListIcon className="text-title mr-4 w-10" />
         <div>
-          <div className="font-roboto-condensed text-title text-xl  tracking-wide">
+          <div className="font-roboto-condensed text-title text-lg  tracking-wide">
             {registration.tournament.name}
           </div>
           <div className="text-muted">{registration.tournament.game}</div>
         </div>
       </div>
       <div className="col-span-4 flex items-center">
-        <div className="text-title text-xl font-normal">
+        <div className="text-title text-lg font-normal">
           {registration.team.name}
         </div>
       </div>
       <div className="col-span-2 flex items-center">
-        <div className="text-title text-xl font-normal">
+        <div className="text-title text-lg font-normal">
           {moment(registration.tournament.start_date).format('MMM Do, YYYY')}
         </div>
       </div>
