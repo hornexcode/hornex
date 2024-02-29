@@ -1,6 +1,8 @@
 import AdminTournamentTabNav from '@/components/admin/organisms/admin-tournament-tab-nav';
 import Button from '@/components/ui/atoms/button';
+import { ArrowLongLeftIcon } from '@/components/ui/atoms/icons';
 import { Switch } from '@/components/ui/switch';
+import routes from '@/config/routes';
 import { AdminTournamentContextProvider } from '@/contexts';
 import { AppLayout } from '@/layouts';
 import { getPotentialPrizePool, Tournament } from '@/lib/models';
@@ -8,6 +10,7 @@ import { dataLoader } from '@/lib/request';
 import { toCurrency } from '@/lib/utils';
 import clsx from 'clsx';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
 import React from 'react';
 
 const { fetch: getServerTournament } = dataLoader<Tournament>('getTournament');
@@ -21,24 +24,17 @@ const TournamentDetails = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <AdminTournamentContextProvider tournament={tournament}>
-      <div className="container mx-auto space-y-12 pt-8">
+      <div className="container mx-auto space-y-8 pt-8">
         {/* General info */}
+        <Link
+          href={routes.admin.tournaments}
+          className="text-title flex items-center"
+        >
+          <ArrowLongLeftIcon className="mr-2 w-5" />
+          Back
+        </Link>
         <div className="flex items-center pb-4">
           <h1 className="text-title text-xl font-bold">{tournament.name}</h1>
-          <div className="ml-auto flex items-center">
-            {/* <Button className="" size="mini">
-            <div className="flex items-center">
-              <Edit2Icon size={14} className="mr-2" />
-              Edit
-            </div>
-          </Button> */}
-            <div className="ml-4 flex items-center">
-              <p className="text-title mr-2 font-semibold underline">
-                Test mode
-              </p>
-              <Switch checked />
-            </div>
-          </div>
         </div>
 
         <AdminTournamentTabNav />

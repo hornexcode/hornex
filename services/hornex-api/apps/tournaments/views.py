@@ -289,24 +289,10 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def list(self, request, *args, **kwargs):
-        tournament = Tournament.objects.get(uuid=kwargs["uuid"])
-        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
-        print("gameids", gameids)
+    def get_queryset(self):
+        gameids = GameID.objects.filter(user=self.request.user).values_list("id", flat=True)
         teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
-        self.queryset = self.queryset.get(
-            team__in=teams,
-            tournament=tournament,
-            status__in=[
-                Registration.RegistrationStatusOptions.PENDING,
-                Registration.RegistrationStatusOptions.ACCEPTED,
-            ],
-        )
-        serializer = self.get_serializer(self.queryset, many=True)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK,
-        )
+        return super().get_queryset().filter(team__in=teams)
 
 
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):

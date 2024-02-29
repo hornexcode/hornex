@@ -153,8 +153,12 @@ export const routes = {
     path: 'v1/games/game-ids',
     method: Method.GET,
   },
-  getRegistrations: {
+  getTournamentRegistrations: {
     path: 'v1/tournaments/[uuid]/registrations',
+    method: Method.GET,
+  },
+  getRegistrations: {
+    path: 'v1/registrations',
     method: Method.GET,
   },
   getRegistration: {
@@ -193,11 +197,11 @@ export const routes = {
     method: Method.GET,
   },
   'organizer:tournaments': {
-    path: 'v1/organizer/tournaments',
+    path: 'v1/org/tournaments',
     method: Method.GET,
   },
   createTournament: {
-    path: 'v1/organizer/tournaments',
+    path: 'v1/org/tournaments',
     method: Method.POST,
     schema: null,
   },
@@ -206,31 +210,31 @@ export const routes = {
     method: Method.POST,
   },
   'organizer:tournament:update': {
-    path: 'v1/organizer/tournaments/[tournamentId]',
+    path: 'v1/org/tournaments/[tournamentId]',
     method: Method.PATCH,
   },
   'organizer:tournament:start': {
-    path: 'v1/organizer/tournaments/[tournamentId]/start',
+    path: 'v1/org/tournaments/[tournamentId]/start',
     method: Method.POST,
   },
   mountTeam: {
     path: 'v1/teams/mount',
     method: Method.POST,
   },
-  'organizer:tournament:matches': {
-    path: 'v1/organizer/tournaments/[tournamentId]/matches',
+  'org:tournament:matches': {
+    path: 'v1/org/tournaments/[tournamentId]/matches',
     method: Method.GET,
   },
-  'organizer:tournament:teams': {
-    path: 'v1/organizer/tournaments/[tournamentId]/registered-teams',
+  'org:tournament:teams': {
+    path: 'v1/org/tournaments/[tournamentId]/registered-teams',
     method: Method.GET,
   },
-  'organizer:tournament:registrations': {
-    path: 'v1/organizer/tournaments/[tournamentId]/registrations',
+  'org:tournament:registrations': {
+    path: 'v1/org/tournaments/[tournamentId]/registrations',
     method: Method.GET,
   },
-  'organizer:tournament:teams:delete': {
-    path: 'v1/organizer/tournaments/[uuid]/registered-teams/[uuid]/delete',
+  'org:registration:delete': {
+    path: 'v1/org/registrations/[uuid]/delete',
     method: Method.DELETE,
   },
 };

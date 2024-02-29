@@ -40,6 +40,7 @@ class RegistrationCreateSerializer(serializers.Serializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     team = TeamSerializer(read_only=True)
+    tournament = TournamentSerializer(read_only=True)
 
     class Meta:
         model = Registration

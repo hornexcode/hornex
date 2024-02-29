@@ -1,4 +1,5 @@
 import { teamSchema } from './Team';
+import { tournamentSchema } from './Tournament';
 import z from 'zod';
 
 export const registration = z.object({
@@ -6,7 +7,7 @@ export const registration = z.object({
   status: z.string(),
   game_slug: z.string(),
   platform_slug: z.string(),
-  tournament: z.string().uuid(),
+  tournament: tournamentSchema,
   team: teamSchema,
   created_at: z.date(),
   updated_at: z.date(),

@@ -4,6 +4,7 @@ const routes = {
   privacyPolicy: 'privacy-policy',
   about: '',
   contactUs: 'contact-us',
+  registrations: '/registrations',
   login: 'login',
   register: 'register',
   compete: '/compete',

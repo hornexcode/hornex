@@ -9,7 +9,7 @@ export type AdminTournamentTeamsTabContentProps = {};
 
 const { useData: useGetTournamentRegistrationsQuery } = dataLoader<
   Registration[]
->('organizer:tournament:registrations');
+>('org:tournament:registrations');
 
 const AdminTournamentTeamsTabContent: FC<
   AdminTournamentTeamsTabContentProps
