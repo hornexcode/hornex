@@ -16,7 +16,7 @@ const AdminTournamentTeamsTabContent: FC<
   const { tournament } = useAdminTournament();
 
   const { data: teams, error } = useGetTournamentMatchesQuery({
-    tournamentId: tournament.id,
+    tournamentId: tournament.uuid,
   });
 
   return (

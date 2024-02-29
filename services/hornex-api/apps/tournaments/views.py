@@ -19,6 +19,9 @@ from rest_framework.response import Response
 from apps.accounts.models import GameID
 from apps.leagueoflegends.tasks import participant_registered
 from apps.teams.models import Member, Team
+from apps.teams.serializers import (
+    TeamSerializer,
+)
 from apps.tournaments import errors
 from apps.tournaments.filters import (
     TournamentListFilter,
@@ -26,7 +29,12 @@ from apps.tournaments.filters import (
 )
 from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
 from apps.tournaments.pagination import TournamentPagination
-from apps.tournaments.requests import RegisterSerializer, TournamentCreateSerializer
+from apps.tournaments.requests import (
+    CreateAndRegisterTeamIntoTournamentParams,
+    RegisterSerializer,
+    RegisterTeamIntoTournamentParams,
+    TournamentCreateSerializer,
+)
 from apps.tournaments.serializers import (
     LeagueOfLegendsTournamentSerializer,
     ParticipantSerializer,
@@ -35,9 +43,13 @@ from apps.tournaments.serializers import (
     TournamentSerializer,
 )
 from apps.tournaments.usecases import (
+    CreateAndRegisterTeamIntoTournamentInput,
+    CreateAndRegisterTeamIntoTournamentUseCase,
     ListRegisteredTeamsParams,
     ListRegisteredTeamsUseCase,
     RegisterParams,
+    RegisterTeamIntoTournamentInput,
+    RegisterTeamIntoTournamentUseCase,
     RegisterUseCase,
 )
 from apps.tournaments.usecases.organizer.create_tournament import (
@@ -69,7 +81,7 @@ platform_qp = openapi.Parameter(
 class PublicTournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     filter_backends = (
         DjangoFilterBackend,
         TournamentListFilter,
@@ -124,7 +136,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     serializer_class = TournamentSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    lookup_field = "id"
+    lookup_field = "uuid"
 
     def create(self, request, *args, **kwargs):
         params = TournamentCreateSerializer(data=request.data)
@@ -186,7 +198,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
     queryset = Registration.objects.all()
     serializer_class = RegistrationReadSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -202,6 +214,27 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
         return Response({"message": "success"}, status=status.HTTP_201_CREATED)
 
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        tournament = Tournament.objects.get(uuid=kwargs["uuid"])
+        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
+        teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
+        self.queryset = self.queryset.filter(
+            team__in=teams,
+            tournament=tournament,
+            status__in=[
+                Registration.RegistrationStatusOptions.PENDING,
+                Registration.RegistrationStatusOptions.ACCEPTED,
+            ],
+        )
+        serializer = self.get_serializer(self.queryset, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     """
@@ -210,16 +243,18 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 
     queryset = Registration.objects.all()
     serializer_class = RegistrationReadSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def list(self, request):
-        game_id = GameID.objects.filter(user=request.user).all()
-
-        teams = Team.objects.filter(members__in=[game_id or None]).values_list("id", flat=True)
-        self.queryset = self.queryset.filter(
+    def list(self, request, *args, **kwargs):
+        tournament = Tournament.objects.get(uuid=kwargs["uuid"])
+        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
+        print("gameids", gameids)
+        teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
+        self.queryset = self.queryset.get(
             team__in=teams,
+            tournament=tournament,
             status__in=[
                 Registration.RegistrationStatusOptions.PENDING,
                 Registration.RegistrationStatusOptions.ACCEPTED,
@@ -235,7 +270,7 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LeagueOfLegendsTournament.objects.all()
     serializer_class = LeagueOfLegendsTournamentSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     filter_backends = (
         DjangoFilterBackend,
         TournamentListFilter,
@@ -298,7 +333,7 @@ def team_check_in_status(request, *args, **kwargs):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def pariticipant_checked_in(request, *args, **kwargs):
+def participant_checked_in(request, *args, **kwargs):
     if request.method == "GET":
         try:
             tournament = Tournament.objects.get(id=kwargs["tournament"])
@@ -385,3 +420,37 @@ def tournaments_controller(request):
             TournamentSerializer(tournaments, many=True).data,
             status=status.HTTP_200_OK,
         )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+@swagger_auto_schema(
+    operation_description="POST /api/v1/tournaments/[tournamentId]/register-team",
+    operation_summary="Register a team into tournament",
+)
+def register_team(request, id):
+    params = RegisterTeamIntoTournamentParams(data={**request.data, "tournament_id": id})
+    params.is_valid(raise_exception=True)
+
+    uc = RegisterTeamIntoTournamentUseCase()
+
+    output = uc.execute(RegisterTeamIntoTournamentInput(**params.validated_data))
+
+    return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def create_and_register_team(request, uuid):
+    params = CreateAndRegisterTeamIntoTournamentParams(
+        data={**request.data, "user_id": request.user.id, "tournament_uuid": uuid}
+    )
+    params.is_valid(raise_exception=True)
+
+    uc = CreateAndRegisterTeamIntoTournamentUseCase()
+
+    output = uc.execute(CreateAndRegisterTeamIntoTournamentInput(**params.validated_data))
+
+    return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)

@@ -41,7 +41,6 @@ export const nextAuthOptions: NextAuthOptionsCallback = (req, res) => ({
           },
           body: JSON.stringify(credentials),
         });
-
         if (!response.ok) {
           throw new Error('Invalid credentials');
         }

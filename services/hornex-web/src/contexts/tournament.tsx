@@ -1,4 +1,4 @@
-import { Participant, Tournament } from '@/lib/models';
+import { Registration, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
   combineDateAndTime,
@@ -9,44 +9,29 @@ import React, { createContext, ReactNode, useEffect, useState } from 'react';
 
 export const TournamentContext = createContext<{
   tournament: Tournament;
-  participants: Participant[];
   isRegistered: boolean;
   isCheckInOpened: boolean;
   isLoading: boolean;
-  refreshParticipants: () => Promise<void>;
 }>({
   tournament: {} as Tournament,
   isRegistered: false,
   isCheckInOpened: false,
   isLoading: false,
-  participants: [],
-  refreshParticipants: async () => {},
 });
 
 export type TournamentContextProviderProps = {
   children: ReactNode;
   tournament: Tournament;
-  participants: Participant[];
   isRegistered: boolean;
 };
-
-const { submit: listTournamentParticipants } = dataLoader<
-  Participant[],
-  { id: string }
->('listTournamentParticipants');
 
 export const TournamentContextProvider = ({
   children,
   tournament,
-  participants: initialParticipants,
-  isRegistered: initialRegistrationState,
+  isRegistered,
 }: TournamentContextProviderProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [participants, setParticipants] =
-    useState<Participant[]>(initialParticipants);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCheckInOpened, setIsCheckInOpened] = useState(false);
-
-  const [isRegistered, setIsRegistered] = useState(initialRegistrationState);
 
   useEffect(() => {
     const checkinIsNotOpenAndHasNotClosed =
@@ -89,18 +74,6 @@ export const TournamentContextProvider = ({
     setIsCheckInOpened(isCheckInOpen(tournament));
   }, []);
 
-  const refreshParticipants = async () => {
-    setIsLoading(true);
-    // fetch participants
-    const { data: participants } = await listTournamentParticipants({
-      id: tournament.id,
-    });
-    if (participants) {
-      setParticipants(participants);
-    }
-    setIsLoading(false);
-  };
-
   return (
     <TournamentContext.Provider
       value={{
@@ -108,8 +81,6 @@ export const TournamentContextProvider = ({
         isRegistered,
         isCheckInOpened,
         isLoading,
-        participants,
-        refreshParticipants,
       }}
     >
       {children}

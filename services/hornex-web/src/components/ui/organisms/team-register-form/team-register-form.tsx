@@ -79,7 +79,7 @@ const TeamRegisterForm: FC<TeamRegisterFormProps> = ({
     setIsFetching(true);
 
     const { error } = await registerTeamHandler(
-      { tournamentId: tournament.id },
+      { tournamentId: tournament.uuid },
       {
         ...values,
         ...{ player1: { email, nickname: values.player1.nickname } },

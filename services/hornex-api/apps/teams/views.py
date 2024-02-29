@@ -21,14 +21,12 @@ from apps.teams.errors import (
     invite_not_found,
 )
 from apps.teams.models import Invite, Team
-from apps.teams.request import MountTeamParams
 from apps.teams.serializers import (
     InviteListSerializer,
     InviteSerializer,
     TeamSerializer,
     UserInviteSerializer,
 )
-from apps.teams.usecases import MountTeamInput, MountTeamUseCase
 from core.route import extract_game_and_platform
 from jwt_token.authentication import JWTAuthentication
 
@@ -78,20 +76,6 @@ class TeamViewSet(viewsets.ModelViewSet):
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
-
-    @swagger_auto_schema(
-        operation_description="POST /api/v1/teams/mount",
-        operation_summary="Mount a team",
-    )
-    def mount_team(self, request, *args, **kwargs):
-        params = MountTeamParams(data={**request.data, "user_id": request.user.id})
-        params.is_valid(raise_exception=True)
-
-        uc = MountTeamUseCase()
-
-        output = uc.execute(MountTeamInput(**params.validated_data))
-
-        return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
 
 
 class InviteViewSet(viewsets.ModelViewSet):

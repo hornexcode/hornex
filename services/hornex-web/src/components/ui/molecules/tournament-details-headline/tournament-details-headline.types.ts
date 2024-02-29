@@ -7,8 +7,5 @@ export type GameID = {
 };
 
 export type TournamentHeadlineProps = {
-  tournament: Tournament;
-  connectedGameId?: GameID;
-  registration?: Registration;
   isCheckedIn?: boolean;
 };

@@ -8,7 +8,9 @@ export const ConnectAccountButton = () => {
 
   return (
     <div className="bg-dark shadow-card mb-4 p-6">
-      <h2 className="text-title text-lg font-bold">Connect your account</h2>
+      <h2 className="text-title font-roboto-condensed text-xl font-bold">
+        Connect your account
+      </h2>
       <p className="text-title font-source-sans font-normal">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio,
         nostrum!

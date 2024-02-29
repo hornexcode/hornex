@@ -9,9 +9,7 @@ import {
   Tournament,
 } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import { optionalNextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getServerSession } from 'next-auth';
 import { Suspense } from 'react';
 
 export type GameID = {
@@ -22,14 +20,8 @@ export type GameID = {
 
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
 const { fetch: getGameIds } = dataLoader<GameID[]>('getGameIds');
-const { fetch: getParticipantCheckInStatus } =
-  dataLoader<ParticipantCheckedInStatus>('getParticipantCheckedInStatus');
 const { fetch: getRegistrations } =
-  dataLoader<Registration>('getRegistrations');
-
-const { fetch: listTournamentParticipants } = dataLoader<Participant[]>(
-  'listTournamentParticipants'
-);
+  dataLoader<Registration[]>('getRegistrations');
 
 type TournamentProps = {
   params: {
@@ -47,9 +39,6 @@ type TournamentProps = {
 
 const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   tournament,
-  gameIds,
-  registrations = [],
-  participants,
   participantCheckedInStatus,
   isRegistered,
 }: TournamentProps) => {
@@ -57,14 +46,9 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     <Suspense fallback={<Loading />}>
       <TournamentContextProvider
         isRegistered={isRegistered}
-        participants={participants}
         tournament={tournament}
       >
         <TournamentDetailsTemplate
-          tournament={tournament}
-          gameIds={gameIds}
-          registrations={registrations}
-          isRegistered={isRegistered}
           participantCheckedInStatus={participantCheckedInStatus}
         />
       </TournamentContextProvider>
@@ -77,21 +61,6 @@ Tournament.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerSession(
-    ctx.req,
-    ctx.res,
-    optionalNextAuthOptions
-  );
-
-  if (!session) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/sign-in',
-      },
-    };
-  }
-
   const { data: tournament, error: tournamentError } = await getTournament(
     {
       tournamentId: ctx.query.id || '',
@@ -118,42 +87,24 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const { data: registrations, error: registrationError } =
-    await getRegistrations({}, ctx.req);
-
-  if (!registrations || registrationError) {
-    console.log('error', registrationError);
-  }
-
-  const { data: participantCheckedInStatusData } =
-    await getParticipantCheckInStatus(
+  const { data: registrations, error: registrationsError } =
+    await getRegistrations(
       {
-        tournamentId: ctx.query.id || '',
+        uuid: tournament.uuid,
+        game: ctx.query.game || '',
+        platform: ctx.query.platform || '',
       },
       ctx.req
     );
 
-  const { data: participants, error } = await listTournamentParticipants(
-    {
-      tournamentId: tournament.id,
-    },
-    ctx.req
-  );
-
-  const isRegistered = !!participants?.find(
-    (participant) => participant.email === session.user?.email
-  );
+  console.log(registrations);
 
   return {
     props: {
       params: ctx.params,
       tournament,
       gameIds,
-      registrations,
-      participants,
-      isRegistered: isRegistered,
-      participantCheckedInStatus:
-        participantCheckedInStatusData?.checked_in || false,
+      isRegistered: !!registrations?.length,
     },
   };
 };

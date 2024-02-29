@@ -14,7 +14,7 @@ export type TournamentTabPanelsProps = {
 
 const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
   const { data: prizes } = listTournamentPrizes({
-    tournamentId: tournament.id,
+    tournamentId: tournament.uuid,
   });
 
   return (

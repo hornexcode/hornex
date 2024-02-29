@@ -26,7 +26,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
         <div className="block px-5 py-4">
           <Link
             href="/nft-details"
-            className="dark:text-title font-extrabold text-black"
+            className="dark:text-title font-roboto-condensed text-lg font-extrabold text-black"
           >
             {/* trim name */}
             {tournament.name.length >= 25
@@ -58,7 +58,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
             <div className="flex items-center">
               <UsersIcon className="text-muted mr-1 h-5 w-4" />
               <span className="font-display text-muted pr-4 text-xs font-extrabold">
-                {tournament.teams.length}/{tournament.max_teams}
+                {tournament.registered_teams.length}/{tournament.max_teams}
               </span>
             </div>
             {/* phase status */}
@@ -77,7 +77,9 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
               <div
                 style={{
                   width: `${
-                    (tournament.teams.length / tournament.max_teams) * 100
+                    (tournament.registered_teams.length /
+                      tournament.max_teams) *
+                    100
                   }%`,
                 }}
                 className="h-2 rounded-lg bg-amber-400"
@@ -94,7 +96,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
             size="small"
             onClick={() =>
               router.push(
-                `/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
+                `/${tournament.platform}/${tournament.game}/tournaments/${tournament.uuid}`
               )
             }
           >

@@ -32,7 +32,6 @@ class CreateTournamentTestCase(TestCase):
 
         now = datetime.now(tz=UTC)
         start_at = now + timedelta(days=1)
-        end_at = start_at + timedelta(days=3)
 
         self.params = CreateTournamentUseCaseParams(
             game="league-of-legends",
@@ -97,7 +96,6 @@ class CreateTournamentTestCase(TestCase):
     def test_enabled_prize_pool_with_free_entry(self):
         now = datetime.now(tz=UTC)
         start_at = now + timedelta(days=1)
-        end_at = start_at + timedelta(days=3)
 
         try:
             self.params = CreateTournamentUseCaseParams(

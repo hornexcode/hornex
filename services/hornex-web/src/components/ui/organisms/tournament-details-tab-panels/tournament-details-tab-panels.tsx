@@ -47,7 +47,10 @@ const TournamentDetailsTabPanels = ({
             </Tab.List>
           </div>
           <div className="col-span-3">
-            <TournamentPhasesWidget />
+            <TournamentPhasesWidget
+              tournament={tournament}
+              isRegistered={isRegistered}
+            />
           </div>
           <div className="col-span-9">
             <Tab.Panels>

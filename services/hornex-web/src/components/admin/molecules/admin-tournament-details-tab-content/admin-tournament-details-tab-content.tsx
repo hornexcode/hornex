@@ -37,7 +37,7 @@ const AdminTournamentGeneralInfo = () => {
   const onOpenRegistrationHandler = async () => {
     setLoading(true);
     const { data, error } = await openRegistrationHandler({
-      tournamentId: tournament.id,
+      tournamentId: tournament.uuid,
     });
 
     if (data && !error) {
@@ -49,7 +49,7 @@ const AdminTournamentGeneralInfo = () => {
   const onStartTournamentHandler = async () => {
     setLoading(true);
     const { data, error } = await startTournamentHandler({
-      tournamentId: tournament.id,
+      tournamentId: tournament.uuid,
     });
     if (error) {
       toast({

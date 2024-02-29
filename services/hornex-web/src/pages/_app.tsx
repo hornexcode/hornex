@@ -46,12 +46,13 @@ type AppPropsWithLayout = AppProps & {
 const roboto_condensed = Roboto_Condensed({
   weight: ['400', '700'],
   subsets: ['latin'],
-  display: 'swap',
+  variable: '--font-roboto-condensed',
 });
 
 const source_Sans_3 = Source_Sans_3({
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['500', '600', '700', '800'],
   subsets: ['latin'],
+  display: 'swap',
   variable: '--font-source-sans',
 });
 
@@ -70,8 +71,8 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
         <div
           className={classnames(
             'dark:bg-background text-muted min-h-[100vh] font-semibold antialiased',
-            source_Sans_3.variable,
-            roboto_condensed.className,
+            source_Sans_3.className,
+            roboto_condensed.variable,
             kanit.variable,
             Beaufort_for_LOL.variable
           )}

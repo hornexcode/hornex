@@ -11,11 +11,6 @@ from apps.teams.views import (
 
 urlpatterns = [
     path(
-        "/mount",
-        TeamViewSet.as_view({"post": "mount_team"}),
-        name="team-mount",
-    ),
-    path(
         "",
         TeamViewSet.as_view({"get": "list", "post": "create"}),
         name="team-list",

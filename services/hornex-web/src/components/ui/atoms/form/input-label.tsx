@@ -7,7 +7,7 @@ interface InputLabelProps {
 function InputLabel({ title, subTitle, important }: InputLabelProps) {
   return (
     <div className="relative mb-3">
-      <span className="mb-2 block text-sm font-medium text-white">
+      <span className="mb-2 block font-medium text-white">
         {title}
         {important && (
           <sup className="text-red-500 ltr:ml-1.5 rtl:mr-1.5">*</sup>
