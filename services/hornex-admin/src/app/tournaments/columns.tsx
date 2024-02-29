@@ -1,9 +1,8 @@
 'use client';
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-
 
 import { Button } from '@/components/ui/button';
 import {
@@ -30,11 +29,7 @@ export const columns: ColumnDef<Tournament>[] = [
     accessorKey: 'phase',
     header: 'Phase',
     cell: ({ row }) => {
-      return (
-        <Badge variant={'secondary'}>
-          {row.getValue('phase')}
-        </Badge>
-      );
+      return <Badge variant={'secondary'}>{row.getValue('phase')}</Badge>;
     },
   },
   {
@@ -55,9 +50,7 @@ export const columns: ColumnDef<Tournament>[] = [
     accessorKey: 'prize_pool',
     header: () => <div className="text-right">Potential prize pool</div>,
     cell: ({ row }) => {
-      const potentialPrizePool = parseFloat(
-        row.getValue('prize_pool')
-      );
+      const potentialPrizePool = parseFloat(row.getValue('prize_pool'));
       const formatted = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -82,13 +75,17 @@ export const columns: ColumnDef<Tournament>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(tournament.id)}
+              onClick={() => navigator.clipboard.writeText(tournament.uuid)}
             >
-              Copy payment ID 
+              Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer {row.getValue('id')}</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => push(`/tournaments/${tournament.id}`)}>
+            <DropdownMenuItem>
+              View customer {row.getValue('id')}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => push(`/tournaments/${tournament.uuid}`)}
+            >
               View tournament details
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,4 +1,5 @@
 import { TournamentStatusStepperProps } from './tournament-status-stepper.types';
+import { CheckCircledIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 
@@ -24,15 +25,15 @@ const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
         {/* current */}
         {new Array(currentStep).fill(0).map((_, idx) => (
           <div
-            className="bg-dark relative h-2.5 w-2.5 rounded-full"
+            className="bg-dark/20 relative h-2.5 w-2.5 rounded-full"
             key={idx}
           ></div>
         ))}
         {new Array(steps - currentStep).fill(0).map((_, idx) => (
-          <div
+          <CheckCircledIcon
             key={idx}
-            className="ring-medium-dark bg-title relative h-2 w-2 rounded-full ring"
-          ></div>
+            className="bg-dark h-5 w-5 rounded-full"
+          />
         ))}
       </div>
     </div>

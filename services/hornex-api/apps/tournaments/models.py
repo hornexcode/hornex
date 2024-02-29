@@ -31,7 +31,7 @@ class Tournament(BaseModel):
         BRL = "BRL"
         EUR = "EUR"
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
@@ -61,9 +61,7 @@ class Tournament(BaseModel):
     max_teams = models.IntegerField(default=32)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    teams = models.ManyToManyField(
-        "teams.Team", related_name="tournaments", blank=True, through="RegisteredTeam"
-    )
+    registered_teams = models.ManyToManyField("teams.Team", blank=True, through="Registration")
 
     open_classification = models.BooleanField(default=False)
 
@@ -75,9 +73,6 @@ class Tournament(BaseModel):
 
     class Meta:
         ordering = ["-created_at"]
-
-    def __str__(self) -> str:
-        return f"{self.name} ({self.id})"
 
     def _get_last_round(self):
         # last_round = self.rounds.all().order_by("-created_at").first()
@@ -262,7 +257,7 @@ class Prize(models.Model):
         ordering = ["place"]
 
     def __str__(self) -> str:
-        return f"Prize ({self.id}) | {self.tournament.name} - {self.place}º"
+        return self.id
 
 
 class Registration(models.Model):
@@ -272,7 +267,7 @@ class Registration(models.Model):
         REJECTED = "rejected"
         CANCELLED = "cancelled"
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     game_slug = models.CharField(max_length=255)
@@ -284,12 +279,10 @@ class Registration(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) -> str:
-        return f"{self.team.name} registration at {self.tournament.name} ({self.id})"
+    challonge_participant_id = models.IntegerField()
 
-    @property
-    def pk(self) -> str:
-        return str(self.id)
+    def __str__(self) -> str:
+        return f"Registration ({self.id}) | {self.tournament.name}"
 
     def confirm_registration(self):
         self.tournament.teams.add(self.team)
@@ -305,21 +298,21 @@ class Registration(models.Model):
 
 class Match(models.Model):
     class StatusType(models.TextChoices):
-        FUTURE = "future"
-        PAST = "past"
-        LIVE = "live"
+        QUEUED = "queued"
+        ONGOING = "ongoing"
+        FINISHED = "finished"
+        CANCELLED = "cancelled"
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     team_a_id = models.UUIDField()
     team_b_id = models.UUIDField()
     winner_id = models.UUIDField(null=True, blank=True)
     loser_id = models.UUIDField(null=True, blank=True)
-    is_wo = models.BooleanField()
     status = models.CharField(
         max_length=50,
         choices=StatusType.choices,
-        default=StatusType.FUTURE,
+        default=StatusType.QUEUED,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -464,9 +457,6 @@ class LeagueOfLegendsTournament(Tournament):
     def get_classifications(self) -> list[str]:
         return [f"{entry.tier} {entry.rank}" for entry in self.classifications.all()]
 
-    def __str__(self) -> str:
-        return f"{self.name} ({self.id})"
-
 
 class Participant(models.Model):
     team = models.CharField(max_length=255)
@@ -481,12 +471,3 @@ class Participant(models.Model):
 
     def __str__(self) -> str:
         return self.nickname
-
-
-class RegisteredTeam(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    challonge_participant_id = models.IntegerField()
-
-    def __str__(self) -> str:
-        return f"{self.team.name} at {self.tournament.name}"

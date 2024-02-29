@@ -9,7 +9,7 @@ from rest_framework.validators import ValidationError
 from apps.accounts.models import GameID
 from apps.teams.models import Team
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
-from apps.tournaments.models import RegisteredTeam
+from apps.tournaments.models import Registration
 from lib.challonge import Tournament as ChallongeTournament
 
 logger = structlog.get_logger(__name__)
@@ -54,7 +54,7 @@ class RegisterTeamIntoTournamentUseCase:
         except Exception:
             raise Exception("Failed to add participant at challonge")
 
-        RegisteredTeam.objects.create(
+        Registration.objects.create(
             tournament=tournament, team=team, challonge_participant_id=participant.id
         )
 

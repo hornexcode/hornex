@@ -1,29 +1,16 @@
-import {
-  openRegistrationHandler,
-  startTournamentHandler,
-} from './admin-tournament-details.handlers';
 import AdminTournamentTabNav from '@/components/admin/organisms/admin-tournament-tab-nav';
 import Button from '@/components/ui/atoms/button';
 import { Switch } from '@/components/ui/switch';
-import {
-  AdminTournamentContext,
-  AdminTournamentContextProvider,
-} from '@/contexts';
+import { AdminTournamentContextProvider } from '@/contexts';
 import { AppLayout } from '@/layouts';
-import { TournamentLayout } from '@/layouts/tournament';
 import { getPotentialPrizePool, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { toCurrency } from '@/lib/utils';
-import { datetime } from '@/utils/datetime';
 import clsx from 'clsx';
-import moment from 'moment';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const { fetch: getServerTournament } = dataLoader<Tournament>('getTournament');
-const { useData: getClientTournament } =
-  dataLoader<Tournament>('getTournament');
 
 export type TournamentDetailsProps = {
   tournament: Tournament;
@@ -87,7 +74,9 @@ const TournamentDetails = ({
                 <p className="font-bold">#3st place</p>
                 <p className="font-normal">
                   {tournament.currency}{' '}
-                  {toCurrency(getPotentialPrizePool(tournament) * 0.15)}
+                  <span className="font-display">
+                    {toCurrency(getPotentialPrizePool(tournament) * 0.15)}
+                  </span>
                 </p>
               </div>
             </div>
@@ -97,7 +86,9 @@ const TournamentDetails = ({
                 <p className="font-bold">#4st place</p>
                 <p className="font-normal">
                   {tournament.currency}{' '}
-                  {toCurrency(getPotentialPrizePool(tournament) * 0.1)}
+                  <span className="font-display">
+                    {toCurrency(getPotentialPrizePool(tournament) * 0.1)}
+                  </span>
                 </p>
               </div>
             </div>

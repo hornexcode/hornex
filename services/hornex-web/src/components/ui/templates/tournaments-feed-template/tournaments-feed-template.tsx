@@ -17,7 +17,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
           {!isLoading &&
             data.results.map((tournament) => (
               <TournamentFeedItem
-                key={tournament.id}
+                key={tournament.uuid}
                 tournament={tournament}
                 className="mx-2 mb-4 first:ml-2"
               />

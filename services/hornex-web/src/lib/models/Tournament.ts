@@ -2,7 +2,7 @@ import moment from 'moment';
 import z from 'zod';
 
 export const tournamentSchema = z.object({
-  id: z.string(),
+  uuid: z.string(),
   name: z.string(),
   description: z.string(),
   published: z.boolean(),
@@ -29,7 +29,7 @@ export const tournamentSchema = z.object({
   organizer: z.string(),
   game: z.string(),
   platform: z.string(),
-  teams: z.array(z.string()),
+  registered_teams: z.array(z.string()),
   classifications: z.string().array(),
   feature_image: z.string(),
   open_classification: z.boolean(),
@@ -59,6 +59,7 @@ export function getEntryFee(tournament: Tournament) {
 }
 
 export function getClassifications(tournament: Tournament) {
+  return '';
   if (tournament.open_classification) return 'All';
   return tournament.classifications.join(', ');
 }

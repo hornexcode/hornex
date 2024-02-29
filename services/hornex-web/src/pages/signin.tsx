@@ -3,7 +3,6 @@ import Input from '@/components/ui/atoms/form/input';
 import InputLabel from '@/components/ui/atoms/form/input-label';
 import { Logo } from '@/components/ui/atoms/logo';
 import routes from '@/config/routes';
-import { useAuthContext } from '@/lib/auth/auth-context';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
@@ -63,7 +62,7 @@ export default function LoginPage() {
   useEffect(() => {}, [setValue]);
 
   return (
-    <div className="flex h-screen flex-col items-center justify-between">
+    <div className="bg-dark flex h-screen flex-col items-center justify-between">
       <div className="mt-8 self-center">
         <Logo size="sm" />
       </div>
@@ -76,12 +75,12 @@ export default function LoginPage() {
           </div>
           <div className="space-y-4">
             {error && (
-              <div className="rounded bg-red-500 p-2 text-center text-sm text-white">
+              <div className="rounded bg-red-500 p-2 text-center  text-white">
                 {error}
               </div>
             )}
             {success && (
-              <div className="rounded bg-green-500 p-2 text-center text-sm text-white">
+              <div className="rounded bg-green-500 p-2 text-center  text-white">
                 Login successful!
               </div>
             )}
@@ -111,7 +110,7 @@ export default function LoginPage() {
                 <div className="mt-1 flex items-center justify-between">
                   <a
                     href="#"
-                    className="text-sm font-normal text-gray-400 hover:underline"
+                    className=" font-normal text-gray-400 hover:underline"
                   >
                     Esqueceu sua senha?
                   </a>
@@ -129,7 +128,7 @@ export default function LoginPage() {
                   Login
                 </Button>
 
-                <p className="mt-1 text-sm font-normal text-gray-400">
+                <p className="mt-1  font-normal text-gray-400">
                   Não possui uma conta?{' '}
                   <Link
                     href={`${routes.register}`}

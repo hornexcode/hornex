@@ -3,7 +3,6 @@ from django.urls import path
 from apps.tournaments.views import (
     OrganizerTournamentViewSet,
     PublicTournamentViewSet,
-    RegistrationViewSet,
     TournamentRegistrationViewSet,
     check_in,
     create_and_register_team,
@@ -23,43 +22,38 @@ urlpatterns = [
         name="dashboard-tournaments-controller",
     ),
     path(
-        "/organizer/tournaments/<str:id>",
+        "/organizer/tournaments/<str:uuid>",
         OrganizerTournamentViewSet.as_view({"patch": "partial_update"}),
         name="details",
     ),
     path(
-        "/organizer/tournaments/<str:id>/start",
+        "/organizer/tournaments/<str:uuid>/start",
         OrganizerTournamentViewSet.as_view({"post": "start"}),
         name="details",
     ),
     # web
     path(
-        "/tournaments/<str:id>/registrations",
-        TournamentRegistrationViewSet.as_view({"post": "register"}),
+        "/tournaments/<str:uuid>/registrations",
+        TournamentRegistrationViewSet.as_view({"post": "register", "get": "list"}),
         name="register",
     ),
     path(
-        "/tournaments/<str:id>/teams",
+        "/tournaments/<str:uuid>/teams",
         PublicTournamentViewSet.as_view({"get": "teams"}),
         name="registered-teams",
     ),
     path(
-        "/tournaments/<str:id>/participants",
+        "/tournaments/<str:uuid>/participants",
         PublicTournamentViewSet.as_view({"get": "participants"}),
         name="list-participants",
     ),
     path(
-        "/tournaments/<str:id>/prizes",
+        "/tournaments/<str:uuid>/prizes",
         PublicTournamentViewSet.as_view({"get": "prizes"}),
         name="list-prizes",
     ),
     path(
-        "/registrations",
-        RegistrationViewSet.as_view({"get": "list"}),
-        name="list-registrations-for-a-user",
-    ),
-    path(
-        "/registrations/<str:id>",
+        "/registrations/<str:uuid>",
         TournamentRegistrationViewSet.as_view({"get": "retrieve"}),
         name="registration-details",
     ),
@@ -85,22 +79,22 @@ urlpatterns = [
     ),
     # Returns details of a tournament
     path(
-        "/<str:platform>/<str:game>/tournaments/<str:id>/details",
+        "/<str:platform>/<str:game>/tournaments/<str:uuid>/details",
         PublicTournamentViewSet.as_view({"get": "retrieve"}),
         name="details",
     ),
     path(
-        "/tournaments/<str:id>/registered-teams",
+        "/tournaments/<str:uuid>/registered-teams",
         PublicTournamentViewSet.as_view({"get": "list_registered_teams"}),
         name="list-registered-teams",
     ),
     path(
-        "/tournaments/<str:id>/register-team",
+        "/tournaments/<str:uuid>/register-team",
         register_team,
         name="register_team",
     ),
     path(
-        "/tournaments/<str:id>/create-and-register-team",
+        "/tournaments/<str:uuid>/create-and-register-team",
         create_and_register_team,
         name="create_and_register_team",
     ),

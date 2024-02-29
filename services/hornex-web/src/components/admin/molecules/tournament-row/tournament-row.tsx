@@ -18,12 +18,14 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
         {/* name */}
         <div className="block px-4 lg:w-[400px]">
           <Link
-            href={`/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`}
-            className="text-title hover:underline"
+            href={`/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.uuid}`}
+            className="text-title font-roboto-condensed text-lg tracking-wide hover:underline"
           >
             {tournament.name}
           </Link>
-          <div className="text-body text-sm">{getGame(tournament)}</div>
+          <div className="text-body font-source-sans text-sm">
+            {getGame(tournament)}
+          </div>
         </div>
         {/* status */}
         <div className="block px-4 lg:w-[200px]">
@@ -69,7 +71,7 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
         {/* Dates */}
         <div className="flex px-4">
           <div className="block">
-            <div className="text-body text-xs">Start Date</div>
+            <div className="text-body">Start Date</div>
             <div className="text-title text-sm">
               {tournament.start_date} {tournament.start_time}
               {new Date().getTimezoneOffset() / -60}

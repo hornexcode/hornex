@@ -154,7 +154,7 @@ export const routes = {
     method: Method.GET,
   },
   getRegistrations: {
-    path: 'v1/registrations',
+    path: 'v1/tournaments/[uuid]/registrations',
     method: Method.GET,
   },
   getRegistration: {
@@ -200,6 +200,10 @@ export const routes = {
     path: 'v1/organizer/tournaments',
     method: Method.POST,
     schema: null,
+  },
+  createAndRegisterTeam: {
+    path: 'v1/tournaments/[tournamentId]/create-and-register-team',
+    method: Method.POST,
   },
   'organizer:tournament:update': {
     path: 'v1/organizer/tournaments/[tournamentId]',

@@ -20,6 +20,11 @@ module.exports = {
       title: ['var(--font-kanit)', 'JetBrains Mono', 'monospace'],
       'source-sans': ['var(--font-source-sans)', 'JetBrains Mono', 'monospace'],
       beaufort: ['var(--font-beaufort)', 'JetBrains Mono', 'monospace'],
+      'roboto-condensed': [
+        'var(--font-roboto-condensed)',
+        'JetBrains Mono',
+        'monospace',
+      ],
     },
     container: {
       padding: {

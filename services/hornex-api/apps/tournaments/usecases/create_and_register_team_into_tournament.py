@@ -9,7 +9,7 @@ from rest_framework.validators import ValidationError
 from apps.accounts.models import GameID
 from apps.teams.models import Team
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
-from apps.tournaments.models import RegisteredTeam
+from apps.tournaments.models import Registration
 from apps.users.models import User
 from lib.challonge import Tournament as ChallongeTournament
 
@@ -18,7 +18,7 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class CreateAndRegisterTeamIntoTournamentInput:
-    tournament_id: uuid.UUID
+    tournament_uuid: uuid.UUID
     user_id: uuid.UUID
     name: str
     member_1_email: str
@@ -39,7 +39,7 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
         self, params: CreateAndRegisterTeamIntoTournamentInput
     ) -> CreateAndRegisterTeamIntoTournamentOutput:
         user = get_object_or_404(User, id=params.user_id)
-        tournament = get_object_or_404(Tournament, id=params.tournament_id)
+        tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
 
         if Team.objects.filter(name=params.name).exists():
             raise ValidationError({"error": "Team name already in use"})
@@ -55,7 +55,7 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
         ]:
             try:
                 user = User.objects.get(email=member_email)
-                game_id = GameID.objects.get(email=member_email)
+                game_id = GameID.objects.get(user=user)
 
             except User.DoesNotExist:
                 raise ValidationError({"error": f"User not found for {member_email}"})
@@ -69,6 +69,7 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
 
             team.add_member(game_id=game_id)
 
+        print(tournament.challonge_tournament_id, team.name)
         try:
             participant = ChallongeTournament.add_team(
                 tournament=tournament.challonge_tournament_id, team_name=team.name
@@ -76,8 +77,13 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
         except Exception:
             raise Exception("Failed to add participant at challonge")
 
-        RegisteredTeam.objects.create(
-            tournament=tournament, team=team, challonge_participant_id=participant.id
+        Registration.objects.create(
+            tournament=tournament,
+            team=team,
+            challonge_participant_id=participant.id,
+            game_slug=tournament.game,
+            platform_slug=tournament.platform,
+            status=Registration.RegistrationStatusOptions.ACCEPTED,
         )
 
         return CreateAndRegisterTeamIntoTournamentOutput(team)

@@ -81,7 +81,7 @@ platform_qp = openapi.Parameter(
 class PublicTournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     filter_backends = (
         DjangoFilterBackend,
         TournamentListFilter,
@@ -136,7 +136,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     serializer_class = TournamentSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    lookup_field = "id"
+    lookup_field = "uuid"
 
     def create(self, request, *args, **kwargs):
         params = TournamentCreateSerializer(data=request.data)
@@ -198,7 +198,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
     queryset = Registration.objects.all()
     serializer_class = RegistrationReadSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -214,6 +214,27 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
         return Response({"message": "success"}, status=status.HTTP_201_CREATED)
 
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        tournament = Tournament.objects.get(uuid=kwargs["uuid"])
+        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
+        teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
+        self.queryset = self.queryset.filter(
+            team__in=teams,
+            tournament=tournament,
+            status__in=[
+                Registration.RegistrationStatusOptions.PENDING,
+                Registration.RegistrationStatusOptions.ACCEPTED,
+            ],
+        )
+        serializer = self.get_serializer(self.queryset, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     """
@@ -222,16 +243,18 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 
     queryset = Registration.objects.all()
     serializer_class = RegistrationReadSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def list(self, request):
-        game_id = GameID.objects.filter(user=request.user).all()
-
-        teams = Team.objects.filter(members__in=[game_id or None]).values_list("id", flat=True)
-        self.queryset = self.queryset.filter(
+    def list(self, request, *args, **kwargs):
+        tournament = Tournament.objects.get(uuid=kwargs["uuid"])
+        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
+        print("gameids", gameids)
+        teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
+        self.queryset = self.queryset.get(
             team__in=teams,
+            tournament=tournament,
             status__in=[
                 Registration.RegistrationStatusOptions.PENDING,
                 Registration.RegistrationStatusOptions.ACCEPTED,
@@ -247,7 +270,7 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LeagueOfLegendsTournament.objects.all()
     serializer_class = LeagueOfLegendsTournamentSerializer
-    lookup_field = "id"
+    lookup_field = "uuid"
     filter_backends = (
         DjangoFilterBackend,
         TournamentListFilter,
@@ -420,13 +443,9 @@ def register_team(request, id):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-@swagger_auto_schema(
-    operation_description="POST /api/v1/tournaments/[tournamentId]/register-team",
-    operation_summary="Create and register a team into a tournament",
-)
-def create_and_register_team(request, id):
+def create_and_register_team(request, uuid):
     params = CreateAndRegisterTeamIntoTournamentParams(
-        data={**request.data, "user_id": request.user.id, "tournament_id": id}
+        data={**request.data, "user_id": request.user.id, "tournament_uuid": uuid}
     )
     params.is_valid(raise_exception=True)
 
