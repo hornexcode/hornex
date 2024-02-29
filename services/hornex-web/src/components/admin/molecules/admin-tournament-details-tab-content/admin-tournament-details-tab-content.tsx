@@ -106,6 +106,8 @@ const AdminTournamentGeneralInfo = () => {
             </div>
             <Button
               onClick={onStartTournamentHandler}
+              disabled={loading}
+              isLoading={loading}
               shape="rounded"
               className="mt-4"
               size="mini"

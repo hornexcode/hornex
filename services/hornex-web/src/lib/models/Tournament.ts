@@ -34,6 +34,7 @@ export const tournamentSchema = z.object({
   feature_image: z.string(),
   open_classification: z.boolean(),
   challonge_tournament_url: z.string(),
+  checked_in: z.boolean(),
   total_participants: z.number(),
 });
 export type Tournament = z.infer<typeof tournamentSchema>;

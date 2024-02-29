@@ -70,6 +70,7 @@ class Tournament(BaseModel):
 
     challonge_tournament_id = models.IntegerField(null=True, blank=True)
     challonge_tournament_url = models.URLField(max_length=500, blank=True)
+    checked_in = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-created_at"]
@@ -456,6 +457,9 @@ class LeagueOfLegendsTournament(Tournament):
 
     def get_classifications(self) -> list[str]:
         return [f"{entry.tier} {entry.rank}" for entry in self.classifications.all()]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.uuid})"
 
 
 class Participant(models.Model):

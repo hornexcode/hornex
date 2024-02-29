@@ -6,6 +6,7 @@ from apps.tournaments.views import (
     RegistrationViewSet,
     TournamentRegistrationViewSet,
     check_in,
+    check_in_tournament,
     create_and_register_team,
     participant_checked_in,
     register_team,
@@ -51,6 +52,11 @@ urlpatterns = [
         "/org/registrations/<str:uuid>/delete",
         RegistrationViewSet.as_view({"delete": "destroy"}),
         name="delete-registered-teams",
+    ),
+    path(
+        "/org/tournaments/<str:uuid>/check-in",
+        check_in_tournament,
+        name="check-in_tournament",
     ),
     # Public Tournament Resources
     path(
