@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.teams.serializers import TeamSerializer
 from apps.tournaments.models import (
     LeagueOfLegendsTournament,
     Participant,
@@ -37,14 +38,16 @@ class RegistrationCreateSerializer(serializers.Serializer):
     tournament = serializers.UUIDField()
 
 
-class RegistrationReadSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
+    team = TeamSerializer(read_only=True)
+
     class Meta:
         model = Registration
         fields = "__all__"
 
 
 class LeagueOfLegendsTournamentSerializer(serializers.ModelSerializer):
-    classifications = serializers.StringRelatedField()
+    classifications = serializers.SerializerMethodField()
     total_participants = serializers.SerializerMethodField()
 
     class Meta:

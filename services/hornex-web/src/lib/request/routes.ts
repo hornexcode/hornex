@@ -222,7 +222,15 @@ export const routes = {
     method: Method.GET,
   },
   'organizer:tournament:teams': {
-    path: 'v1/organizer/tournaments/[tournamentId]/teams',
+    path: 'v1/organizer/tournaments/[tournamentId]/registered-teams',
     method: Method.GET,
+  },
+  'organizer:tournament:registrations': {
+    path: 'v1/organizer/tournaments/[tournamentId]/registrations',
+    method: Method.GET,
+  },
+  'organizer:tournament:teams:delete': {
+    path: 'v1/organizer/tournaments/[uuid]/registered-teams/[uuid]/delete',
+    method: Method.DELETE,
   },
 };

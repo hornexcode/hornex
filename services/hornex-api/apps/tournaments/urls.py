@@ -29,7 +29,22 @@ urlpatterns = [
     path(
         "/organizer/tournaments/<str:uuid>/start",
         OrganizerTournamentViewSet.as_view({"post": "start"}),
-        name="details",
+        name="start",
+    ),
+    path(
+        "/organizer/tournaments/<str:uuid>/registered-teams",
+        OrganizerTournamentViewSet.as_view({"get": "registered_teams"}),
+        name="registered-teams",
+    ),
+    path(
+        "/organizer/tournaments/<str:uuid>/registrations",
+        OrganizerTournamentViewSet.as_view({"get": "registrations"}),
+        name="registrations",
+    ),
+    path(
+        "/organizer/tournaments/<str:uuid>/registered-teams/<str:team_uuid>/delete",
+        OrganizerTournamentViewSet.as_view({"delete": "delete_registered_team"}),
+        name="delete-registered-teams",
     ),
     # web
     path(
