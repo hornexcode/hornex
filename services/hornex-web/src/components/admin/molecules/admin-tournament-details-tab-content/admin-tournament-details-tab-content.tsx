@@ -141,6 +141,53 @@ const AdminTournamentGeneralInfo = () => {
 
   return (
     <div className="mt-4 grid grid-cols-3 gap-4">
+      <div className="col-span-2">
+        <div className="flex flex-wrap items-center rounded">
+          <div className="border-border border-r border-t p-3">
+            <div className="t">Teams registered</div>
+            <div className="text-title">
+              {tournament.total_participants / tournament.team_size}/
+              {tournament.max_teams}
+            </div>
+          </div>
+          <div className="border-border border-r border-t p-3">
+            <div className="t">Entry Fee</div>
+            <div className="text-title">{getEntryFee(tournament)}</div>
+          </div>
+          <div className="border-border border-r border-t p-3">
+            <div className="t">Prize Pool</div>
+            <div className="text-title">
+              {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
+              {tournament.prize_pool_enabled &&
+                `${tournament.currency} ${toCurrency(
+                  getPotentialPrizePool(tournament)
+                )}`}
+            </div>
+          </div>
+          <div className="border-border border-r border-t p-3">
+            <div className="t">Registration start date</div>
+            <div className="text-title">
+              {datetime(tournament.registration_start_date, { time: false })}
+            </div>
+          </div>
+          <div className="border-border border-r border-t p-3">
+            <div className="t">Start date</div>
+            <div className="text-title">
+              {moment(
+                new Date(
+                  `${tournament.start_date}T${tournament.start_time}+00:00`
+                )
+              ).format('YYYY-MM-D hh:mm A')}
+            </div>
+          </div>
+          <div className="border-border border-r border-t p-3">
+            <div className="t">Check-in window</div>
+            <div className="text-title">
+              {tournament.check_in_duration} minutes
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="bg-medium-dark shadow-card col-span-1 rounded p-4">
         <span className="text-muted">Tournament status</span>
         <div className="flex items-center justify-between pb-2">
@@ -154,59 +201,20 @@ const AdminTournamentGeneralInfo = () => {
         <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
         {renderStatusContent()}
       </div>
-      <div className="col-span-2">
-        <div className="text-backround bg-light-dark shadow-card flex flex-wrap items-center rounded p-3">
-          <div className="p-3">
-            <div className="text-title font-bold">Teams registered</div>
-            <div className="text-muted font-display">
-              {tournament.total_participants / tournament.team_size}/
-              {tournament.max_teams}
-            </div>
+      {/* danger zone */}
+      <div className="col-span-3">
+        <h4 className="text-title mb-3 text-lg font-bold">Danger Zone</h4>
+        <div className="text-title border-border flex items-center justify-between rounded border p-4">
+          <div>
+            <p className="font-bold">Delete this tournament</p>
+            <p className="font-normal">
+              Once you delete a tournament, there is no going back. Please be
+              certain.{' '}
+            </p>
           </div>
-          <div className="p-3">
-            <div className="text-title font-bold">Classification</div>
-            <div className="text-muted font-display">
-              {getClassifications(tournament)}
-            </div>
-          </div>
-          <div className="p-3 ">
-            <div className="text-title font-bold">Entry Fee</div>
-            <div className="text-muted font-display">
-              {getEntryFee(tournament)}
-            </div>
-          </div>
-          <div className="p-3">
-            <div className="text-title font-bold">Prize Pool</div>
-            <div className="text-muted font-display">
-              {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
-              {tournament.prize_pool_enabled &&
-                `${tournament.currency} ${toCurrency(
-                  getPotentialPrizePool(tournament)
-                )}`}
-            </div>
-          </div>
-          <div className="p-3">
-            <div className="text-title font-bold">Registration start date</div>
-            <div className="text-muted font-display">
-              {datetime(tournament.registration_start_date, { time: false })}
-            </div>
-          </div>
-          <div className="p-3">
-            <div className="text-title font-bold">Start date</div>
-            <div className="text-muted font-display">
-              {moment(
-                new Date(
-                  `${tournament.start_date}T${tournament.start_time}+00:00`
-                )
-              ).format('YYYY-MM-D hh:mm A')}
-            </div>
-          </div>
-          <div className="p-3">
-            <div className="text-title font-bold">Check-in window</div>
-            <div className="text-muted font-display">
-              {tournament.check_in_duration} minutes
-            </div>
-          </div>
+          <Button color="danger" shape="rounded" size="mini">
+            Delete
+          </Button>
         </div>
       </div>
     </div>

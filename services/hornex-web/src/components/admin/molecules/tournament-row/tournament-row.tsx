@@ -3,6 +3,7 @@ import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import { getGame, getStatus } from '@/lib/models';
 import clsx from 'clsx';
 import { UsersIcon } from 'lucide-react';
+import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC } from 'react';
@@ -73,8 +74,7 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
           <div className="block">
             <div className="text-body">Start Date</div>
             <div className="text-title text-sm">
-              {tournament.start_date} {tournament.start_time}
-              {new Date().getTimezoneOffset() / -60}
+              {moment(tournament.start_date).format('YYYY-MM-DD')}
             </div>
           </div>
         </div>

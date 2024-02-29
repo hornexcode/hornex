@@ -4,17 +4,15 @@ import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournamen
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
 import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
 import { useTournament } from '@/contexts';
-import {
-  getStatus,
-  getStatusStep,
-  Registration,
-  Tournament,
-} from '@/lib/models';
+import { getStatus, getStatusStep, Registration } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import { GameID } from '@/pages/[platform]/[game]/tournaments/[id]';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { UsersIcon } from 'lucide-react';
 import { FC } from 'react';
+
+const { useData: useGetTournamentRegistrationsQuery } = dataLoader<
+  Registration[]
+>('getTournamentRegistrations');
 
 type TournamentDetailsTemplateProps = {
   participantCheckedInStatus?: boolean;
@@ -23,6 +21,12 @@ type TournamentDetailsTemplateProps = {
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
   const { tournament, isRegistered } = useTournament();
   const steps = getStatusStep(tournament);
+
+  const { data: registrations } = useGetTournamentRegistrationsQuery({
+    uuid: tournament.uuid,
+  });
+
+  console.log('registrations', registrations);
 
   return (
     <div className="mx-auto px-8 pt-8">
@@ -33,15 +37,13 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       <div className="mt-8 flex space-x-8">
         <div className="lg:w-[300px]">
           <div className="bg-medium-dark shadow-card col-span-1 space-y-4 rounded p-4">
-            <span className="text-title font-roboto-condensed font-extrabold uppercase">
-              Tournament status
-            </span>
+            <span className="text-muted">Tournament status</span>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-brand font-source-sans">
                   {getStatus(tournament)}
                 </span>
-                <div className="text-xs text-gray-500">
+                <div className="text-muted">
                   step {steps[0]} / {steps[1]}
                 </div>
               </div>
@@ -50,10 +52,8 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
                 currentStep={steps[0]}
               />
               <div className="">
-                <div className="text-title flex items-center">
-                  <div className="text-xl">
-                    {tournament.total_participants / tournament.team_size}/32
-                  </div>
+                <div className="text-title font-display flex items-center">
+                  {registrations?.length || 0}/{tournament.max_teams}
                   <UsersIcon className="ml-2 h-5 w-5" />
                 </div>
               </div>

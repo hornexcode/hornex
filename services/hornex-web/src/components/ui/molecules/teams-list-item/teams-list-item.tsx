@@ -34,7 +34,7 @@ import {
   TrashIcon,
   UserPlus,
   Users,
-  UsersIcon
+  UsersIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';

@@ -4,16 +4,17 @@ const routes = {
   privacyPolicy: 'privacy-policy',
   about: '',
   contactUs: 'contact-us',
+  registrations: '/registrations',
   login: 'login',
   register: 'register',
-  compete: 'compete',
+  compete: '/compete',
   tournaments: 'tournaments',
   platform: 'platform',
   teams: 'teams',
   createTeam: 'teams/create',
-  signIn: 'signin',
+  signIn: '/signin',
   admin: {
-    tournaments: 'admin/tournaments',
+    tournaments: '/admin/tournaments',
   },
 };
 

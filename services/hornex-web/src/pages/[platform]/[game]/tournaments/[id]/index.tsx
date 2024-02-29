@@ -20,8 +20,9 @@ export type GameID = {
 
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
 const { fetch: getGameIds } = dataLoader<GameID[]>('getGameIds');
-const { fetch: getRegistrations } =
-  dataLoader<Registration[]>('getRegistrations');
+const { fetch: getTournamentRegistrations } = dataLoader<Registration[]>(
+  'getTournamentRegistrations'
+);
 
 type TournamentProps = {
   params: {
@@ -88,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   const { data: registrations, error: registrationsError } =
-    await getRegistrations(
+    await getTournamentRegistrations(
       {
         uuid: tournament.uuid,
         game: ctx.query.game || '',

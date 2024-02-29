@@ -1,7 +1,7 @@
 import { user } from './User';
 import z from 'zod';
 
-export const team = z.object({
+export const teamSchema = z.object({
   id: z.string(),
   name: z.string(),
   created_by: z.string(),
@@ -9,7 +9,7 @@ export const team = z.object({
   platform: z.string(),
   num_members: z.number(),
 });
-export type Team = z.infer<typeof team>;
+export type Team = z.infer<typeof teamSchema>;
 
 export const teamInvite = z.object({
   id: z.string().uuid(),

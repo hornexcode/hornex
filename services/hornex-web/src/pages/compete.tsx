@@ -43,7 +43,7 @@ const CompetePage = ({
   if (!data) return null;
 
   return (
-    <div className="px-8 pt-16">
+    <div className="px-8 pt-8">
       <div className="relative h-[300px] w-full overflow-hidden bg-[url('/images/league-of-legends/baron.jpg')] bg-cover">
         <div className="bg-dark/50 absolute top-0 h-full w-full"></div>
         <div className="absolute top-0 h-full w-full bg-gradient-to-t from-black"></div>

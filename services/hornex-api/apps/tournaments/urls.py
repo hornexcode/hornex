@@ -3,6 +3,7 @@ from django.urls import path
 from apps.tournaments.views import (
     OrganizerTournamentViewSet,
     PublicTournamentViewSet,
+    RegistrationViewSet,
     TournamentRegistrationViewSet,
     check_in,
     create_and_register_team,
@@ -15,23 +16,43 @@ from apps.tournaments.views import (
 app_name = "tournaments"
 
 urlpatterns = [
-    # organizer
+    # Organizer Resources
     path(
-        "/organizer/tournaments",
+        "/org/tournaments",
         OrganizerTournamentViewSet.as_view({"post": "create", "get": "list"}),
         name="dashboard-tournaments-controller",
     ),
     path(
-        "/organizer/tournaments/<str:uuid>",
+        "/org/tournaments/<str:uuid>",
         OrganizerTournamentViewSet.as_view({"patch": "partial_update"}),
         name="details",
     ),
     path(
-        "/organizer/tournaments/<str:uuid>/start",
+        "/org/tournaments/<str:uuid>/start",
         OrganizerTournamentViewSet.as_view({"post": "start"}),
-        name="details",
+        name="start",
     ),
-    # web
+    path(
+        "/org/tournaments/<str:uuid>/registered-teams",
+        OrganizerTournamentViewSet.as_view({"get": "registered_teams"}),
+        name="registered-teams",
+    ),
+    path(
+        "/org/tournaments/<str:uuid>/registrations",
+        OrganizerTournamentViewSet.as_view({"get": "registrations"}),
+        name="registrations",
+    ),
+    path(
+        "/org/tournaments/<str:uuid>/registered-teams/<str:team_uuid>/delete",
+        OrganizerTournamentViewSet.as_view({"delete": "delete_registered_team"}),
+        name="delete-registered-teams",
+    ),
+    path(
+        "/org/registrations/<str:uuid>/delete",
+        RegistrationViewSet.as_view({"delete": "destroy"}),
+        name="delete-registered-teams",
+    ),
+    # Public Tournament Resources
     path(
         "/tournaments/<str:uuid>/registrations",
         TournamentRegistrationViewSet.as_view({"post": "register", "get": "list"}),
@@ -52,10 +73,16 @@ urlpatterns = [
         PublicTournamentViewSet.as_view({"get": "prizes"}),
         name="list-prizes",
     ),
+    # Registrations Resource
     path(
         "/registrations/<str:uuid>",
         TournamentRegistrationViewSet.as_view({"get": "retrieve"}),
         name="registration-details",
+    ),
+    path(
+        "/registrations",
+        RegistrationViewSet.as_view({"get": "list"}),
+        name="registrations",
     ),
     path(
         "/tournaments/<str:tournament>/teams/<str:team>/check-in",

@@ -9,7 +9,7 @@ type Match = {
 };
 
 const { useData: useGetTournamentMatchesQuery } = dataLoader<Match[]>(
-  'organizer:tournament:matches'
+  'org:tournament:matches'
 );
 
 const AdminTournamentMatchesTabContent: FC<

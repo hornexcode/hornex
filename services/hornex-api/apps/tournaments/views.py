@@ -39,7 +39,7 @@ from apps.tournaments.serializers import (
     LeagueOfLegendsTournamentSerializer,
     ParticipantSerializer,
     PrizeSerializer,
-    RegistrationReadSerializer,
+    RegistrationSerializer,
     TournamentSerializer,
 )
 from apps.tournaments.usecases import (
@@ -183,6 +183,39 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
+    @action(detail=True, methods=["get"])
+    def registered_teams(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        if tournament.organizer != request.user:
+            return Response(
+                {"error": "You are not authorized to perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        registrations = Registration.objects.filter(tournament=tournament)
+        teams = [registration.team for registration in registrations]
+        serializer = TeamSerializer(teams, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=True, methods=["get"])
+    def registrations(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        if tournament.organizer != request.user:
+            return Response(
+                {"error": "You are not authorized to perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        registrations = Registration.objects.filter(tournament=tournament)
+        serializer = RegistrationSerializer(registrations, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
@@ -191,13 +224,22 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         return super().get_queryset()
 
 
+class OrganizerRegistrationViewSet(viewsets.ModelViewSet):
+    queryset = Registration.objects.all()
+    serializer_class = RegistrationSerializer
+    lookup_field = "uuid"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    lookup_field = "uuid"
+
+
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):
     """
     Manage registrations for a tournament
     """
 
     queryset = Registration.objects.all()
-    serializer_class = RegistrationReadSerializer
+    serializer_class = RegistrationSerializer
     lookup_field = "uuid"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -219,10 +261,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         tournament = Tournament.objects.get(uuid=kwargs["uuid"])
-        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
-        teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
         self.queryset = self.queryset.filter(
-            team__in=teams,
             tournament=tournament,
             status__in=[
                 Registration.RegistrationStatusOptions.PENDING,
@@ -242,29 +281,15 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Registration.objects.all()
-    serializer_class = RegistrationReadSerializer
+    serializer_class = RegistrationSerializer
     lookup_field = "uuid"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def list(self, request, *args, **kwargs):
-        tournament = Tournament.objects.get(uuid=kwargs["uuid"])
-        gameids = GameID.objects.filter(user=request.user).values_list("id", flat=True)
-        print("gameids", gameids)
+    def get_queryset(self):
+        gameids = GameID.objects.filter(user=self.request.user).values_list("id", flat=True)
         teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
-        self.queryset = self.queryset.get(
-            team__in=teams,
-            tournament=tournament,
-            status__in=[
-                Registration.RegistrationStatusOptions.PENDING,
-                Registration.RegistrationStatusOptions.ACCEPTED,
-            ],
-        )
-        serializer = self.get_serializer(self.queryset, many=True)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK,
-        )
+        return super().get_queryset().filter(team__in=teams)
 
 
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
