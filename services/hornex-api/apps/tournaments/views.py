@@ -30,6 +30,7 @@ from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import (
     CheckInTournamentParams,
     CreateAndRegisterTeamIntoTournamentParams,
+    FinishMatchParams,
     RegisterSerializer,
     RegisterTeamIntoTournamentParams,
     StartMatchParams,
@@ -59,6 +60,8 @@ from apps.tournaments.usecases.organizer import (
     CheckInTournamentUseCase,
     CreateTournamentUseCase,
     CreateTournamentUseCaseParams,
+    FinishMatchInput,
+    FinishMatchUseCase,
     StartMatchInput,
     StartMatchUseCase,
 )
@@ -246,9 +249,20 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             }
         )
         params.is_valid(raise_exception=True)
-
         StartMatchUseCase().execute(StartMatchInput(**params.validated_data))
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
+    def finish_match(self, request, *args, **kwargs):
+        params = FinishMatchParams(
+            data={
+                **request.data,
+                "tournament_uuid": kwargs.get("uuid"),
+                "match_uuid": kwargs.get("match_uuid"),
+                "organizer_id": request.user.id,
+            }
+        )
+        params.is_valid(raise_exception=True)
+        FinishMatchUseCase().execute(FinishMatchInput(**params.validated_data))
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):

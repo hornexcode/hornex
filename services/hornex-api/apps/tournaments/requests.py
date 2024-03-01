@@ -65,3 +65,10 @@ class StartMatchParams(serializers.Serializer):
     tournament_uuid = serializers.UUIDField()
     match_uuid = serializers.UUIDField()
     user_id = serializers.UUIDField()
+
+
+class FinishMatchParams(serializers.Serializer):
+    tournament_uuid = serializers.UUIDField()
+    match_uuid = serializers.UUIDField()
+    user_id = serializers.UUIDField()
+    winner_id = serializers.UUIDField()
