@@ -136,7 +136,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   };
 
   return (
-    <div className="shadow-sketch rounded">
+    <div className="shadow-card rounded">
       {/* end debugger */}
       <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image

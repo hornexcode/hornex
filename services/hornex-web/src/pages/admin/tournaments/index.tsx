@@ -29,9 +29,7 @@ function DashboardPage() {
   return (
     <div className="container mx-auto space-y-12 pt-12">
       <div className="flex items-center">
-        <h1 className="text-title font-roboto-condensed text-3xl">
-          Manage Tournaments
-        </h1>
+        <h1 className="text-title text-2xl">Manage Tournaments</h1>
         <div className="ml-auto">
           <Button
             onClick={() => {
@@ -80,15 +78,13 @@ const TournamentRow = ({ tournament }: { tournament: Tournament }) => {
       <div className="col-span-6 flex items-center">
         <PodiumIcon className="text-title mr-4 w-10" />
         <div>
-          <div className="font-roboto-condensed text-title text-lg  tracking-wide">
-            {tournament.name}
-          </div>
-          <div className="text-muted">{tournament.game}</div>
+          <div className="text-title text-lg">{tournament.name}</div>
+          <div className="text-muted font-medium">{tournament.game}</div>
         </div>
       </div>
 
       <div className="col-span-2 flex items-center">
-        <div className="text-title text-lg font-normal">
+        <div className="text-title font-normal">
           {moment(tournament.start_date).format('MMM Do, YYYY')}
         </div>
       </div>

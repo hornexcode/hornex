@@ -1,6 +1,7 @@
 import { ConnectAccountButton } from '../../atoms/connect-account-button';
 import { RegisterButton } from '../../atoms/register-button';
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
+import { Separator } from '../../separator';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
 import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
 import { useTournament } from '@/contexts';
@@ -26,8 +27,6 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
     uuid: tournament.uuid,
   });
 
-  console.log('registrations', registrations);
-
   return (
     <div className="mx-auto px-8 pt-8">
       {/* connect account */}
@@ -36,9 +35,11 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
       <div className="mt-8 flex space-x-8">
         <div className="lg:w-[300px]">
-          <div className="bg-medium-dark shadow-card col-span-1 space-y-4 rounded p-4">
-            <span className="text-muted">Tournament status</span>
-            <div className="space-y-2">
+          <div className="bg-medium-dark shadow-card col-span-1 space-y-2 rounded">
+            <div className="px-4 pt-4">
+              <span className="text-muted">Tournament status</span>
+            </div>
+            <div className="space-y-2 px-4 pb-4">
               <div className="flex items-center justify-between">
                 <span className="text-brand font-source-sans">
                   {getStatus(tournament)}
@@ -51,14 +52,8 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
                 steps={steps[1]}
                 currentStep={steps[0]}
               />
-              <div className="">
-                <div className="text-title font-display flex items-center">
-                  {registrations?.length || 0}/{tournament.max_teams}
-                  <UsersIcon className="ml-2 h-5 w-5" />
-                </div>
-              </div>
             </div>
-            <div className="flex items-center justify-center py-3 text-center text-amber-500">
+            <div className="border-border flex items-center justify-center border-t border-dashed p-4 text-center text-amber-500">
               {isRegistered ? (
                 <>
                   <CheckCircledIcon className="mr-2 h-4 w-4" />

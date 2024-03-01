@@ -41,10 +41,7 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
         user = get_object_or_404(User, id=params.user_id)
         tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
 
-        if Team.objects.filter(name=params.name).exists():
-            raise ValidationError({"error": "Team name already in use"})
-
-        team = Team.objects.create(name=params.name, created_by=user)
+        team, _ = Team.objects.get_or_create(name=params.name, created_by=user)
 
         for member_email in [
             user.email,
@@ -69,21 +66,20 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
 
             team.add_member(game_id=game_id)
 
-        print(tournament.challonge_tournament_id, team.name)
         try:
             participant = ChallongeTournament.add_team(
                 tournament=tournament.challonge_tournament_id, team_name=team.name
             )
-        except Exception:
-            raise Exception("Failed to add participant at challonge")
+        except Exception as e:
+            raise ValidationError({"detail": e.args[0]})
 
         Registration.objects.create(
             tournament=tournament,
             team=team,
-            challonge_participant_id=participant.id,
             game_slug=tournament.game,
             platform_slug=tournament.platform,
             status=Registration.RegistrationStatusOptions.ACCEPTED,
+            challonge_participant_id=participant["id"],
         )
 
         return CreateAndRegisterTeamIntoTournamentOutput(team)

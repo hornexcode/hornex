@@ -1,7 +1,6 @@
 import uuid
 from abc import abstractmethod
 from datetime import UTC, datetime, timedelta
-from typing import Optional
 
 import structlog
 from django.conf import settings
@@ -113,14 +112,12 @@ class Tournament(BaseModel):
     def _has_start_datetime(self):
         return bool(self.start_date) and bool(self.start_time)
 
-    def start(self, timestamp: Optional[datetime]):
-        if not timestamp:
-            timestamp = datetime.now(tz=UTC)
-
+    def start(self):
+        now = datetime.now(tz=UTC)
         self.status = Tournament.StatusOptions.RUNNING
-        if datetime.combine(self.start_date, self.start_time, tzinfo=UTC) > timestamp:
-            self.start_date = timestamp.date()
-            self.start_time = timestamp.time()
+        if datetime.combine(self.start_date, self.start_time, tzinfo=UTC) > now:
+            self.start_date = now.date()
+            self.start_time = now.time()
         self.save()
 
     def get_number_of_rounds(self):
@@ -299,50 +296,48 @@ class Registration(models.Model):
 
 class Match(models.Model):
     class StatusType(models.TextChoices):
-        QUEUED = "queued"
-        ONGOING = "ongoing"
+        SCHEDULED = "scheduled"
+        UNDERWAY = "underway"
         FINISHED = "finished"
         CANCELLED = "cancelled"
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    round = models.IntegerField()
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    team_a_id = models.UUIDField()
-    team_b_id = models.UUIDField()
-    winner_id = models.UUIDField(null=True, blank=True)
-    loser_id = models.UUIDField(null=True, blank=True)
+    team_a = models.ForeignKey(
+        "teams.Team", related_name="team_a", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    team_b = models.ForeignKey(
+        "teams.Team", related_name="team_b", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    winner = models.ForeignKey(
+        "teams.Team", related_name="winner", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    loser = models.ForeignKey(
+        "teams.Team", related_name="loser", on_delete=models.SET_NULL, null=True, blank=True
+    )
     status = models.CharField(
         max_length=50,
         choices=StatusType.choices,
-        default=StatusType.QUEUED,
+        default=StatusType.SCHEDULED,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
+
+    challonge_match_id = models.IntegerField()
+
+    metadata = models.JSONField(default=dict, blank=True, null=True)
 
     def __str__(self) -> str:
         return f"Match ({self.id}) | round: {0} | {self.tournament.name}"
 
-    @property
-    def team_a(self):
-        return Team.objects.get(id=self.team_a_id)
-
-    @property
-    def team_b(self):
-        return Team.objects.get(id=self.team_b_id)
-
-    def set_winner(self, team_id):
-        if team_id not in [self.team_a_id, self.team_b_id]:
-            raise ValueError("Invalid team id")
-
-        self.winner_id = team_id
-        self.loser_id = self.team_a_id if team_id == self.team_b_id else self.team_b_id
-
+    def set_winner(self, team):
+        self.winner = team
+        self.loser = self.team_a if self.team_a != team else self.team_b
+        self.status = Match.StatusType.FINISHED
+        self.finished_at = datetime.now(tz=UTC)
         self.save()
-
-    def get_winner(self):
-        return Team.objects.get(id=self.winner_id)
-
-    def get_loser(self):
-        return Team.objects.get(id=self.loser_id)
 
 
 class Checkin(models.Model):

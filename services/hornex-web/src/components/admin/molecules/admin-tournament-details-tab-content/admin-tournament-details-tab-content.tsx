@@ -17,10 +17,12 @@ import {
 } from '@/pages/admin/[platform]/[game]/tournaments/[id]/admin-tournament-details.handlers';
 import { datetime } from '@/utils/datetime';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
   const { tournament } = useAdminTournament();
+  const router = useRouter();
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
   );
@@ -41,9 +43,9 @@ const AdminTournamentGeneralInfo = () => {
     });
 
     if (data && !error) {
-      setSteps(getStatusStep(data));
+      setLoading(false);
+      router.reload();
     }
-    setLoading(false);
   };
 
   const onStartTournamentHandler = async () => {

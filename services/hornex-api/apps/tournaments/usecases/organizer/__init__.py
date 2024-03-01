@@ -7,6 +7,10 @@ from apps.tournaments.usecases.organizer.create_tournament import (
     CreateTournamentUseCase,
     CreateTournamentUseCaseParams,
 )
+from apps.tournaments.usecases.organizer.start_tournament import (
+    StartTournamentUseCase,
+    StartTournamentUseCaseParams,
+)
 
 __all__ = [
     "CheckInTournamentInput",
@@ -14,4 +18,6 @@ __all__ = [
     "CheckInTournamentUseCase",
     "CreateTournamentUseCase",
     "CreateTournamentUseCaseParams",
+    "StartTournamentUseCase",
+    "StartTournamentUseCaseParams",
 ]

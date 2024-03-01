@@ -27,6 +27,7 @@ const { post: createAndRegisterTeam } = dataLoader<
 const SelectTeamTab = () => {
   const { toast } = useToast();
   const { closeModal } = useModal();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof mountTeamFormSchema>>({
     resolver: zodResolver(mountTeamFormSchema),
@@ -53,7 +54,8 @@ const SelectTeamTab = () => {
         title: 'Registration created',
         description: 'Registration created successfully.',
       });
-      closeModal();
+
+      router.reload();
     } catch (err) {
       console.log(err);
       return toast({
@@ -143,10 +145,22 @@ const SelectTeamTab = () => {
                   </FormItem>
                 )}
               />
-
-              <Button size="small" shape="rounded" type="submit">
-                Submit
-              </Button>
+              <div className="flex items-center justify-end">
+                <Button
+                  onClick={() => {
+                    closeModal();
+                  }}
+                  shape="rounded"
+                  variant="ghost"
+                  color="gray"
+                  className="mr-4"
+                >
+                  Cancel
+                </Button>
+                <Button shape="rounded" type="submit">
+                  Submit
+                </Button>
+              </div>
             </form>
           </Form>
         </div>

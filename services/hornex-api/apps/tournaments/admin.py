@@ -4,13 +4,21 @@ from django.utils.translation import ngettext
 from apps.tournaments.models import (
     Checkin,
     LeagueOfLegendsLeague,
+    LeagueOfLegendsProvider,
     LeagueOfLegendsTournament,
+    Match,
     Participant,
     Prize,
     Registration,
 )
 
 admin.site.register([LeagueOfLegendsLeague, LeagueOfLegendsTournament, Prize, Checkin])
+
+
+@admin.register(Match)
+class MatchAdmin(admin.ModelAdmin):
+    list_display = ["id", "status", "round", "tournament"]
+    search_fields = ["team_a__name", "team_b__name"]
 
 
 class RegistrationAdmin(admin.ModelAdmin):
@@ -39,3 +47,4 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 admin.site.register(Registration, RegistrationAdmin)
 admin.site.register(Participant)
+admin.site.register(LeagueOfLegendsProvider)

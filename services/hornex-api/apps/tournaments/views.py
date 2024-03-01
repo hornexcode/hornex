@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import structlog
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
@@ -52,6 +50,8 @@ from apps.tournaments.usecases import (
     RegisterTeamIntoTournamentInput,
     RegisterTeamIntoTournamentUseCase,
     RegisterUseCase,
+    StartTournamentUseCase,
+    StartTournamentUseCaseParams,
 )
 from apps.tournaments.usecases.organizer import (
     CheckInTournamentInput,
@@ -176,15 +176,19 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def start(self, request, *args, **kwargs):
-        tournament = self.get_object()
-        timestamp = datetime.fromisoformat(request.data.get("now"))
-        tournament.start(timestamp=timestamp)
-
-        serializer = self.serializer_class(instance=tournament)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK,
-        )
+        try:
+            uc = StartTournamentUseCase()
+            tournament = uc.execute(StartTournamentUseCaseParams(uuid=kwargs["uuid"]))
+            serializer = self.serializer_class(instance=tournament)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     @action(detail=True, methods=["get"])
     def registered_teams(self, request, *args, **kwargs):
