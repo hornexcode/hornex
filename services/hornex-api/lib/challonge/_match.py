@@ -35,7 +35,7 @@ class ValueObject(dict[str, any]):
 
 
 class Match(ValueObject):
-    OBJECT_NAME: ClassVar[str] = "tournament"
+    OBJECT_NAME: ClassVar[str] = "match"
 
     attachment_count: Optional[int]
     created_at: str
@@ -118,7 +118,7 @@ class Match(ValueObject):
             raise cls.on_response_error(resp)
 
         data = resp.json()
-        return cast("Match", cls.contruct_from(data["match"]))
+        return cast(Match, cls.contruct_from(data["match"]))
 
     @classmethod
     def mark_as_underway(cls, tournament: int, match: int) -> "Match":
