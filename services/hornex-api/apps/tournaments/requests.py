@@ -64,4 +64,4 @@ class CheckInTournamentParams(serializers.Serializer):
 class StartMatchParams(serializers.Serializer):
     tournament_uuid = serializers.UUIDField()
     match_uuid = serializers.UUIDField()
-    organizer_id = serializers.UUIDField()
+    user_id = serializers.UUIDField()

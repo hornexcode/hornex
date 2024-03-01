@@ -31,9 +31,6 @@ class Team(BaseModel):
     def add_member(self, game_id, is_admin=False):
         Member.objects.create(team=self, game_id=game_id, is_admin=is_admin)
 
-    def __str__(self) -> str:
-        return f"{self.name} ({self.id})"
-
 
 class Member(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -41,7 +38,7 @@ class Member(models.Model):
     is_admin = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return f"{self.game_id.nickname} - {self.team.name}"
+        return self.game_id.nickname
 
 
 class Invite(models.Model):

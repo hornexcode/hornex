@@ -242,7 +242,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             data={
                 "tournament_uuid": kwargs.get("uuid"),
                 "match_uuid": kwargs.get("match_uuid"),
-                "organizer_id": request.user.id,
+                "user_id": request.user.id,
             }
         )
         params.is_valid(raise_exception=True)
