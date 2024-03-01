@@ -249,6 +249,9 @@ class Rule(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Prize(models.Model):
     tournament = models.ForeignKey(Tournament, related_name="prizes", on_delete=models.CASCADE)
