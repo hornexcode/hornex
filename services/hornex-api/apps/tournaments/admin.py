@@ -10,9 +10,10 @@ from apps.tournaments.models import (
     Participant,
     Prize,
     Registration,
+    Rule,
 )
 
-admin.site.register([LeagueOfLegendsLeague, LeagueOfLegendsTournament, Prize, Checkin])
+admin.site.register([LeagueOfLegendsLeague, LeagueOfLegendsTournament, Prize, Checkin, Rule])
 
 
 @admin.register(Match)

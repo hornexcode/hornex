@@ -220,8 +220,8 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
               {/* Entry fee */}
               <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
-                <div className="text-body text-sm">Entry fee</div>
-                <div className="text-title font-display text-sm">
+                <div className="text-muted text-sm font-normal">Entry fee</div>
+                <div className="text-title">
                   {tournament.is_entry_free
                     ? 'Free'
                     : `R$ ${toCurrency(tournament.entry_fee)}`}

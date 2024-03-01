@@ -69,7 +69,8 @@ class Tournament(BaseModel):
 
     challonge_tournament_id = models.IntegerField(null=True, blank=True)
     challonge_tournament_url = models.URLField(max_length=500, blank=True)
-    checked_in = models.BooleanField(default=False)
+
+    about = models.TextField(default="", blank=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -95,9 +96,6 @@ class Tournament(BaseModel):
 
     def _get_number_of_teams(self):
         return self.teams.count()
-
-    def _get_key(self):
-        return
 
     def _is_bracket_generation_allowed(self):
         if self._is_first_round():
@@ -244,6 +242,12 @@ class Tournament(BaseModel):
 
     def checkin(self):
         raise NotImplementedError
+
+
+class Rule(models.Model):
+    tournament = models.ForeignKey(Tournament, related_name="rules", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
 
 
 class Prize(models.Model):

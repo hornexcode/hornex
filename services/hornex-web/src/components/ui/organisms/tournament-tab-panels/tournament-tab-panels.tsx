@@ -1,3 +1,4 @@
+import TournamentDetailsPrizesTabContent from '@/components/ui/molecules/tournament-details-prizes-tab-content';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Prize, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
@@ -26,10 +27,10 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
         <TabsTrigger value="brackets">Brackets</TabsTrigger>
         <TabsTrigger value="standings">Standings</TabsTrigger>
       </TabsList>
-      <TabsContent value="overview" className="bg-light-dark p-4">
-        <div className="box space-y-12">
-          <div className="block">
-            <h3 className="text-sm uppercase">Game & Region</h3>
+      <TabsContent value="overview" className="bg-light-dark">
+        <div className="box">
+          <div className="border-border block border-b border-dashed p-4">
+            <h3 className="text-sm">Game & Region</h3>
             <div className="flex flex-wrap items-center">
               <div className="border-muted block border-r border-dashed pr-5">
                 <span className="text-title font-normal">
@@ -41,8 +42,9 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
               </div>
             </div>
           </div>
-          <div className="block">
-            <h3 className="text-sm uppercase">Date & Time</h3>
+
+          <div className="block p-4">
+            <h3 className="text-sm">Date & Time</h3>
             <div className="flex flex-wrap items-center">
               <div className="border-muted block border-r border-dashed pr-4">
                 <span className="text-title font-normal">
@@ -58,11 +60,8 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
           </div>
         </div>
       </TabsContent>
-      <TabsContent value="prizes" className="p-3">
-        <ul>
-          {prizes &&
-            prizes.map((prize, idx) => <Prize prize={prize} key={idx} />)}
-        </ul>
+      <TabsContent value="prizes" className="">
+        <TournamentDetailsPrizesTabContent />
       </TabsContent>
       <TabsContent value="rules">
         <p>Rules</p>

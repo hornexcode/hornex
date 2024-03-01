@@ -1,14 +1,11 @@
-import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import Button from '@/components/ui/atoms/button';
 import { ExpiredLoginButton } from '@/components/ui/atoms/expired-login-button';
 import { PodiumIcon } from '@/components/ui/atoms/icons';
 import { Plus } from '@/components/ui/atoms/icons/plus';
 import { AppLayout } from '@/layouts';
-import { getGame, Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import moment from 'moment';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import React from 'react';
@@ -40,8 +37,8 @@ function DashboardPage() {
             className="mt-4"
           >
             <div className="flex items-center">
-              <Plus className="mr-2 w-4" />
-              <span className="text-lg">Create Tournament</span>
+              <Plus className="mr-2 w-3" />
+              <span className="">Create Tournament</span>
             </div>
           </Button>
         </div>

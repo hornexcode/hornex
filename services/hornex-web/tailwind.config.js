@@ -25,6 +25,11 @@ module.exports = {
         'JetBrains Mono',
         'monospace',
       ],
+      'goldman-sans': [
+        'var(--font-goldman-sans)',
+        'JetBrains Mono',
+        'monospace',
+      ],
     },
     container: {
       padding: {
@@ -53,7 +58,7 @@ module.exports = {
         // dark: '#16191f',
         dark: '#1b1b1f',
         primary: '#21252d',
-        muted: '#646668',
+        muted: '#656669',
         accent: '#21252d',
         border: '#404040',
         background: '#323437',

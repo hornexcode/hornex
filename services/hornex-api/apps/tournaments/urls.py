@@ -25,7 +25,7 @@ urlpatterns = [
     ),
     path(
         "/org/tournaments/<str:uuid>",
-        OrganizerTournamentViewSet.as_view({"patch": "partial_update"}),
+        OrganizerTournamentViewSet.as_view({"patch": "partial_update", "get": "retrieve"}),
         name="details",
     ),
     path(
