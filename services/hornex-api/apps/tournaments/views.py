@@ -32,6 +32,7 @@ from apps.tournaments.requests import (
     CreateAndRegisterTeamIntoTournamentParams,
     RegisterSerializer,
     RegisterTeamIntoTournamentParams,
+    StartMatchParams,
     TournamentCreateSerializer,
 )
 from apps.tournaments.serializers import (
@@ -58,6 +59,8 @@ from apps.tournaments.usecases.organizer import (
     CheckInTournamentUseCase,
     CreateTournamentUseCase,
     CreateTournamentUseCaseParams,
+    StartMatchInput,
+    StartMatchUseCase,
 )
 from core.route import extract_game_and_platform
 from jwt_token.authentication import JWTAuthentication
@@ -233,6 +236,20 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             serializer.data,
             status=status.HTTP_200_OK,
         )
+
+    def start_match(self, request, *args, **kwargs):
+        params = StartMatchParams(
+            data={
+                "tournament_uuid": kwargs.get("uuid"),
+                "match_uuid": kwargs.get("match_uuid"),
+                "organizer_id": request.user.id,
+            }
+        )
+        params.is_valid(raise_exception=True)
+
+        StartMatchUseCase().execute(StartMatchInput(**params.validated_data))
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)

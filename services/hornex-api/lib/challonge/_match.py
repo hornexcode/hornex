@@ -121,9 +121,9 @@ class Match(ValueObject):
         return cast("Match", cls.contruct_from(data["match"]))
 
     @classmethod
-    def mark_as_undeway(cls, tournament: int, match: int) -> "Match":
+    def mark_as_underway(cls, tournament: int, match: int) -> "Match":
         """
-        Retrieve a set of tournaments created with your account.
+        Marks match as underway.
         """
         resp = request(
             "post",

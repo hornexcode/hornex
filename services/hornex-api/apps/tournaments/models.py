@@ -75,6 +75,9 @@ class Tournament(BaseModel):
     class Meta:
         ordering = ["-created_at"]
 
+    def __str__(self) -> str:
+        return f"{self.name} ({self.uuid})"
+
     def _get_last_round(self):
         # last_round = self.rounds.all().order_by("-created_at").first()
         # if not last_round:
@@ -334,7 +337,7 @@ class Match(models.Model):
     metadata = models.JSONField(default=dict, blank=True, null=True)
 
     def __str__(self) -> str:
-        return f"Match ({self.id}) | round: {0} | {self.tournament.name}"
+        return f"Match ({self.uuid}) | round: {self.round} | {self.tournament.name}"
 
     def set_winner(self, team):
         self.winner = team
