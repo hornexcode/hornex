@@ -41,9 +41,14 @@ class EndMatchUseCase:
         else:
             winner = match.team_b
 
-        scores_csv = f"{1 if match.team_a == winner else 0}-{1 if match.team_a != winner else 0}"
+        if match.team_a != winner and match.team_b != winner:
+            raise ValidationError({"error": f"Team {winner.name} does not belong to this match"})
 
         ch_winner: Registration = winner.registration_set.filter(tournament=tournament).first()
+        if not ch_winner:
+            raise ValidationError({"error": f"Team {winner.name} not registered at tournament"})
+
+        scores_csv = "1-0" if match.team_a == winner else "0-1"
 
         try:
             ch_match: ChallongeMatch = ChallongeMatch.update(

@@ -114,6 +114,7 @@ class LeagueOfLegendsTournamentFactory:
             max_teams=kwargs.get("max_teams", 32),
             team_size=kwargs.get("team_size", 5),
             open_classification=True,
+            challonge_tournament_id=kwargs.get("challonge_tournament_id", 1),
         )
 
         if allowed_league_entries is not None:
@@ -147,12 +148,13 @@ class MatchFactory:
 
         return Match.objects.create(
             tournament=tournament,
-            team_a_id=kwargs.get("team_a_id", team_a.id),
-            team_b_id=kwargs.get("team_b_id", team_b.id),
-            winner_id=kwargs.get("winner_id"),
-            loser_id=kwargs.get("loser_id"),
-            is_wo=kwargs.get("is_wo", False),
-            status=kwargs.get("status", Match.StatusType.FUTURE),
+            round=kwargs.get("round", 1),
+            team_a=kwargs.get("team_a", team_a),
+            team_b=kwargs.get("team_b", team_b),
+            winner=kwargs.get("winner"),
+            loser=kwargs.get("loser"),
+            status=kwargs.get("status", Match.StatusType.SCHEDULED),
+            challonge_match_id=kwargs.get("challonge_match_id", 1),
         )
 
 
@@ -165,7 +167,6 @@ class GameIdFactory:
         user = kwargs.get("user", UserFactory.new())
 
         return GameID.objects.create(
-            email=kwargs.get("email", fake.email()),
             user=user,
             game=kwargs.get("game", GameID.GameOptions.LEAGUE_OF_LEGENDS),
             nickname=fake.name(),
