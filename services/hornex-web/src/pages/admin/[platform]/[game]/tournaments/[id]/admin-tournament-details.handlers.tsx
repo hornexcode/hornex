@@ -18,11 +18,15 @@ const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
 const { submit: startTournament } = dataLoader<
   Tournament,
   { timestamp: number; now: Date }
->('organizer:tournament:start');
+>('org:tournament:start');
 
-const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
+const startTournamentHandler = ({
+  tournamentUUID,
+}: {
+  tournamentUUID: string;
+}) =>
   startTournament(
-    { tournamentId },
+    { uuid: tournamentUUID },
     {
       timestamp: Date.now(),
       now: new Date(),

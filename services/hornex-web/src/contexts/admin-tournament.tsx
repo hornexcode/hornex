@@ -1,13 +1,19 @@
 import { Participant, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
-import React, { createContext, ReactNode, useState } from 'react';
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
+
+const { useData: useGetTournamentQuery } = dataLoader<Tournament>(
+  'org:tournament:details'
+);
 
 export const AdminTournamentContext = createContext<{
   tournament: Tournament;
   isLoading: boolean;
+  refreshTournament: (tournament: Tournament) => void;
 }>({
   tournament: {} as Tournament,
   isLoading: false,
+  refreshTournament: async () => {},
 });
 
 export type AdminTournamentContextProviderProps = {
@@ -17,15 +23,33 @@ export type AdminTournamentContextProviderProps = {
 
 export const AdminTournamentContextProvider = ({
   children,
-  tournament,
+  tournament: initialTournament,
 }: AdminTournamentContextProviderProps) => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const [tournament, setTournament] = useState(initialTournament);
+
+  const { data, mutate } = useGetTournamentQuery({
+    uuid: tournament.uuid,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setTournament({ ...tournament, ...data });
+    }
+  }, [data]);
+
+  const refreshTournament = async (tournament: Tournament) => {
+    console.log(data, tournament);
+    mutate({ ...data, ...tournament });
+  };
 
   return (
     <AdminTournamentContext.Provider
       value={{
         tournament,
         isLoading,
+        refreshTournament,
       }}
     >
       {children}

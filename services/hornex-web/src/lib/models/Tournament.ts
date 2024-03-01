@@ -106,3 +106,13 @@ export function getPotentialPrizePool(tournnament: Tournament): number {
         0.7
     : 0;
 }
+
+export const TournamentStatusOptions = {
+  ANNOUNCED: 'announced',
+  REGISTERING: 'registering',
+  RUNNING: 'running',
+  FINISHED: 'finished',
+  CANCELLED: 'cancelled',
+};
+
+export type TournamentStatus = keyof typeof TournamentStatusOptions;

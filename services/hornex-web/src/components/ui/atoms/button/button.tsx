@@ -1,11 +1,10 @@
 import ButtonDrip from '@/components/ui/atoms/button/button-drip';
-import ButtonLoader from '@/components/ui/atoms/button/button-loader';
 import {
   LoaderSizeTypes,
   LoaderVariantTypes,
 } from '@/components/ui/atoms/loader';
 import cn from 'classnames';
-import { Loader, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 type ShapeNames = 'rounded' | 'pill' | 'circle';

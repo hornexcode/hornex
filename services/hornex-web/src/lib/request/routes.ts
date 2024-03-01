@@ -209,12 +209,16 @@ export const routes = {
     path: 'v1/tournaments/[tournamentId]/create-and-register-team',
     method: Method.POST,
   },
+  'org:tournament:details': {
+    path: 'v1/org/tournaments/[uuid]/details',
+    method: Method.GET,
+  },
   'organizer:tournament:update': {
     path: 'v1/org/tournaments/[tournamentId]',
     method: Method.PATCH,
   },
-  'organizer:tournament:start': {
-    path: 'v1/org/tournaments/[tournamentId]/start',
+  'org:tournament:start': {
+    path: 'v1/org/tournaments/[uuid]/start',
     method: Method.POST,
   },
   'org:tournament:check-in': {

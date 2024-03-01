@@ -1,9 +1,19 @@
-import TournamentStatusStepper from '../../../ui/organisms/tournament-status-stepper';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import Button from '@/components/ui/atoms/button';
+import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
 import { toast } from '@/components/ui/use-toast';
 import { useAdminTournament } from '@/contexts';
 import {
-  getClassifications,
   getEntryFee,
   getPotentialPrizePool,
   getStatus,
@@ -16,12 +26,13 @@ import {
   startTournamentHandler,
 } from '@/pages/admin/[platform]/[game]/tournaments/[id]/admin-tournament-details.handlers';
 import { datetime } from '@/utils/datetime';
+import { Loader2 } from 'lucide-react';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
-  const { tournament } = useAdminTournament();
+  const { tournament, refreshTournament } = useAdminTournament();
   const router = useRouter();
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
@@ -51,7 +62,7 @@ const AdminTournamentGeneralInfo = () => {
   const onStartTournamentHandler = async () => {
     setLoading(true);
     const { data, error } = await startTournamentHandler({
-      tournamentId: tournament.uuid,
+      tournamentUUID: tournament.uuid,
     });
     if (error) {
       toast({
@@ -60,12 +71,40 @@ const AdminTournamentGeneralInfo = () => {
       });
     }
     if (data && !error) {
+      refreshTournament(data);
       toast({
         title: 'Success',
         description: 'Tournament started successfully',
       });
     }
     setLoading(false);
+  };
+
+  const StartTournamentConfirmAlertDialog = () => {
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button shape="rounded" className="mt-4" size="mini">
+            Start tournament
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription className="text-lg">
+              This action cannot be undone. After you start the tournament, it
+              will create matches and teams will be locked.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={onStartTournamentHandler}>
+              Start tournament
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
   };
 
   const renderStatusContent = () => {
@@ -97,7 +136,7 @@ const AdminTournamentGeneralInfo = () => {
       case 'registering':
         return (
           <>
-            <div className="text-muted py-2">
+            <div className="text-title py-2">
               Registration end date:{' '}
               <span className="font-bold">
                 {moment(tournament.registration_start_date).format('YYYY-MM-D')}
@@ -106,16 +145,13 @@ const AdminTournamentGeneralInfo = () => {
                 date format: (year-month-day)
               </div>
             </div>
-            <Button
-              onClick={onStartTournamentHandler}
-              disabled={loading}
-              isLoading={loading}
-              shape="rounded"
-              className="mt-4"
-              size="mini"
-            >
-              Start tournament
-            </Button>
+            {!loading && <StartTournamentConfirmAlertDialog />}
+            {loading && (
+              <div className="flex items-center italic">
+                <Loader2 className="mr-2 w-5 animate-spin opacity-50" />{' '}
+                starting tournament
+              </div>
+            )}
           </>
         );
       case 'running':

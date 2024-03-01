@@ -1,11 +1,20 @@
-import { Registration, Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import {
   combineDateAndTime,
   isCheckInClosed,
   isCheckInOpen,
 } from '@/lib/utils';
-import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  use,
+  useEffect,
+  useState,
+} from 'react';
+
+const { useData: useGetTournamentQuery } =
+  dataLoader<Tournament>('getTournament');
 
 export const TournamentContext = createContext<{
   tournament: Tournament;
@@ -27,11 +36,24 @@ export type TournamentContextProviderProps = {
 
 export const TournamentContextProvider = ({
   children,
-  tournament,
+  tournament: initialTournament,
   isRegistered,
 }: TournamentContextProviderProps) => {
+  const [tournament, setTournament] = useState(initialTournament);
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckInOpened, setIsCheckInOpened] = useState(false);
+
+  const { data, mutate } = useGetTournamentQuery({
+    platform: tournament.platform,
+    game: tournament.game,
+    tournamentId: tournament.uuid,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setTournament({ ...tournament, ...data });
+    }
+  }, [mutate, data]);
 
   useEffect(() => {
     const checkinIsNotOpenAndHasNotClosed =

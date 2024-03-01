@@ -35,7 +35,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div className="bg-brand absolute right-0 top-[calc(50%-10px)] h-[20px] w-1"></div>
             )}
             <Link
-              href={`/${routes.compete}`}
+              href={`${routes.compete}`}
               className="group cursor-pointer transition-all"
             >
               <div className="flex items-center rounded-lg">
@@ -68,7 +68,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div className="bg-brand absolute right-0 top-[calc(50%-10px)] h-[20px] w-1"></div>
             )}
             <Link
-              href={`/${routes.registrations}`}
+              href={`${routes.registrations}`}
               className="group cursor-pointer transition-all"
             >
               <div className="flex items-center rounded-lg">
@@ -108,7 +108,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
               <div className="bg-brand absolute right-0 top-[calc(50%-10px)] h-[20px] w-1"></div>
             )}
             <Link
-              href={`/${routes.admin.tournaments}`}
+              href={`${routes.admin.tournaments}`}
               className="group cursor-pointer transition-all"
             >
               <div className="flex items-center rounded-lg">

@@ -1,6 +1,9 @@
 import { AdminTournamentMatchesTabContentProps } from './admin-tournament-matches-tab-content.types';
 import AdminTournamentMatch from '@/components/admin/molecules/admin-tournament-match/admin-tournament-match';
+import { useTournament } from '@/contexts/tournament';
+import { TournamentStatusOptions } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 
@@ -15,24 +18,16 @@ const { useData: useGetTournamentMatchesQuery } = dataLoader<Match[]>(
 const AdminTournamentMatchesTabContent: FC<
   AdminTournamentMatchesTabContentProps
 > = ({}) => {
-  const router = useRouter();
-  const { tournamentId } = router.query;
+  const { tournament } = useTournament();
 
-  // const {
-  //   data: matches,
-  //   isLoading,
-  //   error,
-  // } = useGetTournamentMatchesQuery({
-  //   tournamentId,
-  // });
-
-  // if (isLoading) {
-  //   return <p>loading</p>;
-  // }
-
-  // if (error) {
-  //   return <p>error loading matches</p>;
-  // }
+  if (tournament.status != TournamentStatusOptions.RUNNING) {
+    return (
+      <div className="text-muted mt-4 flex items-center font-normal">
+        <ExclamationCircleIcon className="text-warning mr-2 w-4" />
+        <p className="">Matches are only available for running tournaments</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col space-y-4">

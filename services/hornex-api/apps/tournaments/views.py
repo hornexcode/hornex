@@ -174,6 +174,17 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.organizer != request.user:
+            return Response(
+                {"error": "You are not authorized to perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     @action(detail=True, methods=["post"])
     def start(self, request, *args, **kwargs):
         try:
