@@ -117,7 +117,7 @@ export function TournamentCreateForm() {
             <FormItem>
               <FormLabel className="text-title">Name</FormLabel>
               <FormControl>
-                <Input placeholder="Champions Cup" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormDescription>
                 This is name of your tournament.
@@ -279,7 +279,7 @@ export function TournamentCreateForm() {
           control={control}
           name="is_entry_free"
           render={({ field }) => (
-            <FormItem className="border-light-dark flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+            <FormItem className="border-border flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
                 <FormLabel className="text-title">Is entry free?</FormLabel>
                 <FormDescription>
@@ -329,7 +329,7 @@ export function TournamentCreateForm() {
           )}
         />
 
-        <div className="border-accent rounded-lg border">
+        <div className="border-border rounded-lg border">
           <FormField
             control={control}
             name="prize_pool_enabled"
@@ -361,27 +361,28 @@ export function TournamentCreateForm() {
           >
             {fields.map((fld, index) => (
               <div
-                className="border-accent space-y-3 rounded-lg border p-5"
+                className="border-border space-y-3 rounded-lg border p-5"
                 key={fld.id}
               >
-                <div className="text-title">{fld.place}# place prize</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-title">{fld.place}# place prize</div>
+                  <button
+                    className=""
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    <TrashIcon className="mr-2 h-5 w-5 text-red-500" />
+                  </button>
+                </div>
                 <Textarea
                   placeholder="Prizer description"
                   {...register(`prizes.${index}.content`)}
                 />
-                <button
-                  type="button"
-                  className="border-accent hover:text-title flex w-full items-center justify-center rounded-lg border p-5 text-red-500 transition-all hover:bg-red-500"
-                  onClick={() => remove(index)}
-                >
-                  <TrashIcon className="mr-2 h-4 w-4" />
-                  Remove
-                </button>
               </div>
             ))}
             <button
               type="button"
-              className="border-accent flex w-full items-center justify-center rounded-lg border p-5"
+              className="border-border flex w-full items-center justify-center rounded-lg border p-5"
               onClick={() =>
                 append({
                   place: fields.length + 1,

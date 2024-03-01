@@ -47,9 +47,7 @@ const RegistrationsPage = () => {
   return (
     <div className="container mx-auto space-y-12 pt-12">
       <div>
-        <h1 className="text-title font-roboto-condensed text-3xl">
-          Registrations
-        </h1>
+        <h1 className="text-title text-2xl">Registrations</h1>
       </div>
       <div className="flex w-full flex-col space-y-2">
         <div className="text-title grid w-full grid-cols-12 font-normal">
@@ -85,19 +83,19 @@ const RegistrationRow = ({ registration }: { registration: Registration }) => {
       <div className="col-span-6 flex items-center">
         <ListIcon className="text-title mr-4 w-10" />
         <div>
-          <div className="font-roboto-condensed text-title text-lg  tracking-wide">
+          <div className="text-title text-lg font-medium">
             {registration.tournament.name}
           </div>
-          <div className="text-muted">{registration.tournament.game}</div>
+          <div className="text-muted font-normal">
+            {registration.tournament.game}
+          </div>
         </div>
       </div>
       <div className="col-span-4 flex items-center">
-        <div className="text-title text-lg font-normal">
-          {registration.team.name}
-        </div>
+        <div className="text-title font-normal">{registration.team.name}</div>
       </div>
       <div className="col-span-2 flex items-center">
-        <div className="text-title text-lg font-normal">
+        <div className="text-title font-normal">
           {moment(registration.tournament.start_date).format('MMM Do, YYYY')}
         </div>
       </div>

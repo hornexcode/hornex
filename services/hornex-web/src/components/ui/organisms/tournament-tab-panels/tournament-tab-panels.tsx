@@ -67,6 +67,18 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
       <TabsContent value="rules">
         <p>Rules</p>
       </TabsContent>
+      <TabsContent value="brackets">
+        <div className="bg-light-dark">
+          <iframe
+            src={`${tournament.challonge_tournament_url}/module?show_live_status=0`}
+            width="100%"
+            height="600"
+            frameBorder={0}
+            scrolling="auto"
+            // allowTransparency={true}
+          ></iframe>
+        </div>
+      </TabsContent>
     </Tabs>
   );
 };

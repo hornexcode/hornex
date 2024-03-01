@@ -20,7 +20,7 @@ const TournamentTableRow: FC<TournamentTableRowProps> = ({ tournament }) => {
         <div className="block px-4 lg:w-[400px]">
           <Link
             href={`/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.uuid}`}
-            className="text-title font-roboto-condensed text-lg tracking-wide hover:underline"
+            className="text-title text-lg hover:underline"
           >
             {tournament.name}
           </Link>

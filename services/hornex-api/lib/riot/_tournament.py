@@ -85,12 +85,15 @@ class Tournament(dict[type, any]):
     def create(cls, **params: Unpack["Tournament.CreateParams"]) -> int:
         resp = request(
             method="post",
-            url=f"https://americas.api.riotgames.com/lol/tournament-stub/v5/tournaments?api_key={riot.api_key}",
-            params=params,
+            url=f"https://americas.api.riotgames.com/lol/tournament/v5/tournaments?api_key={riot.api_key}",
+            params={
+                "name": params["name"],
+                "providerId": params["provider_id"],
+            },
         )
         if not resp.ok:
             logger.error(
-                "Failed to request",
+                f"error: {resp.json()}",
                 status=resp.status_code,
                 error=resp.json(),
             )

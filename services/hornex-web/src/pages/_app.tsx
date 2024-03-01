@@ -9,7 +9,7 @@ import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
 import {
-  JetBrains_Mono,
+  Goldman,
   Kanit,
   Roboto_Condensed,
   Source_Sans_3,
@@ -32,6 +32,32 @@ const Beaufort_for_LOL = localFont({
     },
   ],
   variable: '--font-beaufort',
+});
+
+const Goldman_Sans = localFont({
+  src: [
+    {
+      path: '../styles/fonts/GoldmanSans/GoldmanSans_W_Bd.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../styles/fonts/GoldmanSans/GoldmanSans_W_Rg.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../styles/fonts/GoldmanSans/GoldmanSans_W_Md.woff2',
+      weight: '500',
+      style: 'medium',
+    },
+    {
+      path: '../styles/fonts/GoldmanSans/GoldmanSans_W_Lt.woff2',
+      weight: '300',
+      style: 'light',
+    },
+  ],
+  variable: '--font-goldman-sans',
 });
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -71,7 +97,7 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
         <div
           className={classnames(
             'dark:bg-background text-muted min-h-[100vh] font-semibold antialiased',
-            source_Sans_3.className,
+            Goldman_Sans.className,
             roboto_condensed.variable,
             kanit.variable,
             Beaufort_for_LOL.variable

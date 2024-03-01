@@ -37,9 +37,6 @@ class Member(models.Model):
     game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
-        return f"{self.game_id.email} of ({self.team.name})"
-
 
 class Invite(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

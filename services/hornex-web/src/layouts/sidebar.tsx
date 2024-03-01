@@ -2,20 +2,12 @@ import { PodiumIcon } from '@/components/ui/atoms/icons';
 import { LangToggler } from '@/components/ui/molecules';
 import routes from '@/config/routes';
 import { cn } from '@/lib/utils';
-import { Cog6ToothIcon, Cog8ToothIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
-import clsx from 'clsx';
-import {
-  BadgeHelpIcon,
-  FileBadge,
-  Home,
-  ListIcon,
-  SwordsIcon,
-} from 'lucide-react';
+import { ListIcon, SwordsIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const Sidebar = ({ className }: { className?: string }) => {
@@ -32,7 +24,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
     >
       <div className="p-4">
         <h4 className="text-title px-2 text-sm font-bold uppercase">Main</h4>
-        <ul className="mt-2 flex w-full flex-col text-lg font-[500] tracking-wide">
+        <ul className="mt-2 flex w-full flex-col font-normal">
           <li
             className={cn(
               'relative rounded p-2 px-3',
@@ -105,7 +97,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <h4 className="text-title px-2 text-sm font-bold uppercase">
           Organizer
         </h4>
-        <ul className="mt-2 flex w-full flex-col text-lg font-[500] tracking-wide">
+        <ul className="mt-2 flex w-full flex-col font-normal">
           <li
             className={cn(
               'relative rounded p-2 px-3',

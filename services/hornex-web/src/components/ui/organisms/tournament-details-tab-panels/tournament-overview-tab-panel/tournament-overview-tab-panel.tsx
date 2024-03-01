@@ -26,8 +26,6 @@ export const TournamentOverviewTabPanel: FC<
     tournamentId: tournament.uuid,
   });
 
-  console.log(registeredTeams);
-
   return (
     <div className="box space-y-12">
       <div className="block">
