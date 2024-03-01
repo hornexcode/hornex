@@ -9,7 +9,6 @@ from rest_framework.validators import ValidationError
 from apps.teams.models import Team
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Match, Registration
-from apps.users.models import User
 from lib.challonge import Match as ChallongeMatch
 
 logger = structlog.get_logger(__name__)
