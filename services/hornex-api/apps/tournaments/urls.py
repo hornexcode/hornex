@@ -9,7 +9,6 @@ from apps.tournaments.views import (
     check_in,
     check_in_tournament,
     create_and_register_team,
-    end_tournament,
     participant_checked_in,
     register_team,
     team_check_in_status,
@@ -71,6 +70,11 @@ urlpatterns = [
         name="end-match",
     ),
     path(
+        "/org/tournaments/<str:uuid>/end",
+        OrganizerTournamentViewSet.as_view({"patch": "end_tournament"}),
+        name="end-tournament",
+    ),
+    path(
         "/org/registrations/<str:uuid>/delete",
         RegistrationViewSet.as_view({"delete": "destroy"}),
         name="delete-registered-teams",
@@ -79,11 +83,6 @@ urlpatterns = [
         "/org/tournaments/<str:uuid>/check-in",
         check_in_tournament,
         name="check-in_tournament",
-    ),
-    path(
-        "/org/tournaments/<str:uuid>/end",
-        end_tournament,
-        name="end-tournament",
     ),
     # Public Tournament Resources
     path(

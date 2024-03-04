@@ -5,6 +5,7 @@ from datetime import datetime
 import structlog
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.validators import ValidationError
 
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
@@ -26,19 +27,18 @@ class EndTournamentUseCase:
         tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
 
         if params.user_id != tournament.organizer.id:
-            raise ValidationError({"error": "You are not this tournament's Organizer"})
+            raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
         if tournament.status != Tournament.StatusOptions.RUNNING or tournament.ended_at:
             raise ValidationError({"error": "You can not end a tournament which are not running"})
 
         try:
-            ChallongeTournament.finalize(tournament=tournament.challonge_tournament_id)
+            ChallongeTournament.end(tournament=tournament.challonge_tournament_id)
         except Exception:
             raise Exception("Failed end tournament at Challonge")
 
         tournament.status = Tournament.StatusOptions.ENDED
         tournament.ended_at = datetime.now()
         tournament.save()
-        tournament.refresh_from_db()
 
         return tournament

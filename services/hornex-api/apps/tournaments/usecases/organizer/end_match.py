@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import structlog
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.validators import ValidationError
 
 from apps.teams.models import Team
@@ -28,7 +29,7 @@ class EndMatchUseCase:
         tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
 
         if params.user_id != tournament.organizer.id:
-            raise ValidationError({"error": "You are not this tournament's Organizer"})
+            raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
         match = get_object_or_404(Match, uuid=params.match_uuid)
 
@@ -40,9 +41,6 @@ class EndMatchUseCase:
             winner = match.team_a
         else:
             winner = match.team_b
-
-        if match.team_a != winner and match.team_b != winner:
-            raise ValidationError({"error": f"Team {winner.name} does not belong to this match"})
 
         ch_winner: Registration = winner.registration_set.filter(tournament=tournament).first()
         if not ch_winner:

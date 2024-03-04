@@ -291,7 +291,7 @@ class Tournament(ValueObject):
         return resp.json()
 
     @classmethod
-    def finalize(cls, tournament: int):
+    def end(cls, tournament: int):
         """
         Finalizes a tournament that has had all match scores submitted,
         rendering its results permanent.

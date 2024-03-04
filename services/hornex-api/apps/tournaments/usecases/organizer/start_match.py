@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import structlog
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from rest_framework.validators import ValidationError
+from rest_framework.exceptions import PermissionDenied
 
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Match
@@ -27,7 +27,7 @@ class StartMatchUseCase:
         tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
 
         if tournament.organizer.id != params.user_id:
-            raise ValidationError({"error": "You are not this tournament's Organizer"})
+            raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
         match = get_object_or_404(Match, uuid=params.match_uuid)
 

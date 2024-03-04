@@ -309,6 +309,17 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
 
         return Response({"success": True}, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=["patch"])
+    def end_tournament(self, request, *args, **kwargs):
+        params = EndTournamentParams(
+            data={"user_id": request.user.id, "tournament_uuid": kwargs.get("uuid")}
+        )
+        params.is_valid(raise_exception=True)
+
+        EndTournamentUseCase().execute(EndTournamentInput(**params.validated_data))
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
@@ -592,17 +603,5 @@ def check_in_tournament(request, uuid):
     params.is_valid(raise_exception=True)
 
     CheckInTournamentUseCase().execute(CheckInTournamentInput(**params.validated_data))
-
-    return Response(None, status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(["PATCH"])
-@permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication])
-def end_tournament(request, uuid):
-    params = EndTournamentParams(data={"user_id": request.user.id, "tournament_uuid": uuid})
-    params.is_valid(raise_exception=True)
-
-    EndTournamentUseCase().execute(EndTournamentInput(**params.validated_data))
 
     return Response(None, status=status.HTTP_204_NO_CONTENT)
