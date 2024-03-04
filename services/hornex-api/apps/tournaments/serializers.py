@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.teams.serializers import TeamSerializer
 from apps.tournaments.models import (
     LeagueOfLegendsTournament,
+    Match,
     Participant,
     Prize,
     Registration,
@@ -44,6 +45,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Registration
+        fields = "__all__"
+
+
+class MatchSerializer(serializers.ModelSerializer):
+    team_a = TeamSerializer(read_only=True)
+    team_b = TeamSerializer(read_only=True)
+    winner = TeamSerializer(read_only=True, allow_null=True)
+    loser = TeamSerializer(read_only=True, allow_null=True)
+
+    class Meta:
+        model = Match
         fields = "__all__"
 
 

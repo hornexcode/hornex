@@ -83,15 +83,20 @@ class Match(ValueObject):
             return Exception("Internal Server Error")
 
     @classmethod
-    def list(cls, tournament: int) -> Iterable["Match"]:
+    def list(
+        cls, tournament: int, participant_id: Optional[int] = None, state: Optional[str] = None
+    ) -> Iterable["Match"]:
         """
         Retrieve a set of tournaments created with your account.
         """
-        resp = request(
-            "get",
-            f"https://api.challonge.com/v1/tournaments/{tournament}/matches.json?api_key={challonge.api_key}",
-            headers=headers,
-        )
+        url = f"https://api.challonge.com/v1/tournaments/{tournament}/matches.json?api_key={challonge.api_key}"
+
+        if participant_id:
+            url += f"&participant_id={participant_id}"
+        if state:
+            url += f"&state={state}"
+
+        resp = request("get", url, headers=headers)
 
         if not resp.ok:
             raise cls.on_response_error(resp)

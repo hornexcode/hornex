@@ -40,7 +40,6 @@ export const AdminTournamentContextProvider = ({
   }, [data]);
 
   const refreshTournament = async (tournament: Tournament) => {
-    console.log(data, tournament);
     mutate({ ...data, ...tournament });
   };
 

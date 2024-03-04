@@ -33,7 +33,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
   const { tournament, isRegistered } = useTournament();
-  console.log(isRegistered);
   const connectedGameId = {
     id: '123',
     nickname: 'hornex',

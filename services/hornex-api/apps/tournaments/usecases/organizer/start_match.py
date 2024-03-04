@@ -40,3 +40,4 @@ class StartMatchUseCase:
 
         match.status = Match.StatusType.UNDERWAY
         match.save()
+        return match

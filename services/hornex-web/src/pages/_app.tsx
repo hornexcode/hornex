@@ -57,6 +57,8 @@ const Goldman_Sans = localFont({
       style: 'light',
     },
   ],
+  preload: true,
+  display: 'swap',
   variable: '--font-goldman-sans',
 });
 

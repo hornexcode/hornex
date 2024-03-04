@@ -1,6 +1,7 @@
 from django.urls import path
 
 from apps.tournaments.views import (
+    OrganizerMatchViewSet,
     OrganizerTournamentViewSet,
     PublicTournamentViewSet,
     RegistrationViewSet,
@@ -49,14 +50,24 @@ urlpatterns = [
         name="delete-registered-teams",
     ),
     path(
+        "/org/tournaments/<str:uuid>/matches",
+        OrganizerTournamentViewSet.as_view({"get": "matches"}),
+        name="list-matches",
+    ),
+    path(
+        "/org/tournaments/<str:uuid>/end-round",
+        OrganizerTournamentViewSet.as_view({"post": "end_round"}),
+        name="end_round",
+    ),
+    path(
         "/org/tournaments/<str:uuid>/matches/<str:match_uuid>/start",
         OrganizerTournamentViewSet.as_view({"patch": "start_match"}),
         name="start-match",
     ),
     path(
-        "/org/tournaments/<str:uuid>/matches/<str:match_uuid>/finish",
-        OrganizerTournamentViewSet.as_view({"patch": "finish_match"}),
-        name="finish-match",
+        "/org/tournaments/<str:uuid>/matches/<str:match_uuid>/end",
+        OrganizerTournamentViewSet.as_view({"patch": "end_match"}),
+        name="end-match",
     ),
     path(
         "/org/registrations/<str:uuid>/delete",
@@ -140,6 +151,12 @@ urlpatterns = [
         "/tournaments/<str:uuid>/create-and-register-team",
         create_and_register_team,
         name="create_and_register_team",
+    ),
+    # matches
+    path(
+        "/org/matches/<str:uuid>",
+        OrganizerMatchViewSet.as_view({"patch": "partial_update"}),
+        name="update-match",
     ),
     # TEST_MODE
 ]

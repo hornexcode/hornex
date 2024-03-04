@@ -1,4 +1,5 @@
 export * from './CheckIn';
+export * from './Match';
 export * from './Participant';
 export * from './Prize';
 export * from './Registration';

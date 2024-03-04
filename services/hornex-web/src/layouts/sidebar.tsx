@@ -18,13 +18,13 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <div
       className={classNames(
-        'bg-background fixed top-[calc(4rem)] z-50 flex h-full w-[230px] flex-col border-r border-dashed border-neutral-700 p-2',
+        'bg-background fixed top-[calc(4rem+2px)] z-30 flex h-full w-[230px] flex-col border-r border-dashed border-neutral-700 p-2',
         className
       )}
     >
       <div className="p-4">
         <h4 className="text-title px-2 text-sm font-bold uppercase">Main</h4>
-        <ul className="mt-2 flex w-full flex-col font-normal">
+        <ul className="mt-2 flex w-full flex-col font-medium">
           <li
             className={cn(
               'relative rounded p-2 px-3',
@@ -97,7 +97,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <h4 className="text-title px-2 text-sm font-bold uppercase">
           Organizer
         </h4>
-        <ul className="mt-2 flex w-full flex-col font-normal">
+        <ul className="mt-2 flex w-full flex-col font-medium">
           <li
             className={cn(
               'relative rounded p-2 px-3',

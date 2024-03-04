@@ -18,12 +18,13 @@ interface ListboxTypes {
   onSelect?: (value: string) => void;
   variant?: 'ghost' | 'solid' | 'transparent';
   className?: string;
+  listBoxClassName?: string;
   // value: string | number;
 }
 
 const listboxVariantClasses = {
   ghost:
-    'transition-shadow border border-gray-200 bg-white text-gray-900 hover:border-gray-900 hover:ring-1 hover:ring-gray-900 dark:border-gray-500 dark:bg-dark dark:text-gray-100 dark:hover:border-gray-600 dark:hover:ring-gray-600',
+    'transition-shadow border border-border bg-white text-gray-900 hover:border-gray-900 hover:ring-1 hover:ring-gray-900 dark:border-border dark:bg-medium-dark dark:text-gray-100 dark:hover:border-gray-600 dark:hover:ring-gray-600',
   solid:
     'transition-colors bg-gray-100 hover:bg-gray-200/70 dark:bg-gray-800 dark:hover:bg-gray-700',
   transparent: '',
@@ -36,6 +37,7 @@ export default function Listbox({
   variant = 'ghost',
   selectedOption,
   className,
+  listBoxClassName,
   children,
 }: ListboxTypes) {
   return (
@@ -43,11 +45,12 @@ export default function Listbox({
       <HeadlessListbox value={selectedOption} onChange={onChange}>
         <HeadlessListbox.Button
           className={cn(
-            'text-case-inherit letter-space-inherit flex h-8 w-full items-center justify-between rounded px-4 text-sm font-medium outline-none duration-200 sm:h-10 sm:px-5',
-            listboxVariantClasses[variant]
+            'text-case-inherit letter-space-inherit flex h-8 w-full items-center justify-between rounded px-4 font-medium outline-none duration-200 sm:h-10 sm:px-5',
+            listboxVariantClasses[variant],
+            listBoxClassName
           )}
         >
-          <div className="flex items-center">{selectedOption?.name}</div>
+          <div className="mr-2 flex items-center">{selectedOption?.name}</div>
           <ChevronDown />
         </HeadlessListbox.Button>
         <Transition
@@ -56,16 +59,16 @@ export default function Listbox({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <HeadlessListbox.Options className="xs:p-2 shadow-large dark:bg-dark absolute left-0 z-10 mt-1 grid w-full origin-top-right gap-0.5 rounded border border-gray-200 bg-white p-1 outline-none dark:border-gray-700">
+          <HeadlessListbox.Options className="xs:p-2 shadow-large dark:bg-medium-dark dark:border-border absolute left-0 z-10 mt-1 grid w-full origin-top-right gap-0.5 rounded border border-gray-200 bg-white p-1 outline-none">
             {options.map((option) => (
               <HeadlessListbox.Option key={option.value} value={option}>
                 {({ selected }) => (
                   <div
                     onClick={() => onSelect && onSelect(option.value)}
-                    className={`flex cursor-pointer items-center rounded-md px-3 py-2 text-sm text-gray-900 transition dark:text-gray-100  ${
+                    className={`flex cursor-pointer items-center rounded-md px-3 py-2 font-normal text-gray-900 transition dark:text-gray-100  ${
                       selected
-                        ? 'bg-gray-200/70 font-medium dark:bg-gray-600/60'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-700/70'
+                        ? 'dark:bg-dark/80 bg-gray-200/70 font-medium'
+                        : 'dark:hover:bg-dark/80 hover:bg-gray-100'
                     }`}
                   >
                     {option.name}

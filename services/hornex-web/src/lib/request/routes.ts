@@ -196,7 +196,7 @@ export const routes = {
     path: 'v1/tournaments/[tournamentId]/prizes',
     method: Method.GET,
   },
-  'organizer:tournaments': {
+  'org:tournaments': {
     path: 'v1/org/tournaments',
     method: Method.GET,
   },
@@ -210,7 +210,7 @@ export const routes = {
     method: Method.POST,
   },
   'org:tournament:details': {
-    path: 'v1/org/tournaments/[uuid]/details',
+    path: 'v1/org/tournaments/[uuid]',
     method: Method.GET,
   },
   'organizer:tournament:update': {
@@ -230,8 +230,20 @@ export const routes = {
     method: Method.POST,
   },
   'org:tournament:matches': {
-    path: 'v1/org/tournaments/[tournamentId]/matches',
+    path: 'v1/org/tournaments/[uuid]/matches',
     method: Method.GET,
+  },
+  'org:match:update': {
+    path: 'v1/org/matches/[uuid]',
+    method: Method.PATCH,
+  },
+  'org:tournament:match:start': {
+    path: 'v1/org/tournaments/[tournamentUuid]/matches/[matchUuid]/start',
+    method: Method.PATCH,
+  },
+  'org:tournament:match:end': {
+    path: 'v1/org/tournaments/[tournamentUuid]/matches/[matchUuid]/end',
+    method: Method.PATCH,
   },
   'org:tournament:teams': {
     path: 'v1/org/tournaments/[tournamentId]/registered-teams',
@@ -240,6 +252,10 @@ export const routes = {
   'org:tournament:registrations': {
     path: 'v1/org/tournaments/[tournamentId]/registrations',
     method: Method.GET,
+  },
+  'org:tournament:endRound': {
+    path: 'v1/org/tournaments/[uuid]/end-round',
+    method: Method.POST,
   },
   'org:registration:delete': {
     path: 'v1/org/registrations/[uuid]/delete',

@@ -3,7 +3,7 @@ import { Sidebar } from './sidebar';
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="">
+    <div className="relative">
       <Sidebar />
       <Header />
       <main className="3xl:px-10 relative rounded pt-16 md:pl-[230px] xl:pb-24">
