@@ -1,5 +1,4 @@
 'use client';
-import { XboxIcon } from '../ui/atoms/icons';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ChevronDownIcon,
@@ -10,9 +9,9 @@ import {
 import { FilterIcon } from 'lucide-react';
 import { Fragment } from 'react';
 
-export const PlatformPicker = () => {
+export const TournamentRoundFilter = () => {
   return (
-    <Menu as="div" className="relative h-12">
+    <Menu as="div" className="relative">
       <Menu.Button className="border-border bg-medium-dark group flex h-full min-w-[8rem] items-center justify-center gap-3 rounded border p-2 font-medium text-white hover:cursor-pointer">
         <div className="pl-2">
           <FilterIcon className="w-4" />
@@ -58,8 +57,7 @@ export const PlatformPicker = () => {
                   } bg-medium-dark flex w-full items-center justify-between gap-3 rounded p-2 text-white`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <XboxIcon className="w-6 rounded bg-green-500 fill-white p-1" />
-                    <span className="font-medium">Xbox</span>
+                    <span className="font-medium">Round 1</span>
                   </div>
                   <ChevronRightIcon className="w-5" />
                 </button>

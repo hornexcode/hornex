@@ -40,7 +40,7 @@ class StartTournamentUseCase:
                     team_a=team_a,
                     team_b=team_b,
                     challonge_match_id=match.id,
-                    status=Match.StatusType.SCHEDULED,
+                    status=Match.StatusType.NOT_STARTED,
                 )
 
         # riot_provider = tournament.provider

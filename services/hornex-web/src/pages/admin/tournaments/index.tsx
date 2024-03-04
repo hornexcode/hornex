@@ -10,9 +10,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
-const { useData: useTournaments } = dataLoader<Tournament[], {}>(
-  'organizer:tournaments'
-);
+const { useData: useTournaments } = dataLoader<Tournament[]>('org:tournaments');
 
 function DashboardPage() {
   const { data: tournaments } = useTournaments({});

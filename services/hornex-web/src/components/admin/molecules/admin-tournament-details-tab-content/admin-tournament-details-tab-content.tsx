@@ -19,7 +19,7 @@ import {
   getStatus,
   getStatusStep,
   Tournament,
-} from '@/lib/models';
+} from '@/lib/models/Tournament';
 import { toCurrency } from '@/lib/utils';
 import {
   openRegistrationHandler,
@@ -170,9 +170,10 @@ const AdminTournamentGeneralInfo = () => {
               onClick={onStartTournamentHandler}
               shape="rounded"
               className="mt-4"
+              color="danger"
               size="mini"
             >
-              Finish tournament
+              Mark as ended
             </Button>
           </>
         );
@@ -184,18 +185,18 @@ const AdminTournamentGeneralInfo = () => {
       <div className="col-span-2">
         <div className="flex flex-wrap items-center rounded">
           <div className="border-border border-r border-t p-3">
-            <div className="t">Teams registered</div>
+            <div className="font-normal">Teams registered</div>
             <div className="text-title">
               {tournament.total_participants / tournament.team_size}/
               {tournament.max_teams}
             </div>
           </div>
           <div className="border-border border-r border-t p-3">
-            <div className="t">Entry Fee</div>
+            <div className="font-normal">Entry Fee</div>
             <div className="text-title">{getEntryFee(tournament)}</div>
           </div>
           <div className="border-border border-r border-t p-3">
-            <div className="t">Prize Pool</div>
+            <div className="font-normal">Prize Pool</div>
             <div className="text-title">
               {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
               {tournament.prize_pool_enabled &&
@@ -205,13 +206,13 @@ const AdminTournamentGeneralInfo = () => {
             </div>
           </div>
           <div className="border-border border-r border-t p-3">
-            <div className="t">Registration start date</div>
+            <div className="font-normal">Registration start date</div>
             <div className="text-title">
               {datetime(tournament.registration_start_date, { time: false })}
             </div>
           </div>
           <div className="border-border border-r border-t p-3">
-            <div className="t">Start date</div>
+            <div className="font-normal">Start date</div>
             <div className="text-title">
               {moment(
                 new Date(
@@ -221,14 +222,14 @@ const AdminTournamentGeneralInfo = () => {
             </div>
           </div>
           <div className="border-border border-r border-t p-3">
-            <div className="t">Check-in window</div>
+            <div className="font-normal">Check-in window</div>
             <div className="text-title">
               {tournament.check_in_duration} minutes
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-medium-dark shadow-card col-span-1 rounded p-4">
+      <div className="bg-medium-dark col-span-1 p-6">
         <span className="text-muted">Tournament status</span>
         <div className="flex items-center justify-between pb-2">
           <span className="font-semibold text-amber-500">

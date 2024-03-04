@@ -6,13 +6,7 @@ export const tournamentSchema = z.object({
   name: z.string(),
   description: z.string(),
   published: z.boolean(),
-  status: z.enum([
-    'announced',
-    'registering',
-    'running',
-    'finished',
-    'cancelled',
-  ]),
+  status: z.enum(['announced', 'registering', 'running', 'ended', 'cancelled']),
   currency: z.enum(['USD', 'EUR', 'BRL']),
   start_date: z.string(),
   registration_start_date: z.date(),
@@ -36,6 +30,7 @@ export const tournamentSchema = z.object({
   challonge_tournament_url: z.string(),
   checked_in: z.boolean(),
   total_participants: z.number(),
+  current_round: z.number(),
 });
 export type Tournament = z.infer<typeof tournamentSchema>;
 
@@ -91,7 +86,7 @@ export function getStatusStep(tournament: Tournament) {
       return [2, 4];
     case 'running':
       return [3, 4];
-    case 'finished':
+    case 'ended':
       return [4, 4];
     default:
       return [0, 0];
@@ -111,8 +106,23 @@ export const TournamentStatusOptions = {
   ANNOUNCED: 'announced',
   REGISTERING: 'registering',
   RUNNING: 'running',
-  FINISHED: 'finished',
+  ENDED: 'ended',
   CANCELLED: 'cancelled',
 };
 
 export type TournamentStatus = keyof typeof TournamentStatusOptions;
+
+export function getRounds(tournament: Tournament) {
+  switch (tournament.max_teams) {
+    case 4:
+      return 2;
+    case 8:
+      return 3;
+    case 16:
+      return 4;
+    case 32:
+      return 5;
+    default:
+      break;
+  }
+}

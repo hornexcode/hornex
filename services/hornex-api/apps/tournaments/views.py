@@ -25,7 +25,13 @@ from apps.tournaments.filters import (
     TournamentListFilter,
     TournamentListOrdering,
 )
-from apps.tournaments.models import Checkin, LeagueOfLegendsTournament, Registration, Tournament
+from apps.tournaments.models import (
+    Checkin,
+    LeagueOfLegendsTournament,
+    Match,
+    Registration,
+    Tournament,
+)
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import (
     CheckInTournamentParams,
@@ -38,6 +44,7 @@ from apps.tournaments.requests import (
 )
 from apps.tournaments.serializers import (
     LeagueOfLegendsTournamentSerializer,
+    MatchSerializer,
     ParticipantSerializer,
     PrizeSerializer,
     RegistrationSerializer,
@@ -60,8 +67,8 @@ from apps.tournaments.usecases.organizer import (
     CheckInTournamentUseCase,
     CreateTournamentUseCase,
     CreateTournamentUseCaseParams,
-    FinishMatchInput,
-    FinishMatchUseCase,
+    EndMatchInput,
+    EndMatchUseCase,
     StartMatchInput,
     StartMatchUseCase,
 )
@@ -249,21 +256,55 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             }
         )
         params.is_valid(raise_exception=True)
-        StartMatchUseCase().execute(StartMatchInput(**params.validated_data))
-        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        uc = StartMatchUseCase()
+        match = uc.execute(StartMatchInput(**params.validated_data))
+        serializer = MatchSerializer(instance=match)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def finish_match(self, request, *args, **kwargs):
+    def end_match(self, request, *args, **kwargs):
         params = FinishMatchParams(
             data={
-                **request.data,
                 "tournament_uuid": kwargs.get("uuid"),
                 "match_uuid": kwargs.get("match_uuid"),
-                "organizer_id": request.user.id,
+                "user_id": request.user.id,
             }
         )
         params.is_valid(raise_exception=True)
-        FinishMatchUseCase().execute(FinishMatchInput(**params.validated_data))
-        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        match = EndMatchUseCase().execute(EndMatchInput(**params.validated_data))
+        serializer = MatchSerializer(instance=match)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def matches(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        matches = Match.objects.filter(tournament=tournament, round=tournament.current_round)
+        serializer = MatchSerializer(matches, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"])
+    def end_round(self, request, *args, **kwargs):
+        tournament: Tournament = self.get_object()
+        if tournament.organizer != request.user:
+            return Response(
+                {"error": "You are not authorized to perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        ended_matches_count = tournament.matches.filter(
+            round=tournament.current_round, status=Match.StatusType.ENDED
+        ).count()
+        all_matches_count = tournament.matches.filter(round=tournament.current_round).count()
+
+        if ended_matches_count != all_matches_count:
+            return Response(
+                {"error": "Not all matches have ended yet"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        tournament.current_round += 1
+        tournament.save()
+
+        return Response({"success": True}, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
@@ -271,6 +312,14 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
             self.queryset = LeagueOfLegendsTournament.objects.filter(organizer=self.request.user)
 
         return super().get_queryset()
+
+
+class OrganizerMatchViewSet(viewsets.ModelViewSet):
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    lookup_field = "uuid"
 
 
 class OrganizerRegistrationViewSet(viewsets.ModelViewSet):
