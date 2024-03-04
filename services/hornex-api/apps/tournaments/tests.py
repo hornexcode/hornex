@@ -15,6 +15,7 @@ from rest_framework.test import APITestCase, URLPatternsTestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.teams.models import Team
+from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Match
 from apps.users.models import User
 from lib.challonge import Match as ChMatch
@@ -889,3 +890,104 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
             self.match.refresh_from_db()
             self.assertNotEqual(self.match.status, Match.StatusType.UNDERWAY)
             self.assertEqual(str(e), "Failed mark match as under_way at Challonge")
+
+
+class EndTournamentTest(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path("", include("apps.tournaments.urls")),
+    ]
+
+    def setUp(self):
+        self.credentials = {
+            "email": "testuser",
+            "password": "testpass",
+        }
+
+        self.user = User.objects.create_user(**self.credentials)
+
+        self.refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
+
+    @patch("lib.challonge.Tournament.finalize")
+    def test_end_tournament(self, mock_finalize):
+        mock_finalize.return_value = {}
+        self.tournament.status = Tournament.StatusOptions.RUNNING
+        self.tournament.save()
+
+        url = reverse(
+            "tournaments:end-tournament",
+            kwargs={
+                "uuid": self.tournament.uuid,
+            },
+        )
+
+        resp = self.client.patch(
+            url,
+        )
+
+        mock_finalize.assert_called_once()
+        self.assertEqual(resp.status_code, 204)
+        self.tournament.refresh_from_db()
+        self.assertEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
+        self.assertIsNotNone(self.tournament.ended_at)
+
+    def test_end_error_not_organizer(self):
+        self.tournament.organizer = UserFactory.new()
+        self.tournament.save()
+
+        url = reverse(
+            "tournaments:end-tournament",
+            kwargs={"uuid": self.tournament.uuid},
+        )
+
+        resp = self.client.patch(
+            url,
+        )
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(data.get("error"), "You are not this tournament's Organizer")
+
+    def test_end_tournament_not_running(self):
+        url = reverse(
+            "tournaments:end-tournament",
+            kwargs={
+                "uuid": self.tournament.uuid,
+            },
+        )
+
+        resp = self.client.patch(
+            url,
+        )
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(data.get("error"), "You can not end a tournament which are not running")
+        self.assertNotEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
+        self.assertIsNone(self.tournament.ended_at)
+
+    @patch("lib.challonge.Tournament.finalize")
+    def test_failed_ending_challonge_match(self, mock_finalize):
+        mock_finalize.side_effect = Exception("Internal Server Error")
+        self.tournament.status = Tournament.StatusOptions.RUNNING
+        self.tournament.save()
+
+        url = reverse(
+            "tournaments:end-tournament",
+            kwargs={"uuid": self.tournament.uuid},
+        )
+
+        try:
+            self.client.patch(
+                url,
+            )
+        except Exception as e:
+            mock_finalize.assert_called_once()
+            self.tournament.refresh_from_db()
+            self.assertNotEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
+            self.assertEqual(str(e), "Failed end tournament at Challonge")

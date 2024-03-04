@@ -290,8 +290,7 @@ class Tournament(ValueObject):
 
         return resp.json()
 
-    classmethod
-
+    @classmethod
     def finalize(cls, tournament: int):
         """
         Finalizes a tournament that has had all match scores submitted,
@@ -306,9 +305,10 @@ class Tournament(ValueObject):
         if not resp.ok:
             raise cls.on_response_error(resp)
 
-        logger.info("Tournament finalized", resp=resp.json())
+        data = resp.json()
+        logger.info("Tournament finalized", resp=data)
 
-        return resp.json()
+        return data
 
     @classmethod
     def checkin_team(cls, tournament: int, participant: int):

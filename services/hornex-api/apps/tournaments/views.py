@@ -36,6 +36,7 @@ from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import (
     CheckInTournamentParams,
     CreateAndRegisterTeamIntoTournamentParams,
+    EndTournamentParams,
     FinishMatchParams,
     RegisterSerializer,
     RegisterTeamIntoTournamentParams,
@@ -69,6 +70,8 @@ from apps.tournaments.usecases.organizer import (
     CreateTournamentUseCaseParams,
     EndMatchInput,
     EndMatchUseCase,
+    EndTournamentInput,
+    EndTournamentUseCase,
     StartMatchInput,
     StartMatchUseCase,
 )
@@ -589,5 +592,17 @@ def check_in_tournament(request, uuid):
     params.is_valid(raise_exception=True)
 
     CheckInTournamentUseCase().execute(CheckInTournamentInput(**params.validated_data))
+
+    return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def end_tournament(request, uuid):
+    params = EndTournamentParams(data={"user_id": request.user.id, "tournament_uuid": uuid})
+    params.is_valid(raise_exception=True)
+
+    EndTournamentUseCase().execute(EndTournamentInput(**params.validated_data))
 
     return Response(None, status=status.HTTP_204_NO_CONTENT)
