@@ -257,6 +257,10 @@ export const routes = {
     path: 'v1/org/tournaments/[uuid]/end-round',
     method: Method.POST,
   },
+  'org:tournament:finalize': {
+    path: 'v1/org/tournaments/[uuid]/finalize',
+    method: Method.PATCH,
+  },
   'org:registration:delete': {
     path: 'v1/org/registrations/[uuid]/delete',
     method: Method.DELETE,

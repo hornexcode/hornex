@@ -22,6 +22,7 @@ import {
 } from '@/lib/models/Tournament';
 import { toCurrency } from '@/lib/utils';
 import {
+  finalizeTournamentHandler,
   openRegistrationHandler,
   startTournamentHandler,
 } from '@/pages/admin/[platform]/[game]/tournaments/[id]/admin-tournament-details.handlers';
@@ -75,6 +76,27 @@ const AdminTournamentGeneralInfo = () => {
       toast({
         title: 'Success',
         description: 'Tournament started successfully',
+      });
+    }
+    setLoading(false);
+  };
+
+  const onFinalizeTournamentHandler = async () => {
+    setLoading(true);
+    const { data, error } = await finalizeTournamentHandler({
+      uuid: tournament.uuid,
+    });
+    if (error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+      });
+    }
+    if (data && !error) {
+      refreshTournament(data);
+      toast({
+        title: 'Success',
+        description: 'Tournament finalized successfully',
       });
     }
     setLoading(false);
@@ -167,15 +189,21 @@ const AdminTournamentGeneralInfo = () => {
               </div>
             </div>
             <Button
-              onClick={onStartTournamentHandler}
+              onClick={onFinalizeTournamentHandler}
               shape="rounded"
               className="mt-4"
               color="danger"
               size="mini"
             >
-              Mark as ended
+              Finalize
             </Button>
           </>
+        );
+      case 'ended':
+        return (
+          <div className="text-title py-2 font-normal">
+            Ended at: {moment(tournament.ended_at).format('DD MM, YYYY')}
+          </div>
         );
     }
   };

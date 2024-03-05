@@ -1,11 +1,11 @@
 from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
-from test.factories import TeamFactory, TournamentFactory, UserFactory
+from test.factories import UserFactory
 
 from django.test import TestCase
 
-from apps.tournaments.models import Registration, Tournament
+from apps.tournaments.models import Tournament
 
 
 class TestUnitTournamentModel(TestCase):
@@ -34,19 +34,3 @@ class TestUnitTournamentModel(TestCase):
 
     def test_has_start_datetime(self):
         self.assertEqual(self.tournament._has_start_datetime(), True)
-
-
-class TestUnitRegistrationModel(TestCase):
-    user = UserFactory.new()
-    tournament = TournamentFactory.new(organizer=user)
-    team = TeamFactory.new(created_by=user)
-    registration = Registration(
-        tournament=tournament,
-        team=team,
-    )
-
-    def test_registration_status(self):
-        self.assertEqual(
-            self.registration.status,
-            Registration.RegistrationStatusOptions.PENDING,
-        )

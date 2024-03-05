@@ -70,7 +70,7 @@ urlpatterns = [
         name="end-match",
     ),
     path(
-        "/org/tournaments/<str:uuid>/end",
+        "/org/tournaments/<str:uuid>/finalize",
         OrganizerTournamentViewSet.as_view({"patch": "end_tournament"}),
         name="end-tournament",
     ),

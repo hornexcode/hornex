@@ -36,18 +36,11 @@ class EndMatchUseCase:
         if match.team_a_score == match.team_b_score:
             raise ValidationError({"error": "Match is not finished yet"})
 
-        winner = None
-        if match.team_a_score > match.team_b_score:
-            winner = match.team_a
-        else:
-            winner = match.team_b
+        winner = match.team_a if match.team_a_score > match.team_b_score else match.team_b
 
         ch_winner: Registration = winner.registration_set.filter(tournament=tournament).first()
-        if not ch_winner:
-            raise ValidationError({"error": f"Team {winner.name} not registered at tournament"})
 
         scores_csv = "1-0" if match.team_a == winner else "0-1"
-
         try:
             ch_match: ChallongeMatch = ChallongeMatch.update(
                 tournament=tournament.challonge_tournament_id,
@@ -55,25 +48,20 @@ class EndMatchUseCase:
                 winner_id=ch_winner.challonge_participant_id,
                 scores_csv=scores_csv,
             )
-            logger.info("Match finished", match=ch_match)
         except Exception:
             raise Exception("Failed finish match at Challonge")
 
         match.set_winner(winner)
 
-        # finish match
-        # ...
-
-        # create next matches
-        if ch_match.winner_id is None:
-            raise Exception("Challonge match winner_id is None after update")
+        if tournament.is_last_round():
+            return match
 
         ch_matches = ChallongeMatch.list(
             tournament.challonge_tournament_id, ch_match.winner_id, "open"
         )
-        logger.info("Next matches at Challonge", matches=ch_matches)
+
         if len(ch_matches) == 0:
-            return match
+            raise Exception("Error creating next match, no match found at Challonge")
 
         # we must have only one matches here
         if len(ch_matches) > 1:

@@ -316,9 +316,10 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         )
         params.is_valid(raise_exception=True)
 
-        EndTournamentUseCase().execute(EndTournamentInput(**params.validated_data))
+        tournament = EndTournamentUseCase().execute(EndTournamentInput(**params.validated_data))
+        serializer = self.serializer_class(instance=tournament)
 
-        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)

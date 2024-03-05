@@ -38,8 +38,16 @@ const { submit: checkInTournament } = dataLoader('org:tournament:check-in');
 const checkInTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
   checkInTournament({ tournamentId });
 
+const { submit: finalizeTournament } = dataLoader<Tournament>(
+  'org:tournament:finalize'
+);
+
+const finalizeTournamentHandler = ({ uuid }: { uuid: string }) =>
+  finalizeTournament({ uuid });
+
 export {
   checkInTournamentHandler,
+  finalizeTournamentHandler,
   openRegistrationHandler,
   startTournamentHandler,
 };

@@ -33,7 +33,7 @@ class EndTournamentUseCase:
             raise ValidationError({"error": "You can not end a tournament which are not running"})
 
         try:
-            ChallongeTournament.end(tournament=tournament.challonge_tournament_id)
+            ChallongeTournament.finalize(tournament=tournament.challonge_tournament_id)
         except Exception:
             raise Exception("Failed end tournament at Challonge")
 
