@@ -323,30 +323,32 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def results(self, request, *args, **kwargs):
-        instance = self.get_object()
+        tournament = self.get_object()
 
-        matches = Match.objects.filter(tournament=instance).all()
+        matches = tournament.matches.all()
 
-        results = {}
+        teams = tournament.registered_teams.all()
+        serialized_teams = TeamSerializer(teams, many=True).data
+        teams_victories = {}
+        teams_defeats = {}
 
         for match in matches:
             winner_id = str(match.winner.id)
+
+            teams_victories[winner_id] = (
+                teams_victories[winner_id] + 1 if teams_victories.get(winner_id) else 1
+            )
+
             loser_id = str(match.loser.id)
+            teams_defeats[loser_id] = (
+                teams_defeats[loser_id] + 1 if teams_defeats.get(loser_id) else 1
+            )
 
-            results[winner_id] = results[winner_id] + 1 if results.get(winner_id) else 1
-            results[loser_id] = results[loser_id] - 1 if results.get(loser_id) else 0
+        for team in serialized_teams:
+            team["victories"] = teams_victories.get(team.get("id"), 0)
+            team["defeats"] = teams_defeats.get(team.get("id"), 0)
 
-            # results[loser_id] = (
-            #     {
-            #         **results[loser_id],
-            #         "team": loser_id,
-            #         "score": results[loser_id].get("score") - 1,
-            #     }
-            #     if results.get(loser_id)
-            #     else {"team": loser_id, "score": -1}
-            # )
-
-        return Response(results, status=status.HTTP_200_OK)
+        return Response(serialized_teams, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
