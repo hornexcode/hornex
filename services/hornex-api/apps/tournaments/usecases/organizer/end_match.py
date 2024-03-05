@@ -63,11 +63,11 @@ class EndMatchUseCase:
         if len(ch_matches) == 0:
             raise Exception("Error creating next match, no match found at Challonge")
 
-        # we must have only one matches here
-        if len(ch_matches) > 1:
-            raise Exception("Error creating next match, more than one match found at Challonge")
-
         cm = ch_matches[0]
+        # if match has been already created
+        if Match.objects.filter(challonge_match_id=cm.id).exists():
+            return match
+
         Match.objects.create(
             team_a=Team.objects.get(registration__challonge_participant_id=cm.player1_id),
             team_b=Team.objects.get(registration__challonge_participant_id=cm.player2_id),

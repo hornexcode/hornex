@@ -39,7 +39,7 @@ export const status: Record<string, string> = {
   announced: 'Announced',
   registering: 'Registration Open',
   running: 'Running',
-  finished: 'Finished',
+  ended: 'Ended',
   cancelled: 'Cancelled',
 };
 
