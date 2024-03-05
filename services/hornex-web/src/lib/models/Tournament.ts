@@ -31,6 +31,7 @@ export const tournamentSchema = z.object({
   checked_in: z.boolean(),
   total_participants: z.number(),
   current_round: z.number(),
+  ended_at: z.date(),
 });
 export type Tournament = z.infer<typeof tournamentSchema>;
 
@@ -125,4 +126,8 @@ export function getRounds(tournament: Tournament) {
     default:
       break;
   }
+}
+
+export function isLastRound(tournament: Tournament) {
+  return tournament.current_round === getRounds(tournament);
 }

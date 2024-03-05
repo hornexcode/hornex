@@ -70,6 +70,11 @@ urlpatterns = [
         name="end-match",
     ),
     path(
+        "/org/tournaments/<str:uuid>/finalize",
+        OrganizerTournamentViewSet.as_view({"patch": "end_tournament"}),
+        name="end-tournament",
+    ),
+    path(
         "/org/registrations/<str:uuid>/delete",
         RegistrationViewSet.as_view({"delete": "destroy"}),
         name="delete-registered-teams",

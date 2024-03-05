@@ -1,3 +1,4 @@
+import math
 import uuid
 from abc import abstractmethod
 from datetime import UTC, datetime, timedelta
@@ -81,16 +82,10 @@ class Tournament(BaseModel):
         self.save()
 
     def get_number_of_rounds(self):
-        count = self.registrations.count()
-        if count == 4:
-            return 2
-        if count == 8:
-            return 3
-        if count == 16:
-            return 4
-        if count == 32:
-            return 5
-        return 0
+        return math.log2(self.registrations.count())
+
+    def is_last_round(self):
+        return self.current_round == self.get_number_of_rounds()
 
     def start(self):
         now = datetime.now(tz=UTC)

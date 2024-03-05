@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import structlog
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.validators import ValidationError
 
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
@@ -33,7 +34,7 @@ class CheckInTournamentUseCase:
         organizer = get_object_or_404(User, id=params.organizer_id)
 
         if organizer != tournament.organizer:
-            raise ValidationError({"error": "You are not this tournament's Organizer"})
+            raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
         check_in_end_at = datetime.combine(tournament.start_date, tournament.start_time)
         check_in_start_at = check_in_end_at - timedelta(minutes=tournament.check_in_duration)

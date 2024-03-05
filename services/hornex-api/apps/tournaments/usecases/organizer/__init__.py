@@ -11,6 +11,10 @@ from apps.tournaments.usecases.organizer.end_match import (
     EndMatchInput,
     EndMatchUseCase,
 )
+from apps.tournaments.usecases.organizer.end_tournament import (
+    EndTournamentInput,
+    EndTournamentUseCase,
+)
 from apps.tournaments.usecases.organizer.start_match import (
     StartMatchInput,
     StartMatchUseCase,
@@ -32,4 +36,6 @@ __all__ = [
     "StartMatchUseCase",
     "EndMatchInput",
     "EndMatchUseCase",
+    "EndTournamentInput",
+    "EndTournamentUseCase",
 ]

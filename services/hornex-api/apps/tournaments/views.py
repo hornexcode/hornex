@@ -36,6 +36,7 @@ from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import (
     CheckInTournamentParams,
     CreateAndRegisterTeamIntoTournamentParams,
+    EndTournamentParams,
     FinishMatchParams,
     RegisterSerializer,
     RegisterTeamIntoTournamentParams,
@@ -69,6 +70,8 @@ from apps.tournaments.usecases.organizer import (
     CreateTournamentUseCaseParams,
     EndMatchInput,
     EndMatchUseCase,
+    EndTournamentInput,
+    EndTournamentUseCase,
     StartMatchInput,
     StartMatchUseCase,
 )
@@ -305,6 +308,18 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         tournament.save()
 
         return Response({"success": True}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["patch"])
+    def end_tournament(self, request, *args, **kwargs):
+        params = EndTournamentParams(
+            data={"user_id": request.user.id, "tournament_uuid": kwargs.get("uuid")}
+        )
+        params.is_valid(raise_exception=True)
+
+        tournament = EndTournamentUseCase().execute(EndTournamentInput(**params.validated_data))
+        serializer = self.serializer_class(instance=tournament)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
