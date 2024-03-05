@@ -321,6 +321,33 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=["get"])
+    def results(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        matches = Match.objects.filter(tournament=instance).all()
+
+        results = {}
+
+        for match in matches:
+            winner_id = str(match.winner.id)
+            loser_id = str(match.loser.id)
+
+            results[winner_id] = results[winner_id] + 1 if results.get(winner_id) else 1
+            results[loser_id] = results[loser_id] - 1 if results.get(loser_id) else 0
+
+            # results[loser_id] = (
+            #     {
+            #         **results[loser_id],
+            #         "team": loser_id,
+            #         "score": results[loser_id].get("score") - 1,
+            #     }
+            #     if results.get(loser_id)
+            #     else {"team": loser_id, "score": -1}
+            # )
+
+        return Response(results, status=status.HTTP_200_OK)
+
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:

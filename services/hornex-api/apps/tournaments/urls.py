@@ -75,6 +75,11 @@ urlpatterns = [
         name="end-tournament",
     ),
     path(
+        "/org/tournaments/<str:uuid>/results",
+        OrganizerTournamentViewSet.as_view({"get": "results"}),
+        name="results",
+    ),
+    path(
         "/org/registrations/<str:uuid>/delete",
         RegistrationViewSet.as_view({"delete": "destroy"}),
         name="delete-registered-teams",
