@@ -206,7 +206,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     def start(self, request, *args, **kwargs):
         try:
             uc = StartTournamentUseCase()
-            tournament = uc.execute(StartTournamentUseCaseParams(uuid=kwargs["uuid"]))
+            tournament = uc.execute(StartTournamentUseCaseParams(id=kwargs["id"]))
             serializer = self.serializer_class(instance=tournament)
             return Response(
                 serializer.data,
@@ -254,8 +254,8 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     def start_match(self, request, *args, **kwargs):
         params = StartMatchParams(
             data={
-                "tournament_uuid": kwargs.get("uuid"),
-                "match_uuid": kwargs.get("match_uuid"),
+                "tournament_id": kwargs.get("id"),
+                "match_id": kwargs.get("match_id"),
                 "user_id": request.user.id,
             }
         )
@@ -268,8 +268,8 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     def end_match(self, request, *args, **kwargs):
         params = FinishMatchParams(
             data={
-                "tournament_uuid": kwargs.get("uuid"),
-                "match_uuid": kwargs.get("match_uuid"),
+                "tournament_id": kwargs.get("id"),
+                "match_id": kwargs.get("match_id"),
                 "user_id": request.user.id,
             }
         )
@@ -313,7 +313,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["patch"])
     def end_tournament(self, request, *args, **kwargs):
         params = EndTournamentParams(
-            data={"user_id": request.user.id, "tournament_uuid": kwargs.get("uuid")}
+            data={"user_id": request.user.id, "tournament_id": kwargs.get("id")}
         )
         params.is_valid(raise_exception=True)
 
@@ -381,7 +381,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
         return super().retrieve(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        tournament = Tournament.objects.get(uuid=kwargs["uuid"])
+        tournament = Tournament.objects.get(id=kwargs["id"])
         self.queryset = self.queryset.filter(
             tournament=tournament,
             status__in=[
@@ -589,9 +589,9 @@ def register_team(request, id):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def create_and_register_team(request, uuid):
+def create_and_register_team(request, id):
     params = CreateAndRegisterTeamIntoTournamentParams(
-        data={**request.data, "user_id": request.user.id, "tournament_uuid": uuid}
+        data={**request.data, "user_id": request.user.id, "tournament_id": id}
     )
     params.is_valid(raise_exception=True)
 
@@ -605,10 +605,8 @@ def create_and_register_team(request, uuid):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def check_in_tournament(request, uuid):
-    params = CheckInTournamentParams(
-        data={"organizer_id": request.user.id, "tournament_uuid": uuid}
-    )
+def check_in_tournament(request, id):
+    params = CheckInTournamentParams(data={"organizer_id": request.user.id, "tournament_id": id})
     params.is_valid(raise_exception=True)
 
     CheckInTournamentUseCase().execute(CheckInTournamentInput(**params.validated_data))

@@ -16,7 +16,7 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class EndTournamentInput:
-    tournament_uuid: uuid.UUID
+    tournament_id: uuid.UUID
     user_id: uuid.UUID
 
 
@@ -24,7 +24,7 @@ class EndTournamentInput:
 class EndTournamentUseCase:
     @transaction.atomic
     def execute(self, params: EndTournamentInput) -> Tournament:
-        tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
+        tournament = get_object_or_404(Tournament, id=params.tournament_id)
 
         if params.user_id != tournament.organizer.id:
             raise PermissionDenied({"error": "You are not this tournament's Organizer"})

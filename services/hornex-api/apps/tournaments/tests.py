@@ -661,7 +661,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:finish-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         resp = self.client.patch(
@@ -684,7 +684,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:finish-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         resp = self.client.patch(
@@ -705,7 +705,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:finish-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         resp = self.client.patch(
@@ -727,7 +727,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:finish-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         resp = self.client.patch(
@@ -748,7 +748,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:finish-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         try:
@@ -774,7 +774,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:finish-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         try:
@@ -836,7 +836,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:start-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         resp = self.client.patch(
@@ -854,7 +854,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:start-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         resp = self.client.patch(
@@ -875,7 +875,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:start-match",
-            kwargs={"uuid": self.tournament.uuid, "match_uuid": self.match.uuid},
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
         try:
@@ -920,7 +920,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
         url = reverse(
             "tournaments:end-tournament",
             kwargs={
-                "uuid": self.tournament.uuid,
+                "id": self.tournament.id,
             },
         )
 
@@ -940,7 +940,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:end-tournament",
-            kwargs={"uuid": self.tournament.uuid},
+            kwargs={"id": self.tournament.id},
         )
 
         resp = self.client.patch(
@@ -956,7 +956,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
         url = reverse(
             "tournaments:end-tournament",
             kwargs={
-                "uuid": self.tournament.uuid,
+                "id": self.tournament.id,
             },
         )
 
@@ -979,7 +979,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
 
         url = reverse(
             "tournaments:end-tournament",
-            kwargs={"uuid": self.tournament.uuid},
+            kwargs={"id": self.tournament.id},
         )
 
         try:

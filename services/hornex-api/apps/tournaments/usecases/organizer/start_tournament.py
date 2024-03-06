@@ -15,13 +15,13 @@ logger = structlog.get_logger(__name__)
 
 @dataclass(frozen=True)
 class StartTournamentUseCaseParams:
-    uuid: str
+    id: str
 
 
 class StartTournamentUseCase:
     @transaction.atomic
     def execute(self, params: StartTournamentUseCaseParams) -> LeagueOfLegendsTournament:
-        tournament = get_object_or_404(LeagueOfLegendsTournament, uuid=params.uuid)
+        tournament = get_object_or_404(LeagueOfLegendsTournament, id=params.id)
 
         tournament.start()
 
