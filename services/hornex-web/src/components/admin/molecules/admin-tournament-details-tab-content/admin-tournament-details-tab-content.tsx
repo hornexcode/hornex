@@ -225,8 +225,7 @@ const AdminTournamentGeneralInfo = () => {
           <div className="border-border border-r border-t p-3">
             <div className="font-normal">Teams registered</div>
             <div className="text-title">
-              {tournament.total_participants / tournament.team_size}/
-              {tournament.max_teams}
+              {tournament.registered_teams_count}/{tournament.max_teams}
             </div>
           </div>
           <div className="border-border border-r border-t p-3">

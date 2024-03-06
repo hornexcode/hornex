@@ -202,6 +202,8 @@ class Rank(models.Model):
     )
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     score = models.IntegerField()
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
 
     class Meta:
         ordering = ["-score"]
@@ -262,16 +264,15 @@ class Match(models.Model):
         self.status = Match.StatusType.ENDED
         self.ended_at = datetime.now(tz=UTC)
 
-        rank = Rank.objects.filter(tournament=self.tournament, team=winner).first()
-        if rank:
-            rank.score += 1
-            rank.save()
-        else:
-            Rank.objects.create(tournament=self.tournament, team=winner, score=1)
+        rank = Rank.objects.get(tournament=self.tournament, team=winner)
+        rank.score += 1
+        rank.wins += 1
+        rank.save()
 
-        rank = Rank.objects.filter(tournament=self.tournament, team=self.loser).first()
-        if not rank:
-            Rank.objects.create(tournament=self.tournament, team=self.loser, score=0)
+        rank = Rank.objects.get(tournament=self.tournament, team=self.loser)
+        rank.score -= 1
+        rank.losses += 1
+        rank.save()
 
         self.save()
 

@@ -22,7 +22,7 @@ const Prize = () => {
       <div className="col-span-11 p-4">
         <div className="flex items-center justify-between">
           <div className="block">
-            <h4 className="text-lg font-bold">1st Place</h4>
+            <h4 className="text-title text-lg ">1st Place</h4>
           </div>
           <div className="block">
             <h4 className="text-lg font-bold">R$ 1.000,00</h4>

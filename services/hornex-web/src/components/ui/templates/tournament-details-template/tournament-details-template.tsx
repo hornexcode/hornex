@@ -1,5 +1,6 @@
 import { ConnectAccountButton } from '../../atoms/connect-account-button';
 import { RegisterButton } from '../../atoms/register-button';
+import { TournamentPhasesWidget } from '../../molecules';
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
 import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
@@ -24,7 +25,11 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
       <div className="mt-8 flex space-x-8">
         <div className="lg:w-[300px]">
-          <div className="bg-medium-dark col-span-1 space-y-2">
+          <TournamentPhasesWidget
+            tournament={tournament}
+            isRegistered={isRegistered}
+          />
+          {/* <div className="bg-medium-dark col-span-1 space-y-2">
             <div className="px-4 pt-4">
               <span className="text-muted">Tournament status</span>
             </div>
@@ -55,7 +60,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
                 />
               )}
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="flex flex-1">
           <TournamentTabPanels tournament={tournament} />

@@ -25,14 +25,14 @@ class TournamentListSerializer(serializers.Serializer):
 
 
 class TournamentSerializer(serializers.ModelSerializer):
-    total_participants = serializers.SerializerMethodField()
+    registered_teams_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Tournament
         fields = "__all__"
 
-    def get_total_participants(self, obj):
-        return obj.participants.count()
+    def get_registered_teams_count(self, obj):
+        return obj.registered_teams.count()
 
 
 class RegistrationCreateSerializer(serializers.Serializer):

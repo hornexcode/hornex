@@ -2,6 +2,7 @@ import TournamentDetailsPrizesTabContent from '@/components/ui/molecules/tournam
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Prize, Tournament } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
+import { Users2 } from 'lucide-react';
 import moment from 'moment';
 import { FC } from 'react';
 
@@ -76,6 +77,38 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
             scrolling="auto"
             // allowTransparency={true}
           ></iframe>
+        </div>
+      </TabsContent>
+      <TabsContent value="standings">
+        <div className="block">
+          {/* item 1 */}
+          <div className="bg-medium-dark hover:bg-dark/40 border-border grid grid-cols-12 border-b">
+            <div className="col-span-1">
+              <div className="border-border flex h-full items-center justify-center border-r p-4">
+                <div className="text-title text-4xl font-bold">1</div>
+              </div>
+            </div>
+            <div className="col-span-4">
+              <div className="p-4 text-lg">
+                <h4 className="text-title font-medium">Globsxpace</h4>
+                <div className="text-muted font-display font-bold">3W - 0L</div>
+              </div>
+            </div>
+          </div>
+          {/* item 2 */}
+          <div className="bg-medium-dark hover:bg-dark/40 border-border grid grid-cols-12 border-b">
+            <div className="col-span-1">
+              <div className="border-border flex h-full items-center justify-center border-r p-4">
+                <div className="text-title text-4xl font-bold leading-3">2</div>
+              </div>
+            </div>
+            <div className="col-span-4">
+              <div className="p-4 text-lg">
+                <h4 className="text-title font-medium">Second team</h4>
+                <div className="text-muted font-display font-bold">2W - 0L</div>
+              </div>
+            </div>
+          </div>
         </div>
       </TabsContent>
     </Tabs>

@@ -13,16 +13,16 @@ const AdminTournamentTeamRow: FC<AdminTournamentTeamRowProps> = ({
   registration,
 }) => {
   return (
-    <div className="bg-medium-dark border-border grid grid-cols-12 border-b">
+    <div className="bg-medium-dark shadow-card mb-2 grid grid-cols-12">
       <div className="col-span-1 flex items-center justify-center">
-        <Users2 className="text-muted h-8 w-8" />
+        <Users2 className="text-muted h-7 w-7" />
       </div>
-      <div className="border-background col-span-4 flex items-center border-l p-6">
-        <div className="text-title font-roboto-condensed text-lg">
-          {registration.team.name}
-        </div>
+
+      <div className="border-border col-span-4 flex items-center border-l p-6">
+        <h4 className="text-title text-lg">{registration.team.name}</h4>
       </div>
-      <div className="ml-auto flex items-center p-6">
+
+      <div className="col-span-7 ml-auto p-6">
         <div className="text-muted ml-4">
           <Button shape="rounded" color="danger" size="mini">
             Delete

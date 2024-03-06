@@ -29,7 +29,7 @@ export const tournamentSchema = z.object({
   open_classification: z.boolean(),
   challonge_tournament_url: z.string(),
   checked_in: z.boolean(),
-  total_participants: z.number(),
+  registered_teams_count: z.number(),
   current_round: z.number(),
   ended_at: z.date(),
 });
