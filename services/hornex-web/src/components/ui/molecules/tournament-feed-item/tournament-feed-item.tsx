@@ -107,7 +107,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
             size="small"
             onClick={() =>
               router.push(
-                `/${tournament.platform}/${tournament.game}/tournaments/${tournament.uuid}`
+                `/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
               )
             }
           >

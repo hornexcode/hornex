@@ -118,7 +118,7 @@ const TournamentCheckoutTemplate: FC<TournamentCheckoutProps> = ({
         if (error) {
           console.log(error);
         } else {
-          // router.push(`/tournaments/${tournament.uuid}`);
+          // router.push(`/tournaments/${tournament.id}`);
           console.log('success');
         }
         break;

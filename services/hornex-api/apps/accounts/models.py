@@ -19,7 +19,7 @@ class TermsAndConditionsAgreement(models.Model):
 
 
 class GameID(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField("users.User", on_delete=models.CASCADE, related_name="game_id")
 
     class GameOptions(models.TextChoices):

@@ -2,7 +2,7 @@ import moment from 'moment';
 import z from 'zod';
 
 export const tournamentSchema = z.object({
-  uuid: z.string(),
+  id: z.string(),
   name: z.string(),
   description: z.string(),
   published: z.boolean(),

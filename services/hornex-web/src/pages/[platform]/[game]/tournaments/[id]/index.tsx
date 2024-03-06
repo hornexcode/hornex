@@ -91,7 +91,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data: registrations, error: registrationsError } =
     await getTournamentRegistrations(
       {
-        uuid: tournament.uuid,
+        uuid: tournament.id,
         game: ctx.query.game || '',
         platform: ctx.query.platform || '',
       },

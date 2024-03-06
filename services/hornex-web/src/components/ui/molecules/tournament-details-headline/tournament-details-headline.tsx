@@ -77,7 +77,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
     isLoading: checkInStatusIsLoading,
     mutate: checkInStatusMutate,
   } = useTeamCheckIns({
-    tournamentId: tournament.uuid,
+    tournamentId: tournament.id,
     // teamId: registration?.team,
   });
 
@@ -123,7 +123,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const handleCheckIn = async () => {
     setLoading(true);
     const { error } = await createUserCheckIn({
-      tournamentId: tournament.uuid,
+      tournamentId: tournament.id,
       // teamId: registration?.team,
     });
 
@@ -175,14 +175,14 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             {/* TODO: make this a molecule component */}
             <div className="flex items-center">
               <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
-                <Link href={`/tournament/${tournament.uuid}/participants`}>
+                <Link href={`/tournament/${tournament.id}/participants`}>
                   <DiscordLogoIcon className="h-6 w-6" />
                 </Link>
-                <Link href={`/tournament/${tournament.uuid}/participants`}>
+                <Link href={`/tournament/${tournament.id}/participants`}>
                   <TwitterLogoIcon className="h-6 w-6" />
                 </Link>
 
-                <Link href={`/tournament/${tournament.uuid}/participants`}>
+                <Link href={`/tournament/${tournament.id}/participants`}>
                   <Twitch className="h-5 w-5" />
                 </Link>
               </div>

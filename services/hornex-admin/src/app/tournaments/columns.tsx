@@ -75,7 +75,7 @@ export const columns: ColumnDef<Tournament>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(tournament.uuid)}
+              onClick={() => navigator.clipboard.writeText(tournament.id)}
             >
               Copy payment ID
             </DropdownMenuItem>
@@ -84,7 +84,7 @@ export const columns: ColumnDef<Tournament>[] = [
               View customer {row.getValue('id')}
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => push(`/tournaments/${tournament.uuid}`)}
+              onClick={() => push(`/tournaments/${tournament.id}`)}
             >
               View tournament details
             </DropdownMenuItem>

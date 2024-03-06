@@ -28,7 +28,7 @@ class Tournament(BaseModel):
         BRL = "BRL"
         EUR = "EUR"
 
-    id = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
@@ -155,13 +155,14 @@ class Prize(models.Model):
 
 
 class Registration(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     class RegistrationStatusOptions(models.TextChoices):
         PENDING = "pending"
         ACCEPTED = "accepted"
         REJECTED = "rejected"
         CANCELLED = "cancelled"
 
-    id = models.UUIDField(default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(
         Tournament, related_name="registrations", on_delete=models.CASCADE
     )
@@ -193,7 +194,7 @@ class Registration(models.Model):
 
 
 class Rank(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(
         Tournament,
         related_name="ranks",
@@ -217,7 +218,7 @@ class Match(models.Model):
         ENDED = "ended"
         CANCELLED = "cancelled"
 
-    id = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     round = models.IntegerField()
     tournament = models.ForeignKey(Tournament, related_name="matches", on_delete=models.CASCADE)
     team_a = models.ForeignKey(
@@ -276,6 +277,7 @@ class Match(models.Model):
 
 
 class Checkin(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="checkins")
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)

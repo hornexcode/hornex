@@ -21,7 +21,7 @@ const AdminTournamentTeamsTabContent: FC<
     error,
     isLoading,
   } = useGetTournamentRegistrationsQuery({
-    tournamentId: tournament.uuid,
+    tournamentId: tournament.id,
   });
 
   if (error || !registrations) {

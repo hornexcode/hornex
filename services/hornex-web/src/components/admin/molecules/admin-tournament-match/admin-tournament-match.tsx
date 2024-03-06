@@ -28,7 +28,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
     setIsLoading(true);
     const { error } = await startMatch({
       matchUuid: match.uuid,
-      tournamentUuid: tournament.uuid,
+      tournamentUuid: tournament.id,
     });
     if (error) {
       toast({
@@ -50,7 +50,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
     setIsLoading(true);
     const { error } = await endMatch({
       matchUuid: match.uuid,
-      tournamentUuid: tournament.uuid,
+      tournamentUuid: tournament.id,
     });
     if (error) {
       console.error(error);

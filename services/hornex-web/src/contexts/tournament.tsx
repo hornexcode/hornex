@@ -46,7 +46,7 @@ export const TournamentContextProvider = ({
   const { data, mutate } = useGetTournamentQuery({
     platform: tournament.platform,
     game: tournament.game,
-    tournamentId: tournament.uuid,
+    tournamentId: tournament.id,
   });
 
   useEffect(() => {
