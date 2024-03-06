@@ -110,6 +110,11 @@ urlpatterns = [
         PublicTournamentViewSet.as_view({"get": "prizes"}),
         name="list-prizes",
     ),
+    path(
+        "/tournaments/<str:id>/standings",
+        PublicTournamentViewSet.as_view({"get": "standings"}),
+        name="list-prizes",
+    ),
     # Registrations Resource
     path(
         "/registrations/<str:id>",

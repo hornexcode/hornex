@@ -18,7 +18,7 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class CreateAndRegisterTeamIntoTournamentInput:
-    tournament_uuid: uuid.UUID
+    tournament_id: uuid.UUID
     user_id: uuid.UUID
     name: str
     member_1_email: str
@@ -39,7 +39,7 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
         self, params: CreateAndRegisterTeamIntoTournamentInput
     ) -> CreateAndRegisterTeamIntoTournamentOutput:
         user = get_object_or_404(User, id=params.user_id)
-        tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
+        tournament = get_object_or_404(Tournament, id=params.tournament_id)
 
         team, _ = Team.objects.get_or_create(name=params.name, created_by=user)
 

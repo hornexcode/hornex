@@ -73,7 +73,7 @@ const AdminTournamentGeneralInfo = () => {
   const onStartTournamentHandler = async () => {
     setLoading(true);
     const { data, error } = await startTournamentHandler({
-      tournamentUUID: tournament.id,
+      tournamentId: tournament.id,
     });
     if (error) {
       toast({
@@ -94,7 +94,7 @@ const AdminTournamentGeneralInfo = () => {
   const onFinalizeTournamentHandler = async () => {
     setLoading(true);
     const { data, error } = await finalizeTournamentHandler({
-      uuid: tournament.id,
+      id: tournament.id,
     });
     if (error) {
       toast({

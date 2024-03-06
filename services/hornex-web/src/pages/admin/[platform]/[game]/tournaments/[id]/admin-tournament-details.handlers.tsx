@@ -20,13 +20,9 @@ const { submit: startTournament } = dataLoader<
   { timestamp: number; now: Date }
 >('org:tournament:start');
 
-const startTournamentHandler = ({
-  tournamentUUID,
-}: {
-  tournamentUUID: string;
-}) =>
+const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
   startTournament(
-    { uuid: tournamentUUID },
+    { id: tournamentId },
     {
       timestamp: Date.now(),
       now: new Date(),
@@ -42,8 +38,8 @@ const { submit: finalizeTournament } = dataLoader<Tournament>(
   'org:tournament:finalize'
 );
 
-const finalizeTournamentHandler = ({ uuid }: { uuid: string }) =>
-  finalizeTournament({ uuid });
+const finalizeTournamentHandler = ({ id }: { id: string }) =>
+  finalizeTournament({ id });
 
 export {
   checkInTournamentHandler,

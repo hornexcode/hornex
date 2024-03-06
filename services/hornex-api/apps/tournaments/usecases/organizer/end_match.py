@@ -18,7 +18,7 @@ logger = structlog.get_logger(__name__)
 @dataclass
 class EndMatchInput:
     tournament_id: uuid.UUID
-    match_uuid: uuid.UUID
+    match_id: uuid.UUID
     user_id: uuid.UUID
 
 
@@ -31,7 +31,7 @@ class EndMatchUseCase:
         if params.user_id != tournament.organizer.id:
             raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
-        match = get_object_or_404(Match, uuid=params.match_uuid)
+        match = get_object_or_404(Match, id=params.match_id)
 
         if match.team_a_score == match.team_b_score:
             raise ValidationError({"error": "Match is not finished yet"})

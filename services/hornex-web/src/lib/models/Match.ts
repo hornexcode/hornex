@@ -2,8 +2,7 @@ import { teamSchema } from './Team';
 import z from 'zod';
 
 export const matchSchema = z.object({
-  id: z.number(),
-  uuid: z.string(),
+  id: z.string().uuid(),
   team_a: teamSchema,
   team_b: teamSchema,
   team_a_score: z.number(),

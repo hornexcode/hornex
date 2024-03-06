@@ -15,8 +15,8 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class StartMatchInput:
-    tournament_uuid: uuid.UUID
-    match_uuid: uuid.UUID
+    tournament_id: uuid.UUID
+    match_id: uuid.UUID
     user_id: uuid.UUID
 
 
@@ -24,12 +24,12 @@ class StartMatchInput:
 class StartMatchUseCase:
     @transaction.atomic
     def execute(self, params: StartMatchInput):
-        tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
+        tournament = get_object_or_404(Tournament, id=params.tournament_id)
 
         if tournament.organizer.id != params.user_id:
             raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
-        match = get_object_or_404(Match, uuid=params.match_uuid)
+        match = get_object_or_404(Match, id=params.match_id)
 
         try:
             ChallongeMatch.mark_as_underway(

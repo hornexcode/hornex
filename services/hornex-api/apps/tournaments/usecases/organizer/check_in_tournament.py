@@ -17,7 +17,7 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class CheckInTournamentInput:
-    tournament_uuid: uuid.UUID
+    tournament_id: uuid.UUID
     organizer_id: uuid.UUID
 
 
@@ -30,7 +30,7 @@ class CheckInTournamentOutput:
 class CheckInTournamentUseCase:
     @transaction.atomic
     def execute(self, params: CheckInTournamentInput) -> CheckInTournamentOutput:
-        tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
+        tournament = get_object_or_404(Tournament, id=params.tournament_id)
         organizer = get_object_or_404(User, id=params.organizer_id)
 
         if organizer != tournament.organizer:

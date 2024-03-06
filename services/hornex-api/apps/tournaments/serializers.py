@@ -94,3 +94,11 @@ class RankSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rank
         fields = "__all__"
+
+
+class StandingSerializer(serializers.ModelSerializer):
+    team = TeamSerializer(read_only=True)
+
+    class Meta:
+        model = Rank
+        fields = ["id", "team", "score", "wins", "losses"]

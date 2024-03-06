@@ -42,7 +42,7 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class CreateAndRegisterTeamIntoTournamentParams(serializers.Serializer):
-    tournament_uuid = serializers.UUIDField()
+    tournament_id = serializers.UUIDField()
     name = serializers.CharField(max_length=255)
     user_id = serializers.UUIDField()
     member_1_email = serializers.EmailField()
@@ -52,27 +52,27 @@ class CreateAndRegisterTeamIntoTournamentParams(serializers.Serializer):
 
 
 class RegisterTeamIntoTournamentParams(serializers.Serializer):
-    tournament_uuid = serializers.UUIDField()
+    tournament_id = serializers.UUIDField()
     team_id = serializers.UUIDField()
 
 
 class CheckInTournamentParams(serializers.Serializer):
-    tournament_uuid = serializers.UUIDField()
+    tournament_id = serializers.UUIDField()
     organizer_id = serializers.UUIDField()
 
 
 class StartMatchParams(serializers.Serializer):
-    tournament_uuid = serializers.UUIDField()
-    match_uuid = serializers.UUIDField()
+    tournament_id = serializers.UUIDField()
+    match_id = serializers.UUIDField()
     user_id = serializers.UUIDField()
 
 
 class FinishMatchParams(serializers.Serializer):
-    tournament_uuid = serializers.UUIDField()
-    match_uuid = serializers.UUIDField()
+    tournament_id = serializers.UUIDField()
+    match_id = serializers.UUIDField()
     user_id = serializers.UUIDField()
 
 
 class EndTournamentParams(serializers.Serializer):
-    tournament_uuid = serializers.UUIDField()
+    tournament_id = serializers.UUIDField()
     user_id = serializers.UUIDField()
