@@ -20,18 +20,14 @@ type StandingProps = {
 
 const Standing: FC<StandingProps> = ({ standing, tier }) => {
   return (
-    <div className="bg-medium-dark hover:bg-dark/40 border-border grid grid-cols-12 border-b">
-      <div className="col-span-1">
-        <div className="border-border flex h-full items-center justify-center border-r p-4">
-          <div className="text-title text-4xl font-bold">{tier}</div>
-        </div>
+    <div className="border-border bg-medium-dark grid grid-cols-5 border-b">
+      <div className="border-border col-span-1 flex h-full items-center justify-center border-r p-2">
+        <div className="text-title font-lg font-bold">{tier}</div>
       </div>
-      <div className="col-span-4">
-        <div className="p-4 text-lg">
-          <h4 className="text-title font-medium">{standing.team.name}</h4>
-          <div className="text-muted font-display font-bold">
-            {standing.wins}W - {standing.losses}L
-          </div>
+      <div className="col-span-4 p-2">
+        <div className="text-title">{standing.team.name}</div>
+        <div className="text-muted font-display">
+          {standing.wins}W - {standing.losses}L
         </div>
       </div>
     </div>

@@ -292,46 +292,13 @@ const AdminTournamentGeneralInfo = () => {
           <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
           {renderStatusContent()}
         </div>
-        {tournament.status === 'ended' && (
+        {hasStandings && tournamentResults && (
           <div className="mt-4 block">
             <div className="text-title font-semibold">Results</div>
-            <div className="border-border bg-medium-dark grid grid-cols-5 border-b">
-              <div className="border-border col-span-1 flex h-full items-center justify-center border-r p-2">
-                <div className="text-title font-lg font-bold">1</div>
-              </div>
-              <div className="col-span-4 p-2">
-                <div className="text-title">Team 1 name</div>
-                <div className="text-muted font-display">3W - 0L</div>
-              </div>
-            </div>
-            <div className="border-border bg-medium-dark grid grid-cols-5 border-b">
-              <div className="border-border col-span-1 flex h-full items-center justify-center border-r p-2">
-                <div className="text-title font-lg font-bold">1</div>
-              </div>
-              <div className="col-span-4 p-2">
-                <div className="text-title">Team 1 name</div>
-                <div className="text-muted font-display">3W - 0L</div>
-              </div>
-            </div>
-            <div className="border-border bg-medium-dark grid grid-cols-5 border-b">
-              <div className="border-border col-span-1 flex h-full items-center justify-center border-r p-2">
-                <div className="text-title font-lg font-bold">1</div>
-              </div>
-              <div className="col-span-4 p-2">
-                <div className="text-title">Team 1 name</div>
-                <div className="text-muted font-display">3W - 0L</div>
-              </div>
-            </div>
+
+            <AdminTournamentStandingsTabContent standings={tournamentResults} />
           </div>
         )}
-      </div>
-      <div className="col-span-1 col-start-3 mt-2">
-        <h4 className="text-title mb-3 text-lg font-bold">Results</h4>
-        <div className="bg-medium-dark ">
-          {hasStandings && tournamentResults && (
-            <AdminTournamentStandingsTabContent standings={tournamentResults} />
-          )}
-        </div>
       </div>
       {/* danger zone */}
       <div className="col-span-3">
