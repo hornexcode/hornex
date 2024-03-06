@@ -218,8 +218,10 @@ const AdminTournamentGeneralInfo = () => {
         );
       case 'ended':
         return (
-          <div className="text-title py-2 font-normal">
-            Ended at: {moment(tournament.ended_at).format('DD MM, YYYY')}
+          <div className="block">
+            <div className="text-muted py-2 text-sm font-normal italic">
+              Ended at: {moment(tournament.ended_at).format('DD MM, YYYY')}
+            </div>
           </div>
         );
     }
@@ -276,18 +278,52 @@ const AdminTournamentGeneralInfo = () => {
           </div>
         </div>
       </div>
-      <div className="bg-medium-dark col-span-1 p-6">
-        <span className="text-muted">Tournament status</span>
-        <div className="flex items-center justify-between pb-2">
-          <span className="font-semibold text-amber-500">
-            {getStatus(tournament)}
-          </span>
-          <div className="text-xs text-gray-500">
-            step {steps[0]} / {steps[1]}
+      <div className="col-span-1">
+        <div className="bg-medium-dark block p-6">
+          <div className="text-muted mb-2 font-bold">Tournament status</div>
+          <div className="flex items-center justify-between pb-2">
+            <span className="font-semibold text-amber-500">
+              {getStatus(tournament)}
+            </span>
+            <div className="text-sm text-gray-500">
+              step {steps[0]} / {steps[1]}
+            </div>
           </div>
+          <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
+          {renderStatusContent()}
         </div>
-        <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
-        {renderStatusContent()}
+        {tournament.status === 'ended' && (
+          <div className="mt-4 block">
+            <div className="text-title font-semibold">Results</div>
+            <div className="border-border bg-medium-dark grid grid-cols-5 border-b">
+              <div className="border-border col-span-1 flex h-full items-center justify-center border-r p-2">
+                <div className="text-title font-lg font-bold">1</div>
+              </div>
+              <div className="col-span-4 p-2">
+                <div className="text-title">Team 1 name</div>
+                <div className="text-muted font-display">3W - 0L</div>
+              </div>
+            </div>
+            <div className="border-border bg-medium-dark grid grid-cols-5 border-b">
+              <div className="border-border col-span-1 flex h-full items-center justify-center border-r p-2">
+                <div className="text-title font-lg font-bold">1</div>
+              </div>
+              <div className="col-span-4 p-2">
+                <div className="text-title">Team 1 name</div>
+                <div className="text-muted font-display">3W - 0L</div>
+              </div>
+            </div>
+            <div className="border-border bg-medium-dark grid grid-cols-5 border-b">
+              <div className="border-border col-span-1 flex h-full items-center justify-center border-r p-2">
+                <div className="text-title font-lg font-bold">1</div>
+              </div>
+              <div className="col-span-4 p-2">
+                <div className="text-title">Team 1 name</div>
+                <div className="text-muted font-display">3W - 0L</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="col-span-1 col-start-3 mt-2">
         <h4 className="text-title mb-3 text-lg font-bold">Results</h4>
