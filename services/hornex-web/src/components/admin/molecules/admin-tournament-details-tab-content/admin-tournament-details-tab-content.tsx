@@ -1,3 +1,4 @@
+import AdminTournamentStandingsTabContent from '../admin-tournament-standings-tab-content/admin-tournament-standings-tab-content';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +26,7 @@ import {
   finalizeTournamentHandler,
   openRegistrationHandler,
   startTournamentHandler,
+  useGetTournamentResults,
 } from '@/pages/admin/[platform]/[game]/tournaments/[id]/admin-tournament-details.handlers';
 import { datetime } from '@/utils/datetime';
 import { Loader2 } from 'lucide-react';
@@ -34,6 +36,11 @@ import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
   const { tournament, refreshTournament } = useAdminTournament();
+  const { data: tournamentResults } = useGetTournamentResults({
+    id: tournament.id,
+  });
+
+  console.log();
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
   );
@@ -218,6 +225,9 @@ const AdminTournamentGeneralInfo = () => {
     }
   };
 
+  const hasStandings =
+    tournament.status === 'running' || tournament.status === 'ended';
+
   return (
     <div className="mt-4 grid grid-cols-3 gap-4">
       <div className="col-span-2">
@@ -278,6 +288,14 @@ const AdminTournamentGeneralInfo = () => {
         </div>
         <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
         {renderStatusContent()}
+      </div>
+      <div className="col-span-1 col-start-3 mt-2">
+        <h4 className="text-title mb-3 text-lg font-bold">Results</h4>
+        <div className="bg-medium-dark ">
+          {hasStandings && tournamentResults && (
+            <AdminTournamentStandingsTabContent standings={tournamentResults} />
+          )}
+        </div>
       </div>
       {/* danger zone */}
       <div className="col-span-3">
