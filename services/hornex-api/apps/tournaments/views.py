@@ -48,6 +48,7 @@ from apps.tournaments.serializers import (
     MatchSerializer,
     ParticipantSerializer,
     PrizeSerializer,
+    RankSerializer,
     RegistrationSerializer,
     TournamentSerializer,
 )
@@ -324,31 +325,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def results(self, request, *args, **kwargs):
         tournament = self.get_object()
-
-        matches = tournament.matches.all()
-
-        teams = tournament.registered_teams.all()
-        serialized_teams = TeamSerializer(teams, many=True).data
-        teams_victories = {}
-        teams_defeats = {}
-
-        for match in matches:
-            winner_id = str(match.winner.id)
-
-            teams_victories[winner_id] = (
-                teams_victories[winner_id] + 1 if teams_victories.get(winner_id) else 1
-            )
-
-            loser_id = str(match.loser.id)
-            teams_defeats[loser_id] = (
-                teams_defeats[loser_id] + 1 if teams_defeats.get(loser_id) else 1
-            )
-
-        for team in serialized_teams:
-            team["victories"] = teams_victories.get(team.get("id"), 0)
-            team["defeats"] = teams_defeats.get(team.get("id"), 0)
-
-        return Response(serialized_teams, status=status.HTTP_200_OK)
+        ranks = tournament.ranks.all()
+        serializer = RankSerializer(ranks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)

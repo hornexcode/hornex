@@ -28,7 +28,7 @@ class Tournament(BaseModel):
         BRL = "BRL"
         EUR = "EUR"
 
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
@@ -151,7 +151,7 @@ class Prize(models.Model):
         ordering = ["place"]
 
     def __str__(self) -> str:
-        return self.id
+        return f"{self.place} - {self.content}"
 
 
 class Registration(models.Model):
@@ -161,7 +161,7 @@ class Registration(models.Model):
         REJECTED = "rejected"
         CANCELLED = "cancelled"
 
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.UUIDField(default=uuid.uuid4, editable=False)
     tournament = models.ForeignKey(
         Tournament, related_name="registrations", on_delete=models.CASCADE
     )
@@ -192,6 +192,23 @@ class Registration(models.Model):
         self.save()
 
 
+class Rank(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False)
+    tournament = models.ForeignKey(
+        Tournament,
+        related_name="ranks",
+        on_delete=models.CASCADE,
+    )
+    team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
+    score = models.IntegerField()
+
+    class Meta:
+        ordering = ["-score"]
+
+    def __str__(self) -> str:
+        return f"{self.team}: {self.score}"
+
+
 class Match(models.Model):
     class StatusType(models.TextChoices):
         SCHEDULED = "scheduled"
@@ -200,7 +217,7 @@ class Match(models.Model):
         ENDED = "ended"
         CANCELLED = "cancelled"
 
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.UUIDField(default=uuid.uuid4, editable=False)
     round = models.IntegerField()
     tournament = models.ForeignKey(Tournament, related_name="matches", on_delete=models.CASCADE)
     team_a = models.ForeignKey(
@@ -236,13 +253,25 @@ class Match(models.Model):
         ordering = ["created_at"]
 
     def __str__(self) -> str:
-        return f"Match ({self.id}) | round: {0} | {self.tournament.name}"
+        return f"{self.team_a} vs {self.team_b} | {self.tournament.name}"
 
-    def set_winner(self, team):
-        self.winner = team
-        self.loser = self.team_a if self.team_a != team else self.team_b
+    def set_winner(self, winner):
+        self.winner = winner
+        self.loser = self.team_a if self.team_a != winner else self.team_b
         self.status = Match.StatusType.ENDED
         self.ended_at = datetime.now(tz=UTC)
+
+        rank = Rank.objects.filter(tournament=self.tournament, team=winner).first()
+        if rank:
+            rank.score += 1
+            rank.save()
+        else:
+            Rank.objects.create(tournament=self.tournament, team=winner, score=1)
+
+        rank = Rank.objects.filter(tournament=self.tournament, team=self.loser).first()
+        if not rank:
+            Rank.objects.create(tournament=self.tournament, team=self.loser, score=0)
+
         self.save()
 
 
@@ -358,9 +387,6 @@ class LeagueOfLegendsTournament(Tournament):
 
     def get_classifications(self) -> list[str]:
         return [f"{entry.tier} {entry.rank}" for entry in self.classifications.all()]
-
-    def __str__(self) -> str:
-        return f"{self.name} ({self.uuid})"
 
 
 class Participant(models.Model):

@@ -6,6 +6,7 @@ from apps.tournaments.models import (
     Match,
     Participant,
     Prize,
+    Rank,
     Registration,
     Tournament,
 )
@@ -86,4 +87,10 @@ class ParticipantSerializer(serializers.ModelSerializer):
 class PrizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prize
+        fields = "__all__"
+
+
+class RankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rank
         fields = "__all__"

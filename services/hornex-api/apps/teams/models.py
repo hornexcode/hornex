@@ -20,6 +20,9 @@ class Team(BaseModel):
 
     created_by = models.ForeignKey("users.User", on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return self.name
+
     def _has_enough_members(self, amount: int) -> bool:
         if self.members.count() != amount:
             raise Exception(f"Team {self.name} does not have {amount} members.")

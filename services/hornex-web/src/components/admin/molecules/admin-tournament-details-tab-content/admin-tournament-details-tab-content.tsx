@@ -34,7 +34,6 @@ import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
   const { tournament, refreshTournament } = useAdminTournament();
-  const router = useRouter();
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
   );
@@ -54,10 +53,21 @@ const AdminTournamentGeneralInfo = () => {
       tournamentId: tournament.uuid,
     });
 
-    if (data && !error) {
-      setLoading(false);
-      router.reload();
+    if (!data && error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+      });
     }
+
+    if (data && !error) {
+      refreshTournament(data);
+      toast({
+        title: 'Success',
+        description: 'Registration opened successfully',
+      });
+    }
+    setLoading(false);
   };
 
   const onStartTournamentHandler = async () => {

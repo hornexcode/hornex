@@ -17,7 +17,7 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class EndMatchInput:
-    tournament_uuid: uuid.UUID
+    tournament_id: uuid.UUID
     match_uuid: uuid.UUID
     user_id: uuid.UUID
 
@@ -26,7 +26,7 @@ class EndMatchInput:
 class EndMatchUseCase:
     @transaction.atomic
     def execute(self, params: EndMatchInput):
-        tournament = get_object_or_404(Tournament, uuid=params.tournament_uuid)
+        tournament = get_object_or_404(Tournament, id=params.tournament_id)
 
         if params.user_id != tournament.organizer.id:
             raise PermissionDenied({"error": "You are not this tournament's Organizer"})
@@ -60,21 +60,16 @@ class EndMatchUseCase:
             tournament.challonge_tournament_id, ch_match.winner_id, "open"
         )
 
-        if len(ch_matches) == 0:
-            raise Exception("Error creating next match, no match found at Challonge")
-
-        cm = ch_matches[0]
-        # if match has been already created
-        if Match.objects.filter(challonge_match_id=cm.id).exists():
-            return match
-
-        Match.objects.create(
-            team_a=Team.objects.get(registration__challonge_participant_id=cm.player1_id),
-            team_b=Team.objects.get(registration__challonge_participant_id=cm.player2_id),
-            tournament=tournament,
-            challonge_match_id=cm.id,
-            round=cm.round,
-            status=Match.StatusType.NOT_STARTED,
-        )
+        for cm in ch_matches:
+            # if match has been already created
+            if not Match.objects.filter(challonge_match_id=cm.id).exists():
+                Match.objects.create(
+                    team_a=Team.objects.get(registration__challonge_participant_id=cm.player1_id),
+                    team_b=Team.objects.get(registration__challonge_participant_id=cm.player2_id),
+                    tournament=tournament,
+                    challonge_match_id=cm.id,
+                    round=cm.round,
+                    status=Match.StatusType.NOT_STARTED,
+                )
 
         return match
