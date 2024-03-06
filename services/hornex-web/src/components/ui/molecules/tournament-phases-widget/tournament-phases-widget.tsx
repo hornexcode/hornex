@@ -2,6 +2,7 @@ import { RegisterButton } from '../../atoms/register-button';
 import { Skeleton } from '../../skeleton';
 import { useTournament } from '@/contexts/tournament';
 import { Tournament } from '@/lib/models';
+import { getStatus, TournamentStatusOptions } from '@/lib/models/Tournament';
 import clsx from 'clsx';
 import { CheckCircle2 } from 'lucide-react';
 import moment from 'moment';
@@ -28,31 +29,35 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
     return <RegisterButton isRegistered={isRegistered} className="w-full" />;
   };
 
+  const phases = ['running', 'registering', 'announced'];
+
   return (
     <div className="pr-8">
-      <div className="bg-light-dark shadow-card space-y-2 rounded-md">
-        <div className="bg-medium-dark highlight-white-5 rounded-t">
-          <div className="border-b border-gray-600 p-4">
+      <div className="bg-light-dark space-y-2">
+        <div className="bg-medium-dark">
+          <div className="border-border border-b p-4">
             <h4 className="leading-2 text-title font-extrabold">
               Tournament Phases
             </h4>
           </div>
         </div>
-        <div className="block p-5">
-          <ol className="relative border-l border-gray-200 dark:border-gray-700">
-            <div className="bg-dark absolute -left-1 top-0 h-[100%] w-2 rounded"></div>
+        <div className="block p-6">
+          <ol className="relative">
+            <div className="bg-border absolute -left-1 top-0 h-[100%] w-[1px] rounded"></div>
 
-            <li className="relative pl-4">
+            <li className="relative pb-4 pl-6">
               <div
                 className={clsx(
-                  'absolute -left-1 top-0 h-[100%] w-2 rounded',
-                  status === 'Open' ? 'bg-amber-500' : 'bg-dark'
+                  'absolute -left-1 top-0 h-[100%] w-[1px] rounded',
+                  phases.includes(tournament.status)
+                    ? 'bg-amber-500'
+                    : 'bg-border'
                 )}
               ></div>
-              <div className="absolute -left-2 mt-3.5 rounded-full">
+              <div className="absolute -left-3.5 mt-3.5 rounded-full">
                 <CheckCircle2
                   className={clsx(
-                    'text-dark h-4 w-4 rounded-full bg-amber-500'
+                    'text-dark h-5 w-5 rounded-full bg-amber-500'
                   )}
                 />
               </div>
@@ -60,52 +65,28 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
                 Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
               </time>
 
-              <h3 className="-mb-1  font-semibold text-gray-900 dark:text-white">
+              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
                 <div className="flex items-center">
                   <span>Registration Open</span>
                 </div>
               </h3>
             </li>
-            <li className="relative pl-4 pt-10">
+            <li className="relative my-4 pl-6">
               {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
-              <div className="absolute -left-2 mt-3.5 rounded-full">
-                <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
+              <div className="absolute -left-3.5 mt-3.5 rounded-full">
+                <CheckCircle2 className="bg-background text-muted h-5 w-5 rounded-full" />
               </div>
-
+              <time className="text-body mb-1 text-sm leading-none">
+                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
+              </time>
               <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
                 <span>Tracking results</span>
-              </h3>
-            </li>
-            <li className="relative pl-4 pt-10">
-              {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
-              <div className="absolute -left-2 mt-3.5 rounded-full">
-                <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
-              </div>
-              <time className="text-body mb-1 text-sm leading-none">
-                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-              </time>
-
-              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
-                Payment
-              </h3>
-            </li>
-            <li className="relative pl-4 pt-10">
-              {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
-              <div className="absolute -left-2 mt-3.5 rounded-full">
-                <CheckCircle2 className="bg-dark text-light-dark h-4 w-4 rounded-full" />
-              </div>
-              <time className="text-body mb-1 text-sm leading-none">
-                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-              </time>
-
-              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
-                Done
               </h3>
             </li>
           </ol>
         </div>
 
-        <div className="block border-t border-dashed border-gray-600 p-5">
+        <div className="border-border block border-t border-dashed p-5">
           {renderButton()}
         </div>
       </div>

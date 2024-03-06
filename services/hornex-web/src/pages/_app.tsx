@@ -98,7 +98,7 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
       <NextThemesProvider attribute="class" defaultTheme="dark">
         <div
           className={classnames(
-            'dark:bg-background text-muted min-h-[100vh] font-semibold antialiased',
+            'dark:bg-background text-muted min-h-[100vh] antialiased',
             Goldman_Sans.className,
             roboto_condensed.variable,
             kanit.variable,

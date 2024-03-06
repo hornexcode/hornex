@@ -51,7 +51,7 @@ function DashboardPage() {
         <div className="flex flex-col">
           {tournaments &&
             tournaments.map((tournament) => (
-              <TournamentRow tournament={tournament} key={tournament.uuid} />
+              <TournamentRow tournament={tournament} key={tournament.id} />
             ))}
         </div>
       </div>
@@ -66,7 +66,7 @@ const TournamentRow = ({ tournament }: { tournament: Tournament }) => {
       className="bg-medium-dark border-border grid grid-cols-12 border-b p-4 transition-all hover:z-50 hover:cursor-pointer hover:shadow-xl"
       onClick={() => {
         router.push(
-          `/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.uuid}`
+          `/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
         );
       }}
     >

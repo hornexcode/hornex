@@ -48,6 +48,7 @@ from apps.tournaments.serializers import (
     MatchSerializer,
     ParticipantSerializer,
     PrizeSerializer,
+    RankSerializer,
     RegistrationSerializer,
     TournamentSerializer,
 )
@@ -100,7 +101,7 @@ platform_qp = openapi.Parameter(
 class PublicTournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
-    lookup_field = "uuid"
+    lookup_field = "id"
     filter_backends = (
         DjangoFilterBackend,
         TournamentListFilter,
@@ -155,7 +156,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     serializer_class = TournamentSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    lookup_field = "uuid"
+    lookup_field = "id"
 
     def create(self, request, *args, **kwargs):
         params = TournamentCreateSerializer(data=request.data)
@@ -321,6 +322,13 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=["get"])
+    def results(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        ranks = tournament.ranks.all()
+        serializer = RankSerializer(ranks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
@@ -334,16 +342,16 @@ class OrganizerMatchViewSet(viewsets.ModelViewSet):
     serializer_class = MatchSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    lookup_field = "uuid"
+    lookup_field = "id"
 
 
 class OrganizerRegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
-    lookup_field = "uuid"
+    lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    lookup_field = "uuid"
+    lookup_field = "id"
 
 
 class TournamentRegistrationViewSet(viewsets.ModelViewSet):
@@ -353,7 +361,7 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
-    lookup_field = "uuid"
+    lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -395,7 +403,7 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
-    lookup_field = "uuid"
+    lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -408,7 +416,7 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LeagueOfLegendsTournament.objects.all()
     serializer_class = LeagueOfLegendsTournamentSerializer
-    lookup_field = "uuid"
+    lookup_field = "id"
     filter_backends = (
         DjangoFilterBackend,
         TournamentListFilter,

@@ -22,7 +22,7 @@ const AdminTournamentMatchesTabContent: FC<
   const { mutate } = useSWRConfig();
 
   const { data: matches, error } = useGetTournamentMatchesQuery({
-    uuid: tournament.uuid,
+    uuid: tournament.id,
   });
 
   if (error) {
@@ -40,7 +40,7 @@ const AdminTournamentMatchesTabContent: FC<
 
   const onEndRoundHandler = async () => {
     setIsLoading(true);
-    const { error } = await endRound({ uuid: tournament.uuid });
+    const { error } = await endRound({ uuid: tournament.id });
     setIsLoading(false);
     if (error) {
       console.error(error);

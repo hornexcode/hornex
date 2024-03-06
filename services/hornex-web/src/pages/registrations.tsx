@@ -76,7 +76,7 @@ const RegistrationRow = ({ registration }: { registration: Registration }) => {
       className="bg-medium-dark border-border grid grid-cols-12 border-b p-4 transition-all hover:cursor-pointer hover:shadow-2xl"
       onClick={() => {
         router.push(
-          `/${registration.tournament.platform}/${registration.tournament.game}/tournaments/${registration.tournament.uuid}`
+          `/${registration.tournament.platform}/${registration.tournament.game}/tournaments/${registration.tournament.id}`
         );
       }}
     >

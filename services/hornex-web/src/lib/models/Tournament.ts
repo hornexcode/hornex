@@ -2,7 +2,7 @@ import moment from 'moment';
 import z from 'zod';
 
 export const tournamentSchema = z.object({
-  uuid: z.string(),
+  id: z.string(),
   name: z.string(),
   description: z.string(),
   published: z.boolean(),
@@ -29,7 +29,7 @@ export const tournamentSchema = z.object({
   open_classification: z.boolean(),
   challonge_tournament_url: z.string(),
   checked_in: z.boolean(),
-  total_participants: z.number(),
+  registered_teams_count: z.number(),
   current_round: z.number(),
   ended_at: z.date(),
 });
@@ -39,7 +39,7 @@ export const status: Record<string, string> = {
   announced: 'Announced',
   registering: 'Registration Open',
   running: 'Running',
-  finished: 'Finished',
+  ended: 'Ended',
   cancelled: 'Cancelled',
 };
 

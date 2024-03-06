@@ -34,7 +34,6 @@ import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
   const { tournament, refreshTournament } = useAdminTournament();
-  const router = useRouter();
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
   );
@@ -51,19 +50,30 @@ const AdminTournamentGeneralInfo = () => {
   const onOpenRegistrationHandler = async () => {
     setLoading(true);
     const { data, error } = await openRegistrationHandler({
-      tournamentId: tournament.uuid,
+      tournamentId: tournament.id,
     });
 
-    if (data && !error) {
-      setLoading(false);
-      router.reload();
+    if (!data && error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+      });
     }
+
+    if (data && !error) {
+      refreshTournament(data);
+      toast({
+        title: 'Success',
+        description: 'Registration opened successfully',
+      });
+    }
+    setLoading(false);
   };
 
   const onStartTournamentHandler = async () => {
     setLoading(true);
     const { data, error } = await startTournamentHandler({
-      tournamentUUID: tournament.uuid,
+      tournamentUUID: tournament.id,
     });
     if (error) {
       toast({
@@ -84,7 +94,7 @@ const AdminTournamentGeneralInfo = () => {
   const onFinalizeTournamentHandler = async () => {
     setLoading(true);
     const { data, error } = await finalizeTournamentHandler({
-      uuid: tournament.uuid,
+      uuid: tournament.id,
     });
     if (error) {
       toast({
@@ -215,8 +225,7 @@ const AdminTournamentGeneralInfo = () => {
           <div className="border-border border-r border-t p-3">
             <div className="font-normal">Teams registered</div>
             <div className="text-title">
-              {tournament.total_participants / tournament.team_size}/
-              {tournament.max_teams}
+              {tournament.registered_teams_count}/{tournament.max_teams}
             </div>
           </div>
           <div className="border-border border-r border-t p-3">

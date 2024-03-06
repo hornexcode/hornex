@@ -19,14 +19,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with transaction.atomic():
-            tournament_uuid = options.get("tournament")
-            if not tournament_uuid:
-                raise CommandError("Tournament uuid is required")
+            trnmnt_id = options.get("tournament")
+            if not trnmnt_id:
+                raise CommandError("Tournament id is required")
 
             try:
-                tournament = Tournament.objects.get(uuid=tournament_uuid)
+                tournament = Tournament.objects.get(id=trnmnt_id)
             except Tournament.DoesNotExist:
-                raise CommandError(f"Tournament {tournament_uuid} does not exist")
+                raise CommandError(f"Tournament {trnmnt_id} does not exist")
 
             registrations = Registration.objects.filter(tournament=tournament)
             remaining = tournament.max_teams - registrations.count()
@@ -46,9 +46,7 @@ class Command(BaseCommand):
                 )
 
             self.stdout.write(
-                self.style.SUCCESS(
-                    f"Successfully filled registrations for tournament {tournament_uuid}"
-                )
+                self.style.SUCCESS(f"Successfully filled registrations for tournament {trnmnt_id}")
             )
 
 

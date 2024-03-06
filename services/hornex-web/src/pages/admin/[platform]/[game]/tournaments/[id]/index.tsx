@@ -20,7 +20,7 @@ export type TournamentDetailsProps = {
 };
 
 const TournamentDetails = ({
-  pageProps: { tournament, game, platform },
+  pageProps: { tournament },
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <AdminTournamentContextProvider tournament={tournament}>
@@ -103,6 +103,7 @@ export const getServerSideProps = (async ({
   query: { game, platform, id },
   req,
 }) => {
+  console.log(id);
   const { data: tournament, error } = await getServerTournament(
     { game: game, platform, tournamentId: id },
     req

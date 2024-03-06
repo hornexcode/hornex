@@ -23,7 +23,7 @@ export const TournamentOverviewTabPanel: FC<
   TournamentOverviewTabPanelProps
 > = ({ tournament }) => {
   const { data: registeredTeams, error } = listRegisteredTeams({
-    tournamentId: tournament.uuid,
+    tournamentId: tournament.id,
   });
 
   return (
