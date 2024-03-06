@@ -30,7 +30,7 @@ export const AdminTournamentContextProvider = ({
   const [tournament, setTournament] = useState(initialTournament);
 
   const { data, mutate } = useGetTournamentQuery({
-    uuid: tournament.id,
+    id: tournament.id,
   });
 
   useEffect(() => {

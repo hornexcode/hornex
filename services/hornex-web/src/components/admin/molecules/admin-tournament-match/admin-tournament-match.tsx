@@ -27,8 +27,8 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
   const onStartMatchHandler = async () => {
     setIsLoading(true);
     const { error } = await startMatch({
-      matchUuid: match.uuid,
-      tournamentUuid: tournament.id,
+      matchId: match.id,
+      tournamentId: tournament.id,
     });
     if (error) {
       toast({
@@ -37,7 +37,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
       });
       console.error(error);
     } else {
-      mutate('v1/org/tournaments/[uuid]/matches');
+      mutate('v1/org/tournaments/[id]/matches');
       toast({
         title: 'Success',
         description: 'Match successfully started!',
@@ -49,8 +49,8 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
   const onEndedMatchHandler = async () => {
     setIsLoading(true);
     const { error } = await endMatch({
-      matchUuid: match.uuid,
-      tournamentUuid: tournament.id,
+      matchId: match.id,
+      tournamentId: tournament.id,
     });
     if (error) {
       console.error(error);
@@ -60,7 +60,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
       });
       console.error(error);
     } else {
-      mutate('v1/org/tournaments/[uuid]/matches');
+      mutate('v1/org/tournaments/[id]/matches');
       toast({
         title: 'Success',
         description: 'Match successfully finished!',
@@ -69,7 +69,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
     setIsLoading(false);
   };
 
-  const onScoreUpdated = async (matchUuid: string, team: 'a' | 'b') => {
+  const onScoreUpdated = async (matchId: string, team: 'a' | 'b') => {
     const payload =
       team === 'a'
         ? { team_a_score: match.team_a_score + 1 }
@@ -77,7 +77,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
 
     const { error } = await updateMatch(
       {
-        uuid: matchUuid,
+        id: matchId,
       },
       payload
     );
@@ -88,7 +88,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
       });
       console.error(error);
     } else {
-      mutate('v1/org/tournaments/[uuid]/matches');
+      mutate('v1/org/tournaments/[id]/matches');
       toast({
         title: 'Success',
         description: 'Match score successfully updated!',
@@ -145,7 +145,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
       <>
         {match.team_a_score}
         <Button
-          onClick={() => onScoreUpdated(match.uuid, 'a')}
+          onClick={() => onScoreUpdated(match.id, 'a')}
           size="mini"
           shape="rounded"
           className={cn('ml-4 !h-6 w-3')}
@@ -170,7 +170,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
       <>
         {match.team_b_score}
         <Button
-          onClick={() => onScoreUpdated(match.uuid, 'b')}
+          onClick={() => onScoreUpdated(match.id, 'b')}
           size="mini"
           shape="rounded"
           className="ml-4 !h-6 w-3"

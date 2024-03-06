@@ -22,7 +22,7 @@ const AdminTournamentMatchesTabContent: FC<
   const { mutate } = useSWRConfig();
 
   const { data: matches, error } = useGetTournamentMatchesQuery({
-    uuid: tournament.id,
+    id: tournament.id,
   });
 
   if (error) {
@@ -40,7 +40,7 @@ const AdminTournamentMatchesTabContent: FC<
 
   const onEndRoundHandler = async () => {
     setIsLoading(true);
-    const { error } = await endRound({ uuid: tournament.id });
+    const { error } = await endRound({ id: tournament.id });
     setIsLoading(false);
     if (error) {
       console.error(error);
@@ -54,7 +54,7 @@ const AdminTournamentMatchesTabContent: FC<
       title: 'Success',
       description: 'Round ended successfully!',
     });
-    mutate('v1/org/tournaments/[uuid]/matches');
+    mutate('v1/org/tournaments/[id]/matches');
   };
 
   return (

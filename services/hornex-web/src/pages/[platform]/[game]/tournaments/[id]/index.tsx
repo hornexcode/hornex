@@ -38,7 +38,9 @@ type TournamentProps = {
   isRegistered: boolean;
 };
 
-const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+const TournamentPage: InferGetServerSidePropsType<
+  typeof getServerSideProps
+> = ({
   tournament,
   participantCheckedInStatus,
   isRegistered,
@@ -57,7 +59,7 @@ const Tournament: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   );
 };
 
-Tournament.getLayout = (page: React.ReactElement) => {
+TournamentPage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
@@ -91,7 +93,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data: registrations, error: registrationsError } =
     await getTournamentRegistrations(
       {
-        uuid: tournament.id,
+        id: tournament.id,
         game: ctx.query.game || '',
         platform: ctx.query.platform || '',
       },
@@ -110,4 +112,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default Tournament;
+export default TournamentPage;
