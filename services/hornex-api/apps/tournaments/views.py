@@ -50,6 +50,7 @@ from apps.tournaments.serializers import (
     PrizeSerializer,
     RankSerializer,
     RegistrationSerializer,
+    StandingSerializer,
     TournamentSerializer,
 )
 from apps.tournaments.usecases import (
@@ -148,6 +149,13 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
         tournament = self.get_object()
         prizes = tournament.prizes.all()
         serializer = PrizeSerializer(prizes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def standings(self, request, *args, **kwargs):
+        tournament = self.get_object()
+        ranks = tournament.ranks.all()
+        serializer = StandingSerializer(ranks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

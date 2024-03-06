@@ -196,6 +196,10 @@ export const routes = {
     path: 'v1/tournaments/[tournamentId]/prizes',
     method: Method.GET,
   },
+  listTournamentStandings: {
+    path: 'v1/tournaments/[tournamentId]/standings',
+    method: Method.GET,
+  },
   'org:tournaments': {
     path: 'v1/org/tournaments',
     method: Method.GET,

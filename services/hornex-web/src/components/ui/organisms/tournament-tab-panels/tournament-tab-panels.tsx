@@ -1,13 +1,19 @@
+import TournamentStandingsTabContent from '../../molecules/tournament-standings-tab-content/tournament-standings-tab-content';
 import TournamentDetailsPrizesTabContent from '@/components/ui/molecules/tournament-details-prizes-tab-content';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Prize, Tournament } from '@/lib/models';
+import { Prize as PrizeType, Tournament } from '@/lib/models';
+import { Standing } from '@/lib/models/Standing';
 import { dataLoader } from '@/lib/request';
 import { Users2 } from 'lucide-react';
 import moment from 'moment';
 import { FC } from 'react';
 
-const { useData: listTournamentPrizes } = dataLoader<Prize[]>(
+const { useData: listTournamentPrizes } = dataLoader<PrizeType[]>(
   'listTournamentPrizes'
+);
+
+const { useData: listTournamentStandings } = dataLoader<Standing[]>(
+  'listTournamentStandings'
 );
 
 export type TournamentTabPanelsProps = {
@@ -18,6 +24,13 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
   const { data: prizes } = listTournamentPrizes({
     tournamentId: tournament.id,
   });
+
+  const { data: standings } = listTournamentStandings({
+    tournamentId: tournament.id,
+  });
+
+  const hasStandings =
+    tournament.status === 'running' || tournament.status === 'ended';
 
   return (
     <Tabs defaultValue="overview" className="w-full">
@@ -81,41 +94,16 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
       </TabsContent>
       <TabsContent value="standings">
         <div className="block">
-          {/* item 1 */}
-          <div className="bg-medium-dark hover:bg-dark/40 border-border grid grid-cols-12 border-b">
-            <div className="col-span-1">
-              <div className="border-border flex h-full items-center justify-center border-r p-4">
-                <div className="text-title text-4xl font-bold">1</div>
-              </div>
-            </div>
-            <div className="col-span-4">
-              <div className="p-4 text-lg">
-                <h4 className="text-title font-medium">Globsxpace</h4>
-                <div className="text-muted font-display font-bold">3W - 0L</div>
-              </div>
-            </div>
-          </div>
-          {/* item 2 */}
-          <div className="bg-medium-dark hover:bg-dark/40 border-border grid grid-cols-12 border-b">
-            <div className="col-span-1">
-              <div className="border-border flex h-full items-center justify-center border-r p-4">
-                <div className="text-title text-4xl font-bold leading-3">2</div>
-              </div>
-            </div>
-            <div className="col-span-4">
-              <div className="p-4 text-lg">
-                <h4 className="text-title font-medium">Second team</h4>
-                <div className="text-muted font-display font-bold">2W - 0L</div>
-              </div>
-            </div>
-          </div>
+          {hasStandings && standings && (
+            <TournamentStandingsTabContent standings={standings} />
+          )}
         </div>
       </TabsContent>
     </Tabs>
   );
 };
 
-const Prize = ({ prize }: { prize: Prize }) => (
+const Prize = ({ prize }: { prize: PrizeType }) => (
   <li key={prize.id} className="flex items-center space-x-2 font-normal">
     <span className="font-bold text-amber-500">{prize.place}</span>
     <span className="text-title tracking-wide">{prize.content}</span>

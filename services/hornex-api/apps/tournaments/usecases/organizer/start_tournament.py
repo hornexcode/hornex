@@ -6,7 +6,7 @@ import structlog
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from apps.tournaments.models import LeagueOfLegendsTournament, Match, Registration
+from apps.tournaments.models import LeagueOfLegendsTournament, Match, Rank, Registration
 from lib.challonge import Match as ChallongeMatch
 from lib.challonge import Tournament as ChallongeTournament
 
@@ -42,6 +42,13 @@ class StartTournamentUseCase:
                     challonge_match_id=match.id,
                     status=Match.StatusType.NOT_STARTED,
                 )
+
+        for team in tournament.registered_teams.all():
+            Rank.objects.create(
+                tournament=tournament,
+                team=team,
+                score=0,
+            )
 
         # riot_provider = tournament.provider
         # riot_tournament_id = RiotTournament.create(
