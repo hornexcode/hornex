@@ -48,7 +48,6 @@ from apps.tournaments.serializers import (
     MatchSerializer,
     ParticipantSerializer,
     PrizeSerializer,
-    RankSerializer,
     RegistrationSerializer,
     StandingSerializer,
     TournamentSerializer,
@@ -333,8 +332,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def results(self, request, *args, **kwargs):
         tournament = self.get_object()
-        ranks = tournament.ranks.all()
-        serializer = RankSerializer(ranks, many=True)
+        prizes = tournament.prizes.count()
+        ranks = tournament.ranks.all()[:prizes]
+        serializer = StandingSerializer(ranks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):

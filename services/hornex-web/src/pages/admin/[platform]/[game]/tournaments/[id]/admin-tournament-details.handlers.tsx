@@ -1,4 +1,5 @@
 import { Tournament } from '@/lib/models';
+import { Standing } from '@/lib/models/Standing';
 import { dataLoader } from '@/lib/request';
 
 const { submit: updateTournament } = dataLoader<
@@ -41,9 +42,17 @@ const { submit: finalizeTournament } = dataLoader<Tournament>(
 const finalizeTournamentHandler = ({ id }: { id: string }) =>
   finalizeTournament({ id });
 
+const { useData: getTournamentResults } = dataLoader<Standing[]>(
+  'org:tournament:results'
+);
+
+const useGetTournamentResults = ({ id }: { id: string }) =>
+  getTournamentResults({ tournamentId: id });
+
 export {
   checkInTournamentHandler,
   finalizeTournamentHandler,
   openRegistrationHandler,
   startTournamentHandler,
+  useGetTournamentResults,
 };

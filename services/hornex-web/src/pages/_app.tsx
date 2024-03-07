@@ -31,6 +31,7 @@ const Beaufort_for_LOL = localFont({
       style: 'normal',
     },
   ],
+  preload: true,
   variable: '--font-beaufort',
 });
 

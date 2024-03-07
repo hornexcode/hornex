@@ -1,3 +1,4 @@
+import AdminTournamentStandingsTabContent from '../admin-tournament-standings-tab-content/admin-tournament-standings-tab-content';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,15 +26,19 @@ import {
   finalizeTournamentHandler,
   openRegistrationHandler,
   startTournamentHandler,
+  useGetTournamentResults,
 } from '@/pages/admin/[platform]/[game]/tournaments/[id]/admin-tournament-details.handlers';
 import { datetime } from '@/utils/datetime';
 import { Loader2 } from 'lucide-react';
 import moment from 'moment';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
   const { tournament, refreshTournament } = useAdminTournament();
+  const { data: tournamentResults } = useGetTournamentResults({
+    id: tournament.id,
+  });
+
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
   );
@@ -211,12 +216,17 @@ const AdminTournamentGeneralInfo = () => {
         );
       case 'ended':
         return (
-          <div className="text-title py-2 font-normal">
-            Ended at: {moment(tournament.ended_at).format('DD MM, YYYY')}
+          <div className="block">
+            <div className="text-muted py-2 text-sm font-normal italic">
+              Ended at: {moment(tournament.ended_at).format('DD MM, YYYY')}
+            </div>
           </div>
         );
     }
   };
+
+  const hasStandings =
+    tournament.status === 'running' || tournament.status === 'ended';
 
   return (
     <div className="mt-4 grid grid-cols-3 gap-4">
@@ -266,18 +276,26 @@ const AdminTournamentGeneralInfo = () => {
           </div>
         </div>
       </div>
-      <div className="bg-medium-dark col-span-1 p-6">
-        <span className="text-muted">Tournament status</span>
-        <div className="flex items-center justify-between pb-2">
-          <span className="font-semibold text-amber-500">
-            {getStatus(tournament)}
-          </span>
-          <div className="text-xs text-gray-500">
-            step {steps[0]} / {steps[1]}
+      <div className="col-span-1">
+        <div className="bg-medium-dark block p-6">
+          <div className="text-muted mb-2 font-bold">Tournament status</div>
+          <div className="flex items-center justify-between pb-2">
+            <span className="font-semibold text-amber-500">
+              {getStatus(tournament)}
+            </span>
+            <div className="text-sm text-gray-500">
+              step {steps[0]} / {steps[1]}
+            </div>
           </div>
+          <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
+          {renderStatusContent()}
         </div>
-        <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
-        {renderStatusContent()}
+        {hasStandings && tournamentResults && (
+          <div className="mt-4 block">
+            <div className="text-title font-semibold">Results</div>
+            <AdminTournamentStandingsTabContent standings={tournamentResults} />
+          </div>
+        )}
       </div>
       {/* danger zone */}
       <div className="col-span-3">
