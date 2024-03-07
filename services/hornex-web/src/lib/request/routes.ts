@@ -200,10 +200,7 @@ export const routes = {
     path: 'v1/tournaments/[tournamentId]/standings',
     method: Method.GET,
   },
-  getTournamentResults: {
-    path: 'v1/org/tournaments/[tournamentId]/results',
-    method: Method.GET,
-  },
+
   'org:tournaments': {
     path: 'v1/org/tournaments',
     method: Method.GET,
@@ -272,5 +269,9 @@ export const routes = {
   'org:registration:delete': {
     path: 'v1/org/registrations/[id]/delete',
     method: Method.DELETE,
+  },
+  'org:tournament:results': {
+    path: 'v1/org/tournaments/[tournamentId]/results',
+    method: Method.GET,
   },
 };

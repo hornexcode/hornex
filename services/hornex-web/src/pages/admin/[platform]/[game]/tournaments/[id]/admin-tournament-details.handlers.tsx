@@ -43,7 +43,7 @@ const finalizeTournamentHandler = ({ id }: { id: string }) =>
   finalizeTournament({ id });
 
 const { useData: getTournamentResults } = dataLoader<Standing[]>(
-  'getTournamentResults'
+  'org:tournament:results'
 );
 
 const useGetTournamentResults = ({ id }: { id: string }) =>

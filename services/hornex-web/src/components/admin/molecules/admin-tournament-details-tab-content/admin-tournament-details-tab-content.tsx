@@ -31,7 +31,6 @@ import {
 import { datetime } from '@/utils/datetime';
 import { Loader2 } from 'lucide-react';
 import moment from 'moment';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 const AdminTournamentGeneralInfo = () => {
@@ -40,7 +39,6 @@ const AdminTournamentGeneralInfo = () => {
     id: tournament.id,
   });
 
-  console.log();
   const [steps, setSteps] = React.useState(
     getStatusStep((tournament || {}) as Tournament)
   );
@@ -295,7 +293,6 @@ const AdminTournamentGeneralInfo = () => {
         {hasStandings && tournamentResults && (
           <div className="mt-4 block">
             <div className="text-title font-semibold">Results</div>
-
             <AdminTournamentStandingsTabContent standings={tournamentResults} />
           </div>
         )}

@@ -332,7 +332,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def results(self, request, *args, **kwargs):
         tournament = self.get_object()
-        prizes = tournament.prizes.all().count()
+        prizes = tournament.prizes.count()
         ranks = tournament.ranks.all()[:prizes]
         serializer = StandingSerializer(ranks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
