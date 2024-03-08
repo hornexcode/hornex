@@ -20,16 +20,6 @@ module.exports = {
       title: ['var(--font-kanit)', 'JetBrains Mono', 'monospace'],
       'source-sans': ['var(--font-source-sans)', 'JetBrains Mono', 'monospace'],
       beaufort: ['var(--font-beaufort)', 'JetBrains Mono', 'monospace'],
-      'roboto-condensed': [
-        'var(--font-roboto-condensed)',
-        'JetBrains Mono',
-        'monospace',
-      ],
-      'goldman-sans': [
-        'var(--font-goldman-sans)',
-        'JetBrains Mono',
-        'monospace',
-      ],
     },
     container: {
       padding: {
@@ -51,6 +41,9 @@ module.exports = {
       '4xl': '2160px', // only need to control product grid mode in ultra 4k device
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-goldman-sans)', 'JetBrains Mono', 'monospace'],
+      },
       colors: {
         brand: '#e2b714',
         body: '#95a5a6',

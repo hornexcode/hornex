@@ -72,55 +72,41 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const roboto_condensed = Roboto_Condensed({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-roboto-condensed',
-});
-
-const source_Sans_3 = Source_Sans_3({
-  weight: ['500', '600', '700', '800'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-source-sans',
-});
-
-const kanit = Kanit({
-  weight: ['300', '400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-kanit',
-});
-
 function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
-    <SWRConfig>
-      <NextThemesProvider attribute="class" defaultTheme="dark">
-        <div
-          className={classnames(
-            'dark:bg-background text-muted min-h-[100vh] antialiased',
-            Goldman_Sans.className,
-            roboto_condensed.variable,
-            kanit.variable,
-            Beaufort_for_LOL.variable
-          )}
-        >
-          <SessionProvider session={pageProps.session}>
-            {getLayout(<Component {...pageProps} />)}
-            <ModalsContainer />
-            {/* <SettingsDrawer /> */}
-            <ToastContainer
-              theme="dark"
-              style={{
-                fontSize: '0.925rem',
-              }}
-            />
-          </SessionProvider>
-          <Toaster />
-        </div>
-      </NextThemesProvider>
-    </SWRConfig>
+    <>
+      <style jsx global>{`
+        html {
+          font-family: ${Goldman_Sans.style.fontFamily};
+        }
+      `}</style>
+      <SWRConfig>
+        <NextThemesProvider attribute="class" defaultTheme="dark">
+          <div
+            className={classnames(
+              'dark:bg-background text-muted min-h-[100vh] antialiased',
+              Goldman_Sans.className,
+              Beaufort_for_LOL.variable
+            )}
+          >
+            <SessionProvider session={pageProps.session}>
+              {getLayout(<Component {...pageProps} />)}
+              <ModalsContainer />
+              {/* <SettingsDrawer /> */}
+              <ToastContainer
+                theme="dark"
+                style={{
+                  fontSize: '0.925rem',
+                }}
+              />
+            </SessionProvider>
+            <Toaster />
+          </div>
+        </NextThemesProvider>
+      </SWRConfig>
+    </>
   );
 }
 

@@ -12,23 +12,41 @@ function HomePage() {
 
   return (
     <>
+      <header className="bg-dark/60 z-40 h-16 w-full px-8">
+        <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
+          <div className="text-title flex w-[230px] items-center text-xl font-bold">
+            <Link href="/">
+              <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
+            </Link>
+            HORNEX
+          </div>
+          <div className="flex items-center">
+            <Link href={routes.signIn} className="text-title">
+              {t('sign-in')}
+            </Link>
+            <Link href={routes.register} className="text-title ml-4">
+              {t('register')}
+            </Link>
+          </div>
+        </div>
+      </header>
       <div className="relative h-[450px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
         <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
         <div className="bg-dark/70 absolute top-0 z-0 h-full w-full"></div>
         <div className="container absolute z-10 mx-auto">
           <Image src={HornexLogo} alt="Hornex" width={150} height={150} />
-          <h1 className="text-title font-title py-4 text-6xl font-extrabold">
+          <h1 className="text-title py-4 text-6xl font-extrabold">
             Organize, Compete and{' '}
             <span className="text-dark bg-amber-500 px-2">Get Paid</span>
           </h1>
-          <p className="text-title font-title w-[40%] text-lg font-thin">
+          <p className="text-title w-[40%] text-lg font-thin">
             With Hornex you can easily organize and compete in tournaments. We
             make it easy to get paid for your skills.
           </p>
         </div>
       </div>
       <div className="bg-light-dark container mx-auto py-8">
-        <h4 className="text-title font-title mb-4 text-5xl font-extrabold">
+        <h4 className="text-title mb-4 text-5xl font-extrabold">
           Built for organizers
         </h4>
         <p className="text-body w-[40%] text-lg">
@@ -99,7 +117,7 @@ function HomePage() {
               </h2>
               <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
-                  <Link href={routes.login} className="hover:underline">
+                  <Link href={routes.signIn} className="hover:underline">
                     Login
                   </Link>
                 </li>
@@ -219,9 +237,5 @@ function HomePage() {
     </>
   );
 }
-
-HomePage.getLayout = (page: React.ReactElement) => {
-  return <AppLayout>{page}</AppLayout>;
-};
 
 export default HomePage;

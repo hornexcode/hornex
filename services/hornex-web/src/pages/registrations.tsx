@@ -1,42 +1,25 @@
 import { ExpiredLoginButton } from '@/components/ui/atoms/expired-login-button';
-import { useTournament } from '@/contexts';
 import { AppLayout } from '@/layouts';
 import { Registration } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { ListIcon } from 'lucide-react';
 import moment from 'moment';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import React from 'react';
+import React, { FC } from 'react';
 
-const { useData: useGetTournamentRegistrationsQuery } =
+const { fetch: getRegistrations } =
   dataLoader<Registration[]>('getRegistrations');
 
-const RegistrationsPage = () => {
-  const {
-    data: registrations,
-    error,
-    isLoading,
-  } = useGetTournamentRegistrationsQuery({});
+type RegistrationsPageProps = {
+  registrations?: Registration[];
+};
 
-  const { data: session } = useSession();
-  if (!session) {
-    return (
-      <div className="container mx-auto pt-12">
-        <ExpiredLoginButton />
-      </div>
-    );
-  }
-
-  if (!registrations && isLoading) {
-    return (
-      <div className="container mx-auto pt-12">
-        <div className="text-title">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error || !registrations) {
+const RegistrationsPage = ({
+  registrations,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  if (!registrations) {
     return (
       <div className="container mx-auto pt-12">
         <div className="text-title">Failed to load registrations</div>
@@ -106,5 +89,30 @@ const RegistrationRow = ({ registration }: { registration: Registration }) => {
 RegistrationsPage.getLayout = (page: React.ReactElement) => {
   return <AppLayout>{page}</AppLayout>;
 };
+
+export const getServerSideProps = (async (ctx) => {
+  const { data: registrations, error } = await getRegistrations({}, ctx.req);
+  console.log(error);
+  if (error || !registrations) {
+    if (error?.code === 401) {
+      return {
+        props: {},
+        redirect: {
+          destination: '/signin',
+        },
+      };
+    }
+
+    return {
+      props: {},
+    };
+  }
+
+  return {
+    props: {
+      registrations,
+    },
+  };
+}) satisfies GetServerSideProps<RegistrationsPageProps>;
 
 export default RegistrationsPage;

@@ -134,7 +134,7 @@ export default function LoginPage() {
                     href={`${routes.register}`}
                     className="font-bold text-gray-200 hover:underline"
                   >
-                    Registre-se
+                    Sign-up
                   </Link>
                 </p>
               </div>

@@ -17,7 +17,7 @@ export const createFormSchema = z.object({
   open_classification: z.boolean(),
   size: z.string(),
   team_size: z.string(),
-  map: z.string().default('summoners-rift'),
+  // map: z.string().default('summoners-rift'),
   prizes: z
     .array(
       z.object({

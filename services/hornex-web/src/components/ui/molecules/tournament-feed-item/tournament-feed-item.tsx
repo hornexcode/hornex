@@ -59,14 +59,14 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
           <div className="flex justify-between">
             <div className="flex items-center">
               <Users2 className="text-muted mr-1 h-5 w-5" />
-              <span className="text-muted pr-4 font-normal">
+              <span className="text-muted pr-4 font-medium">
                 {tournament.registered_teams.length}/{tournament.max_teams}
               </span>
             </div>
             {/* phase status */}
             <div className="relative flex">
               <span className="absolute -left-3 top-2.5 h-2 w-2 rounded-full bg-green-400"></span>
-              <span className="text-green-400">
+              <span className="font-bold text-green-400">
                 {isFull ? 'Full' : getStatus(tournament)}
               </span>
             </div>

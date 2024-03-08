@@ -21,7 +21,7 @@ const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
   return (
     <div className="relative order-last flex shrink-0 items-center ">
       {/* <WalletMenuItem user={user} /> */}
-      <NotificationMenuItem />
+      {/* <NotificationMenuItem /> */}
       <ProfileMenuItem user={user} />
     </div>
   );
@@ -62,7 +62,7 @@ const Header = () => {
 
         {!session && (
           <div className="flex items-center justify-center space-x-4">
-            <Link href={`/${routes.signIn}`}>
+            <Link href={`${routes.signIn}`}>
               <div className="text-title flex items-center">
                 Sign In <LogInIcon className="text-title ml-2 h-5 w-5" />
               </div>

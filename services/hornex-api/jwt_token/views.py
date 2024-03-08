@@ -55,6 +55,11 @@ class TokenViewBase(generics.GenericAPIView):
 
         return res
 
+    def delete(self, request: Request, *args, **kwargs) -> Response:
+        res = Response(status=status.HTTP_204_NO_CONTENT)
+        res.delete_cookie("hx.auth.token", path="/")
+        return res
+
 
 class TokenObtainPairView(TokenViewBase):
     """

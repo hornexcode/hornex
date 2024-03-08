@@ -8,7 +8,6 @@ import { AppLayout } from '@/layouts';
 import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments';
 import { dataLoader as dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Image from 'next/image';
 
 const { useData: getTournaments } =
   dataLoader<GetTournamentsResponse>('getTournaments');
