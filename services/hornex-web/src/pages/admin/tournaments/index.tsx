@@ -45,7 +45,6 @@ function DashboardPage() {
       <div className="flex w-full flex-col space-y-2">
         <div className="text-title grid w-full grid-cols-12 font-normal">
           <div className="col-span-6">Tournament</div>
-          <div className="col-span-4">Team</div>
           <div className="col-span-2">Start Date</div>
         </div>
         <div className="flex flex-col">
@@ -63,24 +62,24 @@ const TournamentRow = ({ tournament }: { tournament: Tournament }) => {
   const router = useRouter();
   return (
     <div
-      className="bg-medium-dark border-border grid grid-cols-12 border-b p-4 transition-all hover:z-50 hover:cursor-pointer hover:shadow-xl"
+      className="bg-medium-dark border-border grid grid-cols-12 border-b p-4 transition-all hover:z-10 hover:cursor-pointer hover:border-transparent hover:shadow-xl"
       onClick={() => {
         router.push(
           `/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
         );
       }}
     >
-      <div className="col-span-6 flex items-center">
+      <div className="col-span-6 flex items-center px-4">
         <PodiumIcon className="text-title mr-4 w-10" />
         <div>
-          <div className="text-title text-lg">{tournament.name}</div>
+          <div className="text-title text-lg font-bold">{tournament.name}</div>
           <div className="text-muted font-medium">{tournament.game}</div>
         </div>
       </div>
 
       <div className="col-span-2 flex items-center">
         <div className="text-title font-normal">
-          {moment(tournament.start_date).format('MMM Do, YYYY')}
+          {moment(tournament.start_date).format('MMM Do, YYYY h:mm A')}
         </div>
       </div>
     </div>

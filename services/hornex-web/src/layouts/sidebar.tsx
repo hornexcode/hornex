@@ -134,7 +134,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           </li>
         </ul>
       </div>
-      <div className="mt-auto pb-20">
+      <div className="mt-auto px-4 pb-20">
         <LangToggler />
       </div>
     </div>

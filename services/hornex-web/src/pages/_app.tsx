@@ -72,6 +72,12 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
+const roboto_condensed = Roboto_Condensed({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-roboto-condensed',
+});
+
 function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -88,7 +94,8 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
             className={classnames(
               'dark:bg-background text-muted min-h-[100vh] antialiased',
               Goldman_Sans.className,
-              Beaufort_for_LOL.variable
+              Beaufort_for_LOL.variable,
+              roboto_condensed.variable
             )}
           >
             <SessionProvider session={pageProps.session}>

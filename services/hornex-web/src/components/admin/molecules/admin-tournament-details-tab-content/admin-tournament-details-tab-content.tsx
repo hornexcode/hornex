@@ -232,17 +232,17 @@ const AdminTournamentGeneralInfo = () => {
     <div className="mt-4 grid grid-cols-3 gap-4">
       <div className="col-span-2">
         <div className="flex flex-wrap items-center rounded">
-          <div className="border-border border-r border-t p-3">
+          <div className="border-border border-r border-dashed p-3 font-medium">
             <div className="font-normal">Teams registered</div>
             <div className="text-title">
               {tournament.registered_teams_count}/{tournament.max_teams}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
+          <div className="border-border border-r border-dashed p-3 font-medium">
             <div className="font-normal">Entry Fee</div>
             <div className="text-title">{getEntryFee(tournament)}</div>
           </div>
-          <div className="border-border border-r border-t p-3">
+          <div className="border-border border-r border-dashed p-3 font-medium">
             <div className="font-normal">Prize Pool</div>
             <div className="text-title">
               {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
@@ -252,13 +252,13 @@ const AdminTournamentGeneralInfo = () => {
                 )}`}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
+          <div className="border-border border-r border-dashed p-3 font-medium">
             <div className="font-normal">Registration start date</div>
             <div className="text-title">
               {datetime(tournament.registration_start_date, { time: false })}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
+          <div className="border-border border-r border-dashed p-3 font-medium">
             <div className="font-normal">Start date</div>
             <div className="text-title">
               {moment(
@@ -268,7 +268,7 @@ const AdminTournamentGeneralInfo = () => {
               ).format('YYYY-MM-D hh:mm A')}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
+          <div className="border-border border-r border-dashed p-3 font-medium">
             <div className="font-normal">Check-in window</div>
             <div className="text-title">
               {tournament.check_in_duration} minutes

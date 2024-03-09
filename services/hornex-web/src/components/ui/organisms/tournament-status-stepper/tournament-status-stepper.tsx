@@ -1,5 +1,9 @@
 import { TournamentStatusStepperProps } from './tournament-status-stepper.types';
-import { CheckCircledIcon } from '@radix-ui/react-icons';
+import {
+  CheckCircledIcon,
+  DotFilledIcon,
+  DotIcon,
+} from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 
@@ -13,7 +17,7 @@ const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
       {/* gray bar */}
       <div
         role="stepper"
-        className="absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between bg-black/25"
+        className="absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between bg-gray-400"
       ></div>
       {/* green bar */}
       <div
@@ -30,10 +34,7 @@ const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
           ></div>
         ))}
         {new Array(steps - currentStep).fill(0).map((_, idx) => (
-          <CheckCircledIcon
-            key={idx}
-            className="bg-dark h-5 w-5 rounded-full"
-          />
+          <div key={idx} className="h-2.5 w-2.5 rounded-full bg-gray-400"></div>
         ))}
       </div>
     </div>

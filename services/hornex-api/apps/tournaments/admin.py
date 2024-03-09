@@ -14,9 +14,20 @@ from apps.tournaments.models import (
     Rule,
 )
 
-admin.site.register(
-    [LeagueOfLegendsLeague, LeagueOfLegendsTournament, Prize, Checkin, Rule, Match, Rank]
-)
+admin.site.register([LeagueOfLegendsLeague, Prize, Checkin, Rule, Match, Rank])
+
+
+@admin.register(LeagueOfLegendsTournament)
+class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+        "organizer",
+        "start_date",
+        "start_time",
+        "registration_start_date",
+        "status",
+    ]
+    list_filter = ["status", "start_date", "registration_start_date"]
 
 
 class RegistrationAdmin(admin.ModelAdmin):

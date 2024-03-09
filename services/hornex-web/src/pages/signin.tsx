@@ -63,16 +63,11 @@ export default function LoginPage() {
 
   return (
     <div className="bg-dark flex h-screen flex-col items-center justify-between">
-      <div className="mt-8 self-center">
-        <Logo size="sm" />
-      </div>
       <div className="m-auto w-full sm:w-[400px]">
+        <div className="mt-8 self-center">
+          <Logo size="sm" className="mx-auto" />
+        </div>
         <div className="rounded p-6 sm:p-8">
-          <div className="pb-8 pt-2">
-            <h1 className="text-xl font-bold text-white md:text-4xl">
-              Welcome
-            </h1>
-          </div>
           <div className="space-y-4">
             {error && (
               <div className="rounded bg-red-500 p-2 text-center  text-white">
@@ -100,10 +95,9 @@ export default function LoginPage() {
 
               {/* Password */}
               <div>
-                <InputLabel title="Password" important />
                 <Input
                   type="password"
-                  placeholder="****"
+                  placeholder="password"
                   error={errors.password?.message}
                   {...register('password', { required: true })}
                 />
@@ -122,19 +116,18 @@ export default function LoginPage() {
                   isLoading={fetching}
                   disabled={fetching}
                   fullWidth
-                  size="small"
                   shape="rounded"
                 >
-                  Login
+                  Sign In
                 </Button>
 
                 <p className="mt-1  font-normal text-gray-400">
-                  Não possui uma conta?{' '}
+                  Do not have an account yet?{' '}
                   <Link
                     href={`${routes.register}`}
                     className="font-bold text-gray-200 hover:underline"
                   >
-                    Sign-up
+                    Create an account
                   </Link>
                 </p>
               </div>

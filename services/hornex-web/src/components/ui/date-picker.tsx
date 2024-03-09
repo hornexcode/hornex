@@ -29,11 +29,11 @@ export function DatePicker({
           <Button
             variant={'outline'}
             className={cn(
-              'border-border bg-medium-dark hover:bg-dark w-[240px] justify-start text-left font-normal',
+              'border-muted bg-background hover:bg-medium-dark h-12 w-[240px] justify-start text-left font-normal',
               !date && 'text-muted-foreground'
             )}
           >
-            <CalendarIcon className="text-brand mr-2 h-4 w-4" />
+            <CalendarIcon className="text-title mr-2 h-4 w-4" />
             {date ? (
               <span className="text-title">{format(date, 'PPP')}</span>
             ) : (

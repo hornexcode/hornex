@@ -56,7 +56,7 @@ const RegistrationRow = ({ registration }: { registration: Registration }) => {
   const router = useRouter();
   return (
     <div
-      className="bg-medium-dark border-border grid grid-cols-12 border-b p-4 transition-all hover:cursor-pointer hover:shadow-2xl"
+      className="bg-medium-dark border-border grid grid-cols-12 border-b p-4 transition-all hover:cursor-pointer hover:border-transparent hover:shadow-xl"
       onClick={() => {
         router.push(
           `/${registration.tournament.platform}/${registration.tournament.game}/tournaments/${registration.tournament.id}`

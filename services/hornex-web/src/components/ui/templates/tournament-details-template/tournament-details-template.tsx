@@ -24,7 +24,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       <TournamentDetailsHeadline isCheckedIn={false} />
       {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
       <div className="mt-8 flex space-x-8">
-        <div className="lg:w-[300px]">
+        <div className="lg:w-[280px]">
           <TournamentPhasesWidget
             tournament={tournament}
             isRegistered={isRegistered}

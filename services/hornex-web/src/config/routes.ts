@@ -6,6 +6,7 @@ const routes = {
   contactUs: '/contact-us',
   registrations: '/registrations',
   register: '/signup',
+  signup: '/signup',
   compete: '/compete',
   tournaments: '/tournaments',
   platform: '/platform',

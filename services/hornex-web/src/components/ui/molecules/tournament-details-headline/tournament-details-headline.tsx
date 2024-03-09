@@ -1,9 +1,11 @@
+import { LolFlatIcon } from '../../atoms/icons/lol-flat-icon';
 import { RegisterButton } from '../../atoms/register-button';
 import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import Button from '@/components/ui/atoms/button/button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { useTournament } from '@/contexts/tournament';
-import { getStatus, TeamCheckInStatus, Tournament } from '@/lib/models';
+import { TeamCheckInStatus } from '@/lib/models';
+import { getStatus, Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import {
   combineDateAndTime,
@@ -16,6 +18,7 @@ import { DiscordLogoIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
 import classnames from 'classnames';
 import clsx from 'clsx';
 import { CheckCheckIcon, RefreshCcw, Twitch } from 'lucide-react';
+import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
@@ -135,7 +138,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   };
 
   return (
-    <div className="shadow-card rounded">
+    <div className="rounded shadow-lg">
       {/* end debugger */}
       <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image
@@ -159,77 +162,74 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
         </div>
       </div>
       <div className="bg-medium-dark flex rounded-b p-4">
-        <div className="i flex w-full justify-between">
+        <div className="flex w-full justify-between">
           {/* Tournament name */}
           <div className="flex items-center">
-            <h4 className="text-title mr-4 text-lg font-extrabold">
-              {tournament.name}
-            </h4>
-            <div className="text-body text-sm">
-              Organized by <span className="text-title">@hornex</span>
+            <LolFlatIcon className="mr-4 h-10 w-10" />
+            <div className="block leading-3">
+              <h4 className="text-title mr-4 text-lg font-extrabold">
+                {tournament.name}
+              </h4>
+              <div className="font-medium">
+                {moment(tournament.start_date).format('MMMM Do, h:mm a')}
+              </div>
             </div>
           </div>
 
           {/* right */}
-          <div className="flex items-center self-start">
-            {/* TODO: make this a molecule component */}
-            <div className="flex items-center">
-              <div className="flex items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
-                <Link href={`/tournament/${tournament.id}/participants`}>
-                  <DiscordLogoIcon className="h-6 w-6" />
-                </Link>
-                <Link href={`/tournament/${tournament.id}/participants`}>
-                  <TwitterLogoIcon className="h-6 w-6" />
-                </Link>
+          <div className="flex items-center">
+            <div className="flex h-full items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
+              <Link href={`/tournament/${tournament.id}/participants`}>
+                <DiscordLogoIcon className="h-6 w-6" />
+              </Link>
+              <Link href={`/tournament/${tournament.id}/participants`}>
+                <TwitterLogoIcon className="h-6 w-6" />
+              </Link>
 
-                <Link href={`/tournament/${tournament.id}/participants`}>
-                  <Twitch className="h-5 w-5" />
-                </Link>
-              </div>
-              {/* Classification */}
-              {/* <div className="flex hidden flex-col border-r-2 border-dotted border-gray-700 px-8">
-                <div className="text-body text-sm">Classifications</div>
+              <Link href={`/tournament/${tournament.id}/participants`}>
+                <Twitch className="h-5 w-5" />
+              </Link>
+            </div>
+
+            {/* Prize Pool */}
+            <div
+              className={clsx(
+                'flex items-center border-r-2 border-dotted border-gray-700 px-8',
+                !tournament.prize_pool_enabled && 'hidden'
+              )}
+            >
+              <div>
+                <div className="text-body text-sm">Potential Prize Pool</div>
                 <div className="text-title font-display text-sm">
-                  {!tournament.open_classification
-                    ? tournament.classifications.map((c) => c).join(', ')
-                    : 'all'}
-                </div>
-              </div> */}
-
-              {/* Prize Pool */}
-              <div
-                className={clsx(
-                  'flex items-center border-r-2 border-dotted border-gray-700 px-8',
-                  !tournament.prize_pool_enabled && 'hidden'
-                )}
-              >
-                <div>
-                  <div className="text-body text-sm">Potential Prize Pool</div>
-                  <div className="text-title font-display text-sm">
-                    R${' '}
-                    {toCurrency(
-                      tournament.entry_fee *
-                        tournament.max_teams *
-                        tournament.team_size *
-                        0.7
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Entry fee */}
-              <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
-                <div className="text-muted text-sm font-normal">Entry fee</div>
-                <div className="text-title">
-                  {tournament.is_entry_free
-                    ? 'Free'
-                    : `R$ ${toCurrency(tournament.entry_fee)}`}
+                  R${' '}
+                  {toCurrency(
+                    tournament.entry_fee *
+                      tournament.max_teams *
+                      tournament.team_size *
+                      0.7
+                  )}
                 </div>
               </div>
             </div>
 
+            {/* Entry fee */}
+            <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
+              <div className="text-muted">Entry fee</div>
+              <div className="text-title font-bold">
+                {tournament.is_entry_free
+                  ? 'Free'
+                  : `R$ ${toCurrency(tournament.entry_fee)}`}
+              </div>
+            </div>
+
             {/* Register button */}
-            <RegisterButton className="ml-4" isRegistered={isRegistered} />
+            {tournament.status == 'registering' ? (
+              <RegisterButton className="ml-4" isRegistered={isRegistered} />
+            ) : (
+              <div className="mx-4 my-2 w-[100px] text-center font-bold">
+                {getStatus(tournament)}
+              </div>
+            )}
 
             {/* Check-in button */}
             {checkInOpen && (checkInStatusData || { total: 0 }).total != 5 && (

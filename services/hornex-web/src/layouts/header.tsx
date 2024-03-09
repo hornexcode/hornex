@@ -1,6 +1,4 @@
-import MenuItems from './menu/_default';
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
-import { NotificationMenuItem } from '@/components/notifications/notification-menu-item';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
 import routes from '@/config/routes';
 import { LoggedUser } from '@/domain';
@@ -11,7 +9,7 @@ import { LogInIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 interface HeaderRightAreaProps {
   user: LoggedUser;
@@ -20,19 +18,13 @@ interface HeaderRightAreaProps {
 const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
   return (
     <div className="relative order-last flex shrink-0 items-center ">
-      {/* <WalletMenuItem user={user} /> */}
-      {/* <NotificationMenuItem /> */}
       <ProfileMenuItem user={user} />
     </div>
   );
 };
 
 const Header = () => {
-  const isMounted = useIsMounted();
-  const breakpoint = useBreakpoint();
-
   const { data: session } = useSession();
-  const { user } = session || {};
 
   return (
     <header className="bg-dark/60 fixed top-0 z-40 h-16 w-full px-8">
@@ -43,19 +35,12 @@ const Header = () => {
           </Link>
           HORNEX
         </div>
-        {/* <div className="flex items-center">
-          {isMounted && ['xs', 'sm', 'md', 'lg'].indexOf(breakpoint) == -1 && (
-            <MenuItems />
-          )}
-        </div> */}
-
-        {/* {isLoading && <>loading user metadata</>} */}
 
         {session && (
           <HeaderRightArea
             user={{
-              email: user?.email!,
-              name: user?.name!,
+              email: session.user?.email!,
+              name: session.user?.name!,
             }}
           />
         )}
@@ -63,12 +48,12 @@ const Header = () => {
         {!session && (
           <div className="flex items-center justify-center space-x-4">
             <Link href={`${routes.signIn}`}>
-              <div className="text-title flex items-center">
+              <div className="text-title flex items-center font-medium">
                 Sign In <LogInIcon className="text-title ml-2 h-5 w-5" />
               </div>
             </Link>
             <Link href="/register">
-              <div className="text-title flex items-center">
+              <div className="text-title flex items-center font-medium">
                 Create account{' '}
                 <ArrowUpRightIcon className="text-title ml-2 h-5 w-5" />
               </div>

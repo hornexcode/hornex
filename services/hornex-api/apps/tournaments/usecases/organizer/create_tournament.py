@@ -22,7 +22,6 @@ CHECK_IN_DURATION = 15
 class CreateTournamentUseCaseParams:
     game: str
     name: str
-    description: str
     organizer_id: str
     registration_start_date: datetime
     start_date: datetime.date
@@ -33,8 +32,8 @@ class CreateTournamentUseCaseParams:
     size: str
     team_size: str
     prizes: list[dict[str, any]]
-    map: str
     terms: bool
+    description: Optional[str] = None
     entry_fee: Optional[int] = None
     feature_image: Optional[str] = None
 
@@ -57,7 +56,7 @@ class CreateTournamentUseCase:
 
         tournament = LeagueOfLegendsTournament.objects.create(
             name=params.name,
-            description=params.description,
+            description="",
             organizer=organizer,
             registration_start_date=params.registration_start_date,
             check_in_duration=CHECK_IN_DURATION,
@@ -69,7 +68,6 @@ class CreateTournamentUseCase:
             open_classification=params.open_classification,
             max_teams=int(params.size),
             team_size=int(params.team_size),
-            map=params.map,
             feature_image="tmt-6.jpeg",
         )
 

@@ -43,32 +43,24 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
       </TabsList>
       <TabsContent value="overview" className="bg-light-dark">
         <div className="box">
-          <div className="border-border block border-b border-dashed p-4">
-            <h3 className="text-sm">Game & Region</h3>
+          <div className="border-border block p-6">
+            <h3 className="">Game & Region</h3>
             <div className="flex flex-wrap items-center">
-              <div className="border-muted block border-r border-dashed pr-5">
-                <span className="text-title font-normal">
-                  League of Legends
-                </span>
-              </div>
-              <div className="border-muted block px-4">
-                <span className="text-title font-normal">🇧🇷 Brazil</span>
+              <div className="border-muted block pr-5">
+                <div className="text-title font-bold">League of Legends</div>
+                <div className="text-title font-bold">Brazil</div>
               </div>
             </div>
           </div>
 
-          <div className="block p-4">
-            <h3 className="text-sm">Date & Time</h3>
+          <div className="block p-6">
+            <h3 className="">Date & Time</h3>
             <div className="flex flex-wrap items-center">
-              <div className="border-muted block border-r border-dashed pr-4">
-                <span className="text-title font-normal">
-                  {moment(tournament.start_date).format('MMMM Do, YYYY')}
-                </span>
-              </div>
-              <div className="border-muted block border-r border-dashed px-4">
-                <span className="text-title font-normal">
+              <div className="block pr-4">
+                <div className="text-title font-bold">
+                  {moment(tournament.start_date).format('MMMM Do, YYYY')}{' '}
                   {moment(tournament.start_date).format('h:mm A')}
-                </span>
+                </div>
               </div>
             </div>
           </div>

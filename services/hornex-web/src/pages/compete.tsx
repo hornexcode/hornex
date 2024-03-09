@@ -42,30 +42,7 @@ const CompetePage = ({
   if (!data) return null;
 
   return (
-    <div className="px-8 pt-8">
-      <div className="relative h-[300px] w-full overflow-hidden bg-[url('/images/league-of-legends/baron.jpg')] bg-cover">
-        <div className="bg-dark/50 absolute top-0 h-full w-full"></div>
-        <div className="absolute top-0 h-full w-full bg-gradient-to-t from-black"></div>
-        <div className="absolute left-10 top-20 flex h-[300px]">
-          <div className="grid grid-cols-3 items-center justify-center">
-            <div className="col-span-2 p-4">
-              <LeagueOfLegendsLogo className="relative w-20 text-white" />
-              <div className="flex items-center">
-                <h1 className="font-beaufort text-6xl font-bold tracking-tight text-white">
-                  Tournaments
-                </h1>
-              </div>
-            </div>
-            {/* <div className="col-span-2">
-              <Image
-                className="responsive-img h-full w-full"
-                src={Baron}
-                alt="baron"
-              />
-            </div> */}
-          </div>
-        </div>
-      </div>
+    <div className="px-8">
       <section id="available-games">
         <TournamentsFeedTemplate isLoading={isLoading} data={data} />
       </section>

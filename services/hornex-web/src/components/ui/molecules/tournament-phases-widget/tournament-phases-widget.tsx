@@ -1,11 +1,9 @@
 import { RegisterButton } from '../../atoms/register-button';
-import { Skeleton } from '../../skeleton';
-import { useTournament } from '@/contexts/tournament';
+import TournamentRegistrationStateProgress from '../tournament-registration-state-progress';
 import { Tournament } from '@/lib/models';
-import { getStatus, TournamentStatusOptions } from '@/lib/models/Tournament';
-import clsx from 'clsx';
-import { CheckCircle2 } from 'lucide-react';
-import moment from 'moment';
+import { cn } from '@/lib/utils';
+import { CheckCircledIcon } from '@radix-ui/react-icons';
+import { CircleDot } from 'lucide-react';
 import React, { FC } from 'react';
 
 type TournamentPhasesWidgetProps = {
@@ -18,77 +16,90 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   isRegistered,
 }) => {
   const renderButton = () => {
-    if (status === 'In progress') {
+    if (tournament.status === 'ended') {
       return (
-        <div className="text-center text-amber-500">
-          🚀 <span className="pl-2">In progress...</span>
+        <div className="text-muted mt-6 text-center font-semibold">
+          <span className="pl-2">Ended</span>
         </div>
       );
     }
 
-    return <RegisterButton isRegistered={isRegistered} className="w-full" />;
+    if (isRegistered) {
+      return (
+        <div className="text-brand flex items-center justify-center pt-6 font-bold">
+          <CheckCircledIcon className="mr-2 h-4 w-4" />
+          Registered
+        </div>
+      );
+    }
+
+    return (
+      <RegisterButton isRegistered={isRegistered} className="mt-6 w-full" />
+    );
   };
 
-  const phases = ['running', 'registering', 'announced'];
+  const getTournamentStep = () => {
+    switch (tournament.status) {
+      case 'registering':
+        return 1;
+      case 'running':
+        return 2;
+      case 'ended':
+        return 3;
+      default:
+        return 0;
+    }
+  };
 
   return (
-    <div className="pr-8">
-      <div className="bg-light-dark space-y-2">
-        <div className="bg-medium-dark">
-          <div className="border-border border-b p-4">
-            <h4 className="leading-2 text-title font-extrabold">
-              Tournament Phases
-            </h4>
+    <div className="bg-medium-dark space-y-2 rounded p-6 shadow-lg">
+      <div className="border-border border-b border-dashed pb-4">
+        <h4 className="leading-2 text-title text-lg font-bold">
+          Tournament Phases
+        </h4>
+        <p>Keep track of tournament state</p>
+      </div>
+      <div className="block py-4">
+        <div>
+          <div className="flex items-center">
+            <CircleDot
+              className={cn(
+                'text-muted mr-2 w-6',
+                getTournamentStep() >= 1 && 'text-green-400'
+              )}
+            />
+            <span className="text-title font-medium">Registration Open</span>
+          </div>
+          <div className="p-2 px-2.5">
+            <div className="border-border h-6 w-full border-l-2"></div>
+          </div>
+          <div className="flex items-center">
+            <CircleDot
+              className={cn(
+                'text-muted mr-2 w-6',
+                getTournamentStep() >= 2 && 'text-green-400'
+              )}
+            />
+            <span className="text-title font-medium">In Progress</span>
+          </div>
+          <div className="p-2 px-2.5">
+            <div className="border-border h-6 w-full border-l-2"></div>
+          </div>
+          <div className="flex items-center">
+            <CircleDot
+              className={cn(
+                'text-muted mr-2 w-6',
+                getTournamentStep() >= 3 && 'text-green-400'
+              )}
+            />
+            <span className="text-title font-medium">Finished</span>
           </div>
         </div>
-        <div className="block p-6">
-          <ol className="relative">
-            <div className="bg-border absolute -left-1 top-0 h-[100%] w-[1px] rounded"></div>
+      </div>
 
-            <li className="relative pb-4 pl-6">
-              <div
-                className={clsx(
-                  'absolute -left-1 top-0 h-[100%] w-[1px] rounded',
-                  phases.includes(tournament.status)
-                    ? 'bg-amber-500'
-                    : 'bg-border'
-                )}
-              ></div>
-              <div className="absolute -left-3.5 mt-3.5 rounded-full">
-                <CheckCircle2
-                  className={clsx(
-                    'text-dark h-5 w-5 rounded-full bg-amber-500'
-                  )}
-                />
-              </div>
-              <time className="text-body mb-1 text-sm leading-none">
-                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-              </time>
-
-              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
-                <div className="flex items-center">
-                  <span>Registration Open</span>
-                </div>
-              </h3>
-            </li>
-            <li className="relative my-4 pl-6">
-              {/* <div className="absolute -left-1 top-0 h-[100%] w-2 rounded bg-amber-500"></div> */}
-              <div className="absolute -left-3.5 mt-3.5 rounded-full">
-                <CheckCircle2 className="bg-background text-muted h-5 w-5 rounded-full" />
-              </div>
-              <time className="text-body mb-1 text-sm leading-none">
-                Closes at {moment(tournament.start_date).format('MMM Do')}{' '}
-              </time>
-              <h3 className="-mb-1 font-semibold text-gray-900 dark:text-white">
-                <span>Tracking results</span>
-              </h3>
-            </li>
-          </ol>
-        </div>
-
-        <div className="border-border block border-t border-dashed p-5">
-          {renderButton()}
-        </div>
+      <div className="border-border justify-center border-t border-dashed pt-4">
+        <TournamentRegistrationStateProgress tournament={tournament} />
+        {tournament.status == 'registering' && renderButton()}
       </div>
     </div>
   );
