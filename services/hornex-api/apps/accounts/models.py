@@ -62,3 +62,16 @@ class LeagueOfLegendsSummoner(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class Profile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField("users.User", on_delete=models.CASCADE, related_name="profile")
+    discord_link = models.URLField(blank=True)
+    twitter_link = models.URLField(blank=True)
+    twitch_link = models.URLField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.user.name
