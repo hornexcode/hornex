@@ -816,6 +816,8 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
         self.game_id_2 = GameIdFactory.new(user=self.player_2)
         self.team_1 = TeamFactory.new(created_by=self.player_1)
         self.team_2 = TeamFactory.new(created_by=self.player_2)
+        self.team_1.add_member(self.game_id_1)
+        self.team_2.add_member(self.game_id_2)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
         self.registration_1 = RegistrationFactory.new(
@@ -847,6 +849,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 204)
         self.match.refresh_from_db()
         self.assertEqual(self.match.status, Match.StatusType.UNDERWAY)
+        self.assertIsNotNone(self.match.riot_match_id)
 
     def test_start_match_error_not_organizer(self):
         self.tournament.organizer = self.player_1
@@ -866,7 +869,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         data = resp.json()
 
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 403)
         self.assertEqual(data.get("error"), "You are not this tournament's Organizer")
 
     @patch("lib.challonge.Match.mark_as_underway")
