@@ -1,20 +1,21 @@
 const routes = {
   home: '/',
-  termsAndConditions: 'terms-and-conditions',
-  privacyPolicy: 'privacy-policy',
+  termsAndConditions: '/terms-and-conditions',
+  privacyPolicy: '/privacy-policy',
   about: '',
-  contactUs: 'contact-us',
+  contactUs: '/contact-us',
   registrations: '/registrations',
-  login: 'login',
-  register: 'register',
+  register: '/signup',
+  signup: '/signup',
   compete: '/compete',
-  tournaments: 'tournaments',
-  platform: 'platform',
+  tournaments: '/tournaments',
+  platform: '/platform',
   teams: 'teams',
   createTeam: 'teams/create',
   signIn: '/signin',
   admin: {
     tournaments: '/admin/tournaments',
+    profile: '/admin/profile',
   },
 };
 

@@ -7,11 +7,11 @@ export const ConnectAccountButton = () => {
   const { openModal } = useModal();
 
   return (
-    <div className="bg-dark shadow-card mb-4 p-6">
+    <div className="border-border mb-4 rounded border p-6">
       <h2 className="text-title font-roboto-condensed text-xl font-bold">
         Connect your account
       </h2>
-      <p className="text-title font-source-sans font-normal">
+      <p className="text-body font-source-sans font-normal">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio,
         nostrum!
       </p>

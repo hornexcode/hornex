@@ -8,12 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
-import {
-  Goldman,
-  Kanit,
-  Roboto_Condensed,
-  Source_Sans_3,
-} from 'next/font/google';
+import { Roboto_Condensed } from 'next/font/google';
 import localFont from 'next/font/local';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
@@ -78,49 +73,42 @@ const roboto_condensed = Roboto_Condensed({
   variable: '--font-roboto-condensed',
 });
 
-const source_Sans_3 = Source_Sans_3({
-  weight: ['500', '600', '700', '800'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-source-sans',
-});
-
-const kanit = Kanit({
-  weight: ['300', '400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-kanit',
-});
-
 function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
-    <SWRConfig>
-      <NextThemesProvider attribute="class" defaultTheme="dark">
-        <div
-          className={classnames(
-            'dark:bg-background text-muted min-h-[100vh] antialiased',
-            Goldman_Sans.className,
-            roboto_condensed.variable,
-            kanit.variable,
-            Beaufort_for_LOL.variable
-          )}
-        >
-          <SessionProvider session={pageProps.session}>
-            {getLayout(<Component {...pageProps} />)}
-            <ModalsContainer />
-            {/* <SettingsDrawer /> */}
-            <ToastContainer
-              theme="dark"
-              style={{
-                fontSize: '0.925rem',
-              }}
-            />
-          </SessionProvider>
-          <Toaster />
-        </div>
-      </NextThemesProvider>
-    </SWRConfig>
+    <>
+      <style jsx global>{`
+        html {
+          font-family: ${Goldman_Sans.style.fontFamily};
+        }
+      `}</style>
+      <SWRConfig>
+        <NextThemesProvider attribute="class" defaultTheme="dark">
+          <div
+            className={classnames(
+              'min-h-[100vh] antialiased',
+              Goldman_Sans.className,
+              Beaufort_for_LOL.variable,
+              roboto_condensed.variable
+            )}
+          >
+            <SessionProvider session={pageProps.session}>
+              {getLayout(<Component {...pageProps} />)}
+              <ModalsContainer />
+              {/* <SettingsDrawer /> */}
+              <ToastContainer
+                theme="dark"
+                style={{
+                  fontSize: '0.925rem',
+                }}
+              />
+            </SessionProvider>
+            <Toaster />
+          </div>
+        </NextThemesProvider>
+      </SWRConfig>
+    </>
   );
 }
 

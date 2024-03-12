@@ -135,7 +135,6 @@ const TeamCreate = ({}: InferGetServerSidePropsType<
             </div>
             <div className="mt-5 w-full">
               <InputLabel title="Game" important />
-
               <Controller
                 name="game"
                 control={control}

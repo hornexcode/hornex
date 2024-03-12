@@ -12,8 +12,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { MoneyInput } from '@/components/ui/input-money';
-import { InputTime } from '@/components/ui/input-time';
 import {
   Select,
   SelectContent,
@@ -21,12 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+// import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
+import { TrashIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import moment from 'moment';
 import { useRouter } from 'next/router';
@@ -43,13 +41,17 @@ export function TournamentCreateForm() {
     resolver: zodResolver(createFormSchema),
     defaultValues: {
       name: '',
-      is_entry_free: false,
-      open_classification: false,
+      is_entry_free: true,
+      open_classification: true,
       terms: false,
+      game: 'league-of-legends',
+      team_size: '5',
+      size: '4',
+      description: '',
     },
   });
 
-  const { register, control, handleSubmit, watch } = form;
+  const { register, control, handleSubmit, watch, setError } = form;
   const { fields, remove, append } = useFieldArray({
     name: 'prizes',
     control,
@@ -57,7 +59,7 @@ export function TournamentCreateForm() {
 
   async function onSubmit(values: z.infer<typeof createFormSchema>) {
     try {
-      const resp = await createTournament(
+      const { error } = await createTournament(
         {},
         {
           ...values,
@@ -65,12 +67,32 @@ export function TournamentCreateForm() {
         }
       );
 
-      if (resp.error)
-        return toast({ title: 'Error', description: resp.error.message });
+      if (error) {
+        if (error.validations) {
+          for (const key in error.validations) {
+            // @ts-ignore
+            setError(key, {
+              message: error.validations[key],
+            });
+          }
+
+          return toast({
+            title: 'Error creating tournament',
+            description: 'Please check the form for errors.',
+          });
+        }
+        toast({
+          title: 'Error creating tournament',
+          description: error.message,
+          variant: 'destructive',
+        });
+        return;
+      }
 
       toast({
         title: 'Tournament created',
         description: 'Tournament created successfully.',
+        variant: 'success',
       });
 
       return router.push('/admin/tournaments');
@@ -103,9 +125,9 @@ export function TournamentCreateForm() {
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormDescription>
+              {/* <FormDescription>
                 This is the game you are creating a tournament for.
-              </FormDescription>
+              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
@@ -119,36 +141,30 @@ export function TournamentCreateForm() {
               <FormControl>
                 <Input {...field} />
               </FormControl>
-              <FormDescription>
-                This is name of your tournament.
-              </FormDescription>
+              <FormDescription>Name your tournament.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={control}
           name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-title">Description</FormLabel>
               <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="Describe your tournament or put any additional information here..."
-                />
+                <Textarea {...field} />
               </FormControl>
-              <FormDescription>Any additional information.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={control}
           name="size"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-title">Tournament Size</FormLabel>
+              <FormLabel className="text-title">Number of teams</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-[180px]">
@@ -163,39 +179,14 @@ export function TournamentCreateForm() {
                 </Select>
               </FormControl>
               <FormDescription>
-                This define how many teams can participate in the tournament.
+                The number of teams allowed to enter the tournament. E.g 4, 8,
+                16, and 32.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={control}
-          name="map"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-title">
-                League of Legends Map
-              </FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select the map" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SUMMONERS_RIFT">
-                      Summoners Rift
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormDescription>
-                This is the map you are creating a tournament for.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={control}
           name="team_size"
@@ -219,63 +210,64 @@ export function TournamentCreateForm() {
             </FormItem>
           )}
         />
-        <div className="grid grid-cols-2">
-          <FormField
-            control={control}
-            name="registration_start_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-title">
-                  Registration Start Date
-                </FormLabel>
-                <FormControl>
-                  <DatePicker date={field.value} onSelect={field.onChange} />
-                </FormControl>
-                <FormDescription>
-                  This define when the registration period will start.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={control}
-            name="start_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-title">Start Date</FormLabel>
-                <FormControl>
-                  <DatePicker date={field.value} onSelect={field.onChange} />
-                </FormControl>
-                <FormDescription>
-                  The date the tournament will start
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="start_time"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-title">Start Time</FormLabel>
-                <FormControl>
-                  <InputTime {...field} />
-                </FormControl>
-                <FormDescription>
-                  The time the tournament will start
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
 
         <FormField
+          control={control}
+          name="registration_start_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-title">
+                Registration Start Date
+              </FormLabel>
+              <FormControl>
+                <DatePicker date={field.value} onSelect={field.onChange} />
+              </FormControl>
+              <FormDescription>
+                The registration period goes from registration start date to
+                tournament start date
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name="start_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-title">Start Date</FormLabel>
+              <FormControl>
+                <DatePicker date={field.value} onSelect={field.onChange} />
+              </FormControl>
+              <FormDescription>
+                We recomend to set a date at least 1 week from now.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name="start_time"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-title">Start Time</FormLabel>
+              <FormControl>
+                {/* <InputTime {...field} /> */}
+                <Input {...field} type="time" className="w-[80px]" />
+              </FormControl>
+              <FormDescription>
+                Different timezones are not supported yet. The time will be set
+                in UTC.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* <FormField
           control={control}
           name="is_entry_free"
           render={({ field }) => (
@@ -295,9 +287,9 @@ export function TournamentCreateForm() {
               </FormControl>
             </FormItem>
           )}
-        />
+        /> */}
 
-        <FormField
+        {/* <FormField
           control={control}
           name="entry_fee"
           render={({ field }) => (
@@ -327,9 +319,9 @@ export function TournamentCreateForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
-        <div className="border-border rounded-lg border">
+        {/* <div className="border-border rounded-lg border">
           <FormField
             control={control}
             name="prize_pool_enabled"
@@ -354,18 +346,21 @@ export function TournamentCreateForm() {
               </FormItem>
             )}
           />
+        </div> */}
+
+        <div className="bg-medium-dark p-4">
+          <h4 className="text-title font-bold">Prizes</h4>
           <div
-            className={clsx('block space-y-3 p-3', {
+            className={clsx('block space-y-3', {
               hidden: watch('prize_pool_enabled'),
             })}
           >
             {fields.map((fld, index) => (
-              <div
-                className="border-border space-y-3 rounded-lg border p-5"
-                key={fld.id}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-title">{fld.place}# place prize</div>
+              <div className="" key={fld.id}>
+                <FormItem>
+                  <FormLabel className="text-title">
+                    {fld.place}# place prize
+                  </FormLabel>
                   <button
                     className=""
                     type="button"
@@ -373,30 +368,40 @@ export function TournamentCreateForm() {
                   >
                     <TrashIcon className="mr-2 h-5 w-5 text-red-500" />
                   </button>
+                  <Textarea
+                    placeholder="Prizer description"
+                    {...register(`prizes.${index}.content`)}
+                  />
+                  <FormControl>{/* <InputTime {...field} /> */}</FormControl>
+                  {/* <FormDescription>
+                  The time the tournament will start
+                </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+                <div className="flex items-center justify-between">
+                  <div className="text-title"></div>
                 </div>
-                <Textarea
-                  placeholder="Prizer description"
-                  {...register(`prizes.${index}.content`)}
-                />
               </div>
             ))}
-            <button
-              type="button"
-              className="border-border flex w-full items-center justify-center rounded-lg border p-5"
-              onClick={() =>
+            <Button
+              size="mini"
+              shape="rounded"
+              color="danger"
+              className="border-border text-dark rounded border px-3 py-2"
+              onClick={(e) => {
+                e.preventDefault();
                 append({
                   place: fields.length + 1,
                   content: '',
-                })
-              }
+                });
+              }}
             >
-              <PlusIcon className="mr-2 h-4 w-4" />
-              <div>Add {fields.length + 1}# place</div>
-            </button>
+              Add {fields.length + 1}# place
+            </Button>
           </div>
         </div>
 
-        <FormField
+        {/* <FormField
           control={control}
           name="open_classification"
           render={({ field }) => (
@@ -410,8 +415,8 @@ export function TournamentCreateForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <FormField
+        /> */}
+        {/* <FormField
           control={control}
           name="terms"
           render={({ field }) => (
@@ -422,8 +427,8 @@ export function TournamentCreateForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <Button size="mini" shape="rounded" type="submit">
+        /> */}
+        <Button size="small" shape="rounded" type="submit">
           Submit
         </Button>
       </form>

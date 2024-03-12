@@ -9,7 +9,7 @@ module.exports = {
     borderRadius: {
       none: '0',
       sm: '0.125rem',
-      DEFAULT: '4px',
+      DEFAULT: '0.3rem',
       md: '0.375rem',
       lg: '0.5rem',
       full: '9999px',
@@ -17,19 +17,10 @@ module.exports = {
     },
     fontFamily: {
       display: ['JetBrains mono', 'monospace'],
+      roboto: ['var(--font-roboto-condensed)', 'JetBrains Mono', 'monospace'],
       title: ['var(--font-kanit)', 'JetBrains Mono', 'monospace'],
       'source-sans': ['var(--font-source-sans)', 'JetBrains Mono', 'monospace'],
       beaufort: ['var(--font-beaufort)', 'JetBrains Mono', 'monospace'],
-      'roboto-condensed': [
-        'var(--font-roboto-condensed)',
-        'JetBrains Mono',
-        'monospace',
-      ],
-      'goldman-sans': [
-        'var(--font-goldman-sans)',
-        'JetBrains Mono',
-        'monospace',
-      ],
     },
     container: {
       padding: {
@@ -51,23 +42,23 @@ module.exports = {
       '4xl': '2160px', // only need to control product grid mode in ultra 4k device
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-goldman-sans)', 'JetBrains Mono', 'monospace'],
+      },
       colors: {
         brand: '#e2b714',
         body: '#95a5a6',
-        title: '#d1d0c5',
+        title: '#fafafa',
         // dark: '#16191f',
-        dark: '#1b1b1f',
+        dark: 'rgb(9, 9, 11)',
+        'light-dark': '#1f1f1f',
         primary: '#21252d',
-        muted: '#656669',
-        accent: '#21252d',
-        border: '#404040',
-        background: '#323437',
-        popover: '#2d3748',
-        input: '#2d3748',
-        'medium-dark': '#2c2e31',
-        'light-dark': '#2c2e31',
-        'sidebar-body': '#F8FAFC',
-        destructive: '#ff4d4f',
+        border: 'hsl(var(--border))',
+        'muted-foreground': 'hsl(var(--muted-foreground))',
+        muted: 'hsl(var(--muted))',
+        background: 'hsl(var(--background))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
       },
       spacing: {
         13: '3.375rem',

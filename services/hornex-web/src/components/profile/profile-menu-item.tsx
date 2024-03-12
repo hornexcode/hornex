@@ -1,26 +1,24 @@
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/atoms/avatar';
 import { LoggedUser } from '@/domain';
-import { useAuthContext } from '@/lib/auth';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { ChevronDownIcon, UserIcon } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import { Fragment } from 'react';
 
 export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
-  const { logout } = useAuthContext();
   const handleLogout = async () => {
-    await logout();
+    await signOut();
   };
 
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="group-item text-title flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 font-semibold hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 font-semibold hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           {/* <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar> */}
-          <div className="flex items-center  px-4 py-2">
+          <div className="flex items-center px-4 py-2">
             <UserIcon className="mr-2 h-4 w-4" />
             {user.email}
             <ChevronDownIcon className="ml-2 h-4 w-4" />
@@ -36,22 +34,22 @@ export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="shadow-highlight-all bg-medium-dark shadow-dark absolute right-0 mt-2 w-56 origin-top-right divide-y divide-slate-700 rounded text-sm ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="shadow-highlight-all bg-medium-dark shadow-dark divide-background absolute right-0 mt-2 w-56 origin-top-right divide-y rounded ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-2">
             <Menu.Item>
-              <div className="px-4 text-sm">
+              <div className="px-4">
                 <div className="text-semibold text-slate-200">{user.name}</div>
-                <div className="text-slate-400">{user.email}</div>
+                {/* <div className="text-slate-400">{user.email}</div> */}
               </div>
             </Menu.Item>
           </div>
-          <div className="py-2">
+          {/* <div className="py-2">
             <Menu.Item>
               {({ active }) => (
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-sm`}
+                  } group flex w-full items-center px-4 py-2`}
                 >
                   Account
                 </button>
@@ -62,7 +60,7 @@ export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-sm`}
+                  } group flex w-full items-center px-4 py-2`}
                 >
                   Settings
                 </button>
@@ -73,21 +71,21 @@ export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
                 <button
                   className={`${
                     active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-sm`}
+                  } group flex w-full items-center px-4 py-2`}
                 >
                   Payments
                 </button>
               )}
             </Menu.Item>
-          </div>
+          </div> */}
           <div className="py-2">
             <Menu.Item>
               {({ active }) => (
                 <button
                   onClick={handleLogout}
                   className={`${
-                    active ? 'bg-slate-900 text-slate-200' : 'text-slate-200'
-                  } group flex w-full items-center px-4 py-2 text-sm`}
+                    active ? 'bg-dark text-slate-200' : 'text-slate-200'
+                  } group flex w-full items-center px-4 py-2`}
                 >
                   <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
                   Logout

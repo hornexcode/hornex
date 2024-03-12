@@ -149,7 +149,7 @@ const AdminTournamentGeneralInfo = () => {
       case 'announced':
         return (
           <>
-            <div className="text-muted py-2">
+            <div className="text-body py-2">
               Registration start date:{' '}
               <span className="font-bold">
                 {moment(tournament.registration_start_date).format('YYYY-MM-D')}
@@ -194,7 +194,7 @@ const AdminTournamentGeneralInfo = () => {
       case 'running':
         return (
           <>
-            <div className="text-muted py-2">
+            <div className="text-body py-2">
               Registration end date:{' '}
               <span className="font-bold">
                 {moment(tournament.registration_start_date).format('YYYY-MM-D')}
@@ -217,7 +217,7 @@ const AdminTournamentGeneralInfo = () => {
       case 'ended':
         return (
           <div className="block">
-            <div className="text-muted py-2 text-sm font-normal italic">
+            <div className="text-body py-2 text-sm font-normal italic">
               Ended at: {moment(tournament.ended_at).format('DD MM, YYYY')}
             </div>
           </div>
@@ -231,19 +231,19 @@ const AdminTournamentGeneralInfo = () => {
   return (
     <div className="mt-4 grid grid-cols-3 gap-4">
       <div className="col-span-2">
-        <div className="flex flex-wrap items-center rounded">
-          <div className="border-border border-r border-t p-3">
-            <div className="font-normal">Teams registered</div>
+        <div className="border-border flex flex-wrap items-center rounded border">
+          <div className="border-border border-r px-4 py-2 font-medium">
+            <div className="text-body font-normal">Teams registered</div>
             <div className="text-title">
               {tournament.registered_teams_count}/{tournament.max_teams}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
-            <div className="font-normal">Entry Fee</div>
+          <div className="border-border border-r px-4 py-2 font-medium">
+            <div className="text-body font-normal">Entry Fee</div>
             <div className="text-title">{getEntryFee(tournament)}</div>
           </div>
-          <div className="border-border border-r border-t p-3">
-            <div className="font-normal">Prize Pool</div>
+          <div className="border-border border-r px-4 py-2 font-medium">
+            <div className="text-body font-normal">Prize Pool</div>
             <div className="text-title">
               {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
               {tournament.prize_pool_enabled &&
@@ -252,14 +252,14 @@ const AdminTournamentGeneralInfo = () => {
                 )}`}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
-            <div className="font-normal">Registration start date</div>
+          <div className="border-border border-r px-4 py-2 font-medium">
+            <div className="text-body font-normal">Registration start date</div>
             <div className="text-title">
               {datetime(tournament.registration_start_date, { time: false })}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
-            <div className="font-normal">Start date</div>
+          <div className="border-border border-r px-4 py-2 font-medium">
+            <div className="text-body font-normal">Start date</div>
             <div className="text-title">
               {moment(
                 new Date(
@@ -268,17 +268,23 @@ const AdminTournamentGeneralInfo = () => {
               ).format('YYYY-MM-D hh:mm A')}
             </div>
           </div>
-          <div className="border-border border-r border-t p-3">
-            <div className="font-normal">Check-in window</div>
+          <div className="px-4 py-2 font-medium">
+            <div className="text-body font-normal">Check-in window</div>
             <div className="text-title">
               {tournament.check_in_duration} minutes
             </div>
           </div>
         </div>
+        {hasStandings && tournamentResults && (
+          <div className="border-border mt-4 block rounded border p-6">
+            <div className="text-title text-lg font-semibold">Results</div>
+            <AdminTournamentStandingsTabContent standings={tournamentResults} />
+          </div>
+        )}
       </div>
       <div className="col-span-1">
-        <div className="bg-medium-dark block p-6">
-          <div className="text-muted mb-2 font-bold">Tournament status</div>
+        <div className="border-border block rounded border p-6">
+          <div className="text-title mb-2 font-bold">Tournament status</div>
           <div className="flex items-center justify-between pb-2">
             <span className="font-semibold text-amber-500">
               {getStatus(tournament)}
@@ -290,12 +296,6 @@ const AdminTournamentGeneralInfo = () => {
           <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
           {renderStatusContent()}
         </div>
-        {hasStandings && tournamentResults && (
-          <div className="mt-4 block">
-            <div className="text-title font-semibold">Results</div>
-            <AdminTournamentStandingsTabContent standings={tournamentResults} />
-          </div>
-        )}
       </div>
       {/* danger zone */}
       <div className="col-span-3">

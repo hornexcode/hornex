@@ -40,21 +40,32 @@ export const dataLoader = <T, Data = unknown>(
     res: Response
   ): Promise<FetchResponse<UDT>> => {
     let data: UDT | null | undefined = null;
-    let error: FetchError | null | undefined = null;
+    let error: FetchError | undefined = undefined;
     try {
       if (!signal.aborted) {
         if (res.ok) {
-          data = await res.json();
+          data = (await res.json()) as UDT;
         } else {
           try {
             const errRes = await res.json();
+
             error = {
               name: 'FetchError',
               message: (errRes?.error || errRes?.detail) ?? 'Unable to fetch',
-              validations: errRes?.validations,
               code: res.status,
               response: errRes,
             };
+
+            if (res.status === 400) {
+              // construct error validations
+              const validations: Record<string, string>[] = [];
+              for (const key in errRes) {
+                if (Array.isArray(errRes[key])) {
+                  validations.push({ [key]: errRes[key].join(', ') });
+                }
+              }
+              error.validations = validations;
+            }
           } catch (_) {
             const errorMessage = await res.text();
             error = new Error(errorMessage);

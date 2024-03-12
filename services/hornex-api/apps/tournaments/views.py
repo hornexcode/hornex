@@ -112,7 +112,9 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.all()
+            self.queryset = LeagueOfLegendsTournament.objects.all().exclude(
+                status=LeagueOfLegendsTournament.StatusOptions.ENDED
+            )
             self.serializer_class = LeagueOfLegendsTournamentSerializer
         return super().get_queryset()
 
@@ -147,6 +149,7 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
     def prizes(self, request, *args, **kwargs):
         tournament = self.get_object()
         prizes = tournament.prizes.all()
+        print(prizes)
         serializer = PrizeSerializer(prizes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -175,7 +178,6 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
                 organizer_id=request.user.id,
                 game=params.validated_data["game"],
                 name=params.validated_data["name"],
-                description=params.validated_data["description"],
                 registration_start_date=params.validated_data["registration_start_date"],
                 start_date=params.validated_data["start_date"],
                 start_time=params.validated_data["start_time"],
@@ -185,7 +187,6 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
                 size=params.validated_data["size"],
                 team_size=params.validated_data["team_size"],
                 prizes=params.validated_data["prizes"],
-                map=params.validated_data["map"],
                 terms=params.validated_data["terms"],
                 entry_fee=params.validated_data.get("entry_fee"),
                 feature_image=params.validated_data.get("feature_image"),
@@ -318,7 +319,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         return Response({"success": True}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["patch"])
-    def end_tournament(self, request, *args, **kwargs):
+    def finilize(self, request, *args, **kwargs):
         params = EndTournamentParams(
             data={"user_id": request.user.id, "tournament_id": kwargs.get("id")}
         )

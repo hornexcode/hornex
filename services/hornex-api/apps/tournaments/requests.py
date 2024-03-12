@@ -9,7 +9,7 @@ class PrizeSerializer(serializers.Serializer):
 class TournamentCreateSerializer(serializers.Serializer):
     game = serializers.CharField()
     name = serializers.CharField()
-    description = serializers.CharField()
+    # description = serializers.CharField(required=False)
     registration_start_date = serializers.DateTimeField()
     start_date = serializers.DateField()
     start_time = serializers.TimeField()
@@ -21,7 +21,6 @@ class TournamentCreateSerializer(serializers.Serializer):
     size = serializers.CharField()
     team_size = serializers.CharField()
     prizes = PrizeSerializer(many=True)
-    map = serializers.CharField()
     terms = serializers.BooleanField()
 
 

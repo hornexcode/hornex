@@ -7,7 +7,7 @@ import {
   ToastViewport,
 } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 
 export function Toaster() {
   const { toasts } = useToast();
@@ -23,17 +23,11 @@ export function Toaster() {
         ...props
       }) {
         return (
-          <Toast
-            className={clsx('border-light-dark', className)}
-            key={id}
-            {...props}
-          >
-            <div className="grid gap-1">
-              {title && <ToastTitle className="text-title">{title}</ToastTitle>}
+          <Toast className={cn('', className)} key={id} {...props}>
+            <div className="">
+              {title && <ToastTitle>{title}</ToastTitle>}
               {description && (
-                <ToastDescription className="text-body">
-                  {description}
-                </ToastDescription>
+                <ToastDescription>{description}</ToastDescription>
               )}
             </div>
             {action}

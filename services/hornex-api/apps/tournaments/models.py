@@ -30,7 +30,7 @@ class Tournament(BaseModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, default="")
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     published = models.BooleanField(default=False)
     status = models.CharField(

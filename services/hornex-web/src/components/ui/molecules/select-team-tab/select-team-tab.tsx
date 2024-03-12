@@ -67,24 +67,36 @@ const SelectTeamTab = () => {
 
   return (
     <Tabs defaultValue="mount-team" className="w-full !shadow-none">
-      <TabsList className="bg-dark grid w-full grid-cols-2">
-        <TabsTrigger value="mount-team">Mount a team</TabsTrigger>
-        <TabsTrigger value="select-existing-team">
+      <TabsList className="bg-medium-dark grid w-full grid-cols-2">
+        <TabsTrigger className="text-lg font-bold" value="mount-team">
+          Mount a team
+        </TabsTrigger>
+        <TabsTrigger
+          className="text-lg font-bold"
+          disabled
+          value="select-existing-team"
+        >
           Select existing team
         </TabsTrigger>
       </TabsList>
       <TabsContent value="mount-team">
         <div className="p-3">
           <Form {...form}>
-            <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
+            <form onSubmit={handleSubmit(submitHandler)} className="space-y-3">
               <FormField
                 name="name"
                 control={control}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-title">Team name</FormLabel>
+                  <FormItem className="flex items-center">
+                    <FormLabel className="text-title w-1/3 text-lg font-bold">
+                      Team name:
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Krox Guild" {...field} />
+                      <Input
+                        className="text-lg"
+                        placeholder="Krox Guild"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -94,10 +106,16 @@ const SelectTeamTab = () => {
                 name="member_1_email"
                 control={control}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-title">Second Player</FormLabel>
+                  <FormItem className="flex items-center">
+                    <FormLabel className="text-title w-1/3 text-lg font-bold">
+                      2 player
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="email" {...field} />
+                      <Input
+                        className="text-lg"
+                        placeholder="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -108,10 +126,16 @@ const SelectTeamTab = () => {
                 name="member_2_email"
                 control={control}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-title">Third Player</FormLabel>
+                  <FormItem className="flex items-center">
+                    <FormLabel className="text-title w-1/3 text-lg font-bold">
+                      3 player
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="email" {...field} />
+                      <Input
+                        className="text-lg"
+                        placeholder="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,10 +146,16 @@ const SelectTeamTab = () => {
                 name="member_3_email"
                 control={control}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-title">Fourth Player</FormLabel>
+                  <FormItem className="flex items-center">
+                    <FormLabel className="text-title w-1/3 text-lg font-bold">
+                      4 player
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="email" {...field} />
+                      <Input
+                        className="text-lg"
+                        placeholder="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -136,28 +166,34 @@ const SelectTeamTab = () => {
                 name="member_4_email"
                 control={control}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-title">Fifth Player</FormLabel>
+                  <FormItem className="flex items-center">
+                    <FormLabel className="text-title w-1/3 text-lg font-bold">
+                      5 player
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="email" {...field} />
+                      <Input
+                        className="text-lg"
+                        placeholder="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="flex items-center justify-end">
+              <div className="flex items-center justify-end pt-4">
                 <Button
                   onClick={() => {
                     closeModal();
                   }}
                   shape="rounded"
-                  variant="ghost"
+                  variant="transparent"
                   color="gray"
-                  className="mr-4"
+                  className="mr-4 text-lg"
                 >
                   Cancel
                 </Button>
-                <Button shape="rounded" type="submit">
+                <Button shape="rounded" className="text-lg" type="submit">
                   Submit
                 </Button>
               </div>

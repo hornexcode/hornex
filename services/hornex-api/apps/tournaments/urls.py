@@ -71,7 +71,7 @@ urlpatterns = [
     ),
     path(
         "/org/tournaments/<str:id>/finalize",
-        OrganizerTournamentViewSet.as_view({"patch": "end_tournament"}),
+        OrganizerTournamentViewSet.as_view({"patch": "finilize"}),
         name="end-tournament",
     ),
     path(

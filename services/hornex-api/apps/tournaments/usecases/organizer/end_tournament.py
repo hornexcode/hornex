@@ -29,6 +29,18 @@ class EndTournamentUseCase:
         if params.user_id != tournament.organizer.id:
             raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
+        if not tournament.is_last_round():
+            raise ValidationError(
+                {"error": "You can not end a tournament which are not in the last round"}
+            )
+
+        final_match = tournament.matches.filter(round=tournament.current_round).first()
+        if not final_match:
+            raise ValidationError({"error": "Final match not found"})
+
+        if final_match.winner is None:
+            raise ValidationError({"error": "You can not end a tournament which has not a winner"})
+
         if tournament.status != Tournament.StatusOptions.RUNNING or tournament.ended_at:
             raise ValidationError({"error": "You can not end a tournament which are not running"})
 

@@ -6,10 +6,8 @@ function TournamentsCreatePage() {
   return (
     <div className="container mx-auto pt-8">
       <div className="text-title mb-4 text-lg font-bold">Create Tournament</div>
-      <div className="grid grid-cols-2">
-        <div>
-          <TournamentCreateForm />
-        </div>
+      <div className="w-2/3">
+        <TournamentCreateForm />
       </div>
     </div>
   );

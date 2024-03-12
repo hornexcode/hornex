@@ -29,20 +29,20 @@ export function DatePicker({
           <Button
             variant={'outline'}
             className={cn(
-              'border-border w-[240px] justify-start text-left font-normal',
+              'border-muted bg-background hover:bg-dark h-10 w-[240px] justify-start text-left font-normal',
               !date && 'text-muted-foreground'
             )}
           >
-            <CalendarIcon className="text-brand mr-2 h-4 w-4" />
+            <CalendarIcon className="text-title mr-2 h-4 w-4" />
             {date ? (
-              <span className="text-title">{format(date, 'PPP')}</span>
+              <span className="">{format(date, 'PPP')}</span>
             ) : (
-              <span>Pick a date</span>
+              <span className="">Pick a date</span>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="border-border w-auto rounded-lg p-0"
+          className="border-border font-display w-auto rounded-lg p-0"
           align="start"
         >
           <Calendar

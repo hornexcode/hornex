@@ -9,20 +9,19 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
 }) => {
   return (
     <div className="pt-8">
-      <div
+      {/* <div
         className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
       gap-5 2xl:grid-cols-[minmax(auto,_1fr)_240px]"
-      >
-        <div className="flex w-full flex-wrap">
-          {!isLoading &&
-            data.results.map((tournament) => (
-              <TournamentFeedItem
-                key={tournament.id}
-                tournament={tournament}
-                className="mx-2 mb-4 first:ml-2"
-              />
-            ))}
-        </div>
+      > */}
+      <div className="grid grid-cols-4 gap-4">
+        {!isLoading &&
+          data.results.map((tournament) => (
+            <TournamentFeedItem
+              key={tournament.id}
+              tournament={tournament}
+              className="mx-2 mb-4 first:ml-2"
+            />
+          ))}
 
         <div className="hidden">
           {/* <Filters /> */}

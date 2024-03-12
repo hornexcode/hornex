@@ -4,13 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Prize as PrizeType, Tournament } from '@/lib/models';
 import { Standing } from '@/lib/models/Standing';
 import { dataLoader } from '@/lib/request';
-import { Users2 } from 'lucide-react';
 import moment from 'moment';
 import { FC } from 'react';
-
-const { useData: listTournamentPrizes } = dataLoader<PrizeType[]>(
-  'listTournamentPrizes'
-);
 
 const { useData: listTournamentStandings } = dataLoader<Standing[]>(
   'listTournamentStandings'
@@ -21,10 +16,6 @@ export type TournamentTabPanelsProps = {
 };
 
 const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
-  const { data: prizes } = listTournamentPrizes({
-    tournamentId: tournament.id,
-  });
-
   const { data: standings } = listTournamentStandings({
     tournamentId: tournament.id,
   });
@@ -34,41 +25,32 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
 
   return (
     <Tabs defaultValue="overview" className="w-full">
-      <TabsList className="grid w-full grid-cols-5">
+      <TabsList className="">
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="prizes">Prizes</TabsTrigger>
         <TabsTrigger value="rules">Rules</TabsTrigger>
         <TabsTrigger value="brackets">Brackets</TabsTrigger>
         <TabsTrigger value="standings">Standings</TabsTrigger>
       </TabsList>
-      <TabsContent value="overview" className="bg-light-dark">
+      <TabsContent value="overview" className="border-border rounded border">
         <div className="box">
-          <div className="border-border block border-b border-dashed p-4">
-            <h3 className="text-sm">Game & Region</h3>
+          <div className="border-border block border-b p-6">
+            <h3 className="text-body">Game & Region</h3>
             <div className="flex flex-wrap items-center">
-              <div className="border-muted block border-r border-dashed pr-5">
-                <span className="text-title font-normal">
-                  League of Legends
-                </span>
-              </div>
-              <div className="border-muted block px-4">
-                <span className="text-title font-normal">🇧🇷 Brazil</span>
+              <div className="border-muted block pr-5">
+                <div className="text-title">League of Legends - Brazil</div>
               </div>
             </div>
           </div>
 
-          <div className="block p-4">
-            <h3 className="text-sm">Date & Time</h3>
+          <div className="block p-6">
+            <h3 className="text-body">Date & Time</h3>
             <div className="flex flex-wrap items-center">
-              <div className="border-muted block border-r border-dashed pr-4">
-                <span className="text-title font-normal">
-                  {moment(tournament.start_date).format('MMMM Do, YYYY')}
-                </span>
-              </div>
-              <div className="border-muted block border-r border-dashed px-4">
-                <span className="text-title font-normal">
+              <div className="block pr-4">
+                <div className="text-title">
+                  {moment(tournament.start_date).format('MMMM Do, YYYY')}{' '}
                   {moment(tournament.start_date).format('h:mm A')}
-                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -81,7 +63,7 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
         <p>Rules</p>
       </TabsContent>
       <TabsContent value="brackets">
-        <div className="bg-light-dark">
+        <div className="">
           <iframe
             src={`${tournament.challonge_tournament_url}/module?show_live_status=0`}
             width="100%"

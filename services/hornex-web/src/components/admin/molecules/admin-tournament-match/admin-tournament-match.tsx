@@ -127,7 +127,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
           </Button>
         );
       default:
-        return <span className="text-title">Finished</span>;
+        return <span className="text-title">Ended</span>;
     }
   };
 
@@ -182,39 +182,33 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
   };
 
   return (
-    <div className="bg-light-dark border-border shadow-card mb-2 grid grid-cols-12">
-      <div className="border-background col-span-1 flex items-center justify-center border-r p-4">
-        <Swords className="text-muted h-8 w-8" />
+    <div className="border-border mb-2 grid grid-cols-12 rounded border shadow-lg">
+      <div className="border-border col-span-1 flex items-center justify-center border-r p-4">
+        <Swords className="text-title h-8 w-8" />
       </div>
-      <div className="border-background col-span-4 border-r">
+      <div className="border-border col-span-4 border-r">
         <div className="block items-start">
-          <div className="border-background border-b">
-            <div className="text-title p-2 px-4 text-lg">
-              {match.team_a.name}
-            </div>
+          <div className="border-border border-b">
+            <div className="text-title p-2 px-4">{match.team_a.name}</div>
           </div>
           <div className="">
-            <div className="text-title p-2 px-4 text-lg">
-              {match.team_b.name}
-            </div>
+            <div className="text-title p-2 px-4">{match.team_b.name}</div>
           </div>
         </div>
       </div>
-      <div className="border-background col-span-1 flex flex-col items-center border-r text-center">
-        <div className="text-title border-background flex w-full items-center justify-center border-b p-2 text-lg font-medium">
+      <div className="border-border col-span-1 flex flex-col items-center border-r text-center">
+        <div className="text-title border-border flex w-full items-center justify-center border-b p-2 font-medium">
           {renderTeamAScore()}
         </div>
-        <div className="text-title flex w-full items-center justify-center p-2 text-lg font-medium">
+        <div className="text-title flex w-full items-center justify-center p-2 font-medium">
           {renderTeamBScore()}
         </div>
       </div>
-      <div className="border-background col-span-2 flex items-center justify-center text-center">
-        <div className="text-muted text-lg font-normal">
-          Round {match.round}
-        </div>
+      <div className="border-border col-span-2 flex items-center justify-center text-center">
+        <div className="text-title font-normal">Round {match.round}</div>
       </div>
-      <div className="border-background col-span-2 flex items-center justify-center text-center">
-        <div className="text-muted text-lg font-normal">{getStatus(match)}</div>
+      <div className="border-border col-span-2 flex items-center justify-center text-center">
+        <div className="text-title font-normal">{getStatus(match)}</div>
       </div>
       <div className="col-span-2 flex items-center justify-center p-4">
         {renderMatchAction()}

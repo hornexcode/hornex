@@ -1,50 +1,75 @@
 import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
+import Teemo from '@/assets/images/teemo.png';
 import routes from '@/config/routes';
-import { AppLayout } from '@/layouts';
-import { useAuthContext } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
 function HomePage() {
   const { t } = useTranslation('common');
 
   return (
-    <>
-      <div className="relative h-[450px] w-full bg-[url('/images/summonersrift.jpg')] bg-cover bg-center bg-no-repeat pt-14">
+    <div className="">
+      <header className="container z-40 mx-auto h-20 w-full">
+        <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
+          <div className="text-title flex w-[230px] items-center text-xl font-bold">
+            <Link href="/">
+              <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
+            </Link>
+            HORNEX
+          </div>
+          <div className="flex items-center font-medium">
+            <Link href={routes.signIn} className="text-title">
+              Sign-in
+            </Link>
+            <Link href={routes.signup} className="text-title ml-4">
+              Create account
+            </Link>
+          </div>
+        </div>
+      </header>
+      <div className="relative h-[450px] w-full bg-[url('/images/league-of-legends/baron.jpg')] bg-cover bg-center bg-no-repeat pt-14">
         <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
-        <div className="bg-dark/70 absolute top-0 z-0 h-full w-full"></div>
-        <div className="container absolute z-10 mx-auto">
+        <div className="bg-dark/60 absolute top-0 z-0 h-full w-full"></div>
+        <div className="container absolute left-20 z-10 mx-auto">
           <Image src={HornexLogo} alt="Hornex" width={150} height={150} />
-          <h1 className="text-title font-title py-4 text-6xl font-extrabold">
+          <h1 className="py-4 text-6xl font-extrabold text-white">
             Organize, Compete and{' '}
             <span className="text-dark bg-amber-500 px-2">Get Paid</span>
           </h1>
-          <p className="text-title font-title w-[40%] text-lg font-thin">
+          <p className="w-[40%] text-xl font-medium text-white">
             With Hornex you can easily organize and compete in tournaments. We
             make it easy to get paid for your skills.
           </p>
         </div>
       </div>
-      <div className="bg-light-dark container mx-auto py-8">
-        <h4 className="text-title font-title mb-4 text-5xl font-extrabold">
-          Built for organizers
-        </h4>
-        <p className="text-body w-[40%] text-lg">
-          Hornex is a platform that allows you to easily create and manage
-          tournaments. We take care of the hard work so you can focus on
-          organizing the best events.
-        </p>
+      <div className="to-brand bg-gradient-to-r from-amber-600">
+        <div className="container mx-auto py-20">
+          <h4 className="mb-4 text-6xl font-bold text-white">
+            Built for organizers
+          </h4>
+          <p className="w-[40%] text-xl text-white">
+            Hornex is a platform that allows you to easily create and manage
+            tournaments. We take care of the hard work so you can focus on
+            organizing the best events.
+          </p>
+          <Image
+            src={Teemo}
+            alt="Hornex"
+            width={150}
+            className="mt-10"
+            height={150}
+          />
+        </div>
       </div>
       <footer className="dark:bg-dark mx-auto border-t border-gray-800 bg-white p-6 md:p-14">
         <div className="mx-auto w-full max-w-screen-xl">
           <div className="grid grid-cols-2 gap-6 py-6 md:grid-cols-6">
             <div className="col-span-2">
-              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
+              <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Hornex
               </h2>
-              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <a
                     href="https://www.google.com/maps/place/R.+Dailton+Fernandes+de+Carvalho,+32+-+S%C3%A3o+Pedro,+Barra+Mansa+-+RJ,+27340-010/@-22.5741039,-44.172524,17z/data=!3m1!4b1!4m6!3m5!1s0x9e9c2765cde3fb:0xe14e22a0f778d62b!8m2!3d-22.5741039!4d-44.172524!16s%2Fg%2F11c2gymxc8?entry=ttu"
@@ -66,21 +91,18 @@ function HomePage() {
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a
-                    href="mailto:accounts@hornex.gg"
-                    className="hover:underline"
-                  >
-                    accounts@hornex.gg
+                  <a href="mailto:hornex@gmail.com" className="hover:underline">
+                    hornex@gmail.com
                   </a>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
+              <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Help center
               </h2>
-              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <a href="#" className="hover:underline">
                     Discord Server
@@ -94,12 +116,12 @@ function HomePage() {
               </ul>
             </div>
             <div>
-              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
+              <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Account
               </h2>
-              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
-                  <Link href={routes.login} className="hover:underline">
+                  <Link href={routes.signIn} className="hover:underline">
                     Login
                   </Link>
                 </li>
@@ -111,10 +133,10 @@ function HomePage() {
               </ul>
             </div>
             <div>
-              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
+              <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Legal
               </h2>
-              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <Link href={routes.privacyPolicy} className="hover:underline">
                     Privacy Policy
@@ -131,10 +153,10 @@ function HomePage() {
               </ul>
             </div>
             <div>
-              <h2 className="text-body mb-6 text-sm font-semibold uppercase dark:text-white">
+              <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Company
               </h2>
-              <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" font-medium text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <a href="#" className=" hover:underline">
                     About
@@ -144,7 +166,7 @@ function HomePage() {
             </div>
           </div>
           <div className="mx-auto border-t border-gray-800 px-4 py-6 md:flex md:items-center md:justify-between">
-            <span className="text-sm text-gray-500 dark:text-gray-300 sm:text-center">
+            <span className=" text-gray-500 dark:text-gray-300 sm:text-center">
               © 2023 <Link href="/">Hornex™</Link>
               <br />
               {t('rights-reserved')}
@@ -206,7 +228,7 @@ function HomePage() {
               </a>
             </div>
           </div>
-          <p className="p-6 text-sm md:px-16 md:text-center">
+          <p className="p-6  md:px-16 md:text-center">
             Hornex is not endorsed by, directly affiliated with, tained or
             sponsored by Apple Inc, Electronic Arts, Activision Blizzard,
             Take-Two Interactive, Riot Games, Microsoft, Xbox or Epic Games. All
@@ -216,12 +238,8 @@ function HomePage() {
           </p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
-
-HomePage.getLayout = (page: React.ReactElement) => {
-  return <AppLayout>{page}</AppLayout>;
-};
 
 export default HomePage;

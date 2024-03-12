@@ -1,5 +1,6 @@
 import Header from './header';
 import { Sidebar } from './sidebar';
+import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (

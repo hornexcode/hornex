@@ -18,7 +18,7 @@ export const LangToggler: React.FC = () => {
 
   return (
     <Select onValueChange={onToggleLanguageClick}>
-      <SelectTrigger className="text-title border-light-dark outline-none ring-0 ring-offset-0 dark:outline-none dark:ring-0 dark:ring-offset-0">
+      <SelectTrigger className="text-title bg-medium-dark border-light-dark font-medium outline-none ring-0 ring-offset-0 dark:outline-none dark:ring-0 dark:ring-offset-0">
         <SelectValue placeholder={t('lang-toggler.title')} />
       </SelectTrigger>
       <SelectContent className="border-light-dark bg-medium-dark">
