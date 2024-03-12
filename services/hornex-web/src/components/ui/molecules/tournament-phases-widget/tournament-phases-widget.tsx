@@ -52,12 +52,12 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   };
 
   return (
-    <div className="bg-medium-dark space-y-2 rounded p-6 shadow-lg">
+    <div className="bg-medium-dark border-border space-y-2 rounded border p-6">
       <div className="border-border border-b border-dashed pb-4">
         <h4 className="leading-2 text-title text-lg font-bold">
           Tournament Phases
         </h4>
-        <p>Keep track of tournament state</p>
+        <p className="text-body">Keep track of tournament state</p>
       </div>
       <div className="block py-4">
         <div>

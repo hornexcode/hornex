@@ -22,7 +22,7 @@ export const getStatus = (match: Match) => {
     case 'underway':
       return 'Underway';
     case 'ended':
-      return 'Finished';
+      return 'Ended';
     case 'cancelled':
       return 'Cancelled';
   }

@@ -32,14 +32,14 @@ const TournamentRegistrationStateProgress = ({
       <div className="col-span-2">
         <div className="flex justify-between">
           <div className="flex items-center">
-            <UsersIcon className="text-muted mr-1 h-4 w-4" />
-            <span className="text-muted pr-4 font-medium">
+            <UsersIcon className="mr-1 h-4 w-4 text-white" />
+            <span className="pr-4 font-medium text-white">
               {getProgressBarPercentage()}
             </span>
           </div>
           {/* phase status */}
           <div className="relative flex">
-            <span className="absolute -left-3 top-1.5 h-2 w-2 rounded-full bg-green-400"></span>
+            <span className="absolute -left-3 top-2 h-2 w-2 rounded-full bg-green-400"></span>
             <span className="font-bold text-green-400">
               {getStatus(tournament)}
             </span>

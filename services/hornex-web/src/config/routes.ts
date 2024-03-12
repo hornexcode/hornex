@@ -15,6 +15,7 @@ const routes = {
   signIn: '/signin',
   admin: {
     tournaments: '/admin/tournaments',
+    profile: '/admin/profile',
   },
 };
 

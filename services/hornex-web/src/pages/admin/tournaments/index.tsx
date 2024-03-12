@@ -1,9 +1,10 @@
-import Button from '@/components/ui/atoms/button';
 import { ExpiredLoginButton } from '@/components/ui/atoms/expired-login-button';
 import { PodiumIcon } from '@/components/ui/atoms/icons';
 import { Plus } from '@/components/ui/atoms/icons/plus';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { AppLayout } from '@/layouts';
 import { Tournament } from '@/lib/models';
+import { getStatus } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import moment from 'moment';
 import { useRouter } from 'next/router';
@@ -24,14 +25,12 @@ function DashboardPage() {
   return (
     <div className="container mx-auto space-y-12 pt-12">
       <div className="flex items-center">
-        <h1 className="text-title text-2xl">Manage Tournaments</h1>
+        <h1 className="text-title text-3xl font-bold">Manage Tournaments</h1>
         <div className="ml-auto">
           <Button
             onClick={() => {
               router.push('/admin/tournaments/create');
             }}
-            shape="rounded"
-            size="small"
             className="mt-4"
           >
             <div className="flex items-center">
@@ -43,9 +42,10 @@ function DashboardPage() {
       </div>
 
       <div className="flex w-full flex-col space-y-2">
-        <div className="text-title grid w-full grid-cols-12 font-normal">
+        <div className="text-body grid w-full grid-cols-12 font-normal">
           <div className="col-span-6">Tournament</div>
           <div className="col-span-2">Start Date</div>
+          <div className="col-span-2">State</div>
         </div>
         <div className="flex flex-col">
           {tournaments &&
@@ -62,7 +62,7 @@ const TournamentRow = ({ tournament }: { tournament: Tournament }) => {
   const router = useRouter();
   return (
     <div
-      className="bg-medium-dark border-border grid grid-cols-12 border-b p-4 transition-all hover:z-10 hover:cursor-pointer hover:border-transparent hover:shadow-xl"
+      className="border-border grid grid-cols-12 rounded border p-4 transition-all hover:z-10 hover:cursor-pointer"
       onClick={() => {
         router.push(
           `/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
@@ -73,14 +73,16 @@ const TournamentRow = ({ tournament }: { tournament: Tournament }) => {
         <PodiumIcon className="text-title mr-4 w-10" />
         <div>
           <div className="text-title text-lg font-bold">{tournament.name}</div>
-          <div className="text-muted font-medium">{tournament.game}</div>
+          <div className="text-body font-medium">{tournament.game}</div>
         </div>
       </div>
-
       <div className="col-span-2 flex items-center">
         <div className="text-title font-normal">
           {moment(tournament.start_date).format('MMM Do, YYYY h:mm A')}
         </div>
+      </div>
+      <div className="col-span-2 flex items-center">
+        <div className="text-title font-normal">{getStatus(tournament)}</div>
       </div>
     </div>
   );

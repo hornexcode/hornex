@@ -138,7 +138,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   };
 
   return (
-    <div className="rounded shadow-lg">
+    <div className="border-border rounded border">
       {/* end debugger */}
       <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image
@@ -170,7 +170,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               <h4 className="text-title mr-4 text-lg font-extrabold">
                 {tournament.name}
               </h4>
-              <div className="font-medium">
+              <div className="text-body">
                 {moment(tournament.start_date).format('MMMM Do, h:mm a')}
               </div>
             </div>
@@ -214,7 +214,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
 
             {/* Entry fee */}
             <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
-              <div className="text-muted">Entry fee</div>
+              <div className="text-body text-sm">Entry fee</div>
               <div className="text-title font-bold">
                 {tournament.is_entry_free
                   ? 'Free'

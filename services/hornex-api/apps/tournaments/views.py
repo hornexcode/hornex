@@ -149,6 +149,7 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
     def prizes(self, request, *args, **kwargs):
         tournament = self.get_object()
         prizes = tournament.prizes.all()
+        print(prizes)
         serializer = PrizeSerializer(prizes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -318,7 +319,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         return Response({"success": True}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["patch"])
-    def end_tournament(self, request, *args, **kwargs):
+    def finilize(self, request, *args, **kwargs):
         params = EndTournamentParams(
             data={"user_id": request.user.id, "tournament_id": kwargs.get("id")}
         )

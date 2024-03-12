@@ -17,7 +17,7 @@ const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
       {/* gray bar */}
       <div
         role="stepper"
-        className="absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between bg-gray-400"
+        className="bg-title absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between"
       ></div>
       {/* green bar */}
       <div
@@ -34,7 +34,7 @@ const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
           ></div>
         ))}
         {new Array(steps - currentStep).fill(0).map((_, idx) => (
-          <div key={idx} className="h-2.5 w-2.5 rounded-full bg-gray-400"></div>
+          <div key={idx} className="bg-title h-2.5 w-2.5 rounded-full"></div>
         ))}
       </div>
     </div>

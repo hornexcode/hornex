@@ -1,13 +1,18 @@
 import { ConnectAccountButton } from '../../atoms/connect-account-button';
-import { RegisterButton } from '../../atoms/register-button';
 import { TournamentPhasesWidget } from '../../molecules';
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
-import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
 import { useTournament } from '@/contexts';
-import { getStatus, getStatusStep } from '@/lib/models/Tournament';
-import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { FC, useEffect } from 'react';
+import { getStatusStep } from '@/lib/models/Tournament';
+import { FC } from 'react';
 
 type TournamentDetailsTemplateProps = {
   participantCheckedInStatus?: boolean;
@@ -15,14 +20,30 @@ type TournamentDetailsTemplateProps = {
 
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
   const { tournament, isRegistered } = useTournament();
-  const steps = getStatusStep(tournament);
 
   return (
     <div className="mx-auto px-8 pt-8">
+      {/* breadcrumb */}
+      <div className="mb-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/compete">Compete</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{tournament.name}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
       {/* connect account */}
-      {/* {!gameId && <ConnectAccountButton />} */}
+      {!false && <ConnectAccountButton />}
+
+      {/* headline */}
       <TournamentDetailsHeadline isCheckedIn={false} />
-      {/* <TournamentDetailsTabPanels tournament={tournament} /> */}
+
       <div className="mt-8 flex space-x-8">
         <div className="lg:w-[280px]">
           <TournamentPhasesWidget

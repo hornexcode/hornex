@@ -8,12 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
-import {
-  Goldman,
-  Kanit,
-  Roboto_Condensed,
-  Source_Sans_3,
-} from 'next/font/google';
+import { Roboto_Condensed } from 'next/font/google';
 import localFont from 'next/font/local';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
@@ -92,7 +87,7 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
         <NextThemesProvider attribute="class" defaultTheme="dark">
           <div
             className={classnames(
-              'dark:bg-background text-muted min-h-[100vh] antialiased',
+              'min-h-[100vh] antialiased',
               Goldman_Sans.className,
               Beaufort_for_LOL.variable,
               roboto_condensed.variable

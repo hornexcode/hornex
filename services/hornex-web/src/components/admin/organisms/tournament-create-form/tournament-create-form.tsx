@@ -24,7 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
+import { TrashIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import moment from 'moment';
 import { useRouter } from 'next/router';
@@ -84,6 +84,7 @@ export function TournamentCreateForm() {
         toast({
           title: 'Error creating tournament',
           description: error.message,
+          variant: 'destructive',
         });
         return;
       }
@@ -91,6 +92,7 @@ export function TournamentCreateForm() {
       toast({
         title: 'Tournament created',
         description: 'Tournament created successfully.',
+        variant: 'success',
       });
 
       return router.push('/admin/tournaments');

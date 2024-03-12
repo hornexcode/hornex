@@ -27,9 +27,9 @@ const Header = () => {
   const { data: session } = useSession();
 
   return (
-    <header className="bg-dark/60 fixed top-0 z-40 h-16 w-full px-8">
+    <header className="border-border/40 fixed top-0 z-40 h-16 w-full border-b px-8 backdrop-blur-sm">
       <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
-        <div className="text-title flex w-[230px] items-center text-xl font-bold">
+        <div className=" flex w-[230px] items-center text-xl font-bold">
           <Link className="text-brand mr-4 block font-extrabold" href="/">
             <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
           </Link>
@@ -48,14 +48,13 @@ const Header = () => {
         {!session && (
           <div className="flex items-center justify-center space-x-4">
             <Link href={`${routes.signIn}`}>
-              <div className="text-title flex items-center font-medium">
-                Sign In <LogInIcon className="text-title ml-2 h-5 w-5" />
+              <div className=" flex items-center font-medium">
+                Sign In <LogInIcon className=" ml-2 h-5 w-5" />
               </div>
             </Link>
             <Link href="/register">
-              <div className="text-title flex items-center font-medium">
-                Create account{' '}
-                <ArrowUpRightIcon className="text-title ml-2 h-5 w-5" />
+              <div className=" flex items-center font-medium">
+                Create account <ArrowUpRightIcon className=" ml-2 h-5 w-5" />
               </div>
             </Link>
           </div>
