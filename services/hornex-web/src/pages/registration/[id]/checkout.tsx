@@ -1,6 +1,7 @@
 import TournamentCheckoutTemplate from '@/components/ui/templates/tournament-checkout-template';
 import { AppLayout } from '@/layouts';
-import { Registration, Team, Tournament } from '@/lib/models';
+import { Registration, Team } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import getStripe from '@/utils/get-stripejs';
 import { Elements } from '@stripe/react-stripe-js';
@@ -54,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     {
       platform: registration.platform_slug,
       game: registration.game_slug,
-      tournamentId: registration.tournament,
+      tournamentId: registration.tournament.id,
     },
     ctx.req
   );
@@ -67,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const { data: team, error: teamError } = await getTeam(
     {
-      teamId: registration?.team,
+      teamId: registration?.team.id,
     },
     ctx.req
   );
