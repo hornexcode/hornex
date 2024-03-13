@@ -65,6 +65,6 @@ class StartMatchUseCase:
             raise Exception("Temporary error, could not create the league of legends match code")
 
         match.status = Match.StatusType.UNDERWAY
-        match.riot_match_id = codes[0]
+        match.riot_match_code = codes[0]
         match.save()
         return match

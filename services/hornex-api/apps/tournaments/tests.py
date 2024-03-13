@@ -856,7 +856,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 200)
         self.match.refresh_from_db()
         self.assertEqual(self.match.status, Match.StatusType.UNDERWAY)
-        self.assertIsNotNone(self.match.riot_match_id)
+        self.assertIsNotNone(self.match.riot_match_code)
 
     def test_start_match_error_not_organizer(self):
         self.tournament.organizer = self.player_1
@@ -918,7 +918,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
             mock_create_tour_code.assert_called_once()
             self.match.refresh_from_db()
             self.assertNotEqual(self.match.status, Match.StatusType.UNDERWAY)
-            self.assertEqual(self.match.riot_match_id, "")
+            self.assertEqual(self.match.riot_match_code, "")
             self.assertEqual(
                 str(e), "Temporary error, could not create the league of legends match code"
             )

@@ -249,7 +249,7 @@ class Match(models.Model):
     ended_at = models.DateTimeField(null=True, blank=True)
 
     challonge_match_id = models.IntegerField()
-    riot_match_id = models.CharField(max_length=255, blank=True)
+    riot_match_code = models.CharField(max_length=255, blank=True)
 
     metadata = models.JSONField(default=dict, blank=True, null=True)
 
