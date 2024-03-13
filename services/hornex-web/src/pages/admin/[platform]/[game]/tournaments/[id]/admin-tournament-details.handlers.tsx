@@ -1,5 +1,5 @@
-import { Tournament } from '@/lib/models';
 import { Standing } from '@/lib/models/Standing';
+import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 
 const { submit: updateTournament } = dataLoader<
