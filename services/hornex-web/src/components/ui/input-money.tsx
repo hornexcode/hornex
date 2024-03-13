@@ -8,7 +8,10 @@ interface MoneyInputProps extends InputProps {
 
 const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(
   (props, ref) => {
-    const moneyFormatter = Intl.NumberFormat(props.locales, props.options);
+    const moneyFormatter = Intl.NumberFormat(
+      props?.locales?.toString(),
+      props.options
+    );
 
     const initialValue = props.value ? moneyFormatter.format(+props.value) : '';
 

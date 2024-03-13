@@ -1,4 +1,4 @@
-import { Tournament } from './models';
+import { Tournament } from './models/Tournament';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

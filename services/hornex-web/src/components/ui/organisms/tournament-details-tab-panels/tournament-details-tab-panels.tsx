@@ -2,7 +2,7 @@ import { TournamentPhasesWidget } from '../../molecules';
 import { TournamentOverviewTabPanel } from './tournament-overview-tab-panel';
 import { TournamentStandingTabPanel } from './tournament-standing-tab-panel';
 import { useTournament } from '@/contexts/tournament';
-import { Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 import { toCurrency } from '@/lib/utils';
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';

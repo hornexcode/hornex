@@ -1,4 +1,5 @@
-import { Team, Tournament } from '@/lib/models';
+import { Team } from '@/lib/models/Team';
+import { Tournament } from '@/lib/models/Tournament';
 
 export type TournamentCheckoutProps = {
   tournament: Tournament;

@@ -15,7 +15,10 @@ import sys
 from datetime import timedelta
 from pathlib import Path
 
+import dotenv
 import structlog
+
+dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,7 +37,8 @@ SECRET_KEY = "changeme"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv("DEBUG", "1")))
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+DEFAULT_ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = DEFAULT_ALLOWED_HOSTS + os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True  # dev only
 
@@ -116,6 +120,7 @@ if os.getenv("HORNEX_SQL_ENGINE") == "django.db.backends.postgresql":
             "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
             "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
             "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
+            "OPTIONS": {"sslmode": "require"},
         },
     }
 else:

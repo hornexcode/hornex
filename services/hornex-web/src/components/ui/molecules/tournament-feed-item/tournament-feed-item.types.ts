@@ -1,4 +1,4 @@
-import { Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 
 export type TournamentFeedItemProps = {
   tournament: Tournament;

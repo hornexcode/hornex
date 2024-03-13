@@ -33,7 +33,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
         </Link>
       </div>
 
-      <div className="border-border flex items-center border-b px-4 pb-4">
+      <div className="border-border text-body flex items-center border-b px-4 pb-4">
         <div className="border-border flex items-center border-r pr-4">
           <MapPinIcon className="mr-1 h-5 w-4" />
           <div className="font-medium">Brazil</div>

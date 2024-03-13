@@ -15,7 +15,7 @@ type TeamsListTemplateProps = {
 const { useData: useGetNotifications } =
   dataLoader<GetNotificationsResponse>('getNotifications');
 
-const { patch: readNotifications } = dataLoader<undefined, string[]>(
+const { submit: readNotifications } = dataLoader<undefined, string[]>(
   'readNotifications'
 );
 

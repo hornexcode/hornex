@@ -1,6 +1,6 @@
 import { RegisterButton } from '../../atoms/register-button';
 import TournamentRegistrationStateProgress from '../tournament-registration-state-progress';
-import { Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 import { cn } from '@/lib/utils';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { CircleDot } from 'lucide-react';

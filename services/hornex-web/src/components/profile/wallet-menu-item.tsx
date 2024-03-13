@@ -1,5 +1,5 @@
 'use client';
-import { User } from '@/domain';
+import { User } from '@/lib/models';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ArrowDownIcon,
@@ -15,7 +15,7 @@ export default function WalletMenuItem({ user }: { user: User }) {
         <Menu.Button className="group-item flex w-full items-center justify-center rounded-md bg-opacity-20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <div className="flex items-center">
             {/* <CurrencyDollarIcon className="mr-1 h-4 w-4" aria-hidden="true" /> */}
-            <span className="hidden font-display text-sm text-white group-hover/item:text-gray-200 md:inline-block">
+            <span className="font-display hidden text-sm text-white group-hover/item:text-gray-200 md:inline-block">
               0.00
             </span>
             <ChevronDownIcon

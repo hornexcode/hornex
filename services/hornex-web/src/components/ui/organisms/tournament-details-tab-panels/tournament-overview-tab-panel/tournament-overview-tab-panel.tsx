@@ -1,6 +1,5 @@
-import { EyeIcon } from '@/components/ui/atoms/icons';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { DotFilledIcon } from '@radix-ui/react-icons';
 import { DotIcon } from 'lucide-react';

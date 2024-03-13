@@ -4,11 +4,12 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Button from '@/components/ui/atoms/button';
 import { toast } from '@/components/ui/use-toast';
 import { useAdminTournament } from '@/contexts/admin-tournament';
-import { isLastRound, Match, TournamentStatusOptions } from '@/lib/models';
+import { Match } from '@/lib/models/Match';
+import { isLastRound, TournamentStatusOptions } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { cn } from '@/lib/utils';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
-import { AlertCircle, Terminal } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import { useSWRConfig } from 'swr';
 

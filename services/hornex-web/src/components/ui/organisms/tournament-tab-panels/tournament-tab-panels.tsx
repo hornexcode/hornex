@@ -1,8 +1,9 @@
 import TournamentStandingsTabContent from '../../molecules/tournament-standings-tab-content/tournament-standings-tab-content';
 import TournamentDetailsPrizesTabContent from '@/components/ui/molecules/tournament-details-prizes-tab-content';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Prize as PrizeType, Tournament } from '@/lib/models';
+import { Prize as PrizeType } from '@/lib/models';
 import { Standing } from '@/lib/models/Standing';
+import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import moment from 'moment';
 import { FC } from 'react';

@@ -22,10 +22,18 @@ while True:
     attempt += 1
     log.info("checking", attempt=attempt)
 
+    log.info(
+        "params",
+        dbhost=get_settings("HORNEX_SQL_HOST"),
+        dbname=get_settings("HORNEX_SQL_DATABASE"),
+        dbuser=get_settings("HORNEX_SQL_USER"),
+        dbpassword=get_settings("HORNEX_SQL_PASSWORD"),
+    )
+
     try:
         psycopg2.connect(
             host=get_settings("HORNEX_SQL_HOST"),
-            dbname="hornex",
+            dbname=get_settings("HORNEX_SQL_DATABASE"),
             user=get_settings("HORNEX_SQL_USER"),
             password=get_settings("HORNEX_SQL_PASSWORD"),
             connect_timeout=3,

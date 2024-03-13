@@ -90,8 +90,8 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
     } else {
       mutate('v1/org/tournaments/[id]/matches');
       toast({
-        title: 'Success',
         description: 'Match score successfully updated!',
+        variant: 'success',
       });
     }
   };

@@ -10,7 +10,7 @@ function HomePage() {
 
   return (
     <div className="">
-      <header className="container z-40 mx-auto h-20 w-full">
+      <header className="container sticky top-0 z-40 mx-auto h-20 w-full">
         <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
           <div className="text-title flex w-[230px] items-center text-xl font-bold">
             <Link href="/">

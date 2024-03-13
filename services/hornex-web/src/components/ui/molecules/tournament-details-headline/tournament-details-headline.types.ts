@@ -1,5 +1,3 @@
-import { Registration, Tournament } from '@/lib/models';
-
 export type GameID = {
   id: string;
   nickname: string;
