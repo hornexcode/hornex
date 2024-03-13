@@ -3,9 +3,10 @@
 # If you need more information about configurations
 # or implementing the sample code, visit the AWS docs:
 # https://aws.amazon.com/developer/language/python/
-
+import json
 import logging
 import logging.config
+import os
 from pathlib import Path
 
 import boto3
@@ -38,9 +39,14 @@ def get_secret():
         # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
         raise e
 
-    logger.info("Retrieved secret", get_secret_value_response=get_secret_value_response)
+    logger.info(
+        "successfully retrieved secret", secret=get_secret_value_response.get("SecretString")
+    )
 
-    # Your code goes here.
+    secrets = json.loads(get_secret_value_response.get("SecretString"))
+    for key, value in secrets.items():
+        logger.info("Key", key=key, value=value)
+        os.environ[key] = value
 
 
 if __name__ == "__main__":
