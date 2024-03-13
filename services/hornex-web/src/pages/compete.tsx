@@ -1,13 +1,9 @@
-import Baron from '@/assets/images/games/league-of-legends/baron.jpg';
-import SummonersRiftMap from '@/assets/images/games/league-of-legends/summoners-rift-map.png';
-import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
-import { LeagueOfLegendsLogo } from '@/components/ui/atoms/icons/league-of-legends-icon';
-import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
 import TournamentsFeedTemplate from '@/components/ui/templates/tournaments-feed-template/tournaments-feed-template';
 import { AppLayout } from '@/layouts';
 import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments';
 import { dataLoader as dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import React from 'react';
 
 const { fetch: getTournaments } =
   dataLoader<GetTournamentsResponse>('getTournaments');

@@ -3,6 +3,7 @@ import { AppLayout } from '@/layouts';
 import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments';
 import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import React from 'react';
 
 const { fetch: getTournaments } =
   dataLoader<GetTournamentsResponse>('getTournaments');
