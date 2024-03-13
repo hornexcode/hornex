@@ -1,4 +1,4 @@
-import { Participant, Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import React, { createContext, ReactNode, useEffect, useState } from 'react';
 

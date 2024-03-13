@@ -1,11 +1,9 @@
 import AdminTournamentTabNav from '@/components/admin/organisms/admin-tournament-tab-nav';
-import Button from '@/components/ui/atoms/button';
 import { ArrowLongLeftIcon } from '@/components/ui/atoms/icons';
-import { Switch } from '@/components/ui/switch';
 import routes from '@/config/routes';
 import { AdminTournamentContextProvider } from '@/contexts';
 import { AppLayout } from '@/layouts';
-import { getPotentialPrizePool, Tournament } from '@/lib/models';
+import { getPotentialPrizePool, Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { toCurrency } from '@/lib/utils';
 import clsx from 'clsx';

@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Tournament } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';

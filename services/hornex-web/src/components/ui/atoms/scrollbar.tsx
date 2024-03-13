@@ -1,4 +1,4 @@
-import cn from 'classnames';
+import { cn } from '@/lib/utils';
 import {
   OverlayScrollbarsComponent,
   OverlayScrollbarsComponentProps,
@@ -20,7 +20,7 @@ export default function Scrollbar({
   return (
     <OverlayScrollbarsComponent
       options={{
-        className: cn('os-theme-thin', className),
+        // className: cn('os-theme-thin', className),
         scrollbars: {
           autoHide: autoHide,
         },

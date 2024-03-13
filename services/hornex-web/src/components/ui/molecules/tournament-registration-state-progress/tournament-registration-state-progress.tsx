@@ -1,5 +1,4 @@
-import { Tournament } from '@/lib/models';
-import { getStatus } from '@/lib/models/Tournament';
+import { getStatus, Tournament } from '@/lib/models/Tournament';
 import { cn } from '@/lib/utils';
 import { UsersIcon } from 'lucide-react';
 import React from 'react';
