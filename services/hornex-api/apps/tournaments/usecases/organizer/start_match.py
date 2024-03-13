@@ -6,9 +6,11 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
 
+from apps.accounts.models import LeagueOfLegendsSummoner
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Match
 from lib.challonge import Match as ChallongeMatch
+from lib.riot import Tournament as RiotTournamentResourceAPI
 
 logger = structlog.get_logger(__name__)
 
@@ -38,6 +40,31 @@ class StartMatchUseCase:
         except Exception:
             raise Exception("Failed mark match as under_way at Challonge")
 
+        allowed_players = []
+        for member in match.team_a.members.all():
+            lol_acc = get_object_or_404(LeagueOfLegendsSummoner, game_id=member)
+            allowed_players.append(lol_acc.puuid)
+
+        for member in match.team_b.members.all():
+            lol_acc = get_object_or_404(LeagueOfLegendsSummoner, game_id=member)
+            allowed_players.append(lol_acc.puuid)
+
+        try:
+            codes = RiotTournamentResourceAPI.create_tournament_codes(
+                tournament_id=tournament.riot_tournament_id,
+                count=1,
+                allowedParticipants=allowed_players,
+                enoughPlayers=True,
+                mapType=tournament.map,
+                metadata=tournament.name,
+                pickType=tournament.pick,
+                spectatorType=tournament.spectator,
+                teamSize=tournament.team_size,
+            )
+        except Exception:
+            raise Exception("Temporary error, could not create the league of legends match code")
+
         match.status = Match.StatusType.UNDERWAY
+        match.riot_match_code = codes[0]
         match.save()
         return match

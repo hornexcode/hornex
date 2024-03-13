@@ -1,10 +1,11 @@
+import uuid
 from datetime import UTC
 from datetime import datetime as dt
 from datetime import timedelta as td
 
 import faker
 
-from apps.accounts.models import GameID
+from apps.accounts.models import GameID, LeagueOfLegendsSummoner
 from apps.teams.models import Invite, Team
 from apps.tournaments.models import LeagueOfLegendsLeague, Match, Registration
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
@@ -186,4 +187,18 @@ class RegistrationFactory:
             challonge_participant_id=challonge_participant_id,
             platform_slug="pc",
             game_slug="league-of-legends",
+        )
+
+
+class LeagueOfLegendsSummonerFactory:
+    @staticmethod
+    def new(game_id: GameID, **kwargs):
+        """
+        Create a new Registration with the given params.
+        """
+        return LeagueOfLegendsSummoner.objects.create(
+            id=kwargs.get("id", str(uuid.uuid4())),
+            game_id=game_id,
+            puuid=kwargs.get("puuid", str(uuid.uuid4())),
+            name=kwargs.get("name", fake.name()),
         )

@@ -1,6 +1,7 @@
 import uuid
 from test.factories import (
     GameIdFactory,
+    LeagueOfLegendsSummonerFactory,
     LeagueOfLegendsTournamentFactory,
     MatchFactory,
     RegistrationFactory,
@@ -816,6 +817,10 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
         self.game_id_2 = GameIdFactory.new(user=self.player_2)
         self.team_1 = TeamFactory.new(created_by=self.player_1)
         self.team_2 = TeamFactory.new(created_by=self.player_2)
+        self.team_1.add_member(self.game_id_1)
+        self.team_2.add_member(self.game_id_2)
+        self.summoner_1 = LeagueOfLegendsSummonerFactory.new(game_id=self.game_id_1)
+        self.summoner_2 = LeagueOfLegendsSummonerFactory.new(game_id=self.game_id_2)
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
         self.registration_1 = RegistrationFactory.new(
@@ -828,11 +833,14 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team_a=self.team_1, team_b=self.team_2
         )
 
+    @patch("lib.riot.Tournament.create_tournament_codes")
     @patch("lib.challonge.Match.mark_as_underway")
-    def test_start_match(self, mock_mark_as_underway):
+    def test_start_match(self, mock_mark_as_underway, mock_create_tour_code):
         ch_match = ChMatch()
         ch_match.state = "complete"
         mock_mark_as_underway.return_value = ch_match
+
+        mock_create_tour_code.return_value = ["fake-match-code"]
 
         url = reverse(
             "tournaments:start-match",
@@ -844,9 +852,11 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
         )
 
         mock_mark_as_underway.assert_called_once()
-        self.assertEqual(resp.status_code, 204)
+        mock_create_tour_code.assert_called_once()
+        self.assertEqual(resp.status_code, 200)
         self.match.refresh_from_db()
         self.assertEqual(self.match.status, Match.StatusType.UNDERWAY)
+        self.assertIsNotNone(self.match.riot_match_code)
 
     def test_start_match_error_not_organizer(self):
         self.tournament.organizer = self.player_1
@@ -859,14 +869,11 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         resp = self.client.patch(
             url,
-            {
-                "winner_id": self.team_2.id,
-            },
         )
 
         data = resp.json()
 
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 403)
         self.assertEqual(data.get("error"), "You are not this tournament's Organizer")
 
     @patch("lib.challonge.Match.mark_as_underway")
@@ -879,17 +886,42 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
         )
 
         try:
-            self.client.patch(
-                url,
-                {
-                    "winner_id": self.team_2.id,
-                },
-            )
+            self.client.patch(url)
         except Exception as e:
             mock_mark_as_underway.assert_called_once()
             self.match.refresh_from_db()
             self.assertNotEqual(self.match.status, Match.StatusType.UNDERWAY)
             self.assertEqual(str(e), "Failed mark match as under_way at Challonge")
+
+    @patch("lib.riot.Tournament.create_tournament_codes")
+    @patch("lib.challonge.Match.mark_as_underway")
+    def test_failed_to_create_codes(self, mock_mark_as_underway, mock_create_tour_code):
+        ch_match = ChMatch()
+        ch_match.state = "complete"
+        mock_mark_as_underway.return_value = ch_match
+
+        mock_create_tour_code.side_effect = Exception(
+            "Temporary error, could not create the league of legends match code"
+        )
+
+        url = reverse(
+            "tournaments:start-match",
+            kwargs={"id": self.tournament.id, "match_id": self.match.id},
+        )
+
+        try:
+            self.client.patch(
+                url,
+            )
+        except Exception as e:
+            mock_mark_as_underway.assert_called_once()
+            mock_create_tour_code.assert_called_once()
+            self.match.refresh_from_db()
+            self.assertNotEqual(self.match.status, Match.StatusType.UNDERWAY)
+            self.assertEqual(self.match.riot_match_code, "")
+            self.assertEqual(
+                str(e), "Temporary error, could not create the league of legends match code"
+            )
 
 
 class EndTournamentTest(APITestCase, URLPatternsTestCase):
