@@ -41,7 +41,7 @@ def get_secret():
     secret = json.loads(get_secret_value_response.get("SecretString"))
     env = [f"{k}={v}" for k, v in secret.items()]
 
-    secrets_output_file = Path(__file__).resolve().parent / "app.env"
+    secrets_output_file = Path(__file__).resolve().parent / ".env"
     secrets_output_file.write_text("\n".join(env) + "\n")
     logger.info(f"Wrote {len(env)} secrets to {secrets_output_file}")
 
