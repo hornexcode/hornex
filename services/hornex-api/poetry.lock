@@ -125,6 +125,20 @@ six = "*"
 visualize = ["Twisted (>=16.1.1)", "graphviz (>0.5.1)"]
 
 [[package]]
+name = "aws-secretsmanager-caching"
+version = "1.1.1.5"
+description = "Client-side AWS Secrets Manager caching library"
+optional = false
+python-versions = ">3.5"
+files = [
+    {file = "aws_secretsmanager_caching-1.1.1.5-py3-none-any.whl", hash = "sha256:6afb0233b6ae0183b518138e79b3a53f26432f3a71b03df99801e02e2456adc0"},
+    {file = "aws_secretsmanager_caching-1.1.1.5.tar.gz", hash = "sha256:5cee2762bb89b72f3e5123feee8e45fbe44ffe163bfca08b28f27b2e2b7772e1"},
+]
+
+[package.dependencies]
+botocore = "*"
+
+[[package]]
 name = "billiard"
 version = "4.2.0"
 description = "Python multiprocessing fork with improvements and bugfixes"
@@ -2079,4 +2093,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a4fe595620195db856ffabc46742cc0931119637adc8c1c118e601d5f2c0d9cd"
+content-hash = "7f160e2ef8f60f843fba1e7926a5ff026f191740b4dca1fe9ae63e61e70032d0"

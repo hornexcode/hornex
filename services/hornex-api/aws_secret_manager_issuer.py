@@ -14,6 +14,8 @@ def get_secret():
     # Create a Secrets Manager client
     session = boto3.session.Session()
     client = session.client(service_name="secretsmanager", region_name=region_name)
+    # cache_config = SecretCacheConfig()
+    # cache = SecretCache(config=cache_config, client=client)
 
     try:
         get_secret_value_response = client.get_secret_value(SecretId=secret_name)
