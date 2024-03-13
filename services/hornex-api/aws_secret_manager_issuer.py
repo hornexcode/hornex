@@ -1,10 +1,24 @@
+#!/usr/bin/env python3.11
 # Use this code snippet in your app.
 # If you need more information about configurations
 # or implementing the sample code, visit the AWS docs:
 # https://aws.amazon.com/developer/language/python/
 
+import logging
+import logging.config
+from pathlib import Path
+
 import boto3
+import structlog
 from botocore.exceptions import ClientError
+
+from core.settings import LOGGING
+
+logging.config.dictConfig(LOGGING)
+logger = structlog.get_logger(Path(__file__).stem)
+
+
+logger.info("Retrieving secret")
 
 
 def get_secret():
@@ -24,8 +38,10 @@ def get_secret():
         # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
         raise e
 
-    print(get_secret_value_response)
-    secret = get_secret_value_response["RESEND_API_KEY"]
-    print(secret)
+    logger.info("Retrieved secret", get_secret_value_response=get_secret_value_response)
 
     # Your code goes here.
+
+
+if __name__ == "__main__":
+    get_secret()
