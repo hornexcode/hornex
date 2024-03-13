@@ -4,16 +4,31 @@ import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments'
 import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-const { useData: getTournaments } =
+const { fetch: getTournaments } =
   dataLoader<GetTournamentsResponse>('getTournaments');
 
-type TournamentsProps = {
+type TournamentPageProps = {
   game: string;
   platform: string;
+  tournaments: GetTournamentsResponse;
 };
 
-export const getServerSideProps = (async ({ query: { game, platform } }) => {
+export const getServerSideProps = (async ({
+  query: { game, platform },
+  req,
+}) => {
   if (typeof game !== 'string' || typeof platform !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  const { data: tournaments, error } = await getTournaments(
+    { game, platform },
+    req
+  );
+
+  if (error || !tournaments) {
     return {
       notFound: true,
     };
@@ -21,36 +36,17 @@ export const getServerSideProps = (async ({ query: { game, platform } }) => {
 
   return {
     props: {
-      pageProps: {
-        game,
-        platform,
-      },
+      game,
+      platform,
+      tournaments,
     },
   };
-}) satisfies GetServerSideProps<{
-  pageProps: TournamentsProps;
-}>;
+}) satisfies GetServerSideProps<TournamentPageProps>;
 
 const Tournaments = ({
-  pageProps: { game, platform },
+  tournaments,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const {
-    data: tournaments,
-    error,
-    isLoading,
-  } = getTournaments({
-    game,
-    platform,
-  });
-
-  return (
-    <TournamentsFeedPage
-      isLoading={isLoading}
-      tournaments={
-        tournaments || { count: 0, next: null, previous: null, results: [] }
-      }
-    />
-  );
+  return <TournamentsFeedPage data={tournaments} />;
 };
 
 Tournaments.getLayout = (page: React.ReactElement) => {

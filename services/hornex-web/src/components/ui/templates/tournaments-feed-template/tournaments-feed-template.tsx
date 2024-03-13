@@ -4,7 +4,6 @@ import { TournamentsPageTemplateProps } from '@/components/ui/templates/tourname
 import { FC } from 'react';
 
 const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
-  isLoading,
   data,
 }) => {
   return (
@@ -14,14 +13,13 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
       gap-5 2xl:grid-cols-[minmax(auto,_1fr)_240px]"
       > */}
       <div className="grid grid-cols-4 gap-4">
-        {!isLoading &&
-          data.results.map((tournament) => (
-            <TournamentFeedItem
-              key={tournament.id}
-              tournament={tournament}
-              className="mx-2 mb-4 first:ml-2"
-            />
-          ))}
+        {data.results.map((tournament) => (
+          <TournamentFeedItem
+            key={tournament.id}
+            tournament={tournament}
+            className="mx-2 mb-4 first:ml-2"
+          />
+        ))}
 
         <div className="hidden">
           {/* <Filters /> */}
