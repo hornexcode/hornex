@@ -767,8 +767,8 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
 
-        self.player_1 = UserFactory.new()
-        self.player_2 = UserFactory.new()
+        self.player_1 = UserFactory.new(email="herbertaraujo.contact@gmail.com")
+        self.player_2 = UserFactory.new(email="herbert.souza.98@gmail.com")
         self.game_id_1 = GameIdFactory.new(user=self.player_1)
         self.game_id_2 = GameIdFactory.new(user=self.player_2)
         self.team_1 = TeamFactory.new(created_by=self.player_1)
@@ -789,14 +789,17 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team_a=self.team_1, team_b=self.team_2
         )
 
+    @patch("resend.Emails.send")
     @patch("lib.riot.Tournament.create_tournament_codes")
     @patch("lib.challonge.Match.mark_as_underway")
-    def test_start_match(self, mock_mark_as_underway, mock_create_tour_code):
+    def test_start_match(self, mock_mark_as_underway, mock_create_tour_code, mock_mailer):
         ch_match = ChMatch()
         ch_match.state = "complete"
         mock_mark_as_underway.return_value = ch_match
 
         mock_create_tour_code.return_value = ["fake-match-code"]
+
+        mock_mailer.return_value = None
 
         url = reverse(
             "tournaments:start-match",
@@ -809,6 +812,7 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         mock_mark_as_underway.assert_called_once()
         mock_create_tour_code.assert_called_once()
+        mock_mailer.assert_called_once()
         self.assertEqual(resp.status_code, 200)
         self.match.refresh_from_db()
         self.assertEqual(self.match.status, Match.StatusType.UNDERWAY)

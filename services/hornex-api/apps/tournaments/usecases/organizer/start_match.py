@@ -10,6 +10,7 @@ from apps.accounts.models import LeagueOfLegendsSummoner
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Match
 from lib.challonge import Match as ChallongeMatch
+from lib.mailer import send_match_code_email
 from lib.riot import Tournament as RiotTournamentResourceAPI
 
 logger = structlog.get_logger(__name__)
@@ -41,13 +42,16 @@ class StartMatchUseCase:
             raise Exception("Failed mark match as under_way at Challonge")
 
         allowed_players = []
+        players_emails = []
         for member in match.team_a.members.all():
             lol_acc = get_object_or_404(LeagueOfLegendsSummoner, game_id=member)
             allowed_players.append(lol_acc.puuid)
+            players_emails.append(member.user.email)
 
         for member in match.team_b.members.all():
             lol_acc = get_object_or_404(LeagueOfLegendsSummoner, game_id=member)
             allowed_players.append(lol_acc.puuid)
+            players_emails.append(member.user.email)
 
         try:
             codes = RiotTournamentResourceAPI.create_tournament_codes(
@@ -63,6 +67,13 @@ class StartMatchUseCase:
             )
         except Exception:
             raise Exception("Temporary error, could not create the league of legends match code")
+
+        try:
+            send_match_code_email(
+                to=players_emails, team_a=match.team_a.name, team_b=match.team_b.name, code=codes[0]
+            )
+        except Exception as e:
+            logger.info("Failed to email match's players", error=e)
 
         match.status = Match.StatusType.UNDERWAY
         match.riot_match_code = codes[0]
