@@ -14,6 +14,7 @@ import Button from '@/components/ui/atoms/button';
 import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
 import { toast } from '@/components/ui/use-toast';
 import { useAdminTournament } from '@/contexts';
+import { Standing } from '@/lib/models/Standing';
 import {
   getEntryFee,
   getPotentialPrizePool,
@@ -21,17 +22,50 @@ import {
   getStatusStep,
   Tournament,
 } from '@/lib/models/Tournament';
+import { dataLoader } from '@/lib/request';
 import { toCurrency } from '@/lib/utils';
-import {
-  finalizeTournamentHandler,
-  openRegistrationHandler,
-  startTournamentHandler,
-  useGetTournamentResults,
-} from '@/pages/admin/[platform]/[game]/tournaments/[id]/admin-tournament-details.handlers';
 import { datetime } from '@/utils/datetime';
 import { Loader2 } from 'lucide-react';
 import moment from 'moment';
 import React, { useEffect } from 'react';
+
+const { submit: finalizeTournament } = dataLoader<Tournament>(
+  'org:tournament:finalize'
+);
+const finalizeTournamentHandler = ({ id }: { id: string }) =>
+  finalizeTournament({ id });
+
+const { submit: updateTournament } = dataLoader<
+  Tournament,
+  Partial<Tournament>
+>('organizer:tournament:update');
+const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
+  updateTournament(
+    { tournamentId },
+    {
+      status: 'registering',
+      registration_start_date: new Date(),
+    }
+  );
+
+const { submit: startTournament } = dataLoader<
+  Tournament,
+  { timestamp: number; now: Date }
+>('org:tournament:start');
+const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
+  startTournament(
+    { id: tournamentId },
+    {
+      timestamp: Date.now(),
+      now: new Date(),
+    }
+  );
+
+const { useData: getTournamentResults } = dataLoader<Standing[]>(
+  'org:tournament:results'
+);
+const useGetTournamentResults = ({ id }: { id: string }) =>
+  getTournamentResults({ tournamentId: id });
 
 const AdminTournamentGeneralInfo = () => {
   const { tournament, refreshTournament } = useAdminTournament();
