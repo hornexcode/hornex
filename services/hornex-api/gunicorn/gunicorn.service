@@ -6,7 +6,7 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/hornex-api
+WorkingDirectory=/home/ubuntu/hornex-api/services/hornex-api
 ExecStart=/home/ubuntu/hornex-api/services/hornex-api/.venv/bin/gunicorn \
           --access-logfile - \
           --workers 4 \
