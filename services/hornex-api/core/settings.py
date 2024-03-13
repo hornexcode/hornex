@@ -120,6 +120,7 @@ if os.getenv("HORNEX_SQL_ENGINE") == "django.db.backends.postgresql":
             "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
             "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
             "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
+            "OPTIONS": {"sslmode": "require"},
         },
     }
 else:
