@@ -9,42 +9,51 @@ import { GetTournamentsResponse } from '@/lib/models/types/rest/get-tournaments'
 import { dataLoader as dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-const { useData: getTournaments } =
+const { fetch: getTournaments } =
   dataLoader<GetTournamentsResponse>('getTournaments');
 
-type TournamentsProps = {
+type CompetePageProps = {
   game: string;
   platform: string;
+  tournaments: GetTournamentsResponse;
 };
 
-export const getServerSideProps = (async ({ query: { game, platform } }) => {
+export const getServerSideProps = (async ({
+  query: { game, platform },
+  req,
+}) => {
   if (typeof game !== 'string' || typeof platform !== 'string') {
     game = 'league-of-legends';
     platform = 'pc';
   }
 
+  const { data: tournaments, error } = await getTournaments(
+    { game, platform },
+    req
+  );
+
+  if (error || !tournaments) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
-      pageProps: {
-        game,
-        platform,
-      },
+      game,
+      platform,
+      tournaments,
     },
   };
-}) satisfies GetServerSideProps<{
-  pageProps: TournamentsProps;
-}>;
+}) satisfies GetServerSideProps<CompetePageProps>;
 
 const CompetePage = ({
-  pageProps: { game, platform },
+  tournaments,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { data, error, isLoading } = getTournaments({ game, platform });
-  if (!data) return null;
-
   return (
     <div className="px-8">
       <section id="available-games">
-        <TournamentsFeedTemplate isLoading={isLoading} data={data} />
+        <TournamentsFeedTemplate data={tournaments} />
       </section>
     </div>
   );
