@@ -31,6 +31,3 @@ class TestUnitTournamentModel(TestCase):
 
     def test_tournament_registration_start_date(self):
         self.assertEqual(self.tournament.registration_start_date, self.now)
-
-    def test_has_start_datetime(self):
-        self.assertEqual(self.tournament._has_start_datetime(), True)

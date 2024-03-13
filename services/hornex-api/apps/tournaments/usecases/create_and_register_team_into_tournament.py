@@ -79,7 +79,7 @@ class CreateAndRegisterTeamIntoTournamentUseCase:
             game_slug=tournament.game,
             platform_slug=tournament.platform,
             status=Registration.RegistrationStatusOptions.ACCEPTED,
-            challonge_participant_id=participant["id"],
+            challonge_participant_id=participant.id,
         )
 
         return CreateAndRegisterTeamIntoTournamentOutput(team)

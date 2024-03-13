@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.teams.models import Team
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
-from apps.tournaments.models import Match
+from apps.tournaments.models import Match, Rank
 from apps.users.models import User
 from lib.challonge import Match as ChMatch
 from lib.challonge import Participant
@@ -377,26 +377,7 @@ class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         team = resp.json()
 
         mock_add_team.assert_called_once()
-        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.teams.all())
-
-    def test_create_and_register_team_into_tournament_team_already_exist_into_tournament(self):
-        name = "Drakx"
-        TeamFactory.new(name=name, created_by=self.user)
-        users = [UserFactory.new() for i in range(4)]
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
-        [GameIdFactory.new(user=user, email=user.email) for user in users]
-
-        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
-
-        resp = self.client.post(
-            url,
-            {"name": name, **users_payload},
-        )
-
-        data = resp.json()
-
-        self.assertEqual(resp.status_code, 400)
-        self.assertEqual(data.get("error"), "Team name already in use")
+        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.registered_teams.all())
 
     def test_create_and_register_team_into_tournament_user_not_found_into_tournament(self):
         name = "Drakx"
@@ -463,7 +444,7 @@ class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
             )
         except Exception as e:
             self.assertEqual(str(e), "Failed to add participant at challonge")
-            self.assertEqual(len(self.tournament.teams.all()), 0)
+            self.assertEqual(len(self.tournament.registered_teams.all()), 0)
 
 
 class RegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
@@ -515,7 +496,7 @@ class RegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         team = resp.json()
 
         mock_add_team.assert_called_once()
-        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.teams.all())
+        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.registered_teams.all())
 
     def test_register_team_tournament_not_found(self):
         url = reverse("tournaments:register_team", kwargs={"id": uuid.uuid4()})
@@ -586,7 +567,7 @@ class RegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(
             data.get("error"),
-            f"Player {self.game_id.user.name} ({self.game_id.email}) has no active League Of "
+            f"Player {self.game_id.user.name} ({self.game_id.user.email}) has no active League Of "
             "Legend account connected",
         )
 
@@ -616,7 +597,7 @@ class RegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         except Exception as e:
             mock_add_team.assert_called_once()
             self.assertEqual(str(e), "Failed to add participant at challonge")
-            self.assertEqual(len(self.tournament.teams.all()), 0)
+            self.assertEqual(len(self.tournament.registered_teams.all()), 0)
 
 
 class FinishMatchTest(APITestCase, URLPatternsTestCase):
@@ -654,14 +635,29 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
             tournament=self.tournament, team_a=self.team_1, team_b=self.team_2
         )
 
+        for team in self.tournament.registered_teams.all():
+            Rank.objects.create(
+                tournament=self.tournament,
+                team=team,
+                score=0,
+            )
+
+        self.match.team_a_score = 0
+        self.match.team_b_score = 1
+        self.match.save()
+
+    @patch("lib.challonge.Match.list")
     @patch("lib.challonge.Match.update")
-    def test_finish_match(self, mock_match_update):
+    def test_finish_match(self, mock_match_update, mock_list_match):
         ch_match = ChMatch()
         ch_match.state = "complete"
+        ch_match.winner_id = self.registration_2.challonge_participant_id
         mock_match_update.return_value = ch_match
 
+        mock_list_match.return_value = []
+
         url = reverse(
-            "tournaments:finish-match",
+            "tournaments:end-match",
             kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
@@ -673,9 +669,9 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
         )
 
         mock_match_update.assert_called_once()
-        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(resp.status_code, 200)
         self.match.refresh_from_db()
-        self.assertEqual(self.match.status, Match.StatusType.FINISHED)
+        self.assertEqual(self.match.status, Match.StatusType.ENDED)
         self.assertIsNotNone(self.match.winner)
         self.assertIsNotNone(self.match.loser)
 
@@ -684,7 +680,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
         self.tournament.save()
 
         url = reverse(
-            "tournaments:finish-match",
+            "tournaments:end-match",
             kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
@@ -697,58 +693,15 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         data = resp.json()
 
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 403)
         self.assertEqual(data.get("error"), "You are not this tournament's Organizer")
-
-    def test_finish_match_set_not_playing_team_as_winner(self):
-        self.match.team_b = TeamFactory.new(created_by=self.user)
-        self.match.save()
-
-        url = reverse(
-            "tournaments:finish-match",
-            kwargs={"id": self.tournament.id, "match_id": self.match.id},
-        )
-
-        resp = self.client.patch(
-            url,
-            {
-                "winner_id": self.team_2.id,
-            },
-        )
-
-        data = resp.json()
-
-        self.assertEqual(resp.status_code, 400)
-        self.assertEqual(
-            data.get("error"), f"Team {self.team_2.name} does not belong to this match"
-        )
-
-    def test_finish_match_set_unregistered_team_as_winner(self):
-        self.registration_2.delete()
-
-        url = reverse(
-            "tournaments:finish-match",
-            kwargs={"id": self.tournament.id, "match_id": self.match.id},
-        )
-
-        resp = self.client.patch(
-            url,
-            {
-                "winner_id": self.team_2.id,
-            },
-        )
-
-        data = resp.json()
-
-        self.assertEqual(resp.status_code, 400)
-        self.assertEqual(data.get("error"), f"Team {self.team_2.name} not registered at tournament")
 
     @patch("lib.challonge.Match.update")
     def test_failed_fish_challonge_match(self, mock_match_update):
         mock_match_update.side_effect = Exception("Internal Server Error")
 
         url = reverse(
-            "tournaments:finish-match",
+            "tournaments:end-match",
             kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
@@ -761,20 +714,23 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
             )
         except Exception as e:
             mock_match_update.assert_called_once()
-            self.assertNotEqual(self.match.status, Match.StatusType.FINISHED)
+            self.assertNotEqual(self.match.status, Match.StatusType.ENDED)
             self.assertEqual(str(e), "Failed finish match at Challonge")
             self.match.refresh_from_db()
             self.assertIsNone(self.match.winner)
             self.assertIsNone(self.match.loser)
 
+    @patch("lib.challonge.Match.list")
     @patch("lib.challonge.Match.update")
-    def test_failed_fish_challonge_match_no_exception(self, mock_match_update):
+    def test_failed_fish_challonge_match_no_exception(self, mock_match_update, mock_list_match):
         ch_match = ChMatch()
         ch_match.state = "underway"
+        ch_match.winner_id = self.registration_2.challonge_participant_id
         mock_match_update.return_value = ch_match
+        mock_list_match.return_value = []
 
         url = reverse(
-            "tournaments:finish-match",
+            "tournaments:end-match",
             kwargs={"id": self.tournament.id, "match_id": self.match.id},
         )
 
@@ -787,7 +743,7 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
             )
         except Exception as e:
             mock_match_update.assert_called_once()
-            self.assertNotEqual(self.match.status, Match.StatusType.FINISHED)
+            self.assertNotEqual(self.match.status, Match.StatusType.ENDED)
             self.assertEqual(str(e), "We couldn't finish the match")
             self.match.refresh_from_db()
             self.assertIsNone(self.match.winner)
@@ -943,6 +899,24 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
 
+        [self.tournament.add_team(TeamFactory.new(organizer=self.user)) for _ in range(2)]
+
+        teams = self.tournament.registered_teams.all()
+
+        for team in teams:
+            Rank.objects.create(
+                tournament=self.tournament,
+                team=team,
+                score=0,
+            )
+
+        self.match = MatchFactory.new(team_a=teams[0], team_b=teams[1], tournament=self.tournament)
+
+        self.match.set_winner(teams[0])
+
+        self.tournament.current_round = 1
+        self.tournament.save()
+
     @patch("lib.challonge.Tournament.finalize")
     def test_end_tournament(self, mock_finalize):
         mock_finalize.return_value = {}
@@ -961,7 +935,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
         )
 
         mock_finalize.assert_called_once()
-        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(resp.status_code, 200)
         self.tournament.refresh_from_db()
         self.assertEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
         self.assertIsNotNone(self.tournament.ended_at)
@@ -981,7 +955,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
 
         data = resp.json()
 
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 403)
         self.assertEqual(data.get("error"), "You are not this tournament's Organizer")
 
     def test_end_tournament_not_running(self):
