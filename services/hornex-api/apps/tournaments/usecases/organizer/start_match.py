@@ -49,8 +49,6 @@ class StartMatchUseCase:
             lol_acc = get_object_or_404(LeagueOfLegendsSummoner, game_id=member)
             allowed_players.append(lol_acc.puuid)
 
-        print("@ALLOWED", allowed_players, match.team_a.members.all())
-
         try:
             codes = RiotTournamentResourceAPI.create_tournament_codes(
                 tournament_id=tournament.riot_tournament_id,

@@ -200,6 +200,5 @@ class LeagueOfLegendsSummonerFactory:
             id=kwargs.get("id", str(uuid.uuid4())),
             game_id=game_id,
             puuid=kwargs.get("puuid", str(uuid.uuid4())),
-            name=kwargs.get("name", faker.name()),
-            ello=kwargs.get("ello", faker.name()),
+            name=kwargs.get("name", fake.name()),
         )
