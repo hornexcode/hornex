@@ -34,7 +34,8 @@ SECRET_KEY = "changeme"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv("DEBUG", "1")))
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+DEFAULT_ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = DEFAULT_ALLOWED_HOSTS + os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True  # dev only
 
