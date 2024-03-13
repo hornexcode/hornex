@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.accounts.views import oauth_login, oauth_login_callback
+from apps.accounts.views import ProfileViewSet, oauth_login, oauth_login_callback
 
 urlpatterns = [
     path(
@@ -12,5 +12,15 @@ urlpatterns = [
         "/league-of-legends/oauth/login/callback",
         oauth_login_callback,
         name="riot-oauth-callback",
+    ),
+    path(
+        "/profiles",
+        ProfileViewSet.as_view({"post": "create", "get": "list"}),
+        name="profiles-controller",
+    ),
+    path(
+        "/profiles/<str:id>",
+        ProfileViewSet.as_view({"patch": "partial_update", "get": "retrieve", "delete": "delete"}),
+        name="profiles-details-controller",
     ),
 ]

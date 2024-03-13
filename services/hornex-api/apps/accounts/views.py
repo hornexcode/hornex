@@ -5,7 +5,7 @@ from datetime import datetime as dt
 from datetime import timedelta as td
 
 from django.db import transaction
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
@@ -14,7 +14,8 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.accounts.models import GameID
+from apps.accounts.models import GameID, Profile
+from apps.accounts.serializers import ProfileSerializer
 from apps.leagueoflegends.models import Session
 from jwt_token.authentication import JWTAuthentication
 from lib.riot.client import client as riot
@@ -96,3 +97,11 @@ def oauth_login(request):
         },
         status=status.HTTP_200_OK,
     )
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
