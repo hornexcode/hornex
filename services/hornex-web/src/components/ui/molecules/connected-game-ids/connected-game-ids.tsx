@@ -10,7 +10,7 @@ export const ConnectedGameIds = ({ gameId }: { gameId: GameID }) => {
   return (
     <Menu as="div" className="relative z-10 inline-block text-left">
       <div>
-        <Menu.Button className="group-item bg-title text-dark flex w-full items-center justify-center rounded border-2 border-gray-200 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="group-item bg-title text-dark flex w-full items-center justify-center rounded px-4 py-1 font-medium focus:outline-none ">
           <LolFlatIcon className="text-dark mr-3 h-5 w-5" />
           <span>{gameId.nickname}</span>
           <ChevronDown className="ml-3 w-4" />

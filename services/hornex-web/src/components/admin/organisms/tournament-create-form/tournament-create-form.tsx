@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-// import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { dataLoader } from '@/lib/request';
@@ -256,7 +255,7 @@ export function TournamentCreateForm() {
               <FormLabel className="text-title">Start Time</FormLabel>
               <FormControl>
                 {/* <InputTime {...field} /> */}
-                <Input {...field} type="time" className="w-[80px]" />
+                <Input {...field} type="time" className="w-[100px]" />
               </FormControl>
               <FormDescription>
                 Different timezones are not supported yet. The time will be set

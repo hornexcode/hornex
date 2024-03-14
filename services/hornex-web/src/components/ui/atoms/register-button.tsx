@@ -2,7 +2,6 @@ import Button from './button';
 import { useModal } from '@/components/modal-views/context';
 import routes from '@/config/routes';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import clsx from 'clsx';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import React, { FC } from 'react';

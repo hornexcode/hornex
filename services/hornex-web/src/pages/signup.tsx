@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import routes from '@/config/routes';
 import { User } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -69,20 +70,18 @@ export default function RegisterPage() {
         title: 'Account created.',
         description: "We've created your account for you.",
       });
-      router.push('/sign-in');
+      router.push(routes.signIn);
     }
   }
 
   return (
     <div className="flex h-screen flex-col items-center justify-between">
-      <div className="m-auto w-[450px] ">
-        <Logo size="sm" className="mx-auto mb-4" />
-        <div className="bg-medium-dark border-accent space-y-4 rounded border p-6 sm:p-8 md:space-y-6">
-          <div className="text-center">
-            <h1 className="font-title text-title text-lg font-bold md:text-2xl">
-              Sign Up
-            </h1>
-          </div>
+      <div className="m-auto w-[400px] ">
+        <div className="border-border space-y-4 rounded border p-6 sm:p-8 md:space-y-6">
+          <Logo size="sm" className="mx-auto mb-4" />
+          <h1 className="font-title text-title text-2xl font-extrabold">
+            Sign Up
+          </h1>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -92,7 +91,7 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Name" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -105,11 +104,9 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="example@hornex.gg" {...field} />
+                      <Input {...field} />
                     </FormControl>
-                    <FormDescription>
-                      We will never share your email with anyone else.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -121,12 +118,11 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        {...field}
-                      />
+                      <Input type="password" {...field} />
                     </FormControl>
+                    <FormDescription className="text-xs">
+                      Min 8 characteres
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

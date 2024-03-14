@@ -11,10 +11,10 @@ export default function PrivacyPolicy() {
             Back
           </div>
         </Link>
-        <h1 className="mt-6 text-left text-xl font-bold tracking-tighter text-white md:text-2xl lg:text-6xl">
+        <h1 className="mt-6 text-left text-xl font-bold text-white md:text-2xl lg:text-6xl">
           Privacy Policy
         </h1>
-        <h3 className="pb-4 text-sm">
+        <h3 className="pb-4">
           {new Date().toLocaleDateString('en-US', { dateStyle: 'full' })}
         </h3>
 
