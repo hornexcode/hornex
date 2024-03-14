@@ -45,43 +45,19 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       <TournamentDetailsHeadline isCheckedIn={false} />
 
       <div className="mt-8 flex space-x-8">
-        <div className="lg:w-[280px]">
+        <div className="w-[280px] space-y-8">
           <TournamentPhasesWidget
             tournament={tournament}
             isRegistered={isRegistered}
           />
-          {/* <div className="bg-medium-dark col-span-1 space-y-2">
-            <div className="px-4 pt-4">
-              <span className="text-muted">Tournament status</span>
-            </div>
-            <div className="space-y-2 px-4 pb-4">
-              <div className="flex items-center justify-between">
-                <span className="text-brand font-source-sans">
-                  {getStatus(tournament)}
-                </span>
-                <div className="text-muted">
-                  step {steps[0]} / {steps[1]}
-                </div>
-              </div>
-              <TournamentStatusStepper
-                steps={steps[1]}
-                currentStep={steps[0]}
-              />
-            </div>
-            <div className="border-border flex items-center justify-center border-t border-dashed p-4 text-center text-amber-500">
-              {isRegistered ? (
-                <>
-                  <CheckCircledIcon className="mr-2 h-4 w-4" />
-                  <p>Registered</p>
-                </>
-              ) : (
-                <RegisterButton
-                  className="w-full"
-                  isRegistered={isRegistered}
-                />
-              )}
-            </div>
-          </div> */}
+          <div className="">
+            <iframe
+              src="https://discord.com/widget?id=976554121475797134&theme=dark"
+              width="280px"
+              height="420"
+              sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+            ></iframe>
+          </div>
         </div>
         <div className="flex flex-1">
           <TournamentTabPanels tournament={tournament} />

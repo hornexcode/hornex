@@ -33,9 +33,14 @@ const Beaufort_for_LOL = localFont({
 const Goldman_Sans = localFont({
   src: [
     {
+      path: '../styles/fonts/GoldmanSans/GoldmanSans_W_Blk.woff2',
+      weight: '800',
+      style: 'black',
+    },
+    {
       path: '../styles/fonts/GoldmanSans/GoldmanSans_W_Bd.woff2',
       weight: '700',
-      style: 'normal',
+      style: 'bold',
     },
     {
       path: '../styles/fonts/GoldmanSans/GoldmanSans_W_Rg.woff2',

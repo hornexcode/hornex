@@ -1,3 +1,4 @@
+'use client';
 import { LoggedUser } from '@/domain';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';

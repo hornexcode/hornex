@@ -1,5 +1,6 @@
 module.exports = {
   content: [
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}', // Note the addition of the `app` directory.
     './src/pages/**/*.{js,ts,jsx,tsx}',
     './src/components/**/*.{js,ts,jsx,tsx}',
     './src/layouts/**/*.{js,ts,jsx,tsx}',
@@ -59,6 +60,8 @@ module.exports = {
         background: 'hsl(var(--background))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        destructive: 'hsl(var(--destructive))',
+        popover: 'hsl(var(--popover))',
       },
       spacing: {
         13: '3.375rem',

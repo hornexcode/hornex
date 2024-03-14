@@ -1,13 +1,13 @@
 import Button from '@/components/ui/atoms/button/button';
-import Input from '@/components/ui/atoms/form/input';
 import InputLabel from '@/components/ui/atoms/form/input-label';
 import { Logo } from '@/components/ui/atoms/logo';
+import { Input } from '@/components/ui/input';
 import routes from '@/config/routes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -24,6 +24,8 @@ export default function LoginPage() {
   const [success, setSuccess] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState('');
+
+  const { data: session } = useSession();
 
   const router = useRouter();
   const {
@@ -58,17 +60,22 @@ export default function LoginPage() {
     router.push('/compete');
   };
 
+  if (session) {
+    router.push('/compete');
+  }
+
   // TODO: remove in production
   useEffect(() => {}, [setValue]);
 
   return (
-    <div className="bg-dark flex h-screen flex-col items-center justify-between">
-      <div className="m-auto w-full sm:w-[400px]">
-        <div className="mt-8 self-center">
-          <Logo size="sm" className="mx-auto" />
-        </div>
-        <div className="rounded p-6 sm:p-8">
-          <div className="space-y-4">
+    <div className="flex h-screen flex-col items-center justify-between">
+      <div className="m-auto w-full sm:w-[380px]">
+        <div className="border-border rounded border p-6 sm:p-8">
+          <div className="self-center">
+            <Logo size="sm" className="mx-auto" />
+          </div>
+          <h1 className="text-title mb-4 text-2xl font-extrabold">Login</h1>
+          <div className="space-y-2">
             {error && (
               <div className="rounded bg-red-500 p-2 text-center  text-white">
                 {error}
@@ -79,18 +86,11 @@ export default function LoginPage() {
                 Login successful!
               </div>
             )}
-            <form
-              className="space-y-4 md:space-y-6"
-              onSubmit={handleSubmit(handleOnSubmit)}
-            >
+            <form className="space-y-4" onSubmit={handleSubmit(handleOnSubmit)}>
               {/* Email */}
               <div>
                 <InputLabel title="Email" important />
-                <Input
-                  placeholder="jonh.doe@example.com"
-                  error={errors.email?.message}
-                  {...register('email', { required: true })}
-                />
+                <Input {...register('email', { required: true })} />
               </div>
 
               {/* Password */}
@@ -98,15 +98,14 @@ export default function LoginPage() {
                 <Input
                   type="password"
                   placeholder="password"
-                  error={errors.password?.message}
                   {...register('password', { required: true })}
                 />
                 <div className="mt-1 flex items-center justify-between">
                   <a
                     href="#"
-                    className=" font-normal text-gray-400 hover:underline"
+                    className=" text-body font-normal hover:underline"
                   >
-                    Esqueceu sua senha?
+                    Forgot your password?
                   </a>
                 </div>
               </div>
@@ -117,8 +116,9 @@ export default function LoginPage() {
                   disabled={fetching}
                   fullWidth
                   shape="rounded"
+                  size="small"
                 >
-                  Sign In
+                  Login
                 </Button>
 
                 <p className="mt-1  font-normal text-gray-400">

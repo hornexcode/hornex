@@ -1,67 +1,150 @@
-import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
+import { authOptions } from './api/auth/[...nextauth]/na';
+import AdminTournamentMockView from '@/assets/images/admin-tournament-mock-viewer.png';
+import HeaderCtt from '@/assets/images/header_ctt.png';
 import Teemo from '@/assets/images/teemo.png';
+import TournamentMockView from '@/assets/images/tournament-mock-viewer.png';
+import ProfileMenuItem from '@/components/profile/profile-menu-item';
+import { Logo } from '@/components/ui/atoms/logo';
+import { Button } from '@/components/ui/button';
 import routes from '@/config/routes';
+import { ArrowUpRightIcon, LogInIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
+import { getServerSession } from 'next-auth';
 
-function HomePage() {
-  const { t } = useTranslation('common');
+export default async function HomePage() {
+  const session = await getServerSession(authOptions);
+
+  const renderHeaderRightArea = () => {
+    if (session) {
+      return (
+        <>
+          <Link href={routes.compete} className="mr-4">
+            <div className=" flex items-center font-medium">Compete</div>
+          </Link>
+          <ProfileMenuItem
+            user={{
+              email: session.user?.email!,
+              name: session.user?.name!,
+            }}
+          />
+        </>
+      );
+    }
+    return (
+      <>
+        <Link href={routes.signIn} className="mr-4">
+          <div className=" flex items-center font-medium">
+            Sign In <LogInIcon className=" ml-2 h-5 w-5" />
+          </div>
+        </Link>
+        <Link href={routes.signup}>
+          <div className=" flex items-center font-medium">
+            Create account <ArrowUpRightIcon className=" ml-2 h-5 w-5" />
+          </div>
+        </Link>
+      </>
+    );
+  };
 
   return (
     <div className="">
-      <header className="container sticky top-0 z-40 mx-auto h-20 w-full">
+      <header className="bg-dark/20 fixed top-0 z-40 h-20 w-full px-8 backdrop-blur-sm">
         <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
           <div className="text-title flex w-[230px] items-center text-xl font-bold">
-            <Link href="/">
-              <Image className="w-7" src={HornexLogo} alt="Hornex logo" />
+            <Link href="/" className="flex items-center">
+              <Logo size="xs" className="mr-2" />
+              <span className="font-extrabold">HORNEX</span>
             </Link>
-            HORNEX
           </div>
-          <div className="flex items-center font-medium">
-            <Link href={routes.signIn} className="text-title">
-              Sign-in
-            </Link>
-            <Link href={routes.signup} className="text-title ml-4">
-              Create account
-            </Link>
+          <div className="mr-4 flex items-center font-medium">
+            {renderHeaderRightArea()}
           </div>
         </div>
       </header>
-      <div className="relative h-[450px] w-full bg-[url('/images/league-of-legends/baron.jpg')] bg-cover bg-center bg-no-repeat pt-14">
+      <div className="relative h-[450px] w-full bg-[url('/images/league-of-legends/baron.jpg')] bg-cover bg-center bg-no-repeat">
         <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
         <div className="bg-dark/60 absolute top-0 z-0 h-full w-full"></div>
-        <div className="container absolute left-20 z-10 mx-auto">
-          <Image src={HornexLogo} alt="Hornex" width={150} height={150} />
-          <h1 className="py-4 text-6xl font-extrabold text-white">
-            Organize, Compete and{' '}
-            <span className="text-dark bg-amber-500 px-2">Get Paid</span>
-          </h1>
-          <p className="w-[40%] text-xl font-medium text-white">
-            With Hornex you can easily organize and compete in tournaments. We
-            make it easy to get paid for your skills.
-          </p>
+        <div className="absolute left-20 top-[50%] z-10 flex w-full justify-start">
+          <Logo size="lg" className="mr-8" />
+          <div>
+            <h1 className="py-4 text-6xl font-extrabold text-white">
+              Organize, Compete and{' '}
+              <span className="text-dark bg-amber-500 px-2">Get Paid</span>
+            </h1>
+            <p className="w-[70%] text-2xl font-thin text-white">
+              With Hornex you can easily organize and compete in tournaments. We
+              make it easy to get paid for your skills.
+            </p>
+          </div>
         </div>
       </div>
-      <div className="to-brand bg-gradient-to-r from-amber-600">
+
+      <section className="to-brand bg-gradient-to-r from-amber-600">
         <div className="container mx-auto py-20">
-          <h4 className="mb-4 text-6xl font-bold text-white">
-            Built for organizers
-          </h4>
-          <p className="w-[40%] text-xl text-white">
-            Hornex is a platform that allows you to easily create and manage
-            tournaments. We take care of the hard work so you can focus on
-            organizing the best events.
-          </p>
-          <Image
-            src={Teemo}
-            alt="Hornex"
-            width={150}
-            className="mt-10"
-            height={150}
-          />
+          <div className="grid grid-cols-2">
+            <div>
+              <h4 className="mb-4 text-6xl font-extrabold text-white">
+                Built for organizers
+              </h4>
+              <p className="pr-10 text-xl text-white">
+                Hornex is a platform that allows you to easily create and manage
+                tournaments. We take care of the hard work so you can focus on
+                organizing the best events.
+              </p>
+              <Image
+                src={Teemo}
+                alt="Hornex"
+                width={150}
+                className="mt-10"
+                height={150}
+              />
+              <Button className="bg-dark mt-10 text-white">
+                Create a tournament
+              </Button>
+            </div>
+            <div className="flex justify-start">
+              <Image src={TournamentMockView} alt="Hornex" className="mt-10" />
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <section className="to-title bg-gradient-to-l from-white">
+        <div className="container mx-auto pt-20">
+          <div className="grid grid-cols-3">
+            <div className="flex items-end justify-end">
+              <Image
+                src={HeaderCtt}
+                alt="Hornex"
+                width={400}
+                className="mt-10"
+                height={400}
+              />
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <div className="">
+                <h4 className="text-dark mb-4 text-6xl font-extrabold">
+                  Results tracking
+                </h4>
+                <p className="text-dark text-left text-xl">
+                  We will soon be launching a feature that allows you to track
+                  your results and statistics from your games. That way you can
+                  manage tournaments easily.
+                </p>
+                <div className="">
+                  <Image
+                    src={AdminTournamentMockView}
+                    alt="Hornex"
+                    className="mt-10"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <footer className="dark:bg-dark mx-auto border-t border-gray-800 bg-white p-6 md:p-14">
         <div className="mx-auto w-full max-w-screen-xl">
           <div className="grid grid-cols-2 gap-6 py-6 md:grid-cols-6">
@@ -69,7 +152,7 @@ function HomePage() {
               <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Hornex
               </h2>
-              <ul className=" font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" text-body font-medium ">
                 <li className="mb-4">
                   <a
                     href="https://www.google.com/maps/place/R.+Dailton+Fernandes+de+Carvalho,+32+-+S%C3%A3o+Pedro,+Barra+Mansa+-+RJ,+27340-010/@-22.5741039,-44.172524,17z/data=!3m1!4b1!4m6!3m5!1s0x9e9c2765cde3fb:0xe14e22a0f778d62b!8m2!3d-22.5741039!4d-44.172524!16s%2Fg%2F11c2gymxc8?entry=ttu"
@@ -78,16 +161,6 @@ function HomePage() {
                     R. Dailton Fernandes de Carvalho, 32
                     <br />
                     Rio de Janeiro, Brasil - CEP 27340-010
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a
-                    target="_blank"
-                    href="tel:+55(24)981655545"
-                    className="hover:underline"
-                    rel="noreferrer"
-                  >
-                    +55 (24) 98165-5545
                   </a>
                 </li>
                 <li className="mb-4">
@@ -102,9 +175,12 @@ function HomePage() {
               <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Help center
               </h2>
-              <ul className=" font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" text-body font-medium ">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="https://discord.gg/6FavTJXR"
+                    className="hover:underline"
+                  >
                     Discord Server
                   </a>
                 </li>
@@ -119,7 +195,7 @@ function HomePage() {
               <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Account
               </h2>
-              <ul className=" font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" text-body font-medium ">
                 <li className="mb-4">
                   <Link href={routes.signIn} className="hover:underline">
                     Login
@@ -127,7 +203,7 @@ function HomePage() {
                 </li>
                 <li className="mb-4">
                   <Link href={routes.register} className="hover:underline">
-                    Register
+                    Sign Up
                   </Link>
                 </li>
               </ul>
@@ -136,7 +212,7 @@ function HomePage() {
               <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Legal
               </h2>
-              <ul className=" font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" text-body font-medium ">
                 <li className="mb-4">
                   <Link href={routes.privacyPolicy} className="hover:underline">
                     Privacy Policy
@@ -156,7 +232,7 @@ function HomePage() {
               <h2 className="text-body mb-6  font-semibold uppercase dark:text-white">
                 Company
               </h2>
-              <ul className=" font-medium text-gray-500 dark:text-gray-400">
+              <ul className=" text-body font-medium">
                 <li className="mb-4">
                   <a href="#" className=" hover:underline">
                     About
@@ -166,14 +242,14 @@ function HomePage() {
             </div>
           </div>
           <div className="mx-auto border-t border-gray-800 px-4 py-6 md:flex md:items-center md:justify-between">
-            <span className=" text-gray-500 dark:text-gray-300 sm:text-center">
-              © 2023 <Link href="/">Hornex™</Link>
+            <span className=" text-body dark:text-gray-300 sm:text-center">
+              © 2024 <Link href="/">Hornex™</Link>
               <br />
-              {t('rights-reserved')}
+              rights reserverd
             </span>
             <div className="mt-4 flex items-center space-x-5 sm:justify-center md:mt-0">
               <a
-                href="#"
+                href="https://discord.gg/6FavTJXR"
                 className="hover:text-body text-gray-400 dark:hover:text-white"
               >
                 <svg
@@ -241,5 +317,3 @@ function HomePage() {
     </div>
   );
 }
-
-export default HomePage;

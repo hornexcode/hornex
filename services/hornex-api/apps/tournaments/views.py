@@ -1,3 +1,5 @@
+import time
+
 import structlog
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
@@ -110,11 +112,10 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
     pagination_class = TournamentPagination
 
     def get_queryset(self):
+        # time.sleep(10)
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.all().exclude(
-                status=LeagueOfLegendsTournament.StatusOptions.ENDED
-            )
+            self.queryset = LeagueOfLegendsTournament.objects.all()
             self.serializer_class = LeagueOfLegendsTournamentSerializer
         return super().get_queryset()
 

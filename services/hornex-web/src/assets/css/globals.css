@@ -318,7 +318,3 @@ Styles for Swiper slider
 .highlight-white-20 {
   box-shadow: inset 0 1px 0 0 #fff3;
 }
-
-iframe {
-  background-color: transparent !important;
-}
