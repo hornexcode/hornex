@@ -1,6 +1,7 @@
 from django.urls import path
 
 from apps.tournaments.views import (
+    LeagueOfLegendsTournamentReadOnlyViewSet,
     OrganizerMatchViewSet,
     OrganizerTournamentViewSet,
     PublicTournamentViewSet,
@@ -149,7 +150,7 @@ urlpatterns = [
     # Returns details of a tournament
     path(
         "/<str:platform>/<str:game>/tournaments/<str:id>/details",
-        PublicTournamentViewSet.as_view({"get": "retrieve"}),
+        LeagueOfLegendsTournamentReadOnlyViewSet.as_view({"get": "retrieve"}),
         name="details",
     ),
     path(

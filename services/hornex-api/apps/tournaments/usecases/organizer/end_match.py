@@ -40,7 +40,7 @@ class EndMatchUseCase:
 
         ch_winner: Registration = winner.registration_set.filter(tournament=tournament).first()
 
-        scores_csv = f"{match.team_a}-{match.team_b}"
+        scores_csv = f"{match.team_a_score}-{match.team_b_score}"
         try:
             ch_match: ChallongeMatch = ChallongeMatch.update(
                 tournament=tournament.challonge_tournament_id,
