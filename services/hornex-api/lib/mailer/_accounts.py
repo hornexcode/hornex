@@ -1,14 +1,4 @@
-import resend
-
-
-def _send_email(to, subject, body):
-    params = {
-        "from": "Hornex <no-reply@hornex.gg>",
-        "to": to,
-        "subject": subject,
-        "text": body,
-    }
-    resend.Emails.send(params)
+from lib.mailer._sender import _send_email
 
 
 def send_welcome_email(to: str):
