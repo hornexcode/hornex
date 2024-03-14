@@ -77,3 +77,8 @@ class FinishMatchParams(serializers.Serializer):
 class EndTournamentParams(serializers.Serializer):
     tournament_id = serializers.UUIDField()
     user_id = serializers.UUIDField()
+
+
+class CancelRegistrationParams(serializers.Serializer):
+    registration_id = serializers.UUIDField()
+    user_id = serializers.UUIDField()

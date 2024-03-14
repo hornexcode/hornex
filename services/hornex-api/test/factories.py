@@ -177,7 +177,7 @@ class GameIdFactory:
 
 class RegistrationFactory:
     @staticmethod
-    def new(team: Team, tournament: Tournament, challonge_participant_id: int):
+    def new(team: Team, tournament: Tournament, challonge_participant_id: int = 1):
         """
         Create a new Registration with the given params.
         """

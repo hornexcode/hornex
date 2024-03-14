@@ -129,6 +129,11 @@ urlpatterns = [
         name="registrations",
     ),
     path(
+        "/registrations/<str:id>/cancel",
+        RegistrationViewSet.as_view({"delete": "cancel"}),
+        name="cancel-registration",
+    ),
+    path(
         "/tournaments/<str:tournament>/teams/<str:team>/check-in",
         check_in,
         name="check-in",

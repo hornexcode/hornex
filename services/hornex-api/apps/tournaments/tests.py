@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.teams.models import Team
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
-from apps.tournaments.models import Match, Rank
+from apps.tournaments.models import Match, Rank, Registration
 from apps.users.models import User
 from lib.challonge import Match as ChMatch
 from lib.challonge import Participant
@@ -1047,3 +1047,46 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
             self.tournament.refresh_from_db()
             self.assertNotEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
             self.assertEqual(str(e), "Failed end tournament at Challonge")
+
+
+class CancelRegistrationTest(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path("", include("apps.tournaments.urls")),
+    ]
+
+    def setUp(self):
+        self.credentials = {
+            "email": "testuser",
+            "password": "testpass",
+        }
+
+        self.user = User.objects.create_user(**self.credentials)
+
+        self.refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
+
+        self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
+
+        self.team = TeamFactory.new(created_by=self.user)
+        self.team.add_member(game_id=GameIdFactory.new(user=self.user))
+        self.registration = RegistrationFactory.new(
+            team=self.team, tournament=self.tournament
+        )
+
+    def test_cancel_registration(self):
+        url = reverse(
+            "tournaments:cancel-registration",
+            kwargs={
+                "id": self.registration.id,
+            },
+        )
+
+        resp = self.client.delete(
+            url,
+        )
+
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(Registration.objects.all().count(), 0)

@@ -33,6 +33,7 @@ from apps.tournaments.models import (
 )
 from apps.tournaments.pagination import TournamentPagination
 from apps.tournaments.requests import (
+    CancelRegistrationParams,
     CheckInTournamentParams,
     CreateAndRegisterTeamIntoTournamentParams,
     EndTournamentParams,
@@ -52,6 +53,8 @@ from apps.tournaments.serializers import (
     TournamentSerializer,
 )
 from apps.tournaments.usecases import (
+    CancelRegistrationInput,
+    CancelRegistrationUseCase,
     CreateAndRegisterTeamIntoTournamentInput,
     CreateAndRegisterTeamIntoTournamentUseCase,
     ListRegisteredTeamsParams,
@@ -446,6 +449,18 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         )
         teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
         return super().get_queryset().filter(team__in=teams)
+
+    @action(detail=True, methods=["delete"])
+    def cancel(self, request, *args, **kwargs):
+        params = CancelRegistrationParams(
+            data={"user_id": request.user.id, "registration_id": kwargs.get("id")}
+        )
+        params.is_valid(raise_exception=True)
+
+        CancelRegistrationUseCase().execute(
+            CancelRegistrationInput(**params.validated_data)
+        )
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
 class LeagueOfLegendsTournamentReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):

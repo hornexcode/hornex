@@ -1,3 +1,7 @@
+from apps.tournaments.usecases.cancel_registration import (
+    CancelRegistrationInput,
+    CancelRegistrationUseCase,
+)
 from apps.tournaments.usecases.create_and_register_team_into_tournament import (
     CreateAndRegisterTeamIntoTournamentInput,
     CreateAndRegisterTeamIntoTournamentOutput,
@@ -31,4 +35,6 @@ __all__ = [
     "RegisterTeamIntoTournamentUseCase",
     "StartTournamentUseCase",
     "StartTournamentUseCaseParams",
+    "CancelRegistrationInput",
+    "CancelRegistrationUseCase",
 ]
