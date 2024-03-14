@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function XMarkIcon(props: React.SVGAttributes<{}>) {
   return (
     <svg

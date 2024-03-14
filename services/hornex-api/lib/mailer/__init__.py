@@ -5,6 +5,6 @@ import resend
 resend.api_key = os.environ["RESEND_API_KEY"]
 
 # Import accounts
-from lib.mailer._accounts import send_welcome_email
+from lib.mailer._accounts import send_welcome_email  # noqa
 
 __all__ = ["send_welcome_email"]

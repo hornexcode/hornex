@@ -2,15 +2,11 @@ import Loading from './loading';
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
 import { TournamentContextProvider } from '@/contexts/tournament';
 import { AppLayout } from '@/layouts';
-import {
-  Participant,
-  ParticipantCheckedInStatus,
-  Registration,
-  Tournament,
-} from '@/lib/models';
+import { Participant, Registration } from '@/lib/models';
+import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 
 export type GameID = {
   id: string;
@@ -90,15 +86,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const { data: registrations, error: registrationsError } =
-    await getTournamentRegistrations(
-      {
-        id: tournament.id,
-        game: ctx.query.game || '',
-        platform: ctx.query.platform || '',
-      },
-      ctx.req
-    );
+  const { data: registrations } = await getTournamentRegistrations(
+    {
+      id: tournament.id,
+      game: ctx.query.game || '',
+      platform: ctx.query.platform || '',
+    },
+    ctx.req
+  );
 
   console.log(registrations);
 
