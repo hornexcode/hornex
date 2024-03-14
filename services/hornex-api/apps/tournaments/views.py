@@ -319,7 +319,7 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         return Response({"success": True}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["patch"])
-    def finilize(self, request, *args, **kwargs):
+    def finalize(self, request, *args, **kwargs):
         params = EndTournamentParams(
             data={"user_id": request.user.id, "tournament_id": kwargs.get("id")}
         )

@@ -2,7 +2,6 @@ import uuid
 from test.factories import (
     GameIdFactory,
     LeagueOfLegendsTournamentFactory,
-    RegistrationFactory,
     TeamFactory,
     UserFactory,
 )
@@ -27,9 +26,6 @@ class TestWebhooks(APITestCase):
             organizer=UserFactory.new(),
         )
 
-        RegistrationFactory.new(
-            tournament=self.tournament, team=self.team, challonge_participant_id=123
-        )
         self.registration = Registration.objects.create(
             tournament=self.tournament,
             team=self.team,
@@ -77,7 +73,7 @@ class TestWebhooks(APITestCase):
             Registration.objects.first().status,
             Registration.RegistrationStatusOptions.ACCEPTED,
         )
-        self.assertEqual(Tournament.objects.first().teams.count(), 1)
+        self.assertEqual(Tournament.objects.first().registered_teams.count(), 1)
 
     @patch("apps.webhooks.decorators.is_ip_authorized")
     @patch("apps.webhooks.decorators.check_signature")

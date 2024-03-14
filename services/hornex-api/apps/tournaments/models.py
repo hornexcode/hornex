@@ -82,7 +82,7 @@ class Tournament(BaseModel):
         self.save()
 
     def get_number_of_rounds(self):
-        return math.log2(self.registrations.count())
+        return math.log2(self.registered_teams.count())
 
     def is_last_round(self):
         return self.current_round == self.get_number_of_rounds()
@@ -111,7 +111,7 @@ class Tournament(BaseModel):
         return registration
 
     def add_team(self, team):
-        self.teams.add(team)
+        self.registered_teams.add(team)
         self.save()
 
     def is_checkin_open(self) -> bool:
@@ -176,13 +176,13 @@ class Registration(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    challonge_participant_id = models.IntegerField()
+    challonge_participant_id = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"Registration ({self.id}) | {self.tournament.name}"
 
     def confirm_registration(self):
-        self.tournament.teams.add(self.team)
+        self.tournament.registered_teams.add(self.team)
         self.tournament.save()
         self.status = Registration.RegistrationStatusOptions.ACCEPTED
         self.save()
