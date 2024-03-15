@@ -192,6 +192,11 @@ export const dataLoader = <T, Data = unknown>(
       config?: SWRConfiguration,
       headers: Record<string, string> = {}
     ) => {
+      const token = parseCookies(null)[HX_COOKIE];
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       return useSWR<UDT>(
         path,
         (url: string, options: RequestInit = {}) =>
