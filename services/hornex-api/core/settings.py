@@ -14,6 +14,7 @@ import os
 import sys
 from datetime import timedelta
 from pathlib import Path
+from urllib.parse import urlparse
 
 import dotenv
 import structlog
@@ -253,11 +254,10 @@ structlog.configure(
 
 def get_root_domain():
     # grab hostname from current site url
-    # full_domain = urlparse(get_settings("SITE_URL", "https://www.axios.com")).hostname
+    full_domain = urlparse(get_settings("SITE_URL", "https://www.hornex.gg")).hostname
     # only use the top level domain
-    # root_domain = f"{'.'.join(full_domain.split('.')[-2:])}"
-    # return root_domain
-    return "www.hornex.gg"
+    root_domain = f"{'.'.join(full_domain.split('.')[-2:])}"
+    return root_domain
 
 
 SESSION_COOKIE_DOMAIN = get_root_domain()
