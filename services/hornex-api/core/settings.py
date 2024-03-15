@@ -14,7 +14,6 @@ import os
 import sys
 from datetime import timedelta
 from pathlib import Path
-from urllib.parse import urlparse
 
 import dotenv
 import structlog

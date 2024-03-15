@@ -1,5 +1,6 @@
 from typing import Optional, TypeVar
 
+import structlog
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
@@ -25,6 +26,8 @@ AUTH_HEADER_TYPE_BYTES: set[bytes] = {h.encode(HTTP_HEADER_ENCODING) for h in AU
 AuthUser = TypeVar("AuthUser", AbstractBaseUser, TokenUser)
 
 
+logger = structlog.get_logger(__name__)
+
 AUTH_COOKIE_NAME = "hx"
 
 
@@ -43,6 +46,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request: Request) -> Optional[tuple[AuthUser, Token]]:
         cookie_jwt = request.COOKIES.get(AUTH_COOKIE_NAME)
+        logger.info(f"cookie_jwt: {cookie_jwt}")
         if cookie_jwt:
             validated_token = self.get_validated_token(cookie_jwt)
         else:
