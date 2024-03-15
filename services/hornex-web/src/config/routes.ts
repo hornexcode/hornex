@@ -13,6 +13,7 @@ const routes = {
   teams: 'teams',
   createTeam: 'teams/create',
   signIn: '/signin',
+  login: '/login',
   admin: {
     tournaments: '/admin/tournaments',
     profile: '/admin/profile',

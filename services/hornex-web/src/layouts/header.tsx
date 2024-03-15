@@ -51,9 +51,9 @@ const Header = () => {
 
     return (
       <div className="flex items-center justify-center space-x-4">
-        <Link href={routes.signIn}>
+        <Link href={routes.login}>
           <div className=" flex items-center font-medium">
-            Sign In <LogInIcon className=" ml-2 h-5 w-5" />
+            Login <LogInIcon className=" ml-2 h-5 w-5" />
           </div>
         </Link>
         <Link href={routes.signup}>
