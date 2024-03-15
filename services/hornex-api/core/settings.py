@@ -249,3 +249,15 @@ structlog.configure(
 )
 
 # CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]
+
+
+def get_root_domain():
+    # grab hostname from current site url
+    # full_domain = urlparse(get_settings("SITE_URL", "https://www.axios.com")).hostname
+    # only use the top level domain
+    # root_domain = f"{'.'.join(full_domain.split('.')[-2:])}"
+    # return root_domain
+    return "www.hornex.gg"
+
+
+SESSION_COOKIE_DOMAIN = get_root_domain()
