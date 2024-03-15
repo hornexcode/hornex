@@ -52,7 +52,7 @@ class TokenViewBase(generics.GenericAPIView):
             httponly=True,
             path="/",
             secure=True,
-            samesite="None",
+            samesite="none",
         )
 
         return res
