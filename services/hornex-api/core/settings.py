@@ -258,7 +258,7 @@ def get_root_domain():
     # ).hostname
     # only use the top level domain
     # root_domain = f"{'.'.join(full_domain.split('.')[-2:])}"
-    return "api.hornexcode.com"
+    return "hornexcode.com"
 
 
 SESSION_COOKIE_DOMAIN = get_root_domain()
