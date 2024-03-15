@@ -4,7 +4,7 @@ import logging.config
 import time
 from pathlib import Path
 
-import psycopg2
+import pika
 import structlog
 
 from core.settings import LOGGING, get_settings
@@ -12,10 +12,11 @@ from core.settings import LOGGING, get_settings
 logging.config.dictConfig(LOGGING)
 logger = structlog.get_logger(Path(__file__).stem)
 
-log = logger.bind(database="postgres")
+log = logger.bind(database="rabbitmq")
 
-
-log.info("waiting for databases")
+host = get_settings("RABBITMQ_HOST")
+user = get_settings("RABBITMQ_USER")
+password = get_settings("RABBITMQ_PASSWORD")
 
 attempt = 0
 while True:
@@ -23,14 +24,11 @@ while True:
     log.info("checking", attempt=attempt)
 
     try:
-        psycopg2.connect(
-            host=get_settings("HORNEX_SQL_HOST"),
-            dbname=get_settings("HORNEX_SQL_DATABASE"),
-            user=get_settings("HORNEX_SQL_USER"),
-            password=get_settings("HORNEX_SQL_PASSWORD"),
-            connect_timeout=3,
+        credentials = pika.PlainCredentials(user, password)
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host, 5672, "/", credentials)
         )
-        log.info("success", attempt=attempt)
+        connection.close()
         break
 
     except Exception as e:
