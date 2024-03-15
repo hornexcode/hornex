@@ -2,7 +2,6 @@ import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
 import { Route } from '@/lib/routes';
 import { IncomingMessage } from 'http';
-import { parseCookies } from 'nookies';
 import useSWR, { SWRConfiguration } from 'swr';
 
 // type APIRouteMap = { [key in APIRouteName]: Route };
@@ -11,7 +10,7 @@ const isServer = typeof window === 'undefined';
 const API_ROOT = isServer
   ? `${process.env.API_URL}`
   : `${process.env.NEXT_PUBLIC_API_URL}`;
-const HX_COOKIE = 'hx.auth.token';
+const HX_COOKIE = 'hx';
 
 export type ParamMap = {
   [key: string]: string[] | string | number | undefined;

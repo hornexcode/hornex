@@ -1,14 +1,9 @@
-import {
-  LoggedInUser,
-  LoginRequest,
-  Token,
-} from '@/lib/auth/auth-context.types';
+import { LoggedInUser, Token } from '@/lib/auth/auth-context.types';
 import { dataLoader } from '@/lib/request';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
-import { setCookie } from 'nookies';
 
 const { fetch: getCurrentUser } = dataLoader<LoggedInUser>('getCurrentUser');
 
