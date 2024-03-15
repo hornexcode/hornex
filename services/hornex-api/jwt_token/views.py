@@ -47,11 +47,10 @@ class TokenViewBase(generics.GenericAPIView):
         # set the cookie with the token
         res = Response(serializer.validated_data, status=status.HTTP_200_OK)
         res.set_cookie(
-            "hx.auth.token",
-            serializer.validated_data["access"],
+            key="hx",
+            value=serializer.validated_data["access"],
             max_age=api_settings.ACCESS_TOKEN_LIFETIME.total_seconds(),
             httponly=True,
-            path="/",
             secure=True,
             domain=settings.SESSION_COOKIE_DOMAIN,
         )
@@ -60,7 +59,7 @@ class TokenViewBase(generics.GenericAPIView):
 
     def delete(self, request: Request, *args, **kwargs) -> Response:
         res = Response(status=status.HTTP_204_NO_CONTENT)
-        res.delete_cookie("hx.auth.token", path="/")
+        res.delete_cookie("hx", path="/")
         return res
 
 
