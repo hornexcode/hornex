@@ -50,9 +50,9 @@ class TokenViewBase(generics.GenericAPIView):
             key="hx",
             value=serializer.validated_data["access"],
             max_age=api_settings.ACCESS_TOKEN_LIFETIME.total_seconds(),
-            httponly=True,
             secure=True,
             domain=settings.SESSION_COOKIE_DOMAIN,
+            samesite="none",
         )
 
         return res
