@@ -2,6 +2,7 @@ import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
 import { Route } from '@/lib/routes';
 import { IncomingMessage } from 'http';
+import { parseCookies } from 'nookies';
 import useSWR, { SWRConfiguration } from 'swr';
 
 // type APIRouteMap = { [key in APIRouteName]: Route };
@@ -152,10 +153,13 @@ export const dataLoader = <T, Data = unknown>(
       params: ParamMap = {},
       payload?: Data
     ): Promise<FetchResponse<T>> => {
+      const token = parseCookies(null)[HX_COOKIE];
+
       return fetcher(route.href(params), {
         method,
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
         body: payload ? JSON.stringify(payload) : '',
         signal,
