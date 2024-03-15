@@ -51,6 +51,8 @@ class TokenViewBase(generics.GenericAPIView):
             max_age=api_settings.ACCESS_TOKEN_LIFETIME.total_seconds(),
             httponly=True,
             path="/",
+            secure=True,
+            samesite="None",
         )
 
         return res
