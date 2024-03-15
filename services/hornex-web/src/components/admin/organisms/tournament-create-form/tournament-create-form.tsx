@@ -30,7 +30,7 @@ import { useRouter } from 'next/router';
 import { useFieldArray, useForm } from 'react-hook-form';
 import z from 'zod';
 
-const { post: createTournament } = dataLoader<{}, {}>('createTournament');
+const { submit: createTournament } = dataLoader<{}, {}>('createTournament');
 
 export function TournamentCreateForm() {
   const { toast } = useToast();
