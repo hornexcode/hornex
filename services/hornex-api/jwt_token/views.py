@@ -46,7 +46,6 @@ class TokenViewBase(generics.GenericAPIView):
 
         # set the cookie with the token
         res = Response(serializer.validated_data, status=status.HTTP_200_OK)
-
         res.set_cookie(
             "hx.auth.token",
             serializer.validated_data["access"],

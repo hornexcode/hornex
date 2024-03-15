@@ -37,34 +37,10 @@ export const nextAuthOptions: NextAuthOptionsCallback = (req, res) => ({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // const response = await fetch(`${process.env.API_URL}/v1/token`, {
-        //   method: 'POST',
-        //   credentials: 'include',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(credentials),
-        // });
-        // if (!response.ok) {
-        //   throw new Error('Invalid credentials');
-        // }
         const { data: currentUser, error } = await getCurrentUser({}, req);
         if (error || !currentUser) {
           throw new Error('Invalid credentials');
         }
-        // const token = (await response.json()) as Token;
-
-        // const payload = JSON.parse(atob(token.access.split('.')[1])) as {
-        //   user_id: string;
-        //   user_name: string;
-        //   exp: number;
-        // };
-
-        // setCookie({ res }, 'hx.auth.token', token.access, {
-        //   maxAge: payload.exp - Date.now() / 1000,
-        //   path: '/',
-        //   httpOnly: true,
-        // });
 
         return {
           id: currentUser.id,
