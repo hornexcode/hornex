@@ -11,15 +11,23 @@ import {
 } from '@/components/ui/breadcrumb';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
 import { useTournament } from '@/contexts';
+import { GameId } from '@/lib/models/Account';
 import { getStatusStep } from '@/lib/models/Tournament';
+import { dataLoader } from '@/lib/request';
 import { FC } from 'react';
 
 type TournamentDetailsTemplateProps = {
   participantCheckedInStatus?: boolean;
 };
 
+const { useData: useGameIdsQuery } = dataLoader<GameId[]>('getGameIds');
+
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
   const { tournament, isRegistered } = useTournament();
+
+  const { data: gameIds } = useGameIdsQuery({});
+
+  const renderConnectAccount = !gameIds;
 
   return (
     <div className="mx-auto px-8 pt-8">
@@ -39,7 +47,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       </div>
 
       {/* connect account */}
-      {!false && <ConnectAccountButton />}
+      {renderConnectAccount && <ConnectAccountButton />}
 
       {/* headline */}
       <TournamentDetailsHeadline isCheckedIn={false} />

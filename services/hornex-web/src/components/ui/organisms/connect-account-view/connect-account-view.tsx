@@ -20,25 +20,25 @@ const ConnectAccountView = () => {
   const returnPath = `return_path=${router.asPath}`;
 
   return (
-    <div className="bg-dark rounded sm:w-[450px]">
+    <div className="bg-dark rounded sm:w-[400px]">
       <div className="bg-medium-dark flex items-center rounded-t p-5">
         <LolFlatIcon className=" mr-4 h-12 w-12" />
         <div>
-          <h4 className="text-title font-bold">League of Legends</h4>
-          <p className="text-xs">Connect your account</p>
+          <h4 className="text-title text-xl font-bold">League of Legends</h4>
+          <p className="text-body">Connect your account</p>
         </div>
       </div>
       <div className="bg-light-dark p-5">
-        <div className="flex justify-center py-5">
+        {/* <div className="flex justify-center py-5">
           <Image
             className="w-2/3"
             src={RiotLogoFullBlackWhite}
             alt="Riot Logo"
           />
-        </div>
+        </div> */}
         <form className="space-y-4">
           <div>
-            <InputLabel title="Region" important />
+            <InputLabel title="Select your account region" important />
             <Listbox
               options={regionOptions}
               selectedOption={region}
@@ -49,11 +49,11 @@ const ConnectAccountView = () => {
           </div>
           <div>
             <Link
-              className="hightlight-white-20 text-dark flex w-full items-center justify-center rounded border border-amber-500 bg-amber-500 p-2 text-center text-sm font-bold"
+              className="hightlight-white-20 text-dark flex w-full items-center justify-center rounded border border-amber-500 bg-amber-500 p-2 text-center font-bold"
               href={`/oauth/riot/login?${returnPath}`}
             >
               <span>Login to your account</span>
-              <ArrowUpRightIcon className="ml-2" />
+              <ArrowUpRightIcon className="ml-2 w-5" />
             </Link>
           </div>
         </form>
