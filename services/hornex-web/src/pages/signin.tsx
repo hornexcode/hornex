@@ -10,6 +10,7 @@ import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
+import { setCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -32,12 +33,7 @@ export default function LoginPage() {
   const { data: session } = useSession();
 
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<LoginForm>({
+  const { register, handleSubmit, setValue } = useForm<LoginForm>({
     resolver: zodResolver(form),
   });
 
@@ -46,12 +42,22 @@ export default function LoginPage() {
     setError('');
     setFetching(true);
 
-    const { error } = await login({}, data);
+    const { data: session, error } = await login({}, data);
     if (error) {
-      setError(error.message);
+      setError(error?.message);
       setFetching(false);
       return;
     }
+    if (!session) {
+      setError('Something went wrong');
+      setFetching(false);
+      return;
+    }
+
+    setCookie(null, 'hx', session.access, {
+      maxAge: 30 * 24 * 60 * 60,
+      path: '/',
+    });
 
     const res = await signIn('credentials', {
       email: data.email,

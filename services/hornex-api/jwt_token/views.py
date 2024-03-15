@@ -1,3 +1,4 @@
+import structlog
 from django.utils.module_loading import import_string
 from rest_framework import generics, status
 from rest_framework.request import Request
@@ -8,6 +9,8 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.settings import api_settings
 
 from core import settings
+
+logger = structlog.get_logger(__name__)
 
 
 class TokenViewBase(generics.GenericAPIView):
@@ -46,13 +49,15 @@ class TokenViewBase(generics.GenericAPIView):
 
         # set the cookie with the token
         res = Response(serializer.validated_data, status=status.HTTP_200_OK)
+
         res.set_cookie(
             key="hx",
             value=serializer.validated_data["access"],
             max_age=api_settings.ACCESS_TOKEN_LIFETIME.total_seconds(),
-            secure=True,
             domain=settings.SESSION_COOKIE_DOMAIN,
-            samesite="none",
+            secure=True,
+            httponly=True,
+            samesite="Strict",
         )
 
         return res

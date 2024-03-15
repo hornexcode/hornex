@@ -14,7 +14,6 @@ import os
 import sys
 from datetime import timedelta
 from pathlib import Path
-from urllib.parse import urlparse
 
 import dotenv
 import structlog
@@ -254,10 +253,12 @@ structlog.configure(
 
 def get_root_domain():
     # grab hostname from current site url
-    full_domain = urlparse(get_settings("SITE_URL", "https://www.hornex.gg")).hostname
+    # full_domain = urlparse(
+    # get_settings("HORNEX_API_BASE_URL", "https://api.hornexcode.com")
+    # ).hostname
     # only use the top level domain
-    root_domain = f"{'.'.join(full_domain.split('.')[-2:])}"
-    return root_domain
+    # root_domain = f"{'.'.join(full_domain.split('.')[-2:])}"
+    return "hornexcode.com"
 
 
 SESSION_COOKIE_DOMAIN = get_root_domain()
