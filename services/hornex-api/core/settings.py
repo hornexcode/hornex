@@ -254,7 +254,7 @@ structlog.configure(
 
 def get_root_domain():
     # grab hostname from current site url
-    full_domain = urlparse(get_settings("SITE_URL", "https://www.hornex.gg")).hostname
+    full_domain = urlparse(get_settings("SITE_URL", "https://www.hornexcode.com")).hostname
     # only use the top level domain
     root_domain = f"{'.'.join(full_domain.split('.')[-2:])}"
     return root_domain
