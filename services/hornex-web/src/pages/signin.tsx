@@ -3,6 +3,8 @@ import InputLabel from '@/components/ui/atoms/form/input-label';
 import { Logo } from '@/components/ui/atoms/logo';
 import { Input } from '@/components/ui/input';
 import routes from '@/config/routes';
+import { Token } from '@/lib/auth/auth-context.types';
+import { dataLoader } from '@/lib/request';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
@@ -19,6 +21,8 @@ const form = z.object({
 });
 
 type LoginForm = z.infer<typeof form>;
+
+const { submit: login } = dataLoader<Token, LoginForm>('login');
 
 export default function LoginPage() {
   const [success, setSuccess] = useState(false);
@@ -41,6 +45,13 @@ export default function LoginPage() {
     setSuccess(false);
     setError('');
     setFetching(true);
+
+    const { error } = await login({}, data);
+    if (error) {
+      setError(error.message);
+      setFetching(false);
+      return;
+    }
 
     const res = await signIn('credentials', {
       email: data.email,
@@ -97,7 +108,6 @@ export default function LoginPage() {
               <div>
                 <Input
                   type="password"
-                  placeholder="password"
                   {...register('password', { required: true })}
                 />
                 <div className="mt-1 flex items-center justify-between">
