@@ -66,6 +66,10 @@ export const routes = {
     method: Method.GET,
     schema: null,
   },
+  getGameIds: {
+    path: 'v1/accounts/game-ids',
+    method: Method.GET,
+  },
   getAvailableGames: {
     path: 'v1/games',
     method: Method.GET,
@@ -147,10 +151,6 @@ export const routes = {
   },
   connectRiotAccountCallback: {
     path: 'v1/accounts/league-of-legends/oauth/login/callback',
-    method: Method.GET,
-  },
-  getGameIds: {
-    path: 'v1/games/game-ids',
     method: Method.GET,
   },
   getTournamentRegistrations: {

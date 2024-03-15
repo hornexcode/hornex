@@ -5,6 +5,7 @@ import Button from '@/components/ui/atoms/button/button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { useTournament } from '@/contexts/tournament';
 import { TeamCheckInStatus } from '@/lib/models';
+import { GameId } from '@/lib/models/Account';
 import { getStatus, Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import {
@@ -28,6 +29,7 @@ const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
   'getTeamCheckInStatus'
 );
 const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
+const { useData: useGameIdsQuery } = dataLoader<GameId[]>('getGameIds');
 
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   isCheckedIn: initialIsCheckedIn,
@@ -36,6 +38,13 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
   const { tournament, isRegistered } = useTournament();
+
+  const {
+    data: gameIds,
+    error: gameidsError,
+    isLoading: gameidsIsLoading,
+  } = useGameIdsQuery({});
+
   const connectedGameId = {
     id: '123',
     nickname: 'hornex',
@@ -154,9 +163,9 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
         />
         <div className="bg-dark/60 absolute top-0 h-full w-full"></div>
         <div className="absolute right-0 top-4">
-          {connectedGameId && (
+          {gameIds !== undefined && (
             <div className="mx-4 block">
-              <ConnectedGameIds gameId={connectedGameId} />
+              <ConnectedGameIds gameIds={gameIds} />
             </div>
           )}
         </div>

@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.accounts.models import GameID, Profile
-from apps.accounts.serializers import ProfileSerializer
+from apps.accounts.serializers import GameIDSerializer, ProfileSerializer
 from apps.leagueoflegends.models import Session
 from jwt_token.authentication import JWTAuthentication
 from lib.riot.client import client as riot
@@ -105,3 +105,13 @@ class ProfileViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+
+
+class GameIDViewSet(viewsets.ModelViewSet):
+    queryset = GameID.objects.all()
+    serializer_class = GameIDSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)

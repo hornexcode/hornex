@@ -24,7 +24,7 @@ interface ListboxTypes {
 
 const listboxVariantClasses = {
   ghost:
-    'transition-shadow border border-border bg-white text-gray-900 hover:border-gray-900 hover:ring-1 hover:ring-gray-900 dark:border-border dark:bg-medium-dark dark:text-gray-100 dark:hover:border-gray-600 dark:hover:ring-gray-600',
+    'transition-shadow border border-border bg-dark text-gray-900 hover:border-gray-900 hover:ring-1 hover:ring-gray-900 dark:border-border dark:bg-medium-dark dark:text-gray-100 dark:hover:border-gray-600 dark:hover:ring-gray-600',
   solid:
     'transition-colors bg-gray-100 hover:bg-gray-200/70 dark:bg-gray-800 dark:hover:bg-gray-700',
   transparent: '',
@@ -59,7 +59,7 @@ export default function Listbox({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <HeadlessListbox.Options className="xs:p-2 shadow-large dark:bg-medium-dark dark:border-border absolute left-0 z-10 mt-1 grid w-full origin-top-right gap-0.5 rounded border border-gray-200 bg-white p-1 outline-none">
+          <HeadlessListbox.Options className="xs:p-2 shadow-large bg-background dark:border-border absolute left-0 z-10 mt-1 grid w-full origin-top-right gap-0.5 rounded border border-gray-200 p-1 outline-none">
             {options.map((option) => (
               <HeadlessListbox.Option key={option.value} value={option}>
                 {({ selected }) => (
