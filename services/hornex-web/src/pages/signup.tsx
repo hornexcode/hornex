@@ -70,7 +70,7 @@ export default function RegisterPage() {
         title: 'Account created.',
         description: "We've created your account for you.",
       });
-      router.push(routes.signIn);
+      router.push(routes.login);
     }
   }
 

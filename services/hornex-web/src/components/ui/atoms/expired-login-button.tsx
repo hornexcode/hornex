@@ -13,7 +13,7 @@ export const ExpiredLoginButton = () => {
       <div className="mt-4">
         {' '}
         <Link
-          href={routes.signIn}
+          href={routes.login}
           className="bg-brand text-dark mt-2 rounded p-2 px-4 "
         >
           Sign In

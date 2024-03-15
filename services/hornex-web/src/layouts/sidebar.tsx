@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 export const Sidebar = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { data: session } = useSession();
 
   return (
     <div
@@ -65,7 +66,8 @@ export const Sidebar = ({ className }: { className?: string }) => {
           <li
             className={cn(
               'relative rounded p-2 px-3',
-              router.pathname === routes.registrations && 'bg-brand/10'
+              router.pathname === routes.registrations && 'bg-brand/10',
+              !session && 'hidden'
             )}
           >
             {router.pathname === routes.registrations && (
@@ -97,14 +99,14 @@ export const Sidebar = ({ className }: { className?: string }) => {
           </li>
         </ul>
       </div>
-      <div className="p-4">
+      <div className={cn('p-4', !session && 'hidden')}>
         <h4 className="text-body px-2 text-sm font-bold uppercase">
           Organizer
         </h4>
         <ul className="mt-2 flex w-full flex-col font-medium">
           <li
             className={cn(
-              'relative rounded p-2 px-3',
+              'relative hidden rounded p-2 px-3',
               router.pathname === routes.admin.profile && 'bg-brand/10'
             )}
           >

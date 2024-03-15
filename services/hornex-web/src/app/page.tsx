@@ -1,4 +1,4 @@
-import { authOptions } from './api/auth/[...nextauth]/na';
+import { authOptions } from './api/auth/[...nextauth]/options';
 import AdminTournamentMockView from '@/assets/images/admin-tournament-mock-viewer.png';
 import HeaderCtt from '@/assets/images/header_ctt.png';
 import Teemo from '@/assets/images/teemo.png';
@@ -33,9 +33,9 @@ export default async function HomePage() {
     }
     return (
       <>
-        <Link href={routes.signIn} className="mr-4">
+        <Link href={routes.login} className="mr-4">
           <div className=" flex items-center font-medium">
-            Sign In <LogInIcon className=" ml-2 h-5 w-5" />
+            Login <LogInIcon className=" ml-2 h-5 w-5" />
           </div>
         </Link>
         <Link href={routes.signup}>
@@ -197,7 +197,7 @@ export default async function HomePage() {
               </h2>
               <ul className=" text-body font-medium ">
                 <li className="mb-4">
-                  <Link href={routes.signIn} className="hover:underline">
+                  <Link href={routes.login} className="hover:underline">
                     Login
                   </Link>
                 </li>

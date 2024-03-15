@@ -3,12 +3,18 @@ import { LoggedUser } from '@/domain';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { ChevronDownIcon, UserIcon } from 'lucide-react';
+import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
+import { destroyCookie } from 'nookies';
 import { Fragment } from 'react';
 
 export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
+  const router = useRouter();
+
   const handleLogout = async () => {
+    destroyCookie(null, 'hx');
     await signOut();
+    router.reload();
   };
 
   return (
