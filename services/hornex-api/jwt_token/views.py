@@ -57,6 +57,7 @@ class TokenViewBase(generics.GenericAPIView):
             secure=True,
             httponly=True,
             domain=settings.SESSION_COOKIE_DOMAIN,
+            samesite="Lax",
         )
 
         return res
