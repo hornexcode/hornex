@@ -57,13 +57,6 @@ class TokenViewBase(generics.GenericAPIView):
             secure=True,
             httponly=True,
             domain=settings.SESSION_COOKIE_DOMAIN,
-            samesite="None",
-        )
-
-        logger.info(
-            "Token set in cookie",
-            token=serializer.validated_data["access"],
-            domain=settings.SESSION_COOKIE_DOMAIN,
         )
 
         return res
