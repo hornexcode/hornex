@@ -7,6 +7,8 @@ from rest_framework_simplejwt.authentication import AUTH_HEADER_TYPES
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.settings import api_settings
 
+from core import settings
+
 
 class TokenViewBase(generics.GenericAPIView):
     permission_classes = ()
@@ -52,7 +54,7 @@ class TokenViewBase(generics.GenericAPIView):
             httponly=True,
             path="/",
             secure=True,
-            samesite="none",
+            domain=settings.SESSION_COOKIE_DOMAIN,
         )
 
         return res
