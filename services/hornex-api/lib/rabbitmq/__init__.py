@@ -7,7 +7,9 @@ host = settings.RABBITMQ_HOST
 
 credentials = pika.PlainCredentials(user, password)
 connection = pika.BlockingConnection(pika.ConnectionParameters(host, 5672, "/", credentials))
+
 channel = connection.channel()
+
 
 from lib.rabbitmq._publisher import send_message  # noqa
 

@@ -25,6 +25,7 @@ type Configuration struct {
 // Load read the env filename and load it into ENV for this process.
 func Load(filename string) error {
 	if err := godotenv.Load(filename); err != nil {
+		fmt.Println("Error loading .env file", err)
 		return errors.NewErrorf(errors.ErrorCodeUnknown, "loading env var file")
 	}
 

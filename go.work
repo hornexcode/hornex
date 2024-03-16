@@ -2,5 +2,5 @@ go 1.21.5
 
 use (
 	./lib/golang/src
-	./services/hornex-queue-consumer
+	./services/hornex-consumer
 )

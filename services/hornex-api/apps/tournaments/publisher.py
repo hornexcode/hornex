@@ -1,6 +1,6 @@
 from lib.rabbitmq import send_message
 
 
-def publish_tournament_created(tournament_id: str) -> None:
-    message = f'{{"tournament_id": "{tournament_id}"}}'
-    send_message(message, "tournament.created")
+def publish_match_started(match_id: str) -> None:
+    message = {"id": match_id}
+    send_message(message, "matches.event.started", "matches")

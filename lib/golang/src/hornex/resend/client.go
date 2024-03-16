@@ -1,34 +1,42 @@
 package resend
 
 import (
-	"bytes"
-	"fmt"
-	"net/http"
 	"os"
+
+	"github.com/resend/resend-go/v2"
+	"hornex.gg/hornex/envvar"
+	"hornex.gg/hornex/errors"
 )
 
 type Clientable interface {
-	Send(from string, to string, message []byte) error
+	Send() error
 }
 
 type Client struct {
+	resend *resend.Client
 }
 
-func NewClient() *Client {
-	return &Client{}
-}
-
-func (c *Client) Send(from string, to string, message []byte) error {
-	url := "https://api.resend.com/emails"
-	req, _ := http.NewRequest("POST", url, bytes.NewReader(message))
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "Bearer "+os.Getenv("RESEND_API_KEY"))
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		fmt.Println(err)
+func NewClient(conf *envvar.Configuration) *Client {
+	rsnd := resend.NewClient(os.Getenv("RESEND_API_KEY"))
+	return &Client{
+		resend: rsnd,
 	}
-	defer res.Body.Close()
+}
 
+func (c *Client) Send() error {
+	params := &resend.SendEmailRequest{
+		From:    "Acme <onboarding@resend.dev>",
+		To:      []string{"pedro357bm@gmail.com"},
+		Html:    "<strong>hello world</strong>",
+		Subject: "Hello from Golang",
+		Cc:      []string{"cc@example.com"},
+		Bcc:     []string{"bcc@example.com"},
+		ReplyTo: "replyto@example.com",
+	}
+
+	_, err := c.resend.Emails.Send(params)
+	if err != nil {
+		return errors.WrapErrorf(err, errors.ErrorCodeUnknown, "resend.Emails.Send")
+	}
 	return nil
 }
