@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "channels",  # websockets
     "corsheaders",  # dev only
     "django_crontab",
+    "pkg.grpc.apps.GRPCConfig",  # grpc
     # apps
     "apps.payments.apps.PaymentsConfig",
     "apps.users.apps.UsersConfig",

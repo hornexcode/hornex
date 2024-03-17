@@ -171,9 +171,9 @@ func (s *Server) ListenAndServe() error {
 				}
 
 				if err := s.match.Started(context.Background(), match); err != nil {
+					s.logger.Info("Error while processing match", zap.Error(err))
 					nack = true
 				}
-				s.logger.Info("Match started")
 
 			default:
 				nack = true

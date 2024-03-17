@@ -3,10 +3,79 @@
 
 ## Table of Contents
 
+- [hornex/match.proto](#hornex_match-proto)
+    - [Match](#hornex-Match)
+    - [MatchRetrieveRequest](#hornex-MatchRetrieveRequest)
+  
+    - [MatchService](#hornex-MatchService)
+  
 - [hornex/tournament.proto](#hornex_tournament-proto)
     - [Tournament](#hornex-Tournament)
   
 - [Scalar Value Types](#scalar-value-types)
+
+
+
+<a name="hornex_match-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## hornex/match.proto
+
+
+
+<a name="hornex-Match"></a>
+
+### Match
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+| round | [string](#string) |  |  |
+| tournament | [string](#string) |  |  |
+| team_a | [string](#string) |  |  |
+| team_b | [string](#string) |  |  |
+| status | [string](#string) |  |  |
+| challonge_match_id | [string](#string) |  |  |
+| riot_match_code | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="hornex-MatchRetrieveRequest"></a>
+
+### MatchRetrieveRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="hornex-MatchService"></a>
+
+### MatchService
+
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| Retrieve | [MatchRetrieveRequest](#hornex-MatchRetrieveRequest) | [Match](#hornex-Match) |  |
+
+ 
 
 
 

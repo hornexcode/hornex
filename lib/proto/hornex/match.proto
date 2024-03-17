@@ -1,0 +1,23 @@
+syntax = "proto3";
+package hornex;
+
+option go_package = "hornex.gg/hornex";
+
+service MatchService {
+  rpc Retrieve(MatchRetrieveRequest) returns (Match) {}
+}
+
+message Match {
+  string id = 1;
+  string round = 2;
+  string tournament = 3;
+  string team_a = 4;
+  string team_b = 5;
+  string status = 6;
+  string challonge_match_id = 7;
+  string riot_match_code = 8;
+}
+
+message MatchRetrieveRequest {
+  string id = 1;
+}
