@@ -8,7 +8,7 @@ GIT_REPO_URL="https://pedrosantosbr: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@git
 #GIT_REPO_URL="https://<your_username>:<your_PAT>@github.com/codewithmuh/django-aws-ec2-autoscaling.git"
 
 # Replace {YOUR_PROJECT_MAIN_DIR_NAME} with your actual project directory name
-PROJECT_MAIN_DIR_NAME="hornex-api"
+PROJECT_MAIN_DIR_NAME="hornex-api/services/hornex-api"
 
 # Clone repository
 git clone "$GIT_REPO_URL" "/home/ubuntu/$PROJECT_MAIN_DIR_NAME"

@@ -35,6 +35,24 @@ services:
       hornex-postgres:
         condition: service_healthy
 
+  hornex-grpc:
+    container_name: hornex-grpc
+    restart: always
+    entrypoint: ["python", "manage.py", "grpcserver"]
+    build:
+      context: ./services/hornex-api
+      dockerfile: Dockerfile
+      target: local
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./services/hornex-api:/src
+    env_file:
+      - ./services/hornex-api/env/dev.env
+    depends_on:
+      hornex-postgres:
+        condition: service_healthy
+
   hornex-web:
     container_name: hornex-web
     build:

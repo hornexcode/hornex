@@ -17,7 +17,7 @@ from apps.payments.serializers import (
     CreateStripePaymentRegistrationSerializer,
 )
 from apps.tournaments.models import Registration
-from jwt_token.authentication import JWTAuthentication
+from jwt.authentication import JWTAuthentication
 
 logger = structlog.get_logger(__name__)
 

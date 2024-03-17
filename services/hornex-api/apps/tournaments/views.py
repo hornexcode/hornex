@@ -77,7 +77,7 @@ from apps.tournaments.usecases.organizer import (
     StartMatchUseCase,
 )
 from core.route import extract_game_and_platform
-from jwt_token.authentication import JWTAuthentication
+from jwt.authentication import JWTAuthentication
 from lib.challonge import Tournament as ChallongeTournamentAPIResource
 
 logger = structlog.get_logger(__name__)

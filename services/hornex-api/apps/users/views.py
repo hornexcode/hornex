@@ -16,7 +16,7 @@ from apps.users.serializers import (
     UserSerializer,
     serialize_user,
 )
-from jwt_token.authentication import JWTAuthentication
+from jwt.authentication import JWTAuthentication
 
 
 # ViewSets define the view behavior.

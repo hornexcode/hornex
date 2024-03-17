@@ -3,8 +3,8 @@ from concurrent import futures
 import structlog
 
 import grpc
-from apps.tournaments.grpc.v1.match import match_pb2_grpc
-from apps.tournaments.grpc.v1.match.match_service import MatchServicer
+from pkg.grpc import match_pb2_grpc
+from pkg.grpc.match_service import MatchServicer
 
 logger = structlog.get_logger(__name__)
 
@@ -14,6 +14,7 @@ async def main() -> None:
     match_pb2_grpc.add_MatchServiceServicer_to_server(MatchServicer(), server)
     server.add_insecure_port("[::]:50051")
     logger.info("Starting gRPC server on [::]:50051")
+
     server.start()
     server.wait_for_termination()
 
