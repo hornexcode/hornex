@@ -21,6 +21,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
 
       rabbitmq:
         image: rabbitmq:3-management
@@ -32,6 +34,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5672:5672
 
     defaults:
       run:
