@@ -7,7 +7,7 @@
   "scripts": {
     "dev-up": "devops/scripts/setup && devops/scripts/local-cluster up && tilt up",
     "dev-down": "killall tilt ; devops/scripts/local-cluster down",
-    "postgres:reset": "devops/scripts/postgres-reset",
+    "postgres:reset": "devops/scripts/postgres-reset"
   },
   "devDependencies": {
     "@types/node": "^20.6.0",
