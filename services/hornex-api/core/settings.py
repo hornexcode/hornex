@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "corsheaders",  # dev only
     "django_crontab",
     "pkg.grpc.apps.GRPCConfig",  # grpc
+    "lib.rabbitmq.apps.RabbitmqConfig",  # rabbitmq
     # apps
     "apps.payments.apps.PaymentsConfig",
     "apps.users.apps.UsersConfig",
@@ -267,3 +268,4 @@ SESSION_COOKIE_DOMAIN = get_root_domain()
 RABBITMQ_USER = os.getenv("RABBITMQ_USER", "guest")
 RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")
 RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
+RABBITMQ_PORT = os.getenv("RABBITMQ_PORT", 5672)
