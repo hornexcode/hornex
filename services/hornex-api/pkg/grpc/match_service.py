@@ -1,6 +1,5 @@
 import structlog
 
-from apps.tournaments.models import Match
 from pkg.grpc import match_pb2, match_pb2_grpc
 
 logger = structlog.get_logger(__name__)

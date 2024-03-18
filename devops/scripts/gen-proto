@@ -33,6 +33,10 @@ fi
 # info "Compiling GRPC Gateway Typescript plugin."
 # go install hornex.io/scripts/protoc-gen-grpc-gateway-ts
 
+# check if PYTHONPATH is defined
+if [[ -z "${PYTHONPATH:-}" ]]; then
+  error "PYTHONPATH is not defined. Please set it to the virtualenv path."
+fi
 
 (
   cd ${REPO_ROOT}/lib/proto
@@ -54,7 +58,7 @@ fi
 
   PROTO_FILES=$(find ${REPO_ROOT}/lib/proto/hornex -name '*.proto')
 
-  "${REPO_ROOT}/.venv/bin/python" -m grpc_tools.protoc --proto_path="${REPO_ROOT}/lib/proto/hornex" --python_out="${REPO_ROOT}/services/hornex-api/pkg/grpc" --grpc_python_out="${REPO_ROOT}/services/hornex-api/pkg/grpc" ${PROTO_FILES}
+  "${PYTHONPATH}/python" -m grpc_tools.protoc --proto_path="${REPO_ROOT}/lib/proto/hornex" --python_out="${REPO_ROOT}/services/hornex-api/pkg/grpc" --grpc_python_out="${REPO_ROOT}/services/hornex-api/pkg/grpc" ${PROTO_FILES}
 )
 
 (
