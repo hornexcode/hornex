@@ -8,8 +8,6 @@
     "dev-up": "devops/scripts/setup && devops/scripts/local-cluster up && tilt up",
     "dev-down": "killall tilt ; devops/scripts/local-cluster down",
     "postgres:reset": "devops/scripts/postgres-reset",
-    "postgres:migrate:up": "devops/scripts/postgres-run-all-migrations",
-    "postgres:migrate:down": "devops/scripts/postgres-migrate-down"
   },
   "devDependencies": {
     "@types/node": "^20.6.0",
