@@ -65,7 +65,7 @@ export default async function HomePage() {
       <div className="relative h-[450px] w-full bg-[url('/images/league-of-legends/baron.jpg')] bg-cover bg-center bg-no-repeat">
         <div className="absolute top-0 h-full w-full backdrop-blur-sm"></div>
         <div className="bg-dark/60 absolute top-0 z-0 h-full w-full"></div>
-        <div className="absolute left-20 top-[50%] z-10 flex w-full justify-start">
+        <div className="absolute left-20 top-[50%] z-10 flex justify-start">
           <Logo size="lg" className="mr-8" />
           <div>
             <h1 className="py-4 text-6xl font-extrabold text-white">
