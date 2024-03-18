@@ -62,7 +62,7 @@ jobs:
           HORNEX_SQL_HOST: localhost
           HORNEX_SQL_PORT: 5432
 
-          RABBITMQ_HOST: rabbitmq
+          RABBITMQ_HOST: localhost
           RABBITMQ_PORT: 5672
           RABBITMQ_USER: hornex
           RABBITMQ_PASSWORD: hornex
@@ -87,14 +87,14 @@ jobs:
           APP_URL: https://your_test_ngrok_app_domain
 
           HORNEX_SQL_ENGINE: django.db.backends.postgresql
-          HORNEX_SQL_HOST: postgres
+          HORNEX_SQL_HOST: localhost
           HORNEX_SQL_DATABASE: hornex
           HORNEX_SQL_USER: postgres
           HORNEX_SQL_PASSWORD: hornex
 
           STRIPE_API_KEY: your_test_stripe_api_key
 
-          RABBITMQ_HOST: rabbitmq
+          RABBITMQ_HOST: localhost
           RABBITMQ_PORT: 5672
           RABBITMQ_USER: hornex
           RABBITMQ_PASSWORD: hornex
