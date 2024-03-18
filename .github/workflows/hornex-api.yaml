@@ -59,7 +59,7 @@ jobs:
           HORNEX_SQL_DATABASE: hornex
           HORNEX_SQL_USER: postgres
           HORNEX_SQL_PASSWORD: hornex
-          HORNEX_SQL_HOST: postgres
+          HORNEX_SQL_HOST: localhost
           HORNEX_SQL_PORT: 5432
 
           RABBITMQ_HOST: rabbitmq
