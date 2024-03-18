@@ -5,7 +5,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from requests import Response
 
-from apps.leagueoflegends.models import Provider
+from apps.tournaments.models import LeagueOfLegendsProvider as Provider
 
 
 class TestLeagueOfLegendsCommands(TestCase):

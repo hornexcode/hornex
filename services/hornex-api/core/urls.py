@@ -6,7 +6,7 @@ from rest_framework import permissions
 
 from apps.notifications.consumers import NotificationConsumer
 from core.healthcheck import health
-from jwt.views import (
+from lib.jwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )

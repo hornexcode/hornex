@@ -28,7 +28,7 @@ from apps.teams.serializers import (
     UserInviteSerializer,
 )
 from core.route import extract_game_and_platform
-from jwt.authentication import JWTAuthentication
+from lib.jwt.authentication import JWTAuthentication
 
 logger = structlog.get_logger(__name__)
 

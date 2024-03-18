@@ -15,7 +15,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.accounts.models import GameID
-from apps.leagueoflegends.tasks import participant_registered
 from apps.teams.models import Member, Team
 from apps.teams.serializers import (
     TeamSerializer,
@@ -77,8 +76,8 @@ from apps.tournaments.usecases.organizer import (
     StartMatchUseCase,
 )
 from core.route import extract_game_and_platform
-from jwt.authentication import JWTAuthentication
 from lib.challonge import Tournament as ChallongeTournamentAPIResource
+from lib.jwt.authentication import JWTAuthentication
 
 logger = structlog.get_logger(__name__)
 
@@ -181,6 +180,16 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     lookup_field = "id"
+
+    def get_queryset(self):
+        assert self.queryset is not None, (
+            "'%s' should either include a `queryset` attribute, "
+            "or override the `get_queryset()` method." % self.__class__.__name__
+        )
+
+        queryset = LeagueOfLegendsTournament.objects.filter(organizer=self.request.user)
+
+        return queryset
 
     def create(self, request, *args, **kwargs):
         params = TournamentCreateSerializer(data=request.data)
@@ -359,15 +368,6 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         ranks = tournament.ranks.all()[:prizes]
         serializer = StandingSerializer(ranks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def get_queryset(self):
-        game, _ = extract_game_and_platform(self.kwargs)
-        if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.filter(
-                organizer=self.request.user
-            )
-
-        return super().get_queryset()
 
 
 class OrganizerMatchViewSet(viewsets.ModelViewSet):
@@ -566,12 +566,6 @@ def check_in(request, *args, **kwargs):
             raise ValidationError({"error": errors.UserAlreadyCheckedInError})
 
         Checkin.objects.create(tournament=tournament, team=team, user=user)
-
-        participant_registered(
-            tournament_id=tournament.id,
-            team_id=team.id,
-            user_id=user.id,
-        )
 
         if Checkin.objects.filter(tournament=tournament, team=team).count() == 2:
             ChallongeTournamentAPIResource.checkin_team(

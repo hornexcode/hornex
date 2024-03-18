@@ -15,9 +15,20 @@ jobs:
         env:
           POSTGRES_DB: hornex
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: hornex
         options: >-
           --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      rabbitmq:
+        image: rabbitmq:3-management
+        env:
+          RABBITMQ_DEFAULT_USER: hornex
+          RABBITMQ_DEFAULT_PASS: hornex
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -59,11 +70,19 @@ jobs:
 
           APP_URL: https://your_test_ngrok_app_domain
 
-          HORNEX_SQL_ENGINE: django.db.backends.sqlite3
+          HORNEX_SQL_ENGINE: django.db.backends.postgresql
+          HORNEX_SQL_DATABASE: hornex
+          HORNEX_SQL_USER: postgres
+          HORNEX_SQL_PASSWORD: hornex
 
           CELERY_BROKER_URL: amqp://your_test_hornex:your_test_hornex@your_test_hornex_rabbitmq:5672/
 
           STRIPE_API_KEY: your_test_stripe_api_key
+
+          RABBITMQ_HOST: rabbitmq
+          RABBITMQ_PORT: 5672
+          RABBITMQ_USER: hornex
+          RABBITMQ_PASSWORD: hornex
 
       - run: poetry run ruff check .
 

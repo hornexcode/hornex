@@ -16,8 +16,7 @@ from rest_framework.response import Response
 
 from apps.accounts.models import GameID, Profile
 from apps.accounts.serializers import GameIDSerializer, ProfileSerializer
-from apps.leagueoflegends.models import Session
-from jwt.authentication import JWTAuthentication
+from lib.jwt.authentication import JWTAuthentication
 from lib.riot.client import client as riot
 
 client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")
@@ -70,16 +69,7 @@ def oauth_login_callback(request):
     )
 
     # expires_in to expires_at
-    expires_at = dt.now(tz=UTC) + td(seconds=token.expires_in)
-    Session.objects.create(
-        game_id=gid,
-        scope=token.scope,
-        expires_at=expires_at,
-        token_type=token.token_type,
-        refresh_token=token.refresh_token,
-        id_token=token.id_token,
-        access_token=token.access_token,
-    )
+    # expires_at = dt.now(tz=UTC) + td(seconds=token.expires_in)
 
     return Response({"return_path": state}, status=status.HTTP_200_OK)
 
