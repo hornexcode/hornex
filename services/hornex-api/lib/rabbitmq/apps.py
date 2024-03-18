@@ -15,4 +15,8 @@ class RabbitmqConfig(AppConfig):
             settings.RABBITMQ_USER,
             settings.RABBITMQ_PASSWORD,
         )
-        rabbitmq_bus.connect()
+        try:
+            rabbitmq_bus.connect()
+        except Exception as e:
+            print(f"RabbitMQ connection failed: {e}")
+            return
