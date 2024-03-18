@@ -84,7 +84,9 @@ class CreateCheckInTask:
 
     def execute(self):
         try:
-            participants = TournamentAPIResource.list_participants(self.challonge_tournament_id)
+            participants = TournamentAPIResource.list_participants(
+                self.challonge_tournament_id
+            )
 
             logger.info("Participants", participants=participants)
 
@@ -102,7 +104,9 @@ class CreateCheckInTask:
                 logger.warn("Team not found", team=self.team_id)
                 raise Exception("Team not found")
 
-            TournamentAPIResource.checkin_participant(self.challonge_tournament_id, result.id)
+            TournamentAPIResource.checkin_participant(
+                self.challonge_tournament_id, result.id
+            )
 
         except Exception as e:
             logger.warn("Failed to handle checkin team event with error: ", error=e)

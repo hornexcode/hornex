@@ -11,4 +11,6 @@ class Command(BaseCommand):
         for tournament in tournaments:
             id = tournament["tournament"]["id"]
             ChallongeTournamentResourceAPI.destroy(tournament["tournament"]["id"])
-            self.stdout.write(self.style.SUCCESS('Successfully deleted tournament of id "%s"' % id))
+            self.stdout.write(
+                self.style.SUCCESS('Successfully deleted tournament of id "%s"' % id)
+            )

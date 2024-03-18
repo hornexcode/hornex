@@ -40,7 +40,9 @@ class CreateTournamentUseCaseParams:
 
 class CreateTournamentUseCase:
     @transaction.atomic
-    def execute(self, params: CreateTournamentUseCaseParams) -> LeagueOfLegendsTournament:
+    def execute(
+        self, params: CreateTournamentUseCaseParams
+    ) -> LeagueOfLegendsTournament:
         organizer = get_object_or_404(User, id=params.organizer_id)
 
         now = datetime.now(tz=UTC)
@@ -50,7 +52,9 @@ class CreateTournamentUseCase:
         if start_at < now:
             raise ValidationError({"error": "Start date must be in the future"})
         if params.registration_start_date > start_at:
-            raise ValidationError({"error": "Registration start date must be before start date"})
+            raise ValidationError(
+                {"error": "Registration start date must be before start date"}
+            )
         if not params.is_entry_free and not params.entry_fee:
             raise ValidationError({"error": "Invalid entry fee"})
 
@@ -91,7 +95,9 @@ class CreateTournamentUseCase:
             raise Exception("Tournament not created at challonge")
 
         tournament.challonge_tournament_id = ch_tournament.id
-        tournament.challonge_tournament_url = f"https://challonge.com/{ch_tournament.url}"
+        tournament.challonge_tournament_url = (
+            f"https://challonge.com/{ch_tournament.url}"
+        )
 
         tournament.save()
 

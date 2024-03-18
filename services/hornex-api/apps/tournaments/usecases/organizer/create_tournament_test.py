@@ -67,10 +67,13 @@ class CreateTournamentTestCase(TestCase):
         self.assertEqual(result.description, self.params.description)
         self.assertEqual(
             result.registration_start_date,
-            datetime.strptime(self.params.registration_start_date, "%Y-%m-%dT%H:%M:%S.000Z"),
+            datetime.strptime(
+                self.params.registration_start_date, "%Y-%m-%dT%H:%M:%S.000Z"
+            ),
         )
         self.assertEqual(
-            result.start_date, datetime.strptime(self.params.start_date, "%Y-%m-%d").date()
+            result.start_date,
+            datetime.strptime(self.params.start_date, "%Y-%m-%d").date(),
         )
 
         self.assertEqual(
@@ -138,7 +141,14 @@ class CreateTournamentTestCase(TestCase):
                 size="4",
                 team_size="5",
                 map_name="map_name",
-                prizes=[{"place": 1, "is_money": True, "amount": 100, "content": "content 1"}],
+                prizes=[
+                    {
+                        "place": 1,
+                        "is_money": True,
+                        "amount": 100,
+                        "content": "content 1",
+                    }
+                ],
             )
 
         except serializers.ValidationError as e:
@@ -167,9 +177,9 @@ class CreateTournamentTestCase(TestCase):
             )
 
     def test_invalid_registration_start_date(self):
-        self.params.registration_start_date = (datetime.now(tz=UTC) + timedelta(days=10)).strftime(
-            "%Y-%m-%dT%H:%M:%S.000Z"
-        )
+        self.params.registration_start_date = (
+            datetime.now(tz=UTC) + timedelta(days=10)
+        ).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
         try:
             CreateTournamentUseCase().execute(self.params)
@@ -187,7 +197,9 @@ class CreateTournamentTestCase(TestCase):
         try:
             CreateTournamentUseCase().execute(self.params)
         except ValidationError as e:
-            self.assertEqual(str(e.detail["error"]), "Start date is greater than end date")
+            self.assertEqual(
+                str(e.detail["error"]), "Start date is greater than end date"
+            )
 
     def test_invalid_entry_fee(self):
         self.params.is_entry_free = False
@@ -233,7 +245,9 @@ class CreateTournamentTestCase(TestCase):
         try:
             CreateTournamentUseCase().execute(self.params)
         except ValidationError as e:
-            self.assertEqual(str(e.detail["error"]), "No money prizes must have description")
+            self.assertEqual(
+                str(e.detail["error"]), "No money prizes must have description"
+            )
 
     def test_challonge_not_created(self):
         with patch("lib.challonge.Tournament.create") as ch_tournament_create_mock:

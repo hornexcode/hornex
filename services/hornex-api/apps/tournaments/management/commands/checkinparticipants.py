@@ -24,7 +24,9 @@ class Command(BaseCommand):
         now = dt.now(tz=UTC)
         logger.info("Creating tournament...", now=now)
 
-        tester = User.objects.create(name="admin", email="tester@hornex.gg", password="test")
+        tester = User.objects.create(
+            name="admin", email="tester@hornex.gg", password="test"
+        )
 
         bronze_tier, _ = LeagueEntry.objects.get_or_create(
             tier=LeagueEntry.TierOptions.BRONZE, rank=LeagueEntry.RankOptions.I

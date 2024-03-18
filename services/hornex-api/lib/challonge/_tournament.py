@@ -218,7 +218,12 @@ class Tournament(ValueObject):
         logger.info("Tournament created", resp=resp.json())
 
         tournament = Tournament.construct_from(values=resp.json()["tournament"])
-        print(tournament.id, tournament.name, tournament.url, tournament.full_challonge_url)
+        print(
+            tournament.id,
+            tournament.name,
+            tournament.url,
+            tournament.full_challonge_url,
+        )
         return cast("Tournament", tournament)
 
     @classmethod
@@ -412,7 +417,10 @@ class Tournament(ValueObject):
         results = resp.json()
         return cast(
             Iterable["Participant"],
-            [Participant.construct_from(participant["participant"]) for participant in results],
+            [
+                Participant.construct_from(participant["participant"])
+                for participant in results
+            ],
         )
 
     @classmethod

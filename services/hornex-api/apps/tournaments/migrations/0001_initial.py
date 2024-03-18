@@ -22,7 +22,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 (
@@ -46,7 +49,12 @@ class Migration(migrations.Migration):
                 (
                     "rank",
                     models.CharField(
-                        choices=[("I", "I"), ("II", "Ii"), ("III", "Iii"), ("IV", "Iv")],
+                        choices=[
+                            ("I", "I"),
+                            ("II", "Ii"),
+                            ("III", "Iii"),
+                            ("IV", "Iv"),
+                        ],
                         max_length=25,
                     ),
                 ),
@@ -60,7 +68,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="LeagueOfLegendsProvider",
             fields=[
-                ("id", models.IntegerField(editable=False, primary_key=True, serialize=False)),
+                (
+                    "id",
+                    models.IntegerField(
+                        editable=False, primary_key=True, serialize=False
+                    ),
+                ),
                 (
                     "region",
                     models.CharField(
@@ -96,11 +109,19 @@ class Migration(migrations.Migration):
                         max_length=50,
                     ),
                 ),
-                ("platform", models.CharField(choices=[("pc", "Pc")], default="pc", max_length=50)),
+                (
+                    "platform",
+                    models.CharField(
+                        choices=[("pc", "Pc")], default="pc", max_length=50
+                    ),
+                ),
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 ("name", models.CharField(max_length=255)),
@@ -126,7 +147,10 @@ class Migration(migrations.Migration):
                 ("start_time", models.TimeField()),
                 ("finished_at", models.DateTimeField(blank=True, null=True)),
                 ("feature_image", models.CharField(blank=True, max_length=255)),
-                ("is_entry_free", models.BooleanField(default=False, help_text="No entry fee")),
+                (
+                    "is_entry_free",
+                    models.BooleanField(default=False, help_text="No entry fee"),
+                ),
                 ("entry_fee", models.IntegerField(blank=True, default=0, null=True)),
                 (
                     "currency",
@@ -141,7 +165,8 @@ class Migration(migrations.Migration):
                 (
                     "team_size",
                     models.IntegerField(
-                        default=5, validators=[apps.tournaments.validators.validate_team_size]
+                        default=5,
+                        validators=[apps.tournaments.validators.validate_team_size],
                     ),
                 ),
                 ("open_classification", models.BooleanField(default=False)),
@@ -149,7 +174,10 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("ended_at", models.DateTimeField(blank=True, null=True)),
                 ("challonge_tournament_id", models.IntegerField(blank=True, null=True)),
-                ("challonge_tournament_url", models.URLField(blank=True, max_length=500)),
+                (
+                    "challonge_tournament_url",
+                    models.URLField(blank=True, max_length=500),
+                ),
                 ("about", models.TextField(blank=True, default="")),
                 ("current_round", models.IntegerField(default=0)),
             ],
@@ -163,7 +191,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 ("round", models.IntegerField()),
@@ -199,7 +230,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("team", models.CharField(max_length=255)),
@@ -213,7 +247,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("place", models.IntegerField()),
@@ -229,7 +266,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 ("score", models.IntegerField()),
@@ -244,7 +284,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 ("game_slug", models.CharField(max_length=255)),
@@ -272,7 +315,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("title", models.CharField(max_length=255)),
@@ -285,13 +331,18 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 (
                     "team",
-                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="teams.team"),
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="teams.team"
+                    ),
                 ),
             ],
         ),

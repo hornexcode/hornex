@@ -46,7 +46,9 @@ class Command(BaseCommand):
                 )
 
             self.stdout.write(
-                self.style.SUCCESS(f"Successfully filled registrations for tournament {trnmnt_id}")
+                self.style.SUCCESS(
+                    f"Successfully filled registrations for tournament {trnmnt_id}"
+                )
             )
 
 

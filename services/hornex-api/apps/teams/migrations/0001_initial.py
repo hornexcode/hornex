@@ -17,7 +17,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
@@ -33,7 +36,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("is_admin", models.BooleanField(default=False)),
@@ -50,11 +56,19 @@ class Migration(migrations.Migration):
                         max_length=50,
                     ),
                 ),
-                ("platform", models.CharField(choices=[("pc", "Pc")], default="pc", max_length=50)),
+                (
+                    "platform",
+                    models.CharField(
+                        choices=[("pc", "Pc")], default="pc", max_length=50
+                    ),
+                ),
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 ("name", models.CharField(max_length=30, unique=True)),

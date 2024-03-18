@@ -52,7 +52,8 @@ def create_payment_registration(request):
     try:
         payment_registration = PaymentRegistration.objects.create(
             registration=registration,
-            amount=registration.tournament.entry_fee * registration.tournament.team_size,
+            amount=registration.tournament.entry_fee
+            * registration.tournament.team_size,
         )
     except Exception as e:
         logger.error("Error on creating payment", error=e)

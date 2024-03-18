@@ -59,12 +59,16 @@ class Command(BaseCommand):
             game="League of Legends",
         )
 
-        self.stdout.write(self.style.SUCCESS(f"Challonge Tournament {tournament.name} created"))
+        self.stdout.write(
+            self.style.SUCCESS(f"Challonge Tournament {tournament.name} created")
+        )
 
         if not tournament.id:
             raise ValueError("Tournament not created at challonge")
 
         tournament.challonge_tournament_id = ch_tournament.id
-        tournament.challonge_tournament_url = f"https://challonge.com/{ch_tournament.url}"
+        tournament.challonge_tournament_url = (
+            f"https://challonge.com/{ch_tournament.url}"
+        )
 
         tournament.save()

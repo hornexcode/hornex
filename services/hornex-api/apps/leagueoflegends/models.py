@@ -59,7 +59,9 @@ class Summoner(models.Model):
     game_id = models.ForeignKey(GameID, on_delete=models.CASCADE)
     puuid = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    league_entry = models.ForeignKey(LeagueEntry, on_delete=models.CASCADE, blank=True, null=True)
+    league_entry = models.ForeignKey(
+        LeagueEntry, on_delete=models.CASCADE, blank=True, null=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -83,7 +85,9 @@ class Provider(models.Model):
         RU = "RU"
 
     id = models.IntegerField(primary_key=True, editable=False)
-    region = models.CharField(max_length=10, choices=RegionType.choices, default=RegionType.BR)
+    region = models.CharField(
+        max_length=10, choices=RegionType.choices, default=RegionType.BR
+    )
     url = models.URLField(
         editable=True,
         null=False,
@@ -118,8 +122,12 @@ class Tournament(BaseTournament):
         blank=True,
     )
     riot_id = models.IntegerField(null=True, blank=True)
-    pick = models.CharField(max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK)
-    map = models.CharField(max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT)
+    pick = models.CharField(
+        max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK
+    )
+    map = models.CharField(
+        max_length=50, choices=MapType.choices, default=MapType.SUMMONERS_RIFT
+    )
     spectator = models.CharField(
         max_length=50,
         choices=SpectatorType.choices,
@@ -132,7 +140,9 @@ class Tournament(BaseTournament):
         ordering = ["-created_at"]
 
     def get_classifications(self) -> list[str]:
-        return [f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()]
+        return [
+            f"{entry.tier} {entry.rank}" for entry in self.allowed_league_entries.all()
+        ]
 
     def checkin(self):
         def has_enough_participants():
@@ -216,7 +226,9 @@ class Tournament(BaseTournament):
                 )
             except Exception as e:
                 logger.error("ChallongeTournamentResourceAPI.add_participants", error=e)
-                raise ValidationError({"error": "Failed to create participants in Challonge"})
+                raise ValidationError(
+                    {"error": "Failed to create participants in Challonge"}
+                )
 
         def create_challonge_tournament():
             try:
@@ -238,11 +250,15 @@ class Tournament(BaseTournament):
                 return chllng_trnmnt
             except Exception as e:
                 logger.error("ChallongeTournamentResourceAPI.create", error=e)
-                raise ValidationError({"error": "Failed to create tournament in Challonge"})
+                raise ValidationError(
+                    {"error": "Failed to create tournament in Challonge"}
+                )
 
         def register_leagueoflegends_tournament():
             try:
-                riot_provider_id = Provider.objects.get(region=Provider.RegionType.BR).id
+                riot_provider_id = Provider.objects.get(
+                    region=Provider.RegionType.BR
+                ).id
                 logger.info("Provider.objects.get successfully")
             except Provider.DoesNotExist:
                 riot_provider_id = RiotProviderResourceAPI.create(
@@ -260,7 +276,9 @@ class Tournament(BaseTournament):
                 logger.info("Provider.objects.create successfully")
             except Exception as e:
                 logger.error("Provider.objects.get", error=e)
-                raise ValidationError({"error": "Failed to retrieve and create provider"})
+                raise ValidationError(
+                    {"error": "Failed to retrieve and create provider"}
+                )
 
             try:
                 # 4. create tournament in riot
@@ -278,7 +296,9 @@ class Tournament(BaseTournament):
 
         # -
         if not has_enough_participants():
-            raise ValidationError({"error": "Minimum number of participants not reached"})
+            raise ValidationError(
+                {"error": "Minimum number of participants not reached"}
+            )
 
         chllng_trnmnt = create_challonge_tournament()
         add_participants_to_challonge_tournament(chllng_trnmnt.id)

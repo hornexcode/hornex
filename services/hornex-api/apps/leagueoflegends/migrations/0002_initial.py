@@ -92,7 +92,11 @@ class Migration(migrations.Migration):
                 (
                     "spectator",
                     models.CharField(
-                        choices=[("NONE", "None"), ("LOBBYONLY", "Lobbyonly"), ("ALL", "All")],
+                        choices=[
+                            ("NONE", "None"),
+                            ("LOBBYONLY", "Lobbyonly"),
+                            ("ALL", "All"),
+                        ],
                         default="LOBBYONLY",
                         max_length=50,
                     ),
@@ -121,7 +125,8 @@ class Migration(migrations.Migration):
             model_name="code",
             name="tournament",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="leagueoflegends.tournament"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="leagueoflegends.tournament",
             ),
         ),
     ]

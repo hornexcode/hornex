@@ -26,7 +26,9 @@ urlpatterns = [
     ),
     path(
         "/org/tournaments/<str:id>",
-        OrganizerTournamentViewSet.as_view({"patch": "partial_update", "get": "retrieve"}),
+        OrganizerTournamentViewSet.as_view(
+            {"patch": "partial_update", "get": "retrieve"}
+        ),
         name="details",
     ),
     path(

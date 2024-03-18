@@ -20,7 +20,9 @@ class StartTournamentUseCaseParams:
 
 class StartTournamentUseCase:
     @transaction.atomic
-    def execute(self, params: StartTournamentUseCaseParams) -> LeagueOfLegendsTournament:
+    def execute(
+        self, params: StartTournamentUseCaseParams
+    ) -> LeagueOfLegendsTournament:
         tournament = get_object_or_404(LeagueOfLegendsTournament, id=params.id)
 
         tournament.start()
@@ -31,8 +33,12 @@ class StartTournamentUseCase:
 
         for match in ch_matches:
             if match.round == 1:
-                team_a = Registration.objects.get(challonge_participant_id=match.player1_id).team
-                team_b = Registration.objects.get(challonge_participant_id=match.player2_id).team
+                team_a = Registration.objects.get(
+                    challonge_participant_id=match.player1_id
+                ).team
+                team_b = Registration.objects.get(
+                    challonge_participant_id=match.player2_id
+                ).team
 
                 Match.objects.create(
                     tournament=tournament,

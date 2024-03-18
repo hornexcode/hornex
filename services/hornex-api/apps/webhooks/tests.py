@@ -96,7 +96,9 @@ class TestWebhooks(APITestCase):
 
     @patch("apps.webhooks.decorators.is_ip_authorized")
     @patch("apps.webhooks.decorators.check_signature")
-    def test_efi_callback_payment_not_found_error(self, mocked_check_signature, mocked_verify_ip):
+    def test_efi_callback_payment_not_found_error(
+        self, mocked_check_signature, mocked_verify_ip
+    ):
         mocked_check_signature.return_value = True
         mocked_verify_ip.return_value = True
 
@@ -126,7 +128,9 @@ class TestWebhooks(APITestCase):
 
     @patch("apps.webhooks.decorators.is_ip_authorized")
     @patch("apps.webhooks.decorators.check_signature")
-    def test_efi_callback_amount_not_match_error(self, mocked_check_signature, mocked_verify_ip):
+    def test_efi_callback_amount_not_match_error(
+        self, mocked_check_signature, mocked_verify_ip
+    ):
         mocked_check_signature.return_value = True
         mocked_verify_ip.return_value = True
 
@@ -203,7 +207,9 @@ class TestWebhooks(APITestCase):
         mocked_verify_ip.return_value = True
 
         with mocked_confirm_registration:
-            mocked_confirm_registration.side_effect = Exception("error saving registration")
+            mocked_confirm_registration.side_effect = Exception(
+                "error saving registration"
+            )
 
             # pass hmac secret to query params
             url = reverse("efi-callback")

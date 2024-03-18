@@ -36,7 +36,9 @@ class RegisterSerializer(serializers.Serializer):
     player3 = PlayerSerializer()
     player4 = PlayerSerializer()
     player5 = PlayerSerializer()
-    users = serializers.ListField(child=serializers.ListField(child=serializers.CharField()))
+    users = serializers.ListField(
+        child=serializers.ListField(child=serializers.CharField())
+    )
     team = serializers.CharField()
 
 

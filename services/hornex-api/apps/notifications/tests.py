@@ -26,7 +26,9 @@ class TestNotification(APITestCase, URLPatternsTestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
     def test_list_notifications_200(self):
         """
@@ -57,9 +59,7 @@ class TestNotification(APITestCase, URLPatternsTestCase):
             recipient_id=self.user.id,
         )
 
-        url = (
-            f"{reverse('notification-list')}?activity={Notification.ActivityType.TEAM_INVITATION!s}"
-        )
+        url = f"{reverse('notification-list')}?activity={Notification.ActivityType.TEAM_INVITATION!s}"
         resp = self.client.get(url)
 
         self.assertEqual(resp.status_code, 200)
