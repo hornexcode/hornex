@@ -192,7 +192,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
                 organizer_id=request.user.id,
                 game=params.validated_data["game"],
                 name=params.validated_data["name"],
-                registration_start_date=params.validated_data["registration_start_date"],
+                registration_start_date=params.validated_data[
+                    "registration_start_date"
+                ],
                 start_date=params.validated_data["start_date"],
                 start_time=params.validated_data["start_time"],
                 is_entry_free=params.validated_data["is_entry_free"],
@@ -303,7 +305,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def matches(self, request, *args, **kwargs):
         tournament = self.get_object()
-        matches = Match.objects.filter(tournament=tournament, round=tournament.current_round)
+        matches = Match.objects.filter(
+            tournament=tournament, round=tournament.current_round
+        )
         serializer = MatchSerializer(matches, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -319,7 +323,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         ended_matches_count = tournament.matches.filter(
             round=tournament.current_round, status=Match.StatusType.ENDED
         ).count()
-        all_matches_count = tournament.matches.filter(round=tournament.current_round).count()
+        all_matches_count = tournament.matches.filter(
+            round=tournament.current_round
+        ).count()
 
         if ended_matches_count != all_matches_count:
             return Response(
@@ -339,7 +345,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
         )
         params.is_valid(raise_exception=True)
 
-        tournament = EndTournamentUseCase().execute(EndTournamentInput(**params.validated_data))
+        tournament = EndTournamentUseCase().execute(
+            EndTournamentInput(**params.validated_data)
+        )
         serializer = self.serializer_class(instance=tournament)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -355,7 +363,9 @@ class OrganizerTournamentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
-            self.queryset = LeagueOfLegendsTournament.objects.filter(organizer=self.request.user)
+            self.queryset = LeagueOfLegendsTournament.objects.filter(
+                organizer=self.request.user
+            )
 
         return super().get_queryset()
 
@@ -431,7 +441,9 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
-        gameids = GameID.objects.filter(user=self.request.user).values_list("id", flat=True)
+        gameids = GameID.objects.filter(user=self.request.user).values_list(
+            "id", flat=True
+        )
         teams = Team.objects.filter(members__in=gameids).values_list("id", flat=True)
         return super().get_queryset().filter(team__in=teams)
 
@@ -578,7 +590,9 @@ def check_in(request, *args, **kwargs):
 def tournaments_controller(request):
     if request.method == "POST":
         tournament = CreateTournamentUseCase().execute(
-            CreateTournamentUseCaseParams(**{**request.data, "organizer_id": request.user.id})
+            CreateTournamentUseCaseParams(
+                **{**request.data, "organizer_id": request.user.id}
+            )
         )
         return Response({"id": tournament.id}, status=status.HTTP_201_CREATED)
     if request.method == "GET":
@@ -599,7 +613,9 @@ def tournaments_controller(request):
     operation_summary="Register a team into tournament",
 )
 def register_team(request, id):
-    params = RegisterTeamIntoTournamentParams(data={**request.data, "tournament_id": id})
+    params = RegisterTeamIntoTournamentParams(
+        data={**request.data, "tournament_id": id}
+    )
     params.is_valid(raise_exception=True)
 
     uc = RegisterTeamIntoTournamentUseCase()
@@ -620,7 +636,9 @@ def create_and_register_team(request, id):
 
     uc = CreateAndRegisterTeamIntoTournamentUseCase()
 
-    output = uc.execute(CreateAndRegisterTeamIntoTournamentInput(**params.validated_data))
+    output = uc.execute(
+        CreateAndRegisterTeamIntoTournamentInput(**params.validated_data)
+    )
 
     return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
 
@@ -629,7 +647,9 @@ def create_and_register_team(request, id):
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
 def check_in_tournament(request, id):
-    params = CheckInTournamentParams(data={"organizer_id": request.user.id, "tournament_id": id})
+    params = CheckInTournamentParams(
+        data={"organizer_id": request.user.id, "tournament_id": id}
+    )
     params.is_valid(raise_exception=True)
 
     CheckInTournamentUseCase().execute(CheckInTournamentInput(**params.validated_data))

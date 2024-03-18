@@ -1,0 +1,1 @@
+extend-exclude = ["pkg/grpc/*_pb2.py"]
