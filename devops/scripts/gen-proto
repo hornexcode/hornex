@@ -20,17 +20,23 @@ if [[ "$("${GOPATH}/bin/buf" --version 2>&1)" != "${buf_version}" ]]; then
 fi
 
 mkdir -p ${REPO_ROOT}/lib/golang/src/hornex
-# mkdir -p ${REPO_ROOT}/lib/typescript/src/hornex
+mkdir -p ${REPO_ROOT}/lib/python/src/hornex
 
 if [[ ${1:-} == "rebuild" ]]; then
   warning "Deleting existing bindings"
   rm -f ${REPO_ROOT}/lib/golang/src/hornex/**/*.pb.go
   rm -f ${REPO_ROOT}/lib/golang/src/hornex/**/*.pb.gw.go
-  # rm -f ${REPO_ROOT}/lib/typescript/src/hornex/**/*_gw.ts
+  rm -f ${REPO_ROOT}/lib/python/src/hornex/**/*_pb2_grpc.py
+  rm -f ${REPO_ROOT}/lib/python/src/hornex/**/*_pb2.py
 fi
 
 # info "Compiling GRPC Gateway Typescript plugin."
 # go install hornex.io/scripts/protoc-gen-grpc-gateway-ts
+
+# check if PYTHONPATH is defined
+if [[ -z "${PYTHONPATH:-}" ]]; then
+  error "PYTHONPATH is not defined. Please set it to the virtualenv path."
+fi
 
 (
   cd ${REPO_ROOT}/lib/proto
@@ -49,6 +55,10 @@ fi
   set -x
   "${GOPATH}/bin/buf" lint
   "${GOPATH}/bin/buf" generate
+
+  PROTO_FILES=$(find ${REPO_ROOT}/lib/proto/hornex -name '*.proto')
+
+  "${PYTHONPATH}/python" -m grpc_tools.protoc --proto_path="${REPO_ROOT}/lib/proto/hornex" --python_out="${REPO_ROOT}/services/hornex-api/pkg/grpc" --grpc_python_out="${REPO_ROOT}/services/hornex-api/pkg/grpc" ${PROTO_FILES}
 )
 
 (

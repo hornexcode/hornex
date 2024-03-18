@@ -8,7 +8,8 @@ pre-commit:
   commands:
     root-install:
       glob: "**/*.{ts,js,tsx,jsx}"
-      run: bun install
+      run: |
+        bun install
 
     hornex-web:
       glob: "services/hornex-web/**"

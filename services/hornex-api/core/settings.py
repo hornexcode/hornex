@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "channels",  # websockets
     "corsheaders",  # dev only
     "django_crontab",
+    "pkg.grpc.apps.GRPCConfig",  # grpc
     # apps
     "apps.payments.apps.PaymentsConfig",
     "apps.users.apps.UsersConfig",
@@ -262,3 +263,7 @@ def get_root_domain():
 
 
 SESSION_COOKIE_DOMAIN = get_root_domain()
+
+RABBITMQ_USER = os.getenv("RABBITMQ_USER", "guest")
+RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")
+RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")

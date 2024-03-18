@@ -6,7 +6,7 @@ from rest_framework import permissions
 
 from apps.notifications.consumers import NotificationConsumer
 from core.healthcheck import health
-from jwt_token.views import (
+from jwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
@@ -23,7 +23,6 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
-
 
 urlpatterns = [
     # swagger

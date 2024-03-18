@@ -1,13 +1,13 @@
 import json
 from abc import ABC
 from dataclasses import asdict, dataclass
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 T = TypeVar("T", bound="Event")
 
 
 @dataclass
-class Event(ABC, Generic[T]):
+class Event(ABC):
     def to_message(self):
         return asdict(self)
 
@@ -22,14 +22,14 @@ class Event(ABC, Generic[T]):
 
 
 @dataclass
-class TournamentCreated(Event["TournamentCreated"]):
+class TournamentCreated(Event):
     id: str
     name: str
     game: str
 
 
 @dataclass
-class TournamentRegistrationConfirmed(Event["TournamentRegistrationConfirmed"]):
+class TournamentRegistrationConfirmed(Event):
     team_id: str
     tournament_id: str
     user_id: str

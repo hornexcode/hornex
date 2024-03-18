@@ -3,6 +3,35 @@
     "application/json"
   ],
   "definitions": {
+    "hornexMatch": {
+      "properties": {
+        "challongeMatchId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "riotMatchCode": {
+          "type": "string"
+        },
+        "round": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "teamA": {
+          "type": "string"
+        },
+        "teamB": {
+          "type": "string"
+        },
+        "tournament": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "protobufAny": {
       "additionalProperties": {},
       "properties": {
@@ -33,12 +62,17 @@
     }
   },
   "info": {
-    "title": "hornex/tournament.proto",
+    "title": "hornex/match.proto",
     "version": "version not set"
   },
   "paths": {},
   "produces": [
     "application/json"
   ],
-  "swagger": "2.0"
+  "swagger": "2.0",
+  "tags": [
+    {
+      "name": "MatchService"
+    }
+  ]
 }

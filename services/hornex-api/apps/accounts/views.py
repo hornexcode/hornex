@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from apps.accounts.models import GameID, Profile
 from apps.accounts.serializers import GameIDSerializer, ProfileSerializer
 from apps.leagueoflegends.models import Session
-from jwt_token.authentication import JWTAuthentication
+from jwt.authentication import JWTAuthentication
 from lib.riot.client import client as riot
 
 client_id = os.getenv("RIOT_RSO_CLIENT_ID", "")
