@@ -1,12 +1,10 @@
-import HornexLogo from '@/assets/images/hornex/hornex-logo.png';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
-import Loader from '@/components/ui/atoms/loader';
 import { Logo } from '@/components/ui/atoms/logo';
 import { Skeleton } from '@/components/ui/skeleton';
 import routes from '@/config/routes';
 import { LoggedUser } from '@/domain';
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
-import { Loader2, LogInIcon } from 'lucide-react';
+import { LogInIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { FC, useEffect, useState } from 'react';
