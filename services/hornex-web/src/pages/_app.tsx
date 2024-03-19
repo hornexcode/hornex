@@ -2,17 +2,15 @@ import '@/styles/global.css';
 import '@/styles/scrollbar.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { ni18nConfig } from '../../ni18n.config';
 import ModalsContainer from '@/components/modal-views/container';
 import { Toaster } from '@/components/ui/toaster';
 import classnames from 'classnames';
 import { NextPage } from 'next';
-import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
+import App, { AppContext, AppProps } from 'next/app';
 import { Roboto_Condensed } from 'next/font/google';
 import localFont from 'next/font/local';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { appWithI18Next } from 'ni18n';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
@@ -129,4 +127,4 @@ HornexApp.getInitialProps = async (context: AppContext) => {
   };
 };
 
-export default appWithI18Next(HornexApp, ni18nConfig);
+export default HornexApp;
