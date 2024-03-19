@@ -119,7 +119,7 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(
             LeagueOfLegendsTournament.objects.all().exclude(
-                status=LeagueOfLegendsTournament.StatusOptions.ENDED
+                status=LeagueOfLegendsTournament.StateOptions.ENDED
             )
         )
 

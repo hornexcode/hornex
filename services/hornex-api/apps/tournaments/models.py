@@ -16,7 +16,7 @@ MINIMUM_PARTICIPANTS = 0
 
 
 class Tournament(BaseModel):
-    class StatusOptions(models.TextChoices):
+    class StateOptions(models.TextChoices):
         ANNOUNCED = "announced"
         REGISTERING = "registering"
         RUNNING = "running"
@@ -33,10 +33,10 @@ class Tournament(BaseModel):
     description = models.TextField(blank=True, default="")
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     published = models.BooleanField(default=False)
-    status = models.CharField(
+    state = models.CharField(
         max_length=50,
-        choices=StatusOptions.choices,
-        default=StatusOptions.ANNOUNCED,
+        choices=StateOptions.choices,
+        default=StateOptions.ANNOUNCED,
     )
 
     registration_start_date = models.DateTimeField()
@@ -91,7 +91,7 @@ class Tournament(BaseModel):
 
     def start(self):
         now = datetime.now(tz=UTC)
-        self.status = Tournament.StatusOptions.RUNNING
+        self.status = Tournament.StateOptions.RUNNING
         self.current_round = 1
         if datetime.combine(self.start_date, self.start_time, tzinfo=UTC) > now:
             self.start_date = now.date()

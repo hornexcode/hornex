@@ -87,7 +87,7 @@ def create_tournaments():
         entry_fee=2000,
         max_teams=32,
         team_size=5,
-        status=Tournament.StatusOptions.REGISTERING,
+        status=Tournament.StateOptions.REGISTERING,
         prize_pool_enabled=True,
         open_classification=True,
         is_entry_free=False,
