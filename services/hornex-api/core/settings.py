@@ -268,7 +268,9 @@ else:
                 "formatter": "json_formatter",
             }
         },
-        "loggers": {"root": {"handlers": ["console"], "level": "INFO", "propagate": False}},
+        "loggers": {
+            "root": {"handlers": ["console"], "level": "INFO", "propagate": False}
+        },
     }
 
 # CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]
