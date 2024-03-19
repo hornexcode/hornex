@@ -17,13 +17,19 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
                 (
                     "game",
                     models.CharField(
-                        choices=[("league-of-legends", "League Of Legends"), ("cs-go", "Cs Go")],
+                        choices=[
+                            ("league-of-legends", "League Of Legends"),
+                            ("cs-go", "Cs Go"),
+                        ],
                         max_length=50,
                     ),
                 ),
@@ -38,7 +44,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="LeagueOfLegendsSummoner",
             fields=[
-                ("id", models.CharField(max_length=500, primary_key=True, serialize=False)),
+                (
+                    "id",
+                    models.CharField(max_length=500, primary_key=True, serialize=False),
+                ),
                 ("puuid", models.CharField(max_length=255)),
                 ("name", models.CharField(max_length=255)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
@@ -51,7 +60,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("version", models.CharField(max_length=255)),

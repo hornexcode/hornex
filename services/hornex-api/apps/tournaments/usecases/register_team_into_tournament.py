@@ -29,7 +29,9 @@ class RegisterTeamIntoTournamentOutput:
 @dataclass
 class RegisterTeamIntoTournamentUseCase:
     @transaction.atomic
-    def execute(self, params: RegisterTeamIntoTournamentInput) -> RegisterTeamIntoTournamentOutput:
+    def execute(
+        self, params: RegisterTeamIntoTournamentInput
+    ) -> RegisterTeamIntoTournamentOutput:
         tournament = get_object_or_404(Tournament, id=params.tournament_id)
         team = get_object_or_404(Team, id=params.team_id)
 

@@ -18,5 +18,7 @@ class Command(BaseCommand):
             u.save()
 
             GameID.objects.create(
-                user=u, game=GameID.GameOptions.LEAGUE_OF_LEGENDS, nickname=fake.user_name()
+                user=u,
+                game=GameID.GameOptions.LEAGUE_OF_LEGENDS,
+                nickname=fake.user_name(),
             )

@@ -20,7 +20,9 @@ class TermsAndConditionsAgreement(models.Model):
 
 class GameID(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField("users.User", on_delete=models.CASCADE, related_name="game_id")
+    user = models.OneToOneField(
+        "users.User", on_delete=models.CASCADE, related_name="game_id"
+    )
 
     class GameOptions(models.TextChoices):
         LEAGUE_OF_LEGENDS = "league-of-legends"
@@ -54,7 +56,10 @@ class LeagueOfLegendsSummoner(models.Model):
     puuid = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     ello = models.ForeignKey(
-        "tournaments.LeagueOfLegendsLeague", on_delete=models.CASCADE, blank=True, null=True
+        "tournaments.LeagueOfLegendsLeague",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -66,7 +71,9 @@ class LeagueOfLegendsSummoner(models.Model):
 
 class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField("users.User", on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField(
+        "users.User", on_delete=models.CASCADE, related_name="profile"
+    )
     discord_link = models.URLField(blank=True)
     twitter_link = models.URLField(blank=True)
     twitch_link = models.URLField(blank=True)

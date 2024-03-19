@@ -25,7 +25,9 @@ class CreateAndRegisterTeamIntoTournamentUseCaseTest(TestCase):
 
     def test_mount_team(self):
         users = [UserFactory.new() for i in range(4)]
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
         params = CreateAndRegisterTeamIntoTournamentInput(
@@ -39,7 +41,9 @@ class CreateAndRegisterTeamIntoTournamentUseCaseTest(TestCase):
     def test_team_already_exist(self):
         TeamFactory.new(name="Testeam")
         users = [UserFactory.new() for i in range(4)]
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
         params = CreateAndRegisterTeamIntoTournamentInput(
@@ -53,7 +57,9 @@ class CreateAndRegisterTeamIntoTournamentUseCaseTest(TestCase):
 
     def test_mount_team_user_does_not_exist(self):
         users = [UserFactory.new() for i in range(3)]
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
         [GameIdFactory.new(user=user, email=user.email) for user in users]
         users_payload["member_4_email"] = "fake@email.com"
 
@@ -71,7 +77,9 @@ class CreateAndRegisterTeamIntoTournamentUseCaseTest(TestCase):
 
     def test_mount_team_user_does_not_have_game_id(self):
         users = [UserFactory.new() for i in range(4)]
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
         user = users.pop()
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 

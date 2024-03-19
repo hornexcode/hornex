@@ -36,7 +36,8 @@ class StartMatchUseCase:
 
         try:
             ChallongeMatch.mark_as_underway(
-                tournament=tournament.challonge_tournament_id, match=match.challonge_match_id
+                tournament=tournament.challonge_tournament_id,
+                match=match.challonge_match_id,
             )
         except Exception:
             raise Exception("Failed mark match as under_way at Challonge")
@@ -66,11 +67,16 @@ class StartMatchUseCase:
                 teamSize=tournament.team_size,
             )
         except Exception:
-            raise Exception("Temporary error, could not create the league of legends match code")
+            raise Exception(
+                "Temporary error, could not create the league of legends match code"
+            )
 
         try:
             send_match_code_email(
-                to=players_emails, team_a=match.team_a.name, team_b=match.team_b.name, code=codes[0]
+                to=players_emails,
+                team_a=match.team_a.name,
+                team_b=match.team_b.name,
+                code=codes[0],
             )
         except Exception as e:
             logger.info("Failed to email match's players", error=e)

@@ -1,24 +1,35 @@
 import json
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 from typing import TypeVar
 
 T = TypeVar("T", bound="Event")
 
 
+class Bus(ABC):
+    @abstractmethod
+    def publish(self, topic: str, message: str):
+        raise NotImplementedError
+
+
 @dataclass
 class Event(ABC):
+    topic: str
+    bus: Bus
+
     def to_message(self):
         return asdict(self)
 
-    # XXX: see how to return itself type
-    @staticmethod
-    def from_message(message: str) -> T:
+    @classmethod
+    def from_message(cls, message: str) -> T:
         try:
-            data = json.dumps(message)
-            return Event(**data)
+            data = json.loads(message)
+            return cls(**data)
         except Exception as e:
             raise Exception("Could not parse message") from e
+
+    def send(self):
+        self.bus.publish(self.topic, json.dumps(self.to_message()))
 
 
 @dataclass

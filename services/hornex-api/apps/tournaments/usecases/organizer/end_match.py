@@ -36,9 +36,13 @@ class EndMatchUseCase:
         if match.team_a_score == match.team_b_score:
             raise ValidationError({"error": "Match is not finished yet"})
 
-        winner = match.team_a if match.team_a_score > match.team_b_score else match.team_b
+        winner = (
+            match.team_a if match.team_a_score > match.team_b_score else match.team_b
+        )
 
-        ch_winner: Registration = winner.registration_set.filter(tournament=tournament).first()
+        ch_winner: Registration = winner.registration_set.filter(
+            tournament=tournament
+        ).first()
 
         scores_csv = f"{match.team_a_score}-{match.team_b_score}"
         try:
@@ -64,8 +68,12 @@ class EndMatchUseCase:
             # if match has been already created
             if not Match.objects.filter(challonge_match_id=cm.id).exists():
                 Match.objects.create(
-                    team_a=Team.objects.get(registration__challonge_participant_id=cm.player1_id),
-                    team_b=Team.objects.get(registration__challonge_participant_id=cm.player2_id),
+                    team_a=Team.objects.get(
+                        registration__challonge_participant_id=cm.player1_id
+                    ),
+                    team_b=Team.objects.get(
+                        registration__challonge_participant_id=cm.player2_id
+                    ),
                     tournament=tournament,
                     challonge_match_id=cm.id,
                     round=cm.round,

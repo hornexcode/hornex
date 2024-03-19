@@ -11,7 +11,9 @@ class Config(models.Model):
 
     name = models.CharField(max_length=255, unique=True)
     value = models.CharField(max_length=255)
-    type = models.CharField(max_length=10, choices=ConfigType.choices, default=ConfigType.STRING)
+    type = models.CharField(
+        max_length=10, choices=ConfigType.choices, default=ConfigType.STRING
+    )
 
     def __str__(self):
         return self.name

@@ -30,7 +30,8 @@ class Migration(migrations.Migration):
             model_name="tournament",
             name="organizer",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.RESTRICT, to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.RESTRICT,
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
@@ -116,7 +117,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="rank",
             name="team",
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="teams.team"),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="teams.team"
+            ),
         ),
         migrations.AddField(
             model_name="rank",
@@ -137,7 +140,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="registration",
             name="team",
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="teams.team"),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="teams.team"
+            ),
         ),
         migrations.AddField(
             model_name="registration",
@@ -199,7 +204,11 @@ class Migration(migrations.Migration):
                 (
                     "spectator",
                     models.CharField(
-                        choices=[("NONE", "None"), ("LOBBYONLY", "Lobbyonly"), ("ALL", "All")],
+                        choices=[
+                            ("NONE", "None"),
+                            ("LOBBYONLY", "Lobbyonly"),
+                            ("ALL", "All"),
+                        ],
                         default="LOBBYONLY",
                         max_length=50,
                     ),
@@ -207,7 +216,9 @@ class Migration(migrations.Migration):
                 ("riot_tournament_id", models.IntegerField(blank=True, null=True)),
                 (
                     "classifications",
-                    models.ManyToManyField(blank=True, to="tournaments.leagueoflegendsleague"),
+                    models.ManyToManyField(
+                        blank=True, to="tournaments.leagueoflegendsleague"
+                    ),
                 ),
                 (
                     "provider",

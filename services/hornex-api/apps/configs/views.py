@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from apps.configs.models import Config
 from apps.configs.serializers import ConfigSerializer
-from jwt.authentication import JWTAuthentication
+from lib.jwt.authentication import JWTAuthentication
 
 
 class ConfigViewSet(viewsets.ModelViewSet):

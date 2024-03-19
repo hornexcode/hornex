@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from apps.accounts.serializers import GameIDSerializer
 from apps.games.models import Game, GameID
 from apps.games.serializers import GameSerializer
-from jwt.authentication import JWTAuthentication
+from lib.jwt.authentication import JWTAuthentication
 
 
 class GameViewSet(viewsets.ModelViewSet):

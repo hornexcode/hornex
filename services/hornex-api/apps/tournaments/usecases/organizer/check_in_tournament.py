@@ -37,7 +37,9 @@ class CheckInTournamentUseCase:
             raise PermissionDenied({"error": "You are not this tournament's Organizer"})
 
         check_in_end_at = datetime.combine(tournament.start_date, tournament.start_time)
-        check_in_start_at = check_in_end_at - timedelta(minutes=tournament.check_in_duration)
+        check_in_start_at = check_in_end_at - timedelta(
+            minutes=tournament.check_in_duration
+        )
 
         if not (check_in_start_at < datetime.now() < check_in_end_at):
             raise ValidationError(

@@ -39,7 +39,9 @@ class ConfirmRegistrationUseCase:
     @transaction.atomic
     def execute(self, params: ConfirmRegistrationUseCaseParams) -> Registration:
         try:
-            payment_registration = PaymentRegistration.objects.get(id=params.registration_id)
+            payment_registration = PaymentRegistration.objects.get(
+                id=params.registration_id
+            )
         except PaymentRegistration.DoesNotExist:
             logger.error(
                 "PaymentRegistration.DoesNotExist",

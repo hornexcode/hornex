@@ -62,7 +62,9 @@ class ConfirmRegistrationUseCase:
         if not tournament.teams.filter(id=team.id).exists():
             raise ValidationError({"error": errors.TeamNotRegisteredError})
 
-        if Checkin.objects.filter(tournament=tournament, team=team, user=member.user).exists():
+        if Checkin.objects.filter(
+            tournament=tournament, team=team, user=member.user
+        ).exists():
             raise ValidationError({"error": errors.UserAlreadyCheckedInError})
 
         Checkin.objects.create(tournament=tournament, team=team, user=member.user)

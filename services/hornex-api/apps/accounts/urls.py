@@ -1,6 +1,11 @@
 from django.urls import path
 
-from apps.accounts.views import GameIDViewSet, ProfileViewSet, oauth_login, oauth_login_callback
+from apps.accounts.views import (
+    GameIDViewSet,
+    ProfileViewSet,
+    oauth_login,
+    oauth_login_callback,
+)
 
 urlpatterns = [
     path(
@@ -20,7 +25,9 @@ urlpatterns = [
     ),
     path(
         "/profiles/<str:id>",
-        ProfileViewSet.as_view({"patch": "partial_update", "get": "retrieve", "delete": "delete"}),
+        ProfileViewSet.as_view(
+            {"patch": "partial_update", "get": "retrieve", "delete": "delete"}
+        ),
         name="profiles-details-controller",
     ),
     path(

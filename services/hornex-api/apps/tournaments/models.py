@@ -58,7 +58,9 @@ class Tournament(BaseModel):
     max_teams = models.IntegerField(default=32)
     team_size = models.IntegerField(default=5, validators=[validate_team_size])
 
-    registered_teams = models.ManyToManyField("teams.Team", blank=True, through="Registration")
+    registered_teams = models.ManyToManyField(
+        "teams.Team", blank=True, through="Registration"
+    )
 
     open_classification = models.BooleanField(default=False)
 
@@ -134,7 +136,9 @@ class Tournament(BaseModel):
 
 
 class Rule(models.Model):
-    tournament = models.ForeignKey(Tournament, related_name="rules", on_delete=models.CASCADE)
+    tournament = models.ForeignKey(
+        Tournament, related_name="rules", on_delete=models.CASCADE
+    )
     title = models.CharField(max_length=255)
     content = models.TextField()
 
@@ -143,7 +147,9 @@ class Rule(models.Model):
 
 
 class Prize(models.Model):
-    tournament = models.ForeignKey(Tournament, related_name="prizes", on_delete=models.CASCADE)
+    tournament = models.ForeignKey(
+        Tournament, related_name="prizes", on_delete=models.CASCADE
+    )
     place = models.IntegerField()
     content = models.TextField(default="")
 
@@ -222,18 +228,36 @@ class Match(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     round = models.IntegerField()
-    tournament = models.ForeignKey(Tournament, related_name="matches", on_delete=models.CASCADE)
+    tournament = models.ForeignKey(
+        Tournament, related_name="matches", on_delete=models.CASCADE
+    )
     team_a = models.ForeignKey(
-        "teams.Team", related_name="team_a", on_delete=models.SET_NULL, null=True, blank=True
+        "teams.Team",
+        related_name="team_a",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     team_b = models.ForeignKey(
-        "teams.Team", related_name="team_b", on_delete=models.SET_NULL, null=True, blank=True
+        "teams.Team",
+        related_name="team_b",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     winner = models.ForeignKey(
-        "teams.Team", related_name="winner", on_delete=models.SET_NULL, null=True, blank=True
+        "teams.Team",
+        related_name="winner",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     loser = models.ForeignKey(
-        "teams.Team", related_name="loser", on_delete=models.SET_NULL, null=True, blank=True
+        "teams.Team",
+        related_name="loser",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     status = models.CharField(
         max_length=50,
@@ -280,7 +304,9 @@ class Match(models.Model):
 
 class Checkin(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="checkins")
+    tournament = models.ForeignKey(
+        Tournament, on_delete=models.CASCADE, related_name="checkins"
+    )
     team = models.ForeignKey("teams.Team", on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -374,7 +400,9 @@ class LeagueOfLegendsTournament(Tournament):
         null=True,
         blank=True,
     )
-    pick = models.CharField(max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK)
+    pick = models.CharField(
+        max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK
+    )
     map = models.CharField(
         max_length=50, choices=MapOptions.choices, default=MapOptions.SUMMONERS_RIFT
     )

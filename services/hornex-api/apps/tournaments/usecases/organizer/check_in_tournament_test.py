@@ -39,5 +39,7 @@ class CheckInTournamentUseCaseTest(TestCase):
 
     def test_check_in_tournament(self):
         CheckInTournamentUseCase().execute(
-            CheckInTournamentInput(organizer_id=self.user.id, tournament_id=self.tournament.id)
+            CheckInTournamentInput(
+                organizer_id=self.user.id, tournament_id=self.tournament.id
+            )
         )

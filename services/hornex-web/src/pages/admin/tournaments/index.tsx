@@ -1,8 +1,6 @@
-import { ExpiredLoginButton } from '@/components/ui/atoms/expired-login-button';
-import { PodiumIcon } from '@/components/ui/atoms/icons';
 import { Plus } from '@/components/ui/atoms/icons/plus';
 import { Logo } from '@/components/ui/atoms/logo';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AppLayout } from '@/layouts';
 import { getStatus, Tournament } from '@/lib/models/Tournament';
@@ -19,8 +17,6 @@ const { useData: useTournamentsQuery } =
 function DashboardPage() {
   const { data: tournaments, error, isLoading } = useTournamentsQuery({});
   const router = useRouter();
-
-  const { data: session } = useSession();
 
   const renderTournaments = () => {
     if (isLoading) {

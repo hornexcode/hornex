@@ -31,7 +31,10 @@ class ListRegisteredTeamsUseCase:
 
         for participant in participants_data:
             team = participant["team"]
-            participant_info = {"id": participant["id"], "nickname": participant["nickname"]}
+            participant_info = {
+                "id": participant["id"],
+                "nickname": participant["nickname"],
+            }
             participants_grouped_by_team[team].append(participant_info)
 
         # Convert defaultdict to regular dict

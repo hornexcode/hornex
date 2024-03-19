@@ -17,7 +17,7 @@ from apps.payments.serializers import (
     CreateStripePaymentRegistrationSerializer,
 )
 from apps.tournaments.models import Registration
-from jwt.authentication import JWTAuthentication
+from lib.jwt.authentication import JWTAuthentication
 
 logger = structlog.get_logger(__name__)
 
@@ -52,7 +52,8 @@ def create_payment_registration(request):
     try:
         payment_registration = PaymentRegistration.objects.create(
             registration=registration,
-            amount=registration.tournament.entry_fee * registration.tournament.team_size,
+            amount=registration.tournament.entry_fee
+            * registration.tournament.team_size,
         )
     except Exception as e:
         logger.error("Error on creating payment", error=e)

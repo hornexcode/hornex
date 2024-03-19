@@ -32,7 +32,9 @@ class RegisterUseCase:
             params.player5,
         ]:
             if not is_valid_email(user["email"]):
-                raise ValidationError({"error": "One or more users has an invalid email."})
+                raise ValidationError(
+                    {"error": "One or more users has an invalid email."}
+                )
 
         Participant.objects.bulk_create(
             [

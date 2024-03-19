@@ -169,9 +169,7 @@ class Client(Clientable):
         region: RegionType,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = (
-            f"https://{regional_routing.value}/lol/tournament/v5/providers?api_key={self.api_key}"
-        )
+        endpoint = f"https://{regional_routing.value}/lol/tournament/v5/providers?api_key={self.api_key}"
         response = requests.post(endpoint, json={"url": url, "region": region.value})
 
         if response.status_code != 200:
@@ -186,10 +184,10 @@ class Client(Clientable):
         provider_id: int,
         regional_routing: RegionalRoutingType = RegionalRoutingType.AMERICAS,
     ) -> int:
-        endpoint = (
-            f"https://{regional_routing.value}/lol/tournament/v5/tournaments?api_key={self.api_key}"
+        endpoint = f"https://{regional_routing.value}/lol/tournament/v5/tournaments?api_key={self.api_key}"
+        response = requests.post(
+            endpoint, json={"name": name, "providerId": provider_id}
         )
-        response = requests.post(endpoint, json={"name": name, "providerId": provider_id})
 
         if response.status_code != 200:
             logger.warning("Error registering tournament", response.json())
@@ -280,7 +278,9 @@ class Client(Clientable):
 
         tournament_games: list[TournamentGamesV5] = []
         for tournament_game in data:
-            tournament_games.append(TournamentGamesV5.from_api_response(tournament_game))
+            tournament_games.append(
+                TournamentGamesV5.from_api_response(tournament_game)
+            )
 
         return tournament_games
 

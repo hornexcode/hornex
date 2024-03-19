@@ -29,7 +29,9 @@ class TestTeam(APITestCase, URLPatternsTestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.platform = Team.PlatformType.PC
         self.game = Team.GameType.LEAGUE_OF_LEGENDS
@@ -150,7 +152,9 @@ class TestInvites(APITestCase, URLPatternsTestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.platform = Team.PlatformType.PC
         self.game = Team.GameType.LEAGUE_OF_LEGENDS

@@ -23,7 +23,9 @@ class ProfileTest(APITestCase, URLPatternsTestCase):
 
         self.refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
     def test_create_profile(self):
         url = reverse("profiles-controller")

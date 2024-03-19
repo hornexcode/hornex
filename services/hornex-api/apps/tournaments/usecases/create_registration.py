@@ -98,7 +98,9 @@ class CreateRegistrationUseCase:
                     logger.info("Summoner found", summoner=summoner)
 
                     # get all ellos entries by the summoner ID
-                    summoner_entries = LeagueV4.get_all_league_entries_by_summoner_id(summoner.id)
+                    summoner_entries = LeagueV4.get_all_league_entries_by_summoner_id(
+                        summoner.id
+                    )
                     ranked_solo_entry = next(
                         (
                             entry
@@ -107,19 +109,25 @@ class CreateRegistrationUseCase:
                         ),
                         None,
                     )
-                    logger.info("Ranked solo entry", ranked_solo_entry=ranked_solo_entry)
+                    logger.info(
+                        "Ranked solo entry", ranked_solo_entry=ranked_solo_entry
+                    )
 
                     # check if the summoner is allowed to play in the tournament
                     # this get_classification is an abstraction to get the allowed entries
                     if ranked_solo_entry is None:
-                        raise ValidationError({"detail": errors.TeamMemberIsNotAllowedToRegistrate})
+                        raise ValidationError(
+                            {"detail": errors.TeamMemberIsNotAllowedToRegistrate}
+                        )
 
                     tournament_entries = tournament.get_classifications()
                     if (
                         f"{ranked_solo_entry.tier} {ranked_solo_entry.rank}"
                         not in tournament_entries
                     ):
-                        raise ValidationError({"detail": errors.TeamMemberIsNotAllowedToRegistrate})
+                        raise ValidationError(
+                            {"detail": errors.TeamMemberIsNotAllowedToRegistrate}
+                        )
                     ############################################################
 
         registration = Registration.objects.create(

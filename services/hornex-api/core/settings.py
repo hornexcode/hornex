@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 import logging
 import os
 import sys
@@ -43,7 +44,9 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True  # dev only
 
 
-CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "http://localhost:8000").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "DJANGO_CSRF_TRUSTED_ORIGINS", "http://localhost:8000"
+).split(",")
 
 # Application definition
 INSTALLED_APPS = [
@@ -61,6 +64,7 @@ INSTALLED_APPS = [
     "corsheaders",  # dev only
     "django_crontab",
     "pkg.grpc.apps.GRPCConfig",  # grpc
+    "lib.rabbitmq.apps.RabbitmqConfig",  # rabbitmq
     # apps
     "apps.payments.apps.PaymentsConfig",
     "apps.users.apps.UsersConfig",
@@ -70,7 +74,6 @@ INSTALLED_APPS = [
     "apps.games.apps.GamesConfig",
     "apps.notifications.apps.NotificationsConfig",
     "apps.accounts.apps.AccountsConfig",
-    "apps.leagueoflegends.apps.LeagueoflegendsConfig",
     "apps.configs.apps.ConfigsConfig",
 ]
 
@@ -112,32 +115,31 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if os.getenv("HORNEX_SQL_ENGINE") == "django.db.backends.postgresql":
-    DATABASES = {
-        "default": {
-            "ENGINE": os.getenv("HORNEX_SQL_ENGINE", "django.db.backends.sqlite3"),
-            "NAME": os.getenv("HORNEX_SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-            "USER": os.getenv("HORNEX_SQL_USER", "user"),
-            "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
-            "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
-            "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
-            # "OPTIONS": {"sslmode": "require"},
-        },
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+DATABASES = {
+    "default": {
+        "ENGINE": os.getenv("HORNEX_SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.getenv("HORNEX_SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.getenv("HORNEX_SQL_USER", "user"),
+        "PASSWORD": os.getenv("HORNEX_SQL_PASSWORD", "password"),
+        "HOST": os.getenv("HORNEX_SQL_HOST", "localhost"),
+        "PORT": os.getenv("HORNEX_SQL_PORT", "5432"),
+    },
+}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
@@ -193,7 +195,7 @@ SIMPLE_JWT = {
     "JWT_ALGORITHM": "HS256",
     "JWT_ALLOW_REFRESH": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
-    "TOKEN_OBTAIN_SERIALIZER": "jwt_token.serializers.HornexTokenObtainPairSerializer",
+    "TOKEN_OBTAIN_SERIALIZER": "lib.jwt.serializers.HornexTokenObtainPairSerializer",
 }
 
 APPEND_SLASH = False
@@ -264,6 +266,8 @@ def get_root_domain():
 
 SESSION_COOKIE_DOMAIN = get_root_domain()
 
+# RABBITMQ
 RABBITMQ_USER = os.getenv("RABBITMQ_USER", "guest")
 RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")
 RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
+RABBITMQ_PORT = os.getenv("RABBITMQ_PORT", 5672)

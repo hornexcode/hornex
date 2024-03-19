@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from apps.notifications.models import Notification
 from apps.notifications.serializers import NotificationSerializer
-from jwt.authentication import JWTAuthentication
+from lib.jwt.authentication import JWTAuthentication
 
 
 class NotificationViewSet(viewsets.ModelViewSet):

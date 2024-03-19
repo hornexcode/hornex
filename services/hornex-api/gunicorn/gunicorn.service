@@ -4,6 +4,8 @@ Requires=gunicorn.socket
 After=network.target
 
 [Service]
+Restart=on-failure
+RestartSec=5s
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/hornex-api/services/hornex-api
@@ -12,5 +14,6 @@ ExecStart=/home/ubuntu/hornex-api/services/hornex-api/.venv/bin/gunicorn \
           --workers 2 \
           --bind unix:/run/gunicorn.sock \
           core.wsgi:application
+
 [Install]
 WantedBy=multi-user.target

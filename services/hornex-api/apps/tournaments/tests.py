@@ -33,7 +33,9 @@ class TestLeagueOfLegendsTournaments(APITestCase):
         self.refresh = RefreshToken.for_user(self.user)
 
         # Authenticate the client with the token
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.game_id = GameIdFactory.new(user=self.user)
         # @patch("lib.riot.client.Client.get_entries_by_summoner_id")
@@ -348,7 +350,9 @@ class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
 
         self.game_id = GameIdFactory.new(user=self.user, email=self.user.email)
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
 
@@ -365,9 +369,13 @@ class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         users = [UserFactory.new() for i in range(4)]
         [GameIdFactory.new(user=user, email=user.email) for user in users]
         name = "Drakx"
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
 
-        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+        url = reverse(
+            "tournaments:create_and_register_team", kwargs={"id": self.tournament.id}
+        )
 
         resp = self.client.post(
             url,
@@ -377,16 +385,24 @@ class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         team = resp.json()
 
         mock_add_team.assert_called_once()
-        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.registered_teams.all())
+        self.assertIn(
+            Team.objects.get(id=team.get("id")), self.tournament.registered_teams.all()
+        )
 
-    def test_create_and_register_team_into_tournament_user_not_found_into_tournament(self):
+    def test_create_and_register_team_into_tournament_user_not_found_into_tournament(
+        self,
+    ):
         name = "Drakx"
         users = [UserFactory.new() for i in range(3)]
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
         [GameIdFactory.new(user=user, email=user.email) for user in users]
         users_payload["member_4_email"] = "fake@email.com"
 
-        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+        url = reverse(
+            "tournaments:create_and_register_team", kwargs={"id": self.tournament.id}
+        )
 
         resp = self.client.post(
             url,
@@ -403,11 +419,15 @@ class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
     ):
         name = "Drakx"
         users = [UserFactory.new() for i in range(4)]
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
         user = users.pop()
         [GameIdFactory.new(user=user, email=user.email) for user in users]
 
-        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+        url = reverse(
+            "tournaments:create_and_register_team", kwargs={"id": self.tournament.id}
+        )
 
         resp = self.client.post(
             url,
@@ -433,9 +453,13 @@ class CreateAndRegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         users = [UserFactory.new() for i in range(4)]
         [GameIdFactory.new(user=user, email=user.email) for user in users]
         name = "Drakx"
-        users_payload = {f"member_{i+1}_email": user.email for i, user in enumerate(users)}
+        users_payload = {
+            f"member_{i+1}_email": user.email for i, user in enumerate(users)
+        }
 
-        url = reverse("tournaments:create_and_register_team", kwargs={"id": self.tournament.id})
+        url = reverse(
+            "tournaments:create_and_register_team", kwargs={"id": self.tournament.id}
+        )
 
         try:
             self.client.post(
@@ -464,7 +488,9 @@ class RegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
 
         self.game_id = GameIdFactory.new(user=self.user, email=self.user.email)
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
 
@@ -496,7 +522,9 @@ class RegisterTeamIntoTournamentTest(APITestCase, URLPatternsTestCase):
         team = resp.json()
 
         mock_add_team.assert_called_once()
-        self.assertIn(Team.objects.get(id=team.get("id")), self.tournament.registered_teams.all())
+        self.assertIn(
+            Team.objects.get(id=team.get("id")), self.tournament.registered_teams.all()
+        )
 
     def test_register_team_tournament_not_found(self):
         url = reverse("tournaments:register_team", kwargs={"id": uuid.uuid4()})
@@ -615,7 +643,9 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
         self.refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.player_1 = UserFactory.new()
         self.player_2 = UserFactory.new()
@@ -722,7 +752,9 @@ class FinishMatchTest(APITestCase, URLPatternsTestCase):
 
     @patch("lib.challonge.Match.list")
     @patch("lib.challonge.Match.update")
-    def test_failed_fish_challonge_match_no_exception(self, mock_match_update, mock_list_match):
+    def test_failed_fish_challonge_match_no_exception(
+        self, mock_match_update, mock_list_match
+    ):
         ch_match = ChMatch()
         ch_match.state = "underway"
         ch_match.winner_id = self.registration_2.challonge_participant_id
@@ -765,7 +797,9 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         self.refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.player_1 = UserFactory.new(email="herbertaraujo.contact@gmail.com")
         self.player_2 = UserFactory.new(email="herbert.souza.98@gmail.com")
@@ -792,7 +826,9 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
     @patch("resend.Emails.send")
     @patch("lib.riot.Tournament.create_tournament_codes")
     @patch("lib.challonge.Match.mark_as_underway")
-    def test_start_match(self, mock_mark_as_underway, mock_create_tour_code, mock_mailer):
+    def test_start_match(
+        self, mock_mark_as_underway, mock_create_tour_code, mock_mailer
+    ):
         ch_match = ChMatch()
         ch_match.state = "complete"
         mock_mark_as_underway.return_value = ch_match
@@ -880,7 +916,8 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
             self.assertNotEqual(self.match.status, Match.StatusType.UNDERWAY)
             self.assertEqual(self.match.riot_match_code, "")
             self.assertEqual(
-                str(e), "Temporary error, could not create the league of legends match code"
+                str(e),
+                "Temporary error, could not create the league of legends match code",
             )
 
 
@@ -899,11 +936,16 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
 
         self.refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.refresh.access_token}"
+        )
 
         self.tournament = LeagueOfLegendsTournamentFactory.new(organizer=self.user)
 
-        [self.tournament.add_team(TeamFactory.new(organizer=self.user)) for _ in range(2)]
+        [
+            self.tournament.add_team(TeamFactory.new(organizer=self.user))
+            for _ in range(2)
+        ]
 
         teams = self.tournament.registered_teams.all()
 
@@ -914,7 +956,9 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
                 score=0,
             )
 
-        self.match = MatchFactory.new(team_a=teams[0], team_b=teams[1], tournament=self.tournament)
+        self.match = MatchFactory.new(
+            team_a=teams[0], team_b=teams[1], tournament=self.tournament
+        )
 
         self.match.set_winner(teams[0])
 
@@ -977,7 +1021,9 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
         data = resp.json()
 
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(data.get("error"), "You can not end a tournament which are not running")
+        self.assertEqual(
+            data.get("error"), "You can not end a tournament which are not running"
+        )
         self.assertNotEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
         self.assertIsNone(self.tournament.ended_at)
 
