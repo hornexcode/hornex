@@ -1,6 +1,6 @@
 import uuid
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 
 import structlog
 from django.db import transaction
@@ -56,7 +56,7 @@ class EndTournamentUseCase:
             raise Exception("Failed end tournament at Challonge")
 
         tournament.status = Tournament.StatusOptions.ENDED
-        tournament.ended_at = datetime.now()
+        tournament.ended_at = datetime.now(tz=UTC)
         tournament.save()
 
         return tournament

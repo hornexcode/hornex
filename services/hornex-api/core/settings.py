@@ -24,6 +24,8 @@ dotenv.load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TESTING = "test" in sys.argv
+
 
 def get_settings(name, default=None):
     return os.environ.get(name, default)
@@ -213,43 +215,61 @@ CHANNEL_LAYERS = {
     }
 }
 
-TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 TOURNAMENT_TEAMS_LIMIT_POWER_NUMBER = 5
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "json_formatter": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.JSONRenderer(),
-        }
-    },
-    "handlers": {
-        "console": {
-            "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "json_formatter",
-        }
-    },
-    "loggers": {"root": {"handlers": ["console"], "level": "INFO", "propagate": False}},
-}
+if TESTING:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {
+            "null": {
+                "level": "DEBUG",
+                "class": "logging.NullHandler",
+            },
+        },
+        "loggers": {
+            "structlog": {
+                "handlers": ["null"],
+                "level": "DEBUG",
+                "propagate": False,
+            },
+        },
+    }
+else:
+    structlog.configure(
+        processors=[
+            structlog.contextvars.merge_contextvars,
+            structlog.processors.add_log_level,
+            structlog.processors.StackInfoRenderer(),
+            structlog.dev.set_exc_info,
+            structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
+            structlog.dev.ConsoleRenderer(),
+        ],
+        wrapper_class=structlog.make_filtering_bound_logger(logging.NOTSET),
+        context_class=dict,
+        logger_factory=structlog.PrintLoggerFactory(),
+        cache_logger_on_first_use=False,
+    )
 
-structlog.configure(
-    processors=[
-        structlog.contextvars.merge_contextvars,
-        structlog.processors.add_log_level,
-        structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_info,
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
-        structlog.dev.ConsoleRenderer(),
-    ],
-    wrapper_class=structlog.make_filtering_bound_logger(logging.NOTSET),
-    context_class=dict,
-    logger_factory=structlog.PrintLoggerFactory(),
-    cache_logger_on_first_use=False,
-)
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "json_formatter": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.processors.JSONRenderer(),
+            }
+        },
+        "handlers": {
+            "console": {
+                "level": "INFO",
+                "class": "logging.StreamHandler",
+                "formatter": "json_formatter",
+            }
+        },
+        "loggers": {"root": {"handlers": ["console"], "level": "INFO", "propagate": False}},
+    }
 
 # CRONJOBS = [("*/1 * * * *", "apps.tournaments.cron.expire_stale_registration")]
 
