@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.teams.models import Team
-from apps.tournaments.models import LeagueOfLegendsLeague as Tournament
+from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Registration
 from apps.users.models import User
 from lib.efi.client import Mock as EfiMock
