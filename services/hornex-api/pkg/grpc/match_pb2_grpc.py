@@ -2,7 +2,6 @@
 """Client and server classes corresponding to protobuf-defined services."""
 
 import grpc
-
 import match_pb2 as match__pb2
 
 

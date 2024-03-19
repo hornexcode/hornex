@@ -1,4 +1,3 @@
-import logging
 import uuid
 from test.factories import (
     GameIdFactory,
