@@ -45,7 +45,7 @@ class EndTournamentUseCase:
                 {"error": "You can not end a tournament which has not a winner"}
             )
 
-        if tournament.status != Tournament.StatusOptions.RUNNING or tournament.ended_at:
+        if tournament.state != Tournament.StateOptions.RUNNING or tournament.ended_at:
             raise ValidationError(
                 {"error": "You can not end a tournament which are not running"}
             )
@@ -55,7 +55,7 @@ class EndTournamentUseCase:
         except Exception:
             raise Exception("Failed end tournament at Challonge")
 
-        tournament.status = Tournament.StatusOptions.ENDED
+        tournament.state = Tournament.StateOptions.ENDED
         tournament.ended_at = datetime.now()
         tournament.save()
 

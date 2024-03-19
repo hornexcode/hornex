@@ -25,9 +25,9 @@ class LeagueOfLegendsTournamentAdmin(admin.ModelAdmin):
         "start_date",
         "start_time",
         "registration_start_date",
-        "status",
+        "state",
     ]
-    list_filter = ["status", "start_date", "registration_start_date"]
+    list_filter = ["state", "start_date", "registration_start_date"]
 
 
 class RegistrationAdmin(admin.ModelAdmin):

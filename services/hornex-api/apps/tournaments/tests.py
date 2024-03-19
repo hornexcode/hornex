@@ -968,7 +968,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
     @patch("lib.challonge.Tournament.finalize")
     def test_end_tournament(self, mock_finalize):
         mock_finalize.return_value = {}
-        self.tournament.status = Tournament.StatusOptions.RUNNING
+        self.tournament.state = Tournament.StateOptions.RUNNING
         self.tournament.save()
 
         url = reverse(
@@ -985,7 +985,7 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
         mock_finalize.assert_called_once()
         self.assertEqual(resp.status_code, 200)
         self.tournament.refresh_from_db()
-        self.assertEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
+        self.assertEqual(self.tournament.state, Tournament.StateOptions.ENDED)
         self.assertIsNotNone(self.tournament.ended_at)
 
     def test_end_error_not_organizer(self):
@@ -1024,13 +1024,13 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
         self.assertEqual(
             data.get("error"), "You can not end a tournament which are not running"
         )
-        self.assertNotEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
+        self.assertNotEqual(self.tournament.state, Tournament.StateOptions.ENDED)
         self.assertIsNone(self.tournament.ended_at)
 
     @patch("lib.challonge.Tournament.finalize")
     def test_failed_ending_challonge_match(self, mock_finalize):
         mock_finalize.side_effect = Exception("Internal Server Error")
-        self.tournament.status = Tournament.StatusOptions.RUNNING
+        self.tournament.state = Tournament.StateOptions.RUNNING
         self.tournament.save()
 
         url = reverse(
@@ -1045,5 +1045,5 @@ class EndTournamentTest(APITestCase, URLPatternsTestCase):
         except Exception as e:
             mock_finalize.assert_called_once()
             self.tournament.refresh_from_db()
-            self.assertNotEqual(self.tournament.status, Tournament.StatusOptions.ENDED)
+            self.assertNotEqual(self.tournament.state, Tournament.StateOptions.ENDED)
             self.assertEqual(str(e), "Failed end tournament at Challonge")
