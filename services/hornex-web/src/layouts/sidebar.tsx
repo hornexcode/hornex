@@ -58,7 +58,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
                     router.pathname === routes.compete && 'text-brand'
                   )}
                 >
-                  {t('sidebar.compete')}
+                  compete
                 </span>
               </div>
             </Link>

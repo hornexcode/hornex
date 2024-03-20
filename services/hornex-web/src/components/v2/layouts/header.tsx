@@ -1,15 +1,13 @@
-'use client';
-
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import ProfileMenuItem from '@/components/profile/profile-menu-item';
 import { Logo } from '@/components/ui/atoms/logo';
-import { Skeleton } from '@/components/ui/skeleton';
 import routes from '@/config/routes';
 import { LoggedUser } from '@/domain';
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid';
 import { LogInIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { FC, useEffect, useState } from 'react';
+import { getServerSession } from 'next-auth';
+import { FC } from 'react';
 
 interface HeaderRightAreaProps {
   user: LoggedUser;
@@ -23,21 +21,10 @@ const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
   );
 };
 
-const Header = () => {
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, [session]);
+export default async function Header() {
+  const session = await getServerSession(authOptions);
 
   const renderHeaderRightArea = () => {
-    if (loading) {
-      return <Skeleton className="h-6 w-[200px] rounded" />;
-    }
-
     if (session) {
       return (
         <HeaderRightArea
@@ -79,6 +66,4 @@ const Header = () => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}
