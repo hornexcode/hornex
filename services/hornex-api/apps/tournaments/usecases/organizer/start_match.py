@@ -41,7 +41,7 @@ class StartMatchUseCase:
         except Exception:
             raise Exception("Failed mark match as under_way at Challonge")
 
-        allowed_players = []
+        participants = []
         players_emails = []
 
         for member in [*match.team_a.members.all(), *match.team_b.members.all()]:
@@ -49,17 +49,17 @@ class StartMatchUseCase:
             if puuid == "":
                 raise ValidationError(
                     {
-                        "detail": f"Player {member.user.username} has not registered their game ID"
+                        "detail": f"Player {member.nickname} has not connected his account to Riot Games. Please, connect your account and try again."
                     }
                 )
-            allowed_players.append()
+            participants.append(puuid)
             players_emails.append(member.user.email)
 
         try:
             codes = RiotTournamentResourceAPI.create_tournament_codes(
                 tournament_id=tournament.riot_tournament_id,
                 count=1,
-                allowedParticipants=allowed_players,
+                allowedParticipants=participants,
                 enoughPlayers=True,
                 mapType=tournament.map,
                 metadata=tournament.name,

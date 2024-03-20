@@ -495,8 +495,12 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
 
         self.player_1 = UserFactory.new(email="herbertaraujo.contact@gmail.com")
         self.player_2 = UserFactory.new(email="herbert.souza.98@gmail.com")
-        self.game_id_1 = GameIdFactory.new(user=self.player_1)
-        self.game_id_2 = GameIdFactory.new(user=self.player_2)
+        self.game_id_1 = GameIdFactory.new(
+            user=self.player_1, metadata='{"puuid": "test-puuid-1"}'
+        )
+        self.game_id_2 = GameIdFactory.new(
+            user=self.player_2, metadata='{"puuid": "test-puuid-2"}'
+        )
         self.team_1 = TeamFactory.new(created_by=self.player_1)
         self.team_2 = TeamFactory.new(created_by=self.player_2)
         self.team_1.add_member(self.game_id_1)
@@ -538,13 +542,14 @@ class StartMatchTest(APITestCase, URLPatternsTestCase):
             url,
         )
 
-        mock_mark_as_underway.assert_called_once()
-        mock_create_tour_code.assert_called_once()
-        mock_mailer.assert_called_once()
         self.assertEqual(resp.status_code, 200)
         self.match.refresh_from_db()
         self.assertEqual(self.match.status, Match.StatusType.UNDERWAY)
         self.assertIsNotNone(self.match.riot_match_code)
+
+        mock_mark_as_underway.assert_called_once()
+        mock_create_tour_code.assert_called_once()
+        mock_mailer.assert_called_once()
 
     def test_start_match_error_not_organizer(self):
         self.tournament.organizer = self.player_1

@@ -172,6 +172,7 @@ class GameIdFactory:
             game=kwargs.get("game", GameID.GameOptions.LEAGUE_OF_LEGENDS),
             nickname=fake.name(),
             is_active=kwargs.get("is_active", True),
+            metadata=kwargs.get("metadata", None),
         )
 
 
