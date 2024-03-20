@@ -8,7 +8,6 @@ import { dataLoader } from '@/lib/request';
 import { RocketIcon } from '@radix-ui/react-icons';
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 
 const { useData: useTournamentsQuery } =

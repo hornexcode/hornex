@@ -3,7 +3,6 @@ import { ArrowLongLeftIcon } from '@/components/ui/atoms/icons';
 import routes from '@/config/routes';
 import { AdminTournamentContextProvider } from '@/contexts';
 import { AppLayout } from '@/layouts';
-import { Standing } from '@/lib/models/Standing';
 import { getPotentialPrizePool, Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { toCurrency } from '@/lib/utils';

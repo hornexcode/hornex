@@ -19,7 +19,7 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 
-const { post: createAndRegisterTeam } = dataLoader<
+const { submit: createAndRegisterTeam } = dataLoader<
   any,
   z.infer<typeof mountTeamFormSchema>
 >('createAndRegisterTeam');

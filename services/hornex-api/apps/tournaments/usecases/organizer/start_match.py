@@ -4,9 +4,8 @@ from dataclasses import dataclass
 import structlog
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
-from apps.accounts.models import LeagueOfLegendsSummoner
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Match
 from lib.challonge import Match as ChallongeMatch
@@ -44,14 +43,16 @@ class StartMatchUseCase:
 
         allowed_players = []
         players_emails = []
-        for member in match.team_a.members.all():
-            lol_acc = get_object_or_404(LeagueOfLegendsSummoner, game_id=member)
-            allowed_players.append(lol_acc.puuid)
-            players_emails.append(member.user.email)
 
-        for member in match.team_b.members.all():
-            lol_acc = get_object_or_404(LeagueOfLegendsSummoner, game_id=member)
-            allowed_players.append(lol_acc.puuid)
+        for member in [*match.team_a.members.all(), *match.team_b.members.all()]:
+            puuid = member.get_puuid()
+            if puuid == "":
+                raise ValidationError(
+                    {
+                        "detail": f"Player {member.user.username} has not registered their game ID"
+                    }
+                )
+            allowed_players.append()
             players_emails.append(member.user.email)
 
         try:
