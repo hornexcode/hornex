@@ -49,7 +49,7 @@ const TournamentRegistrationStateProgress = ({
         <div className="flex items-center">
           <div className={cn('flex w-full')}>
             {/* build a progress bar */}
-            <div className="bg-background flex w-full rounded-lg">
+            <div className="bg-title/20 flex w-full rounded-lg">
               <div
                 style={{
                   width: `${

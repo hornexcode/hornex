@@ -61,7 +61,7 @@ export const CheckoutStep: FC<CheckoutStepProps> = () => {
           <div className="flex items-center justify-between border-t border-dashed border-gray-600 pt-4 text-sm">
             <div className="">Total</div>
             <div className="font-display text-2xl font-semibold">
-              ${tournament.entry_fee * tournament.team_size}
+              ${tournament?.entry_fee || 1 * tournament.team_size}
             </div>
           </div>
         </div>

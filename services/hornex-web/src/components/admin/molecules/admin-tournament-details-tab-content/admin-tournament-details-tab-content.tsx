@@ -44,7 +44,7 @@ const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
     { tournamentId },
     {
       status: 'registering',
-      registration_start_date: new Date(),
+      registration_start_date: new Date().toISOString(),
     }
   );
 

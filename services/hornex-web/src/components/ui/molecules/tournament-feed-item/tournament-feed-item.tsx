@@ -1,14 +1,14 @@
+'use client';
+
 import TournamentRegistrationStateProgress from '../tournament-registration-state-progress';
 import { TournamentFeedItemProps } from './tournament-feed-item.types';
 import Button from '@/components/ui/atoms/button/button';
-import { getStatus } from '@/lib/models/Tournament';
 import { cn } from '@/lib/utils';
-import { MapPinIcon, UsersIcon } from '@heroicons/react/20/solid';
+import { MapPinIcon } from '@heroicons/react/20/solid';
 import { ClockIcon } from '@radix-ui/react-icons';
-import clsx from 'clsx';
 import moment from 'moment';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 
 const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
@@ -18,7 +18,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
   const router = useRouter();
 
   return (
-    <div className={cn('border-border rounded border shadow-lg', className)}>
+    <div className={cn('border-border rounded border', className)}>
       <div className="h-[160px] w-full bg-[url('/images/tournaments/tmt-8.png')] bg-cover bg-no-repeat"></div>
 
       <div className="block px-5 pt-4">
