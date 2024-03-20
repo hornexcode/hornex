@@ -104,6 +104,7 @@ const AdminTournamentGeneralInfo = () => {
       toast({
         title: 'Success',
         description: 'Registration opened successfully',
+        variant: 'success',
       });
     }
     setLoading(false);
@@ -125,6 +126,7 @@ const AdminTournamentGeneralInfo = () => {
       toast({
         title: 'Success',
         description: 'Tournament started successfully',
+        variant: 'success',
       });
     }
     setLoading(false);
@@ -146,6 +148,7 @@ const AdminTournamentGeneralInfo = () => {
       toast({
         title: 'Success',
         description: 'Tournament finalized successfully',
+        variant: 'success',
       });
     }
     setLoading(false);
@@ -265,7 +268,7 @@ const AdminTournamentGeneralInfo = () => {
   return (
     <div className="mt-4 grid grid-cols-3 gap-4">
       <div className="col-span-2">
-        <div className="border-border flex flex-wrap items-center rounded border">
+        <div className=" flex flex-wrap items-center">
           <div className="border-border border-r px-4 py-2 font-medium">
             <div className="text-body font-normal">Teams registered</div>
             <div className="text-title">
@@ -309,15 +312,15 @@ const AdminTournamentGeneralInfo = () => {
             </div>
           </div>
         </div>
-        {hasStandings && tournamentResults && (
+        {/* {hasStandings && tournamentResults && (
           <div className="border-border mt-4 block rounded border p-6">
             <div className="text-title text-lg font-semibold">Results</div>
             <AdminTournamentStandingsTabContent standings={tournamentResults} />
           </div>
-        )}
+        )} */}
       </div>
       <div className="col-span-1">
-        <div className="border-border block rounded border p-6">
+        <div className="">
           <div className="text-title mb-2 font-bold">Tournament status</div>
           <div className="flex items-center justify-between pb-2">
             <span className="font-semibold text-amber-500">

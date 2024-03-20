@@ -1,3 +1,4 @@
+import json
 import uuid
 
 from django.db import models
@@ -47,6 +48,13 @@ class GameID(models.Model):
 
     def get_league_of_legends_code(self) -> str:
         return self.metadata.get("league_of_legends_code", "")
+
+    def get_puuid(self):
+        if self.metadata is None:
+            return ""
+
+        m = json.loads(self.metadata)
+        return m.get("puuid", "")
 
 
 # @deprecated

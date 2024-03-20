@@ -53,7 +53,7 @@ def oauth_login_callback(request):
         )
 
     # create game id in case not exists
-    gid, _ = GameID.objects.update_or_create(
+    GameID.objects.update_or_create(
         user=request.user,
         is_active=True,
         metadata={
