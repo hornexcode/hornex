@@ -109,7 +109,6 @@ class PublicTournamentViewSet(viewsets.ModelViewSet):
     pagination_class = TournamentPagination
 
     def get_queryset(self):
-        # time.sleep(10)
         game, _ = extract_game_and_platform(self.kwargs)
         if game == LeagueOfLegendsTournament.GameType.LEAGUE_OF_LEGENDS:
             self.queryset = LeagueOfLegendsTournament.objects.all()

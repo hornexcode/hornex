@@ -73,11 +73,12 @@ const TournamentDetailsTabPanels = ({
                         <div className="font-display text-sm text-amber-400">
                           R${' '}
                           {toCurrency(
-                            tournament.entry_fee *
-                              tournament.max_teams *
-                              tournament.team_size *
-                              0.7 *
-                              0.55
+                            tournament?.entry_fee ||
+                              0 *
+                                tournament.max_teams *
+                                tournament.team_size *
+                                0.7 *
+                                0.55
                           )}
                         </div>
                       </div>
@@ -88,11 +89,12 @@ const TournamentDetailsTabPanels = ({
                         <div className="font-display text-sm text-amber-400">
                           R${' '}
                           {toCurrency(
-                            tournament.entry_fee *
-                              tournament.max_teams *
-                              tournament.team_size *
-                              0.7 *
-                              0.3
+                            tournament?.entry_fee ||
+                              0 *
+                                tournament.max_teams *
+                                tournament.team_size *
+                                0.7 *
+                                0.3
                           )}
                         </div>
                       </div>
@@ -103,11 +105,12 @@ const TournamentDetailsTabPanels = ({
                         <div className="font-display text-sm text-amber-400">
                           R${' '}
                           {toCurrency(
-                            tournament.entry_fee *
-                              tournament.max_teams *
-                              tournament.team_size *
-                              0.7 *
-                              0.15
+                            tournament?.entry_fee ||
+                              0 *
+                                tournament.max_teams *
+                                tournament.team_size *
+                                0.7 *
+                                0.15
                           )}
                         </div>
                       </div>

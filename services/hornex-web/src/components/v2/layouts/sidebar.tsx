@@ -1,4 +1,8 @@
-import { loggedUserMenuItems, visitorMenuItems } from './_menu-items';
+import {
+  mainMenuItems,
+  organizerMenuItems,
+  visitorMenuItems,
+} from './_menu-items';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import MenuItem from '@/components/v2/menu-item';
 import classNames from 'classnames';
@@ -19,7 +23,7 @@ export default async function Sidebar({ className }: { className?: string }) {
         <h4 className="text-body px-2 text-sm font-bold uppercase">Main</h4>
         <ul className="mt-2 flex w-full flex-col font-medium">
           {session &&
-            loggedUserMenuItems.map((item, index) => (
+            mainMenuItems.map((item, index) => (
               <MenuItem key={index} {...item} />
             ))}
           {!session &&
@@ -28,6 +32,18 @@ export default async function Sidebar({ className }: { className?: string }) {
             ))}
         </ul>
       </div>
+      {session && (
+        <div className="p-4">
+          <h4 className="text-body px-2 text-sm font-bold uppercase">
+            Organizer
+          </h4>
+          <ul className="mt-2 flex w-full flex-col font-medium">
+            {organizerMenuItems.map((item, index) => (
+              <MenuItem key={index} {...item} />
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

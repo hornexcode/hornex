@@ -31,8 +31,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <ul className="mt-2 flex w-full flex-col font-medium">
           <li
             className={cn(
-              'relative rounded p-2 px-3',
-              router.pathname === routes.compete && 'bg-brand/10 '
+              'relative mb-2 rounded p-1 px-3',
+              router.pathname === routes.compete &&
+                'bg-brand/20 border-brand/40 border'
             )}
           >
             {router.pathname === routes.compete && (
@@ -65,8 +66,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
           </li>
           <li
             className={cn(
-              'relative rounded p-2 px-3',
-              router.pathname === routes.registrations && 'bg-brand/10',
+              'relative rounded p-1.5 px-3',
+              router.pathname === routes.registrations &&
+                'bg-brand/20 border-brand/40 border ',
               !session && 'hidden'
             )}
           >
@@ -107,7 +109,8 @@ export const Sidebar = ({ className }: { className?: string }) => {
           <li
             className={cn(
               'relative hidden rounded p-2 px-3',
-              router.pathname === routes.admin.profile && 'bg-brand/10'
+              router.pathname === routes.admin.profile &&
+                'bg-brand/20 border-brand/40 border '
             )}
           >
             {router.pathname === routes.admin.profile && (
@@ -139,8 +142,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
           </li>
           <li
             className={cn(
-              'relative rounded p-2 px-3',
-              router.pathname === routes.admin.tournaments && 'bg-brand/10'
+              'relative rounded p-1.5 px-3',
+              router.pathname === routes.admin.tournaments &&
+                'bg-brand/20 border-brand/40 border '
             )}
           >
             {router.pathname === routes.admin.tournaments && (

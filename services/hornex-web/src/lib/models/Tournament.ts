@@ -9,13 +9,13 @@ export const tournamentSchema = z.object({
   status: z.enum(['announced', 'registering', 'running', 'ended', 'cancelled']),
   currency: z.enum(['USD', 'EUR', 'BRL']),
   start_date: z.string(),
-  registration_start_date: z.date(),
+  registration_start_date: z.string(),
   check_in_duration: z.number(),
   start_time: z.string(),
   is_entry_free: z.boolean(),
   prize_pool_enabled: z.boolean(),
-  prize_pool: z.number(),
-  entry_fee: z.number(),
+  prize_pool: z.number().optional(),
+  entry_fee: z.number().nullable(),
   max_teams: z.number(),
   team_size: z.number(),
   created_at: z.string(),
@@ -24,14 +24,13 @@ export const tournamentSchema = z.object({
   game: z.string(),
   platform: z.string(),
   registered_teams: z.array(z.string()),
-  classifications: z.string().array(),
+  classifications: z.string().array().optional(),
   feature_image: z.string(),
   open_classification: z.boolean(),
   challonge_tournament_url: z.string(),
-  checked_in: z.boolean(),
   registered_teams_count: z.number(),
   current_round: z.number(),
-  ended_at: z.date(),
+  ended_at: z.string().nullable(),
 });
 export type Tournament = z.infer<typeof tournamentSchema>;
 
@@ -52,13 +51,13 @@ export function getStatus(tournament: Tournament) {
 export function getEntryFee(tournament: Tournament) {
   return tournament.is_entry_free
     ? 'Free'
-    : `${tournament.currency} ${(tournament.entry_fee / 100).toFixed(2)}`;
+    : `${tournament.currency} ${(tournament?.entry_fee || 1 / 100).toFixed(2)}`;
 }
 
 export function getClassifications(tournament: Tournament) {
   return '';
   if (tournament.open_classification) return 'All';
-  return tournament.classifications.join(', ');
+  return tournament.classifications?.join(', ');
 }
 
 export function getStartAt(tournament: Tournament) {
@@ -96,10 +95,8 @@ export function getStatusStep(tournament: Tournament) {
 
 export function getPotentialPrizePool(tournnament: Tournament): number {
   return tournnament.prize_pool_enabled
-    ? tournnament.entry_fee *
-        tournnament.max_teams *
-        tournnament.team_size *
-        0.7
+    ? tournnament?.entry_fee ||
+        1 * tournnament.max_teams * tournnament.team_size * 0.7
     : 0;
 }
 

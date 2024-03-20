@@ -53,7 +53,7 @@ export default async function Header() {
   };
 
   return (
-    <header className="border-border/40 fixed top-0 z-40 h-16 w-full border-b px-8 backdrop-blur-sm">
+    <header className="border-border/40 bg-dark/50 fixed top-0 z-40 h-16 w-full border-b px-8 backdrop-blur-sm">
       <div className="mx-auto flex h-full w-full max-w-[2160px] items-center justify-between">
         <div className=" flex w-[230px] items-center text-xl font-bold">
           <Link className="text-title mr-4 flex items-center" href="/">

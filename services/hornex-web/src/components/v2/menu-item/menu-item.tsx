@@ -14,8 +14,8 @@ const MenuItem: FC<MenuItemProps> = ({ icon, href, name }) => {
   return (
     <li
       className={cn(
-        'relative rounded p-2 px-3',
-        isActivePage && 'bg-brand/10 '
+        'relative mb-2 rounded p-1 px-3',
+        isActivePage && 'bg-brand/20 border-brand/40 border'
       )}
     >
       {isActivePage && (
