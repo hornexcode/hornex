@@ -111,17 +111,6 @@ function HornexApp({ Component, pageProps }: AppPropsWithLayout) {
           </div>
         </NextThemesProvider>
       </SWRConfig>
-      <Script
-        src="https://embed.twitch.tv/embed/v1.js"
-        onLoad={() => {
-          new Twitch.Embed('twitch-embed', {
-            width: '100%',
-            height: 400,
-            channel: 'gaules',
-            theme: 'dark',
-          });
-        }}
-      />
     </>
   );
 }

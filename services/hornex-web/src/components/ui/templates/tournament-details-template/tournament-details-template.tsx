@@ -41,15 +41,27 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       <TournamentDetailsHeadline isCheckedIn={false} />
 
       <div className="mt-8 flex space-x-8">
-        <div className="w-[280px] space-y-8">
+        <div className="w-[400px] space-y-8">
           <TournamentPhasesWidget
             tournament={tournament}
             isRegistered={isRegistered}
           />
-          <div className="">
+
+          <div>
+            <TwitchStruded className="h-8" />
+            <div className="border-border rounded border">
+              <iframe
+                src="https://player.twitch.tv/?channel=gaules&parent=localhost&muted=true"
+                height="200"
+                width="100%"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+          <div className="border-border rounded border">
             <iframe
               src="https://discord.com/widget?id=976554121475797134&theme=dark"
-              width="280px"
+              width="100%"
               height="420"
               sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
             ></iframe>
@@ -58,13 +70,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
         <div className="grid w-full">
           <TournamentTabPanels tournament={tournament} />
           <div className="mt-10">
-            <div className="flex items-center">
-              <TwitchStruded className="h-12" />
-            </div>
-            <div
-              id="twitch-embed"
-              className="border-border rounded border"
-            ></div>
+            <div className="flex items-center"></div>
           </div>
         </div>
       </div>
