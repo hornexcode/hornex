@@ -6,7 +6,6 @@ export const routes = {
   login: {
     path: 'v1/token',
     method: Method.POST,
-    schema: null,
   },
   signUp: {
     path: 'v1/users',
@@ -69,6 +68,10 @@ export const routes = {
   getGameIds: {
     path: 'v1/accounts/game-ids',
     method: Method.GET,
+  },
+  disconnectGameId: {
+    path: 'v1/accounts/game-ids/[id]/disconnect',
+    method: Method.DELETE,
   },
   getAvailableGames: {
     path: 'v1/games',

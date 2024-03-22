@@ -1,4 +1,4 @@
-import { ConnectAccountButton } from '../../atoms/connect-account-button';
+import { TwitchStruded } from '../../atoms/icons/twitch-extruded';
 import { TournamentPhasesWidget } from '../../molecules';
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
 import {
@@ -11,23 +11,14 @@ import {
 } from '@/components/ui/breadcrumb';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
 import { useTournament } from '@/contexts';
-import { GameId } from '@/lib/models/Account';
-import { getStatusStep } from '@/lib/models/Tournament';
-import { dataLoader } from '@/lib/request';
 import { FC } from 'react';
 
 type TournamentDetailsTemplateProps = {
   participantCheckedInStatus?: boolean;
 };
 
-const { useData: useGameIdsQuery } = dataLoader<GameId[]>('getGameIds');
-
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
   const { tournament, isRegistered } = useTournament();
-
-  const { data: gameIds } = useGameIdsQuery({});
-
-  const renderConnectAccount = !gameIds;
 
   return (
     <div className="mx-auto px-8 pt-8">
@@ -46,29 +37,41 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
         </Breadcrumb>
       </div>
 
-      {/* connect account */}
-      {renderConnectAccount && <ConnectAccountButton />}
-
       {/* headline */}
       <TournamentDetailsHeadline isCheckedIn={false} />
 
       <div className="mt-8 flex space-x-8">
-        <div className="w-[280px] space-y-8">
+        <div className="w-[400px] space-y-8">
           <TournamentPhasesWidget
             tournament={tournament}
             isRegistered={isRegistered}
           />
-          <div className="">
+
+          <div>
+            <TwitchStruded className="h-8" />
+            <div className="border-border rounded border">
+              <iframe
+                src="https://player.twitch.tv/?channel=gaules&parent=localhost&muted=true"
+                height="200"
+                width="100%"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+          <div className="border-border rounded border">
             <iframe
               src="https://discord.com/widget?id=976554121475797134&theme=dark"
-              width="280px"
+              width="100%"
               height="420"
               sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
             ></iframe>
           </div>
         </div>
-        <div className="flex flex-1">
+        <div className="grid w-full">
           <TournamentTabPanels tournament={tournament} />
+          <div className="mt-10">
+            <div className="flex items-center"></div>
+          </div>
         </div>
       </div>
     </div>

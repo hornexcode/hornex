@@ -95,8 +95,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     ctx.req
   );
 
-  console.log(registrations);
-
   return {
     props: {
       params: ctx.params,

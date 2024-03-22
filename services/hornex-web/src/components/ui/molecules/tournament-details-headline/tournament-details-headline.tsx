@@ -5,7 +5,6 @@ import Button from '@/components/ui/atoms/button/button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { useTournament } from '@/contexts/tournament';
 import { TeamCheckInStatus } from '@/lib/models';
-import { GameId } from '@/lib/models/Account';
 import { getStatus, Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import {
@@ -29,7 +28,6 @@ const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
   'getTeamCheckInStatus'
 );
 const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
-const { useData: useGameIdsQuery } = dataLoader<GameId[]>('getGameIds');
 
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   isCheckedIn: initialIsCheckedIn,
@@ -38,18 +36,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
   const { tournament, isRegistered } = useTournament();
-
-  const {
-    data: gameIds,
-    error: gameidsError,
-    isLoading: gameidsIsLoading,
-  } = useGameIdsQuery({});
-
-  const connectedGameId = {
-    id: '123',
-    nickname: 'hornex',
-    game: 'League of Legends',
-  };
 
   // Controll the check in state
   useEffect(() => {
@@ -163,11 +149,9 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
         />
         <div className="bg-dark/60 absolute top-0 h-full w-full"></div>
         <div className="absolute right-0 top-4">
-          {gameIds !== undefined && (
-            <div className="mx-4 block">
-              <ConnectedGameIds gameIds={gameIds} />
-            </div>
-          )}
+          <div className="mx-4 block">
+            <ConnectedGameIds />
+          </div>
         </div>
       </div>
       <div className="bg-medium-dark flex rounded-b p-4">
@@ -194,7 +178,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
               <Link href={`/tournament/${tournament.id}/participants`}>
                 <TwitterLogoIcon className="h-6 w-6" />
               </Link>
-
               <Link href={`/tournament/${tournament.id}/participants`}>
                 <Twitch className="h-5 w-5" />
               </Link>

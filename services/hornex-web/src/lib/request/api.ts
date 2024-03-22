@@ -1,3 +1,4 @@
+'use client';
 import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
 import { Route } from '@/lib/routes';
@@ -44,7 +45,11 @@ export const dataLoader = <T, Data = unknown>(
     try {
       if (!signal.aborted) {
         if (res.ok) {
-          data = (await res.json()) as UDT;
+          try {
+            data = (await res.json()) as UDT;
+          } catch (e) {
+            console.error('Error parsing response', e);
+          }
         } else {
           try {
             const errRes = await res.json();

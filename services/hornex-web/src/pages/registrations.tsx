@@ -21,7 +21,6 @@ const RegistrationsPage = ({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) => {
   const { data: registrations, error, isLoading } = useRegistrationsQuery({});
-  console.log(registrations);
   const renderRegistrations = () => {
     if (isLoading) {
       return (

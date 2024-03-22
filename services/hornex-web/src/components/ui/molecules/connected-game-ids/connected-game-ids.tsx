@@ -1,20 +1,62 @@
-import { ChevronDown } from '../../atoms/icons';
-import { LolFlatIcon } from '../../atoms/icons/lol-flat-icon';
+import { useModal } from '@/components/modal-views/context';
+import Button from '@/components/ui/atoms/button';
+import { ChevronDown } from '@/components/ui/atoms/icons';
+import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
 import { GameId } from '@/lib/models/Account';
-import { game } from '@/lib/models/types';
+import { dataLoader } from '@/lib/request';
 import { Menu, Transition } from '@headlessui/react';
-import { CogIcon, PlusCircleIcon } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { Fragment } from 'react';
 
-export const ConnectedGameIds = ({ gameIds }: { gameIds: GameId[] }) => {
+const { useData: useGameIdsQuery } = dataLoader<GameId[]>('getGameIds');
+const { submit: disconnectGameId } = dataLoader<undefined>('disconnectGameId');
+
+export const ConnectedGameIds = () => {
+  const { openModal } = useModal();
+  const { data: gameIds, error, isLoading, mutate } = useGameIdsQuery({});
+
+  if (isLoading) {
+    return (
+      <Button isLoading size="small" shape="rounded">
+        Loading
+      </Button>
+    );
+  }
+
+  if (error || !gameIds) {
+    return (
+      <Button disabled shape="rounded" size="small" color="danger">
+        Could not load information
+      </Button>
+    );
+  }
+
+  const handleDisconnectGameId = async (id: string) => {
+    const { error } = await disconnectGameId({ id });
+    if (error) {
+      console.error('Error disconnecting account', error);
+    }
+    mutate();
+  };
+
   return (
     <Menu as="div" className="relative z-10 inline-block text-left">
       <div>
-        <Menu.Button className="group-item bg-title text-dark flex w-full items-center justify-center rounded px-4 py-1 font-medium focus:outline-none ">
-          <LolFlatIcon className="text-dark mr-3 h-5 w-5" />
-          <span>connected</span>
-          <ChevronDown className="ml-3 w-4" />
-        </Menu.Button>
+        {gameIds.length > 0 ? (
+          <Menu.Button className="group-item bg-brand text-dark flex w-full items-center justify-center rounded px-4 py-2 font-medium focus:outline-none ">
+            <LolFlatIcon className="text-dark mr-2 h-5 w-5" />
+            <span>connected</span>
+            <ChevronDown className="ml-3 w-4" />
+          </Menu.Button>
+        ) : (
+          <Menu.Button
+            onClick={() => openModal('CONNECT_ACCOUNT_VIEW')}
+            className="group-item text-title flex w-full items-center justify-center rounded bg-red-500 px-4 py-2 font-medium focus:outline-none "
+          >
+            <LolFlatIcon className="text-title mr-2 h-5 w-5" />
+            Connect riot account
+          </Menu.Button>
+        )}
       </div>
       {gameIds.map((gameId, key) => (
         <Transition
@@ -27,8 +69,8 @@ export const ConnectedGameIds = ({ gameIds }: { gameIds: GameId[] }) => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="shadow-highlight-all shadow-card bg-light-dark absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-700 rounded ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="text-title px-4 py-2">
+          <Menu.Items className="shadow-highlight-all shadow-card bg-light-dark divide-border absolute right-0 mt-2 w-56 origin-top-right divide-y rounded ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <div className="text-title px-4 py-2 font-bold">
               {gameId.game === 'league-of-legends' && (
                 <span>League of Legends</span>
               )}
@@ -39,7 +81,7 @@ export const ConnectedGameIds = ({ gameIds }: { gameIds: GameId[] }) => {
                   <button
                     className={`${
                       active
-                        ? 'text-dark bg-amber-500'
+                        ? 'text-dark bg-brand'
                         : 'text-title bg-medium-dark'
                     } group flex w-full items-center px-4 py-2`}
                   >
@@ -50,31 +92,19 @@ export const ConnectedGameIds = ({ gameIds }: { gameIds: GameId[] }) => {
                   </button>
                 )}
               </Menu.Item>
-
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? 'text-dark bg-amber-500' : 'text-title'
-                    } group flex w-full items-center px-4 py-2`}
-                  >
-                    <PlusCircleIcon className="mr-2 h-4 w-4" />
-                    Connect another account
-                  </button>
-                )}
-              </Menu.Item>
             </div>
 
             <div className="py-2">
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    onClick={() => handleDisconnectGameId(gameId.id)}
                     className={`${
                       active ? 'bg-dark text-slate-200' : 'text-slate-200'
                     } group flex w-full items-center justify-center px-4 py-2 `}
                   >
-                    <CogIcon className="mr-2 h-4 w-4" />
-                    Manage account
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Disconnect
                   </button>
                 )}
               </Menu.Item>

@@ -7,6 +7,10 @@
     --color-brand: 17 24 39;
   }
 
+  .cls-1 {
+    fill: #fff;
+  }
+
   @layer base {
     :root {
       --background: 0 0% 100%;

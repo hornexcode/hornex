@@ -1,5 +1,5 @@
-import '@/styles/global.css';
 import '@/styles/scrollbar.css';
+import '@/styles/global.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ModalsContainer from '@/components/modal-views/container';
@@ -9,12 +9,12 @@ import { NextPage } from 'next';
 import App, { AppContext, AppProps } from 'next/app';
 import { Roboto_Condensed } from 'next/font/google';
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
-
 // Font files can be colocated inside of `pages`
 const Beaufort_for_LOL = localFont({
   src: [

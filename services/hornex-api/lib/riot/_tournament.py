@@ -115,7 +115,7 @@ class Tournament(dict[type, any]):
         """
         resp = request(
             method="post",
-            url=f"https://americas.api.riotgames.com/lol/tournament-stub/v5/codes?count={count}&tournamentId={tournament_id}&api_key={riot.api_key}",
+            url=f"https://americas.api.riotgames.com/lol/tournament/v5/codes?count={count}&tournamentId={tournament_id}&api_key={riot.api_key}",
             params=params,
         )
         if not resp.ok:
