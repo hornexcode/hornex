@@ -67,7 +67,6 @@ const LoginForm = () => {
     if (res?.error) {
       setError(res.error);
       setFetching(false);
-
       return;
     }
 
@@ -93,7 +92,11 @@ const LoginForm = () => {
             Login successful!
           </div>
         )}
-        <form className="space-y-4" onSubmit={handleSubmit(handleOnSubmit)}>
+        <form
+          method="post"
+          className="space-y-4"
+          onSubmit={handleSubmit(handleOnSubmit)}
+        >
           {/* Email */}
           <div>
             <InputLabel title="Email" important />
@@ -120,6 +123,7 @@ const LoginForm = () => {
               fullWidth
               shape="rounded"
               size="small"
+              type="submit"
             >
               Login
             </Button>

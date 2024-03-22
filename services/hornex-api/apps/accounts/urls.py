@@ -35,4 +35,9 @@ urlpatterns = [
         GameIDViewSet.as_view({"get": "list"}),
         name="game-ids",
     ),
+    path(
+        "/game-ids/<str:id>/disconnect",
+        GameIDViewSet.as_view({"delete": "disconnect"}),
+        name="disonnect-gameid",
+    ),
 ]

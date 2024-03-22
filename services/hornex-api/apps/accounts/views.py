@@ -1,9 +1,14 @@
+import json
 import logging
 import os
+from datetime import UTC
+from datetime import datetime as dt
+from datetime import timedelta as td
 
 from django.db import transaction
 from rest_framework import status, viewsets
 from rest_framework.decorators import (
+    action,
     api_view,
     authentication_classes,
     permission_classes,
@@ -56,11 +61,19 @@ def oauth_login_callback(request):
     GameID.objects.update_or_create(
         user=request.user,
         is_active=True,
-        metadata={
-            "puuid": riot_account.puuid,
-            "region": "Brazil",
-            "tag_line": riot_account.tag_line,
-        },
+        metadata=json.dumps(
+            {
+                "puuid": riot_account.puuid,
+                "region": "Brazil",
+                "tag_line": riot_account.tag_line,
+                "access_token": token.access_token,
+                "expires_at": (
+                    dt.now(tz=UTC) + td(seconds=token.expires_in)
+                ).isoformat(),
+                "refresh_token": token.refresh_token,
+                "id_token": token.id_token,
+            }
+        ),
         nickname=riot_account.game_name,
         game=GameID.GameOptions.LEAGUE_OF_LEGENDS,
     )
@@ -99,6 +112,18 @@ class GameIDViewSet(viewsets.ModelViewSet):
     serializer_class = GameIDSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+    lookup_field = "id"
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        return self.queryset.filter(user=self.request.user, deleted_at__isnull=True)
+
+    @action(detail=True, methods=["delete"])
+    def disconnect(self, request, *args, **kwargs):
+        game_id = self.get_object()
+        if game_id.user != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        game_id.is_active = False
+        game_id.deleted_at = dt.now(tz=UTC)
+        game_id.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

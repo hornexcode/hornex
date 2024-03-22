@@ -101,7 +101,6 @@ export const getServerSideProps = (async ({
   query: { game, platform, id },
   req,
 }) => {
-  console.log(id);
   const { data: tournament, error } = await getServerTournament(
     { game: game, platform, tournamentId: id },
     req

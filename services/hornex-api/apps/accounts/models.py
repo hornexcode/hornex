@@ -21,7 +21,7 @@ class TermsAndConditionsAgreement(models.Model):
 
 class GameID(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="game_id"
     )
 
@@ -90,3 +90,8 @@ class Profile(models.Model):
 
     def __str__(self) -> str:
         return self.user.name
+
+    def get_twitch_username(self):
+        if self.twitch_link:
+            return self.twitch_link.split("/")[-1]
+        return None
