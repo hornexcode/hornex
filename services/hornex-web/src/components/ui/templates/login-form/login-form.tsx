@@ -1,8 +1,8 @@
 'use client';
-import Button from '../../atoms/button';
-import InputLabel from '../../atoms/form/input-label';
-import { Input } from '../../input';
+import Button from '@/components/ui/atoms/button';
+import InputLabel from '@/components/ui/atoms/form/input-label';
 import { Logo } from '@/components/ui/atoms/logo';
+import { Input } from '@/components/ui/input';
 import routes from '@/config/routes';
 import { Token } from '@/lib/auth/auth-context.types';
 import { dataLoader } from '@/lib/request';
