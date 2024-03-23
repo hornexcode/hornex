@@ -4,37 +4,36 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0004_alter_gameid_user'),
+        ("accounts", "0004_alter_gameid_user"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='profile',
-            name='discord_link',
+            model_name="profile",
+            name="discord_link",
         ),
         migrations.RemoveField(
-            model_name='profile',
-            name='twitch_link',
+            model_name="profile",
+            name="twitch_link",
         ),
         migrations.RemoveField(
-            model_name='profile',
-            name='twitter_link',
+            model_name="profile",
+            name="twitter_link",
         ),
         migrations.AddField(
-            model_name='profile',
-            name='discord_widget_id',
+            model_name="profile",
+            name="discord_widget_id",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='twitch_username',
+            model_name="profile",
+            name="twitch_username",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='twitter_username',
+            model_name="profile",
+            name="twitter_username",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

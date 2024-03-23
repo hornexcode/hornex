@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0005_remove_profile_discord_link_and_more'),
+        ("accounts", "0005_remove_profile_discord_link_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='discord_invite_code',
+            model_name="profile",
+            name="discord_invite_code",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
     ]
