@@ -3,7 +3,7 @@ import '@/styles/global.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ModalsContainer from '@/components/modal-views/container';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
 import classnames from 'classnames';
 import { NextPage } from 'next';
 import App, { AppContext, AppProps } from 'next/app';

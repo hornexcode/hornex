@@ -138,6 +138,18 @@ export const routes = {
     method: Method.POST,
     schema: null,
   },
+  profile: {
+    path: 'v1/accounts/profile',
+    method: Method.GET,
+  },
+  createProfile: {
+    path: 'v1/accounts/profile',
+    method: Method.POST,
+  },
+  updateProfile: {
+    path: 'v1/accounts/profile',
+    method: Method.PATCH,
+  },
   getNotifications: {
     path: 'v1/notifications',
     method: Method.GET,
@@ -204,10 +216,6 @@ export const routes = {
     method: Method.GET,
   },
 
-  'org:tournaments': {
-    path: 'v1/org/tournaments',
-    method: Method.GET,
-  },
   createTournament: {
     path: 'v1/org/tournaments',
     method: Method.POST,
@@ -216,6 +224,10 @@ export const routes = {
   createAndRegisterTeam: {
     path: 'v1/tournaments/[tournamentId]/create-and-register-team',
     method: Method.POST,
+  },
+  'org:tournaments': {
+    path: 'v1/org/tournaments',
+    method: Method.GET,
   },
   'org:tournament:details': {
     path: 'v1/org/tournaments/[id]',
