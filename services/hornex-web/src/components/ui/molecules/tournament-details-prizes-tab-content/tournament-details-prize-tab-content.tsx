@@ -46,7 +46,7 @@ const Prize = ({ prize }: { prize: Prize }) => {
           </h4>
         </div>
       </div>
-      <div className="border-border col-span-11 border-l p-4">
+      <div className="border-border col-span-11 border-l p-6">
         <div className="flex h-full items-center justify-between">
           <div className="font-medium">{prize.content}</div>
         </div>

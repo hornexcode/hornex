@@ -1,6 +1,6 @@
 import routes from '@/config/routes';
 import { BookmarkFilledIcon, RocketIcon } from '@radix-ui/react-icons';
-import { Swords } from 'lucide-react';
+import { Swords, UserCircle2 } from 'lucide-react';
 
 export const mainMenuItems = [
   {
@@ -20,6 +20,11 @@ export const organizerMenuItems = [
     name: 'Tournaments',
     icon: <RocketIcon className="mr-2 w-5" />,
     href: routes.admin.tournaments,
+  },
+  {
+    name: 'Profile',
+    icon: <UserCircle2 className="mr-2 w-5" />,
+    href: routes.admin.profile,
   },
 ];
 

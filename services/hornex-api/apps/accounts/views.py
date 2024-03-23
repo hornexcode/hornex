@@ -13,6 +13,7 @@ from rest_framework.decorators import (
     authentication_classes,
     permission_classes,
 )
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -99,12 +100,35 @@ def oauth_login(request):
     )
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    lookup_field = "id"
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+@api_view(["GET", "POST", "PATCH"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    if request.method == "GET":
+        profile = get_object_or_404(Profile, user=request.user)
+        serializer = ProfileSerializer(instance=profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method == "POST":
+        data = {"user": request.user.id, **request.data}
+        print(data)
+        serializer = ProfileSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == "PATCH":
+        profile = get_object_or_404(Profile, user=request.user)
+        serializer = ProfileSerializer(
+            instance=profile, data=request.data, partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class GameIDViewSet(viewsets.ModelViewSet):

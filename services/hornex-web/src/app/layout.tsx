@@ -1,5 +1,7 @@
+'use client';
 import '@/assets/css/globals.css';
 
+import { Toaster } from '@/components/ui/sonner';
 import { cn } from '@/lib/utils';
 import localFont from 'next/font/local';
 
@@ -53,6 +55,7 @@ export default function RootLayout({
       <body>
         {/* Layout UI */}
         {children}
+        <Toaster />
       </body>
     </html>
   );

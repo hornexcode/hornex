@@ -66,12 +66,11 @@ const TournamentTabPanels: FC<TournamentTabPanelsProps> = ({ tournament }) => {
       <TabsContent value="brackets">
         <div className="">
           <iframe
-            src={`${tournament.challonge_tournament_url}/module?show_live_status=0`}
+            src={`${tournament.challonge_tournament_url}/module?show_live_status=0&theme=2`}
             width="100%"
-            height="600"
+            height="400"
             frameBorder={0}
             scrolling="auto"
-            // allowTransparency={true}
           ></iframe>
         </div>
       </TabsContent>

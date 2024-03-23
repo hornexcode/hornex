@@ -1,6 +1,7 @@
 import { TwitchStruded } from '../../atoms/icons/twitch-extruded';
 import { TournamentPhasesWidget } from '../../molecules';
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
+import { Skeleton } from '../../skeleton';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,14 +12,23 @@ import {
 } from '@/components/ui/breadcrumb';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
 import { useTournament } from '@/contexts';
+import { Profile } from '@/lib/models/Profile';
+import { dataLoader } from '@/lib/request';
 import { FC } from 'react';
 
 type TournamentDetailsTemplateProps = {
   participantCheckedInStatus?: boolean;
 };
 
+const { useData: useProfileQuery } = dataLoader<Profile>('profile');
+
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
   const { tournament, isRegistered } = useTournament();
+
+  const { data: profile, isLoading: isLoadingProfile } = useProfileQuery();
+
+  const twitchIframeSrc = `https://player.twitch.tv/?channel=${profile?.twitch_username}&parent=localhost&muted=true`;
+  const discordIframeSrc = `https://discord.com/widget?id=${profile?.discord_widget_id}&theme=dark`;
 
   return (
     <div className="mx-auto px-8 pt-8">
@@ -26,7 +36,7 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
       <div className="mb-6">
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem>
+            <BreadcrumbItem className="hover:text-title">
               <BreadcrumbLink href="/compete">Compete</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -50,21 +60,29 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
           <div>
             <TwitchStruded className="h-8" />
             <div className="border-border rounded border">
-              <iframe
-                src="https://player.twitch.tv/?channel=gaules&parent=localhost&muted=true"
-                height="200"
-                width="100%"
-                allowFullScreen
-              ></iframe>
+              {isLoadingProfile ? (
+                <Skeleton className="bg-light-dark h-[200px] w-[100%]" />
+              ) : (
+                <iframe
+                  src={twitchIframeSrc}
+                  height="200"
+                  width="100%"
+                  allowFullScreen
+                ></iframe>
+              )}
             </div>
           </div>
           <div className="border-border rounded border">
-            <iframe
-              src="https://discord.com/widget?id=976554121475797134&theme=dark"
-              width="100%"
-              height="420"
-              sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-            ></iframe>
+            {isLoadingProfile ? (
+              <Skeleton className="bg-light-dark h-[420px] w-[100%]" />
+            ) : (
+              <iframe
+                src={discordIframeSrc}
+                width="100%"
+                height="420"
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              ></iframe>
+            )}
           </div>
         </div>
         <div className="grid w-full">

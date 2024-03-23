@@ -82,9 +82,10 @@ class Profile(models.Model):
     user = models.OneToOneField(
         "users.User", on_delete=models.CASCADE, related_name="profile"
     )
-    discord_link = models.URLField(blank=True)
-    twitter_link = models.URLField(blank=True)
-    twitch_link = models.URLField(blank=True)
+    discord_widget_id = models.CharField(blank=True, null=True, max_length=255)
+    discord_invite_code = models.CharField(blank=True, null=True, max_length=50)
+    twitter_username = models.CharField(blank=True, null=True, max_length=255)
+    twitch_username = models.CharField(blank=True, null=True, max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

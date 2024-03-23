@@ -8,6 +8,7 @@ import {
   RocketIcon,
 } from '@radix-ui/react-icons';
 import classNames from 'classnames';
+import { UserCircle2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
@@ -175,10 +176,41 @@ export const Sidebar = ({ className }: { className?: string }) => {
               </div>
             </Link>
           </li>
+          <li
+            className={cn(
+              'relative rounded p-1.5 px-3',
+              router.pathname === routes.admin.profile &&
+                'bg-brand/20 border-brand/40 border '
+            )}
+          >
+            {router.pathname === routes.admin.profile && (
+              <div className="bg-brand absolute right-0 top-[calc(50%-10px)] h-[20px] w-1"></div>
+            )}
+            <Link
+              href={`${routes.admin.profile}`}
+              className="group cursor-pointer transition-all"
+            >
+              <div className="flex items-center rounded-lg">
+                <div>
+                  <UserCircle2Icon
+                    className={cn(
+                      'text-body mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110 group-hover:text-white',
+                      router.pathname === routes.admin.profile && 'text-brand'
+                    )}
+                  />
+                </div>
+                <span
+                  className={cn(
+                    'text-body',
+                    router.pathname === routes.admin.profile && 'text-brand'
+                  )}
+                >
+                  Profile
+                </span>
+              </div>
+            </Link>
+          </li>
         </ul>
-      </div>
-      <div className="mt-auto px-4 pb-20">
-        <LangToggler />
       </div>
     </div>
   );

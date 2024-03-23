@@ -1,10 +1,11 @@
-import { LolFlatIcon } from '../../atoms/icons/lol-flat-icon';
-import { RegisterButton } from '../../atoms/register-button';
 import { TournamentHeadlineProps } from './tournament-details-headline.types';
 import Button from '@/components/ui/atoms/button/button';
+import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
+import { RegisterButton } from '@/components/ui/atoms/register-button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
 import { useTournament } from '@/contexts/tournament';
 import { TeamCheckInStatus } from '@/lib/models';
+import { Profile } from '@/lib/models/Profile';
 import { getStatus, Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import {
@@ -27,6 +28,7 @@ import Countdown from 'react-countdown';
 const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
   'getTeamCheckInStatus'
 );
+const { useData: useProfileQuery } = dataLoader<Profile>('profile');
 const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
 
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
@@ -36,6 +38,8 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
   const { tournament, isRegistered } = useTournament();
+
+  const { data: profile, isLoading: isLoadingProfile } = useProfileQuery();
 
   // Controll the check in state
   useEffect(() => {
@@ -76,7 +80,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
     mutate: checkInStatusMutate,
   } = useTeamCheckIns({
     tournamentId: tournament.id,
-    // teamId: registration?.team,
   });
 
   const renderCheckInStatus = (checkedInTotal: number, teamSize: number) => {
@@ -172,13 +175,16 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
           {/* right */}
           <div className="flex items-center">
             <div className="flex h-full items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
-              <Link href={`/tournament/${tournament.id}/participants`}>
-                <DiscordLogoIcon className="h-6 w-6" />
-              </Link>
-              <Link href={`/tournament/${tournament.id}/participants`}>
+              <Link
+                target="_blank"
+                href={`https://twitter.com/${profile?.twitter_username}`}
+              >
                 <TwitterLogoIcon className="h-6 w-6" />
               </Link>
-              <Link href={`/tournament/${tournament.id}/participants`}>
+              <Link
+                target="_blank"
+                href={`https://twitch.tv/${profile?.twitch_username}`}
+              >
                 <Twitch className="h-5 w-5" />
               </Link>
             </div>
