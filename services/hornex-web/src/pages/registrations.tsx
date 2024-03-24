@@ -1,12 +1,14 @@
 import Button from '@/components/ui/atoms/button';
 import { Logo } from '@/components/ui/atoms/logo';
 import { Skeleton } from '@/components/ui/skeleton';
+import routes from '@/config/routes';
 import { AppLayout } from '@/layouts';
 import { Registration } from '@/lib/models';
 import { dataLoader } from '@/lib/request';
 import { BookmarkFilledIcon } from '@radix-ui/react-icons';
 import moment from 'moment';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 
@@ -62,9 +64,7 @@ const RegistrationEmptyFeedback = () => (
     <p className="text-body/40 text-lg">
       You are not registered in any tournament
     </p>
-    <Button size="small" shape="rounded">
-      Find a tournament
-    </Button>
+    <Link href={routes.compete}>Find a tournament</Link>
   </div>
 );
 
@@ -130,28 +130,6 @@ RegistrationsPage.getLayout = (page: React.ReactElement) => {
 };
 
 export const getServerSideProps = (async (ctx) => {
-  // const { data: registrations, error } = await getRegistrations({}, ctx.req);
-  // console.log(error);
-  // if (error || !registrations) {
-  //   if (error?.code === 401) {
-  //     return {
-  //       props: {},
-  //       redirect: {
-  //         destination: '/signin',
-  //       },
-  //     };
-  //   }
-
-  //   return {
-  //     props: {},
-  //   };
-  // }
-
-  // return {
-  //   props: {
-  //     registrations,
-  //   },
-  // };
   return {
     props: {},
   };
