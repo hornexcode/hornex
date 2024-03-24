@@ -60,9 +60,10 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
           <div>
             <TwitchStruded className="h-8" />
             <div className="border-border rounded border">
-              {isLoadingProfile ? (
+              {isLoadingProfile && (
                 <Skeleton className="bg-light-dark h-[200px] w-[100%]" />
-              ) : (
+              )}
+              {profile?.twitch_username && (
                 <iframe
                   src={twitchIframeSrc}
                   height="200"
@@ -73,9 +74,11 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
             </div>
           </div>
           <div className="border-border rounded border">
-            {isLoadingProfile ? (
+            {isLoadingProfile && (
               <Skeleton className="bg-light-dark h-[420px] w-[100%]" />
-            ) : (
+            )}
+
+            {profile?.discord_widget_id && (
               <iframe
                 src={discordIframeSrc}
                 width="100%"
