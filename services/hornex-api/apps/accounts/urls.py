@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.accounts.views import (
     GameIDViewSet,
+    get_organizer_profile_details,
     oauth_login,
     oauth_login_callback,
     profile,
@@ -32,5 +33,10 @@ urlpatterns = [
         "/profile",
         profile,
         name="profile",
+    ),
+    path(
+        "/profiles/<str:user_id>/details",
+        get_organizer_profile_details,
+        name="get-organizer-profile-details",
     ),
 ]

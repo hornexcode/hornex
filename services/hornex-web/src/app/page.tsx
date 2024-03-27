@@ -97,16 +97,7 @@ export default async function HomePage() {
                 tournaments. We take care of the hard work so you can focus on
                 organizing the best events.
               </p>
-              <Image
-                src={Teemo}
-                alt="Hornex"
-                width={150}
-                className="mt-10"
-                height={150}
-              />
-              <Button className="bg-dark mt-10 text-white">
-                Create a tournament
-              </Button>
+              <Image src={Teemo} alt="Hornex" width={200} className="mt-10" />
             </div>
             <div className="flex justify-start">
               <Image src={TournamentMockView} alt="Hornex" className="mt-10" />
