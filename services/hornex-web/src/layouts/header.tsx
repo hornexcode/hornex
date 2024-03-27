@@ -24,21 +24,14 @@ const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
 };
 
 const Header = () => {
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, [session]);
+  const { data: session, status } = useSession();
 
   const renderHeaderRightArea = () => {
-    if (loading) {
+    if (status === 'loading') {
       return <Skeleton className="h-6 w-[200px] rounded" />;
     }
 
-    if (session) {
+    if (status === 'authenticated') {
       return (
         <HeaderRightArea
           user={{

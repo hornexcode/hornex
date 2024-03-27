@@ -8,6 +8,7 @@ import { Logo } from '@/components/ui/atoms/logo';
 import { Button } from '@/components/ui/button';
 import routes from '@/config/routes';
 import { ArrowUpRightIcon, LogInIcon } from 'lucide-react';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth';
@@ -49,6 +50,10 @@ export default async function HomePage() {
 
   return (
     <div className="">
+      <Head>
+        <title>Hornex</title>
+        <meta name="google" content="notranslate" key="notranslate" />
+      </Head>
       <header className="bg-dark/20 fixed top-0 z-40 h-20 w-full px-8 backdrop-blur-sm">
         <div className="mx-auto flex h-full w-full max-w-[2160px] justify-between">
           <div className="text-title flex w-[230px] items-center text-xl font-bold">

@@ -49,7 +49,7 @@ class StartMatchUseCase:
             if puuid == "":
                 raise ValidationError(
                     {
-                        "detail": f"Player {member.nickname} has not connected his account to Riot Games. Please, connect your account and try again."
+                        "detail": f"Player {member.nickname} disconnected his Riot account. Please, contact him to reconnect it."
                     }
                 )
             participants.append(puuid)

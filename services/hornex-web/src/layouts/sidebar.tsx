@@ -1,5 +1,3 @@
-import { SwordsIcon } from '@/components/ui/atoms/icons';
-import { LangToggler } from '@/components/ui/molecules';
 import routes from '@/config/routes';
 import { cn } from '@/lib/utils';
 import {
@@ -8,7 +6,7 @@ import {
   RocketIcon,
 } from '@radix-ui/react-icons';
 import classNames from 'classnames';
-import { UserCircle2Icon } from 'lucide-react';
+import { Swords, UserCircle2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
@@ -46,7 +44,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
             >
               <div className="flex items-center rounded-lg">
                 <div>
-                  <SwordsIcon
+                  <Swords
                     className={cn(
                       'text-body fill-body mr-4 h-5 w-5 shadow-xl transition-transform group-hover:scale-110 group-hover:text-white',
                       router.pathname === routes.compete &&

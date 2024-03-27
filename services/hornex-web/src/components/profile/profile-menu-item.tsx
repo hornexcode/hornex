@@ -13,7 +13,7 @@ export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
     destroyCookie(null, 'hx');
     await signOut();
     if (window !== undefined) {
-      window.location.href = '/';
+      window.location.reload();
     }
   };
 

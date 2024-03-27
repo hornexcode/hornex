@@ -13,9 +13,9 @@ const AdminTournamentTeamRow: FC<AdminTournamentTeamRowProps> = ({
   registration,
 }) => {
   return (
-    <div className="bg-medium-dark border-border grid grid-cols-12 border-b shadow-lg">
+    <div className="bg-medium-dark border-border mb-1 grid grid-cols-12 border">
       <div className="col-span-1 flex items-center justify-center">
-        <Users2 className="text-muted h-7 w-7" />
+        <Users2 className=" h-7 w-7" />
       </div>
 
       <div className="border-border col-span-4 flex items-center border-l p-6">

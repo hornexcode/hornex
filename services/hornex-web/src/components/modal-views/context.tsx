@@ -5,7 +5,8 @@ export type MODAL_VIEW =
   | 'REGISTRATION_VIEW'
   | 'CONNECT_ACCOUNT_VIEW'
   | 'ERROR_VIEW'
-  | 'PROCESSING_PAYMENT_VIEW';
+  | 'PROCESSING_PAYMENT_VIEW'
+  | 'LOGIN_VIEW';
 
 interface ModalTypes {
   isOpen: boolean;
