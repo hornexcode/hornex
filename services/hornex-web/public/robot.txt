@@ -1,0 +1,9 @@
+//robots.txt
+
+# Block all crawlers for /admin/profile
+User-agent: *
+Disallow: /admin/profile
+
+# Allow all crawlers
+User-agent: *
+Allow: /

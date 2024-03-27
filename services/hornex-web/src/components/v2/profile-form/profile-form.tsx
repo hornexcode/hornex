@@ -13,7 +13,7 @@ import { Profile, profileSchema } from '@/lib/models/Profile';
 import { dataLoader } from '@/lib/request';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Pencil1Icon, PlusIcon } from '@radix-ui/react-icons';
+import { Pencil1Icon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';

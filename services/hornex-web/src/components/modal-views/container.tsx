@@ -30,6 +30,7 @@ const ModalErrorView = dynamic(
 const ProcessingPaymentView = dynamic(
   () => import('@/components/ui/organisms/processing-payment-view')
 );
+const LoginView = dynamic(() => import('@/components/ui/organisms/login-view'));
 
 function renderModalContent(view: MODAL_VIEW) {
   switch (view) {
@@ -43,6 +44,8 @@ function renderModalContent(view: MODAL_VIEW) {
       return <ModalErrorView />;
     case 'PROCESSING_PAYMENT_VIEW':
       return <ProcessingPaymentView />;
+    case 'LOGIN_VIEW':
+      return <LoginView />;
     default:
       return null;
   }

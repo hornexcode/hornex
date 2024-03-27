@@ -3,6 +3,7 @@ import TournamentsFeedTemplate from '@/components/ui/templates/tournaments-feed-
 import { tournamentSchema } from '@/lib/models/Tournament';
 import { routes } from '@/lib/request';
 import { Route } from '@/lib/routes';
+import Head from 'next/head';
 import { cookies } from 'next/headers';
 import React, { Suspense } from 'react';
 import z from 'zod';
@@ -51,13 +52,18 @@ async function TournamentsFeedTemplateContainer() {
 
 export default async function CompetePage() {
   return (
-    <div className="px-8">
-      <section id="available-games">
-        <Suspense fallback={<LoadingTournaments />}>
-          <TournamentsFeedTemplateContainer />
-        </Suspense>
-      </section>
-    </div>
+    <>
+      <Head>
+        <title>Compete</title>
+      </Head>
+      <div className="px-8">
+        <section id="available-games">
+          <Suspense fallback={<LoadingTournaments />}>
+            <TournamentsFeedTemplateContainer />
+          </Suspense>
+        </section>
+      </div>
+    </>
   );
 }
 

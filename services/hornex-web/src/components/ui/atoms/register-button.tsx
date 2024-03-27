@@ -17,12 +17,17 @@ export const RegisterButton: FC<RegisteredButtonProps> = ({
 }) => {
   const { openModal } = useModal();
 
-  const { data: session } = useSession();
-  if (!session) {
+  const { status } = useSession();
+  if (status === 'unauthenticated') {
     return (
-      <Link className="" href={routes.signup}>
+      <Button
+        shape="rounded"
+        className={className}
+        size="small"
+        onClick={() => openModal('LOGIN_VIEW')}
+      >
         Sign-up to joint
-      </Link>
+      </Button>
     );
   }
 

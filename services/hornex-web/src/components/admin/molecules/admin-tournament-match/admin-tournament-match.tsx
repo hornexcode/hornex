@@ -1,11 +1,11 @@
 import Button from '@/components/ui/atoms/button';
-import { toast } from '@/components/ui/use-toast';
 import { useAdminTournament } from '@/contexts';
 import { getStatus, Match } from '@/lib/models/Match';
 import { dataLoader } from '@/lib/request';
 import { cn } from '@/lib/utils';
 import { Loader2, PlusIcon, Swords } from 'lucide-react';
 import React, { FC } from 'react';
+import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
 
 const { submit: startMatch } = dataLoader<Match>('org:tournament:match:start');
@@ -31,17 +31,11 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
       tournamentId: tournament.id,
     });
     if (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to start match',
-      });
+      toast(error.message);
       console.error(error);
     } else {
       mutate('v1/org/tournaments/[id]/matches');
-      toast({
-        title: 'Success',
-        description: 'Match successfully started!',
-      });
+      toast('Match started successfully');
     }
     setIsLoading(false);
   };
@@ -54,17 +48,11 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
     });
     if (error) {
       console.error(error);
-      toast({
-        title: 'Error',
-        description: 'Failed to finish match',
-      });
+      toast('Failed to end match');
       console.error(error);
     } else {
       mutate('v1/org/tournaments/[id]/matches');
-      toast({
-        title: 'Success',
-        description: 'Match successfully finished!',
-      });
+      toast('Match ended successfully');
     }
     setIsLoading(false);
   };
@@ -82,17 +70,11 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
       payload
     );
     if (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to update match score',
-      });
+      toast('Failed to update match score');
       console.error(error);
     } else {
       mutate('v1/org/tournaments/[id]/matches');
-      toast({
-        description: 'Match score successfully updated!',
-        variant: 'success',
-      });
+      toast('Match score updated successfully');
     }
   };
 

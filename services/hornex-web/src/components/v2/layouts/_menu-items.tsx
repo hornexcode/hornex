@@ -5,7 +5,7 @@ import { Swords, UserCircle2 } from 'lucide-react';
 export const mainMenuItems = [
   {
     name: 'Compete',
-    icon: <Swords className="mr-2 w-5" />,
+    icon: <Swords className="fill-body mr-2 w-5" />,
     href: routes.compete,
   },
   {

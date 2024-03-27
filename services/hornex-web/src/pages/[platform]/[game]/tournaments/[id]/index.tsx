@@ -42,16 +42,14 @@ const TournamentPage: InferGetServerSidePropsType<
   isRegistered,
 }: TournamentProps) => {
   return (
-    <Suspense fallback={<Loading />}>
-      <TournamentContextProvider
-        isRegistered={isRegistered}
-        tournament={tournament}
-      >
-        <TournamentDetailsTemplate
-          participantCheckedInStatus={participantCheckedInStatus}
-        />
-      </TournamentContextProvider>
-    </Suspense>
+    <TournamentContextProvider
+      isRegistered={isRegistered}
+      tournament={tournament}
+    >
+      <TournamentDetailsTemplate
+        participantCheckedInStatus={participantCheckedInStatus}
+      />
+    </TournamentContextProvider>
   );
 };
 
