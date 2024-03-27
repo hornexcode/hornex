@@ -3,16 +3,16 @@
 import { LoggedUser } from '@/domain';
 import { Menu, Transition } from '@headlessui/react';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
+import { remove } from 'js-cookie';
 import { ChevronDownIcon, UserIcon } from 'lucide-react';
 import { signOut } from 'next-auth/react';
-import { destroyCookie } from 'nookies';
 import { Fragment } from 'react';
 
 export default function ProfileMenuItem({ user }: { user: LoggedUser }) {
   const handleLogout = async () => {
-    destroyCookie(null, 'hx');
     await signOut();
     if (window !== undefined) {
+      remove('hx');
       window.location.reload();
     }
   };

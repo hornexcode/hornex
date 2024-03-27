@@ -15,13 +15,14 @@ import {
   isCheckInOpen,
   toCurrency,
 } from '@/lib/utils';
-import { DiscordLogoIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
+import { TwitterLogoIcon } from '@radix-ui/react-icons';
 import classnames from 'classnames';
 import clsx from 'clsx';
 import { CheckCheckIcon, RefreshCcw, Twitch } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 
@@ -38,6 +39,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
   const { tournament, isRegistered } = useTournament();
+  const { status } = useSession();
 
   const { data: profile, isLoading: isLoadingProfile } = useProfileQuery();
 
@@ -153,7 +155,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
         <div className="bg-dark/60 absolute top-0 h-full w-full"></div>
         <div className="absolute right-0 top-4">
           <div className="mx-4 block">
-            <ConnectedGameIds />
+            {status === 'authenticated' && <ConnectedGameIds />}
           </div>
         </div>
       </div>

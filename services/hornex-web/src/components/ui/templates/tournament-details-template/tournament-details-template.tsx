@@ -20,12 +20,17 @@ type TournamentDetailsTemplateProps = {
   participantCheckedInStatus?: boolean;
 };
 
-const { useData: useProfileQuery } = dataLoader<Profile>('profile');
+const { useData: usePublicOrganizerProfile } = dataLoader<Profile>(
+  'getPublicOrganizerProfile'
+);
 
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
   const { tournament, isRegistered } = useTournament();
 
-  const { data: profile, isLoading: isLoadingProfile } = useProfileQuery();
+  const { data: profile, isLoading: isLoadingProfile } =
+    usePublicOrganizerProfile({
+      id: tournament.organizer,
+    });
 
   const twitchIframeSrc = `https://player.twitch.tv/?channel=${profile?.twitch_username}&parent=localhost&muted=true`;
   const discordIframeSrc = `https://discord.com/widget?id=${profile?.discord_widget_id}&theme=dark`;

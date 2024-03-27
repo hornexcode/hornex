@@ -142,6 +142,10 @@ export const routes = {
     path: 'v1/accounts/profile',
     method: Method.GET,
   },
+  getPublicOrganizerProfile: {
+    path: 'v1/accounts/profiles/[id]/details',
+    method: Method.GET,
+  },
   createProfile: {
     path: 'v1/accounts/profile',
     method: Method.POST,

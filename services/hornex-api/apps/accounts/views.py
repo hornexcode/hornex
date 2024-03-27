@@ -151,3 +151,10 @@ class GameIDViewSet(viewsets.ModelViewSet):
         game_id.deleted_at = dt.now(tz=UTC)
         game_id.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["GET"])
+def get_organizer_profile_details(request, user_id):
+    profile = get_object_or_404(Profile, user=user_id)
+    serializer = ProfileSerializer(instance=profile)
+    return Response(serializer.data, status=status.HTTP_200_OK)
