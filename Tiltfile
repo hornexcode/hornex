@@ -20,6 +20,29 @@ docker_build(
             ]
         ),
         sync("services/hornex-api", "/src/"),
-        run("poetry install --sync", trigger=["services/hornex-api/pyproject.toml", "services/hornex-api/poetry.lock"])
+        run(
+            "poetry install --sync",
+            trigger=[
+                "services/hornex-api/pyproject.toml",
+                "services/hornex-api/poetry.lock",
+            ],
+        ),
+    ],
+)
+
+docker_build(
+    ref="hornex-web",
+    context="services/hornex-web",
+    dockerfile="services/hornex-web/Dockerfile",
+    pull=True,
+    live_update=[
+        fall_back_on(
+            [
+                "services/hornex-web/package.json",
+                "services/hornex-web/bun.lockb",
+            ]
+        ),
+        sync("services/hornex-web", "/usr/src/app"),
+        run("bun install", trigger=["services/hornex-web/package.json"]),
     ],
 )
