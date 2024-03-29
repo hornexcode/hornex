@@ -11,6 +11,7 @@ import { useState } from 'react';
 const regionOptions: ListboxOption[] = [
   { name: 'Brasil', value: 'br1' },
   { name: 'North America', value: 'na1' },
+  { name: 'North America', value: 'na1' },
 ];
 
 const ConnectAccountView = () => {
@@ -24,20 +25,22 @@ const ConnectAccountView = () => {
       <div className="bg-medium-dark flex items-center rounded-t p-5">
         <LolFlatIcon className=" mr-4 h-12 w-12" />
         <div>
-          <h4 className="text-title text-xl font-bold">League of Legends</h4>
-          <p className="text-body">Connect your account</p>
+          <h4 className="text-title text-xl font-bold">Connect your account</h4>
         </div>
       </div>
       <div className="bg-light-dark p-5">
-        {/* <div className="flex justify-center py-5">
+        <p className="text-title text-center text-lg font-medium">
+          To register into tournaments you need to connect your account first.
+        </p>
+        <div className="flex justify-center py-10">
           <Image
-            className="w-2/3"
+            className="w-1/3"
             src={RiotLogoFullBlackWhite}
             alt="Riot Logo"
           />
-        </div> */}
+        </div>
         <form className="space-y-4">
-          <div>
+          {/* <div>
             <InputLabel title="Select your account region" important />
             <Listbox
               options={regionOptions}
@@ -46,7 +49,7 @@ const ConnectAccountView = () => {
                 setRegion(option);
               }}
             />
-          </div>
+          </div> */}
           <div>
             <Link
               className="hightlight-white-20 text-dark flex w-full items-center justify-center rounded border border-amber-500 bg-amber-500 p-2 text-center font-bold"

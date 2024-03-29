@@ -18,7 +18,7 @@ export const nextAuthOptions: NextAuthOptionsCallback = (req, res) => ({
   // https://next-auth.js.org/configuration/providers/oauth
   session: {
     strategy: 'jwt',
-    maxAge: 7 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   pages: {
     signIn: '/auth/signin',

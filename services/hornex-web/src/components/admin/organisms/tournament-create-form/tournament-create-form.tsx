@@ -347,7 +347,7 @@ export function TournamentCreateForm() {
           />
         </div> */}
 
-        <div className="bg-medium-dark p-4">
+        <div className="bg-medium-dark">
           <h4 className="text-title font-bold">Prizes</h4>
           <div
             className={clsx('block space-y-3', {
@@ -383,9 +383,9 @@ export function TournamentCreateForm() {
               </div>
             ))}
             <Button
-              size="mini"
+              size="small"
               shape="rounded"
-              color="danger"
+              color="info"
               className="border-border text-dark rounded border px-3 py-2"
               onClick={(e) => {
                 e.preventDefault();

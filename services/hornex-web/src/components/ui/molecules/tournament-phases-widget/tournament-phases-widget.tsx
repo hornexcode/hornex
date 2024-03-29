@@ -1,5 +1,8 @@
-import { RegisterButton } from '../../atoms/register-button';
 import TournamentRegistrationStateProgress from '../tournament-registration-state-progress';
+import { useModal } from '@/components/modal-views/context';
+import Button from '@/components/ui/atoms/button';
+import { RegisterButton } from '@/components/ui/atoms/register-button';
+import { useGameId } from '@/contexts/gameid';
 import { Tournament } from '@/lib/models/Tournament';
 import { cn } from '@/lib/utils';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
@@ -15,6 +18,10 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   tournament,
   isRegistered,
 }) => {
+  const { gameIds } = useGameId();
+  const hasGameId = !!gameIds.find((gameId) => gameId.game === tournament.game);
+  const { openModal } = useModal();
+
   const renderButton = () => {
     if (tournament.status === 'ended') {
       return (
@@ -24,18 +31,36 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
       );
     }
 
-    if (isRegistered) {
+    if (tournament.status === 'registering') {
+      if (isRegistered) {
+        return (
+          <div className="text-brand flex items-center justify-center pt-6 font-bold">
+            <CheckCircledIcon className="mr-2 h-4 w-4" />
+            Registered
+          </div>
+        );
+      }
+
+      if (!hasGameId) {
+        return (
+          <Button
+            onClick={() => {
+              openModal('CONNECT_ACCOUNT_VIEW');
+            }}
+            className="mt-6"
+            fullWidth
+            shape="rounded"
+            size="small"
+          >
+            Register
+          </Button>
+        );
+      }
+
       return (
-        <div className="text-brand flex items-center justify-center pt-6 font-bold">
-          <CheckCircledIcon className="mr-2 h-4 w-4" />
-          Registered
-        </div>
+        <RegisterButton isRegistered={isRegistered} className="mt-6 w-full" />
       );
     }
-
-    return (
-      <RegisterButton isRegistered={isRegistered} className="mt-6 w-full" />
-    );
   };
 
   const getTournamentStep = () => {
