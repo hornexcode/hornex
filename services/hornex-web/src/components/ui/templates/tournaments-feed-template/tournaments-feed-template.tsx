@@ -12,7 +12,7 @@ const TournamentsFeedTemplate: FC<TournamentsPageTemplateProps> = ({
         className="4xl:grid-cols-[320px_minmax(auto,_1fr)] grid
       gap-5 2xl:grid-cols-[minmax(auto,_1fr)_240px]"
       > */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="3xl:grid-cols-6 grid gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
         {data.results.map((tournament) => (
           <TournamentFeedItem
             key={tournament.id}
