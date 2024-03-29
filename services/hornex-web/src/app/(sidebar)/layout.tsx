@@ -6,9 +6,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="relative">
       <Sidebar />
       <Header />
-      <main className="3xl:px-10 relative rounded pt-16 md:pl-[230px] xl:pb-24">
-        {children}
-      </main>
+      <main className="relative rounded pl-[230px] pt-16">{children}</main>
     </div>
   );
 }
