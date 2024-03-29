@@ -6,8 +6,8 @@ metadata:
   name: hornex-web
 spec:
   ports:
-  - name: tcp
-    port: 80
-    targetPort: 8000
+    - name: tcp
+      port: 80
+      targetPort: 3000
   selector:
     app: hornex-web

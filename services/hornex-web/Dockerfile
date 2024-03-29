@@ -3,6 +3,8 @@
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
 FROM oven/bun:1 as base
+ENV NEXT_TELEMETRY_DISABLED=1
+
 WORKDIR /usr/src/app
 
 # install dependencies into temp directory

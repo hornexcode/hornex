@@ -215,9 +215,9 @@ export const dataLoader = <T, Data = unknown>(
             throw new Error(r.statusText);
           }),
         {
-          // revalidateOnFocus: false,
           ...config,
-          revalidateIfStale: true,
+          // revalidateOnFocus: false,
+          // revalidateIfStale: false,
         }
       );
     },

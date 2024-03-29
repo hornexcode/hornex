@@ -51,9 +51,9 @@ export const ConnectedGameIds = () => {
         ) : (
           <Menu.Button
             onClick={() => openModal('CONNECT_ACCOUNT_VIEW')}
-            className="group-item text-title flex w-full items-center justify-center rounded bg-red-500 px-4 py-2 font-medium focus:outline-none "
+            className="group-item text-dark bg-brand flex w-full items-center justify-center rounded px-4 py-2 font-medium focus:outline-none "
           >
-            <LolFlatIcon className="text-title mr-2 h-5 w-5" />
+            <LolFlatIcon className="text-dark mr-2 h-5 w-5" />
             Connect riot account
           </Menu.Button>
         )}

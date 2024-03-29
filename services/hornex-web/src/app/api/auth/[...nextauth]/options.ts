@@ -1,10 +1,9 @@
-// import type { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { AuthOptions } from 'next-auth';
 
 export const authOptions: AuthOptions = {
   session: {
     strategy: 'jwt',
-    maxAge: 7 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   pages: {
     signIn: '/auth/signin',

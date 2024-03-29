@@ -1,8 +1,10 @@
 import { TournamentHeadlineProps } from './tournament-details-headline.types';
+import { useModal } from '@/components/modal-views/context';
 import Button from '@/components/ui/atoms/button/button';
 import { LolFlatIcon } from '@/components/ui/atoms/icons/lol-flat-icon';
 import { RegisterButton } from '@/components/ui/atoms/register-button';
 import { ConnectedGameIds } from '@/components/ui/molecules/connected-game-ids';
+import { useGameId } from '@/contexts/gameid';
 import { useTournament } from '@/contexts/tournament';
 import { TeamCheckInStatus } from '@/lib/models';
 import { Profile } from '@/lib/models/Profile';
@@ -22,26 +24,28 @@ import { CheckCheckIcon, RefreshCcw, Twitch } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 
+const { useData: useProfileQuery } = dataLoader<Profile>('profile');
+const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
 const { useData: useTeamCheckIns } = dataLoader<TeamCheckInStatus>(
   'getTeamCheckInStatus'
 );
-const { useData: useProfileQuery } = dataLoader<Profile>('profile');
-const { post: createUserCheckIn } = dataLoader<Tournament>('createUserCheckIn');
 
 const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   isCheckedIn: initialIsCheckedIn,
 }) => {
   const [checkInOpen, setCheckInOpen] = useState(false);
-  const [isLoading, setLoading] = useState(false);
   const [isCheckedIn, setCheckedIn] = useState(initialIsCheckedIn);
   const { tournament, isRegistered } = useTournament();
   const { status } = useSession();
-
-  const { data: profile, isLoading: isLoadingProfile } = useProfileQuery();
+  const { gameIds } = useGameId();
+  const router = useRouter();
+  const { openModal } = useModal();
+  const { data: profile } = useProfileQuery();
 
   // Controll the check in state
   useEffect(() => {
@@ -124,7 +128,6 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   };
 
   const handleCheckIn = async () => {
-    setLoading(true);
     const { error } = await createUserCheckIn({
       tournamentId: tournament.id,
       // teamId: registration?.team,
@@ -134,7 +137,53 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
       setCheckedIn(true);
       checkInStatusMutate(checkInStatusData);
     }
-    setLoading(false);
+  };
+
+  const renderRegisterButton = () => {
+    const { game } = router.query;
+    const hasGameId = gameIds?.find((g) => g.game === game);
+    if (!hasGameId) {
+      return (
+        <Button
+          shape="rounded"
+          className="ml-4"
+          size="small"
+          onClick={() => openModal('CONNECT_ACCOUNT_VIEW')}
+        >
+          Register
+        </Button>
+      );
+    }
+
+    if (tournament.status == 'registering') {
+      return <RegisterButton className="ml-4" isRegistered={isRegistered} />;
+    } else {
+      return (
+        <div className="mx-4 my-2 w-[100px] text-center font-bold">
+          {getStatus(tournament)}
+        </div>
+      );
+    }
+  };
+
+  const renderSocialLinks = () => {
+    if (!profile) return null;
+    return (
+      <div className="flex h-full items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
+        <Link
+          target="_blank"
+          href={`https://twitter.com/${profile?.twitter_username}`}
+        >
+          <TwitterLogoIcon className="h-6 w-6" />
+        </Link>
+        <Link
+          target="_blank"
+          href={`https://twitch.tv/${profile?.twitch_username}`}
+        >
+          <Twitch className="h-5 w-5" />
+        </Link>
+      </div>
+    );
   };
 
   return (
@@ -174,23 +223,8 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </div>
           </div>
 
-          {/* right */}
           <div className="flex items-center">
-            <div className="flex h-full items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
-              <Link
-                target="_blank"
-                href={`https://twitter.com/${profile?.twitter_username}`}
-              >
-                <TwitterLogoIcon className="h-6 w-6" />
-              </Link>
-              <Link
-                target="_blank"
-                href={`https://twitch.tv/${profile?.twitch_username}`}
-              >
-                <Twitch className="h-5 w-5" />
-              </Link>
-            </div>
-
+            {renderSocialLinks()}
             {/* Prize Pool */}
             <div
               className={clsx(
@@ -221,13 +255,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </div>
 
             {/* Register button */}
-            {tournament.status == 'registering' ? (
-              <RegisterButton className="ml-4" isRegistered={isRegistered} />
-            ) : (
-              <div className="mx-4 my-2 w-[100px] text-center font-bold">
-                {getStatus(tournament)}
-              </div>
-            )}
+            {renderRegisterButton()}
 
             {/* Check-in button */}
             {checkInOpen && (checkInStatusData || { total: 0 }).total != 5 && (

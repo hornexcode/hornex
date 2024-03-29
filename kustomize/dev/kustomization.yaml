@@ -4,4 +4,4 @@ resources:
   - services/hornex-api
   - services/hornex-postgres
   - rabbitmq
-  # - services/hornex-web
+  - services/hornex-web

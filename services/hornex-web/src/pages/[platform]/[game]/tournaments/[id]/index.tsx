@@ -1,21 +1,16 @@
-import Loading from './loading';
 import TournamentDetailsTemplate from '@/components/ui/templates/tournament-details-template';
+import { GameIDContextProvider } from '@/contexts/gameid';
 import { TournamentContextProvider } from '@/contexts/tournament';
 import { AppLayout } from '@/layouts';
 import { Participant, Registration } from '@/lib/models';
+import { GameId } from '@/lib/models/Account';
 import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import React, { Suspense } from 'react';
-
-export type GameID = {
-  id: string;
-  nickname: string;
-  game: string;
-};
+import React from 'react';
 
 const { fetch: getTournament } = dataLoader<Tournament>('getTournament');
-const { fetch: getGameIds } = dataLoader<GameID[]>('getGameIds');
+const { fetch: getGameIds } = dataLoader<GameId[]>('getGameIds');
 const { fetch: getTournamentRegistrations } = dataLoader<Registration[]>(
   'getTournamentRegistrations'
 );
@@ -28,7 +23,7 @@ type TournamentProps = {
   };
   tournament: Tournament;
   participants: Participant[];
-  gameIds: GameID[];
+  gameIds: GameId[];
   registrations: Registration[];
   participantCheckedInStatus: boolean;
   isRegistered: boolean;
@@ -40,15 +35,18 @@ const TournamentPage: InferGetServerSidePropsType<
   tournament,
   participantCheckedInStatus,
   isRegistered,
+  gameIds,
 }: TournamentProps) => {
   return (
     <TournamentContextProvider
       isRegistered={isRegistered}
       tournament={tournament}
     >
-      <TournamentDetailsTemplate
-        participantCheckedInStatus={participantCheckedInStatus}
-      />
+      <GameIDContextProvider gameIds={gameIds}>
+        <TournamentDetailsTemplate
+          participantCheckedInStatus={participantCheckedInStatus}
+        />
+      </GameIDContextProvider>
     </TournamentContextProvider>
   );
 };

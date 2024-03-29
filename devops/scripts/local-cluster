@@ -18,17 +18,22 @@ function main() (
       else
         logx k3d cluster create hornex \
           --registry-create=registry:0.0.0.0:5432 \
-          --port="8000:80@loadbalancer" \
+          --port="9876:80@loadbalancer" \
           --timeout=1m
       fi
 
       # logx kubectl --namespace=kube-system rollout status deployment traefik --watch --timeout=5m
 
-      # # # Install Traefik Resource Definitions:
-      # kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+      # Install Traefik Resource Definitions:
+      if ! kubectl get crd traefikservices.traefik.containo.us &>/dev/null; then
+        logx kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+      fi
+
 
       # # # Install RBAC for Traefik:
-      # kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+      if ! kubectl get clusterrole traefik-ingress-controller &>/dev/null; then
+        logx kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+      fi
       ;;
 
     down)
