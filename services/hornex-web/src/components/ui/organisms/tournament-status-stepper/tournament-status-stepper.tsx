@@ -1,10 +1,5 @@
 import { TournamentStatusStepperProps } from './tournament-status-stepper.types';
-import {
-  CheckCircledIcon,
-  DotFilledIcon,
-  DotIcon,
-} from '@radix-ui/react-icons';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 import React, { FC } from 'react';
 
 const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
@@ -17,12 +12,12 @@ const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
       {/* gray bar */}
       <div
         role="stepper"
-        className="bg-title absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between"
+        className="bg-muted absolute left-[2px] flex h-[2px] w-[calc(100%-2px)] items-center justify-between"
       ></div>
       {/* green bar */}
       <div
         style={{ width: `${progressBarWidth + 0.5}%` }}
-        className={clsx('bg-brand absolute  top-0 h-[100%] rounded-lg')}
+        className={cn('bg-brand absolute  top-0 h-[100%] rounded-lg')}
       ></div>
       <div className="relative flex w-[calc(100%-4px)] items-center justify-between">
         <div></div>
@@ -34,7 +29,7 @@ const AdminTournamentStatusStepper: FC<TournamentStatusStepperProps> = ({
           ></div>
         ))}
         {new Array(steps - currentStep).fill(0).map((_, idx) => (
-          <div key={idx} className="bg-title h-2.5 w-2.5 rounded-full"></div>
+          <div key={idx} className="bg-muted h-2.5 w-2.5 rounded-full"></div>
         ))}
       </div>
     </div>

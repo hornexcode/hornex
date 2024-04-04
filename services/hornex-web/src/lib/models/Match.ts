@@ -8,6 +8,7 @@ export const matchSchema = z.object({
   team_a_score: z.number(),
   team_b_score: z.number(),
   round: z.number(),
+  riot_match_code: z.string().nullable(),
   status: z.enum(['not_started', 'underway', 'ended', 'cancelled']),
   winner: teamSchema.nullable(),
   finished_at: z.date().nullable(),

@@ -3,7 +3,7 @@ import AdminTournamentMatchesTabContent from '@/components/admin/molecules/admin
 import AdminTournamentTeamsTabContent from '@/components/admin/molecules/admin-tournament-teams-tab-content';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { Gamepad2Icon, Users2Icon } from 'lucide-react';
+import { CogIcon, Users2Icon } from 'lucide-react';
 
 const AdminTournamentTabNav = () => {
   return (
@@ -13,13 +13,13 @@ const AdminTournamentTabNav = () => {
           <InfoCircledIcon className="mr-2 h-5 w-5" />
           General info
         </TabsTrigger>
-        <TabsTrigger value="matches">
-          <Gamepad2Icon className="mr-2 h-5 w-5" />
-          Matches
-        </TabsTrigger>
         <TabsTrigger value="registered-teams">
           <Users2Icon className="mr-2 h-5 w-5" />
-          Registered teams
+          Teams
+        </TabsTrigger>
+        <TabsTrigger value="settings">
+          <CogIcon className="mr-2 h-5 w-5" />
+          Settings
         </TabsTrigger>
       </TabsList>
       <TabsContent value="general-info">

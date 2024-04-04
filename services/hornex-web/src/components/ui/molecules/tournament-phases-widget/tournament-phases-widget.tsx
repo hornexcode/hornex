@@ -77,7 +77,7 @@ export const TournamentPhasesWidget: FC<TournamentPhasesWidgetProps> = ({
   };
 
   return (
-    <div className="bg-medium-dark border-border space-y-2 rounded border p-6">
+    <div className="bg-muted/40 border-border space-y-2 rounded border p-6">
       <div className="border-border border-b border-dashed pb-4">
         <h4 className="leading-2 text-title text-lg font-bold">
           Tournament Phases

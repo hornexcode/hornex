@@ -75,13 +75,6 @@ const TournamentsEmptyFeedback = () => {
       <p className="text-body/40 text-lg">
         You do not have any tournament created
       </p>
-      <Button
-        onClick={() => {
-          router.push('/admin/tournaments/create');
-        }}
-      >
-        Create new tournament
-      </Button>
     </div>
   );
 };

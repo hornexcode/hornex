@@ -1,10 +1,13 @@
+'use client';
+
 import Button from '@/components/ui/atoms/button';
 import { useAdminTournament } from '@/contexts';
 import { getStatus, Match } from '@/lib/models/Match';
 import { dataLoader } from '@/lib/request';
 import { cn } from '@/lib/utils';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Loader2, PlusIcon, Swords } from 'lucide-react';
-import React, { FC } from 'react';
+import { FC, useState } from 'react';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
 
@@ -19,7 +22,8 @@ export type AdminTournamentMatchProps = {
 };
 
 const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  let [isExpand, setIsExpand] = useState(false);
 
   const { tournament } = useAdminTournament();
 
@@ -79,19 +83,16 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
   };
 
   const renderMatchAction = () => {
-    if (isLoading) {
-      return <Loader2 className="h-8 w-8 animate-spin" />;
-    }
-
     switch (match.status) {
       case 'not_started':
         return (
           <Button
-            onClick={onStartMatchHandler}
-            className="ml-auto"
+            fullWidth
+            className="uppercase"
             shape="rounded"
-            size="small"
+            onClick={onStartMatchHandler}
             color="danger"
+            isLoading={isLoading}
           >
             Start Match
           </Button>
@@ -101,7 +102,6 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
           <Button
             onClick={onEndedMatchHandler}
             className="ml-auto"
-            shape="rounded"
             color="danger"
             size="small"
           >
@@ -164,37 +164,66 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
   };
 
   return (
-    <div className="border-border mb-2 grid grid-cols-12 rounded border shadow-lg">
-      <div className="border-border col-span-1 flex items-center justify-center border-r p-4">
-        <Swords className="text-title h-8 w-8" />
-      </div>
-      <div className="border-border col-span-4 border-r">
-        <div className="block items-start">
-          <div className="border-border border-b">
-            <div className="text-title p-2 px-4">{match.team_a.name}</div>
+    <div className="border-border bg-muted/40 relative mb-2 flex cursor-pointer flex-col overflow-hidden rounded border shadow-lg">
+      <div
+        className="relative grid grid-cols-12"
+        onClick={() => setIsExpand(!isExpand)}
+      >
+        <div className="border-border col-span-1 flex items-center justify-center border-r p-4">
+          <Swords className="text-title h-8 w-8" />
+        </div>
+        <div className="border-border col-span-4 border-r">
+          <div className="block items-start">
+            <div className="border-border border-b">
+              <div className="text-title p-2 px-4">{match.team_a.name}</div>
+            </div>
+            <div className="">
+              <div className="text-title p-2 px-4">{match.team_b.name}</div>
+            </div>
           </div>
-          <div className="">
-            <div className="text-title p-2 px-4">{match.team_b.name}</div>
+        </div>
+        <div className="border-border col-span-1 flex flex-col items-center border-r text-center">
+          <div className="text-title border-border flex w-full items-center justify-center border-b p-2 font-medium">
+            {renderTeamAScore()}
+          </div>
+          <div className="text-title flex w-full items-center justify-center p-2 font-medium">
+            {renderTeamBScore()}
           </div>
         </div>
-      </div>
-      <div className="border-border col-span-1 flex flex-col items-center border-r text-center">
-        <div className="text-title border-border flex w-full items-center justify-center border-b p-2 font-medium">
-          {renderTeamAScore()}
+        <div className="border-border col-span-2 flex items-center justify-center text-center">
+          <div className="text-title font-normal">Round {match.round}</div>
         </div>
-        <div className="text-title flex w-full items-center justify-center p-2 font-medium">
-          {renderTeamBScore()}
+        <div className="border-border col-span-2 flex items-center justify-center text-center">
+          <div className="text-title font-normal">{getStatus(match)}</div>
+        </div>
+        <div className="col-span-2 flex items-center justify-center p-4">
+          {match.riot_match_code}
         </div>
       </div>
-      <div className="border-border col-span-2 flex items-center justify-center text-center">
-        <div className="text-title font-normal">Round {match.round}</div>
-      </div>
-      <div className="border-border col-span-2 flex items-center justify-center text-center">
-        <div className="text-title font-normal">{getStatus(match)}</div>
-      </div>
-      <div className="col-span-2 flex items-center justify-center p-4">
-        {renderMatchAction()}
-      </div>
+
+      {/* Collapseable */}
+      <AnimatePresence initial={false}>
+        {isExpand && (
+          <motion.div
+            key="content"
+            initial="collapsed"
+            animate="open"
+            exit="collapsed"
+            variants={{
+              open: { opacity: 1, height: 'auto' },
+              collapsed: { opacity: 0, height: 0 },
+            }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+          >
+            <div className="border-border z-40 border-t px-4 py-4 sm:px-8 sm:py-6">
+              <div className="mb-4 flex items-center justify-center text-2xl font-medium">
+                0 - 0
+              </div>
+              {renderMatchAction()}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

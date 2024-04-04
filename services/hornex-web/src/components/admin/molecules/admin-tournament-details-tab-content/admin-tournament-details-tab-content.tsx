@@ -1,31 +1,19 @@
-import AdminTournamentStandingsTabContent from '../admin-tournament-standings-tab-content/admin-tournament-standings-tab-content';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import AdminTournamentMatches from '../admin-tournament-matches';
 import Button from '@/components/ui/atoms/button';
-import TournamentStatusStepper from '@/components/ui/organisms/tournament-status-stepper';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
 import { useAdminTournament } from '@/contexts';
 import { Standing } from '@/lib/models/Standing';
 import {
   getEntryFee,
-  getPotentialPrizePool,
   getStatus,
   getStatusStep,
   Tournament,
 } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
-import { toCurrency } from '@/lib/utils';
-import { datetime } from '@/utils/datetime';
-import { Loader2 } from 'lucide-react';
+import { UsersIcon } from '@heroicons/react/20/solid';
+import { GearIcon } from '@radix-ui/react-icons';
+import { DollarSignIcon } from 'lucide-react';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 
@@ -34,32 +22,6 @@ const { submit: finalizeTournament } = dataLoader<Tournament>(
 );
 const finalizeTournamentHandler = ({ id }: { id: string }) =>
   finalizeTournament({ id });
-
-const { submit: updateTournament } = dataLoader<
-  Tournament,
-  Partial<Tournament>
->('organizer:tournament:update');
-const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
-  updateTournament(
-    { tournamentId },
-    {
-      status: 'registering',
-      registration_start_date: new Date().toISOString(),
-    }
-  );
-
-const { submit: startTournament } = dataLoader<
-  Tournament,
-  { timestamp: number; now: Date }
->('org:tournament:start');
-const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
-  startTournament(
-    { id: tournamentId },
-    {
-      timestamp: Date.now(),
-      now: new Date(),
-    }
-  );
 
 const { useData: getTournamentResults } = dataLoader<Standing[]>(
   'org:tournament:results'
@@ -86,52 +48,6 @@ const AdminTournamentGeneralInfo = () => {
     return <p>Failed to load tournament metadata</p>;
   }
 
-  const onOpenRegistrationHandler = async () => {
-    setLoading(true);
-    const { data, error } = await openRegistrationHandler({
-      tournamentId: tournament.id,
-    });
-
-    if (!data && error) {
-      toast({
-        title: 'Error',
-        description: error.message,
-      });
-    }
-
-    if (data && !error) {
-      refreshTournament(data);
-      toast({
-        title: 'Success',
-        description: 'Registration opened successfully',
-        variant: 'success',
-      });
-    }
-    setLoading(false);
-  };
-
-  const onStartTournamentHandler = async () => {
-    setLoading(true);
-    const { data, error } = await startTournamentHandler({
-      tournamentId: tournament.id,
-    });
-    if (error) {
-      toast({
-        title: 'Error',
-        description: error.message,
-      });
-    }
-    if (data && !error) {
-      refreshTournament(data);
-      toast({
-        title: 'Success',
-        description: 'Tournament started successfully',
-        variant: 'success',
-      });
-    }
-    setLoading(false);
-  };
-
   const onFinalizeTournamentHandler = async () => {
     setLoading(true);
     const { data, error } = await finalizeTournamentHandler({
@@ -154,93 +70,42 @@ const AdminTournamentGeneralInfo = () => {
     setLoading(false);
   };
 
-  const StartTournamentConfirmAlertDialog = () => {
-    return (
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button shape="rounded" className="mt-4" size="mini">
-            Start tournament
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="border-border">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription className="text-lg">
-              This action cannot be undone. After you start the tournament, it
-              will create matches and teams will be locked.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={onStartTournamentHandler}>
-              Start tournament
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    );
-  };
-
   const renderStatusContent = () => {
     switch (tournament.status) {
       case 'announced':
         return (
           <>
-            <div className="text-body py-2">
-              Registration start date:{' '}
+            <div className="text-body">
+              Start date:{' '}
               <span className="font-bold">
-                {moment(tournament.registration_start_date).format('YYYY-MM-D')}
+                {moment(tournament.registration_start_date).format(
+                  'YYYY-MM-DD HH:mm'
+                )}
               </span>
-              <div className="text-xs font-semibold">
-                date format: (year-month-day)
-              </div>
             </div>
-            <Button
-              onClick={onOpenRegistrationHandler}
-              disabled={loading}
-              isLoading={loading}
-              shape="rounded"
-              className="mt-4"
-              size="mini"
-            >
-              Open registration
-            </Button>
           </>
         );
       case 'registering':
         return (
           <>
-            <div className="text-title py-2">
-              Registration end date:{' '}
+            <div className="text-body text-sm">
+              Finishes at:{' '}
               <span className="font-bold">
-                {moment(tournament.registration_start_date).format('YYYY-MM-D')}
+                {moment(tournament.registration_start_date).format(
+                  'YYYY-mm-d HH:mm'
+                )}
               </span>
-              <div className="text-xs font-semibold">
-                date format: (year-month-day)
-              </div>
+              {/* <div className="text-body text-xs">
+                YYYY-mm-d HH:mm (24-hour format)
+              </div> */}
             </div>
-            {!loading && <StartTournamentConfirmAlertDialog />}
-            {loading && (
-              <div className="flex items-center italic">
-                <Loader2 className="mr-2 w-5 animate-spin opacity-50" />{' '}
-                starting tournament
-              </div>
-            )}
           </>
         );
       case 'running':
         return (
           <>
-            <div className="text-body py-2">
-              Registration end date:{' '}
-              <span className="font-bold">
-                {moment(tournament.registration_start_date).format('YYYY-MM-D')}
-              </span>
-              <div className="text-xs font-semibold">
-                date format: (year-month-day)
-              </div>
-            </div>
-            <Button
+            <div className="text-body text-sm">in progress</div>
+            {/* <Button
               onClick={onFinalizeTournamentHandler}
               shape="rounded"
               className="mt-4"
@@ -248,7 +113,7 @@ const AdminTournamentGeneralInfo = () => {
               size="mini"
             >
               Finalize
-            </Button>
+            </Button> */}
           </>
         );
       case 'ended':
@@ -262,80 +127,71 @@ const AdminTournamentGeneralInfo = () => {
     }
   };
 
-  const hasStandings =
-    tournament.status === 'running' || tournament.status === 'ended';
-
   return (
-    <div className="mt-4 grid grid-cols-3 gap-4">
-      <div className="col-span-2">
-        <div className=" flex flex-wrap items-center">
-          <div className="border-border border-r px-4 py-2 font-medium">
-            <div className="text-body font-normal">Teams registered</div>
-            <div className="text-title">
-              {tournament.registered_teams_count}/{tournament.max_teams}
+    <div className="mt-4 grid grid-cols-3 gap-6">
+      <div className="col-span-1">
+        <Card className="bg-muted/40">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-md text-body font-medium">
+              Teams
+            </CardTitle>
+            <UsersIcon className="text-muted-foreground h-5 w-5" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {tournament.registered_teams.length}/{tournament.max_teams}
             </div>
-          </div>
-          <div className="border-border border-r px-4 py-2 font-medium">
-            <div className="text-body font-normal">Entry Fee</div>
-            <div className="text-title">{getEntryFee(tournament)}</div>
-          </div>
-          <div className="border-border border-r px-4 py-2 font-medium">
-            <div className="text-body font-normal">Prize Pool</div>
-            <div className="text-title">
-              {tournament.prize_pool_enabled ? 'Enabled' : 'Disabled'}
-              {tournament.prize_pool_enabled &&
-                `${tournament.currency} ${toCurrency(
-                  getPotentialPrizePool(tournament)
-                )}`}
-            </div>
-          </div>
-          <div className="border-border border-r px-4 py-2 font-medium">
-            <div className="text-body font-normal">Registration start date</div>
-            <div className="text-title">
-              {datetime(tournament.registration_start_date, { time: false })}
-            </div>
-          </div>
-          <div className="border-border border-r px-4 py-2 font-medium">
-            <div className="text-body font-normal">Start date</div>
-            <div className="text-title">
-              {moment(
-                new Date(
-                  `${tournament.start_date}T${tournament.start_time}+00:00`
-                )
-              ).format('YYYY-MM-D hh:mm A')}
-            </div>
-          </div>
-          <div className="px-4 py-2 font-medium">
-            <div className="text-body font-normal">Check-in window</div>
-            <div className="text-title">
-              {tournament.check_in_duration} minutes
-            </div>
-          </div>
-        </div>
-        {/* {hasStandings && tournamentResults && (
-          <div className="border-border mt-4 block rounded border p-6">
-            <div className="text-title text-lg font-semibold">Results</div>
-            <AdminTournamentStandingsTabContent standings={tournamentResults} />
-          </div>
-        )} */}
+            <p className="text-body text-sm">Registered teams</p>
+          </CardContent>
+        </Card>
       </div>
       <div className="col-span-1">
-        <div className="">
-          <div className="text-title mb-2 font-bold">Tournament status</div>
-          <div className="flex items-center justify-between pb-2">
-            <span className="font-semibold text-amber-500">
-              {getStatus(tournament)}
-            </span>
-            <div className="text-sm text-gray-500">
-              step {steps[0]} / {steps[1]}
+        <Card className="bg-muted/40">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-md text-body font-medium">
+              Entry fee
+            </CardTitle>
+            <DollarSignIcon className="text-muted-foreground h-5 w-5" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {tournament.is_entry_free ? 'Free' : getEntryFee(tournament)}
             </div>
-          </div>
-          <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} />
-          {renderStatusContent()}
-        </div>
+            <p className="text-body text-sm">All classifications</p>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="col-span-1">
+        <Card className="bg-muted/40">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-md text-body font-medium">
+              Status
+            </CardTitle>
+            <GearIcon className="text-muted-foreground h-5 w-5" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div className="text-2xl font-bold">{getStatus(tournament)}</div>
+              <div className="text-sm text-gray-500">
+                step {steps[0]} / {steps[1]}
+              </div>
+            </div>
+            {/* <TournamentStatusStepper steps={steps[1]} currentStep={steps[0]} /> */}
+            {renderStatusContent()}
+          </CardContent>
+        </Card>
+      </div>
+      <div className="col-span-3">
+        <Card className="bg-dark p-6">
+          <div className="text-2xl font-bold">Matches</div>
+          {tournament.status != 'running' && (
+            <p className="text-body">The tournament is not running yet</p>
+          )}
+          {tournament.status == 'running' && <AdminTournamentMatches />}
+        </Card>
       </div>
       {/* danger zone */}
-      <div className="col-span-3">
+      {/* <div className="col-span-3">
         <h4 className="text-title mb-3 text-lg font-bold">Danger Zone</h4>
         <div className="text-title border-border flex items-center justify-between rounded border p-4">
           <div>
@@ -349,7 +205,7 @@ const AdminTournamentGeneralInfo = () => {
             Delete
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
