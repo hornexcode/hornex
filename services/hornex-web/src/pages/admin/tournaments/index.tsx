@@ -83,11 +83,9 @@ const TournamentListItem = ({ tournament }: { tournament: Tournament }) => {
   const router = useRouter();
   return (
     <div
-      className="border-border mb-2 grid grid-cols-12 rounded border p-4 transition-all hover:z-10 hover:cursor-pointer"
+      className="border-border bg-muted/40 mb-2 grid grid-cols-12 rounded border p-4 transition-all hover:z-10 hover:cursor-pointer"
       onClick={() => {
-        router.push(
-          `/admin/${tournament.platform}/${tournament.game}/tournaments/${tournament.id}`
-        );
+        router.push(`/admin/tournaments/${tournament.id}`);
       }}
     >
       <div className="col-span-6 flex items-center px-4">

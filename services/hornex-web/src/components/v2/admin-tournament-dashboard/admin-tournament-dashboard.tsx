@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import Button from '@/components/ui/atoms/button';
 import routes from '@/config/routes';
-import { AdminTournamentContextProvider } from '@/contexts';
+import { AdminTournamentContextProvider, useAdminTournament } from '@/contexts';
 import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid';
@@ -23,6 +23,7 @@ import Link from 'next/link';
 import React, { FC } from 'react';
 import { toast } from 'sonner';
 
+// Start tournament
 const { submit: startTournament } = dataLoader<
   Tournament,
   { timestamp: number; now: Date }
@@ -36,6 +37,7 @@ const startTournamentHandler = ({ tournamentId }: { tournamentId: string }) =>
     }
   );
 
+// Update tournament
 const { submit: updateTournament } = dataLoader<
   Tournament,
   Partial<Tournament>
@@ -49,13 +51,19 @@ const openRegistrationHandler = ({ tournamentId }: { tournamentId: string }) =>
     }
   );
 
-export type AdminTournamentDashboardTemplateProps = {
-  tournament: Tournament;
-};
+// Finalize tournament
+const { submit: finalizeTournament } = dataLoader<Tournament>(
+  'org:tournament:finalize'
+);
+const finalizeTournamentHandler = ({ id }: { id: string }) =>
+  finalizeTournament({ id });
 
+// Main component
+export type AdminTournamentDashboardTemplateProps = {};
 const AdminTournamentDashboardTemplate: FC<
   AdminTournamentDashboardTemplateProps
-> = ({ tournament }) => {
+> = ({}) => {
+  const { tournament, refreshTournament } = useAdminTournament();
   const [loading, setLoading] = React.useState(false);
 
   const onStartTournamentHandler = async () => {
@@ -67,7 +75,40 @@ const AdminTournamentDashboardTemplate: FC<
       toast(error.message);
     }
     if (data && !error) {
+      refreshTournament(data);
       toast('Tournament started successfully');
+    }
+    setLoading(false);
+  };
+
+  const onOpenRegistrationHandler = async () => {
+    setLoading(true);
+    const { data, error } = await openRegistrationHandler({
+      tournamentId: tournament.id,
+    });
+
+    if (!data && error) {
+      toast(error.message);
+    }
+
+    if (data && !error) {
+      toast('Registration opened successfully');
+      refreshTournament(data);
+    }
+    setLoading(false);
+  };
+
+  const onFinalizeTournamentHandler = async () => {
+    setLoading(true);
+    const { data, error } = await finalizeTournamentHandler({
+      id: tournament.id,
+    });
+    if (error) {
+      toast(error.message);
+    }
+    if (data && !error) {
+      toast('Tournament finalized successfully');
+      refreshTournament(data);
     }
     setLoading(false);
   };
@@ -99,22 +140,6 @@ const AdminTournamentDashboardTemplate: FC<
     );
   };
 
-  const onOpenRegistrationHandler = async () => {
-    setLoading(true);
-    const { data, error } = await openRegistrationHandler({
-      tournamentId: tournament.id,
-    });
-
-    if (!data && error) {
-      toast(error.message);
-    }
-
-    if (data && !error) {
-      toast('Registration opened successfully');
-    }
-    setLoading(false);
-  };
-
   const renderActionButton = () => {
     switch (tournament.status) {
       case 'announced':
@@ -135,7 +160,7 @@ const AdminTournamentDashboardTemplate: FC<
           <>
             {!loading && <StartTournamentButton />}
             {loading && (
-              <div className="flex  items-center italic">
+              <div className="flex items-center italic">
                 <Loader2 className="mr-2 w-5 animate-spin opacity-50" />{' '}
                 starting tournament
               </div>
@@ -143,7 +168,19 @@ const AdminTournamentDashboardTemplate: FC<
           </>
         );
       case 'running':
-        return <></>;
+        return (
+          <Button
+            onClick={onFinalizeTournamentHandler}
+            disabled={loading}
+            isLoading={loading}
+            shape="rounded"
+            className="mt-4"
+            color="danger"
+            size="small"
+          >
+            Finalize tournament
+          </Button>
+        );
       default:
         break;
     }
@@ -151,7 +188,7 @@ const AdminTournamentDashboardTemplate: FC<
 
   return (
     <AdminTournamentContextProvider tournament={tournament}>
-      <div className="min-h-screen w-full p-6">
+      <div className="container mx-auto min-h-screen space-y-10 pt-6">
         <Link
           href={routes.admin.tournaments}
           className="text-title flex items-center"
@@ -161,6 +198,7 @@ const AdminTournamentDashboardTemplate: FC<
         </Link>
         <div className="flex items-center justify-between pb-4">
           <h1 className="text-title text-3xl font-bold">{tournament.name}</h1>
+          {renderActionButton()}
         </div>
 
         <AdminTournamentTabNav />

@@ -6,8 +6,9 @@ import { getStatus, Match } from '@/lib/models/Match';
 import { dataLoader } from '@/lib/request';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Loader2, PlusIcon, Swords } from 'lucide-react';
+import { Check, Copy, Loader2, MenuIcon, PlusIcon, Swords } from 'lucide-react';
 import { FC, useState } from 'react';
+import { useCopyToClipboard } from 'react-use';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
 
@@ -24,6 +25,16 @@ export type AdminTournamentMatchProps = {
 const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
   const [isLoading, setIsLoading] = useState(false);
   let [isExpand, setIsExpand] = useState(false);
+
+  const [copyButtonStatus, setCopyButtonStatus] = useState(false);
+  const [_, copyToClipboard] = useCopyToClipboard();
+  function handleCopyToClipboard() {
+    copyToClipboard(match?.riot_match_code || '');
+    setCopyButtonStatus(true);
+    setTimeout(() => {
+      setCopyButtonStatus(copyButtonStatus);
+    }, 2500);
+  }
 
   const { tournament } = useAdminTournament();
 
@@ -101,11 +112,13 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
         return (
           <Button
             onClick={onEndedMatchHandler}
-            className="ml-auto"
-            color="danger"
-            size="small"
+            className="ml-auto uppercase"
+            shape="rounded"
+            fullWidth
+            isLoading={isLoading}
+            disabled={isLoading}
           >
-            Complete
+            END MATCH
           </Button>
         );
       default:
@@ -119,21 +132,22 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
     }
     if (match.status === 'ended') {
       if (match.winner?.id === match.team_a.id) {
-        return <span className="text-green-500">winner</span>;
+        return <span className="text-green-500">{match.team_a.name}</span>;
       }
-      return <span className="text-red-500">loser</span>;
+      return <span className="text-red-500">{match.team_a.name}</span>;
     }
     return (
       <>
-        {match.team_a_score}
+        <div className="mr-4">{match.team_a.name}</div>
         <Button
           onClick={() => onScoreUpdated(match.id, 'a')}
           size="mini"
           shape="rounded"
-          className={cn('ml-4 !h-6 w-3')}
+          className={cn('mr-4 !h-6 w-3')}
         >
           <PlusIcon className="text-dark h-4 w-4" />
         </Button>
+        {match.team_a_score}
       </>
     );
   };
@@ -144,9 +158,9 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
     }
     if (match.status === 'ended') {
       if (match.winner?.id === match.team_b.id) {
-        return <span className="text-green-500">winner</span>;
+        return <span className="text-green-500">{match.team_b.name}</span>;
       }
-      return <span className="text-red-500">loser</span>;
+      return <span className="text-red-500">{match.team_b.name}</span>;
     }
     return (
       <>
@@ -159,45 +173,74 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
         >
           <PlusIcon className="text-dark h-4 w-4" />
         </Button>
+        <div className="ml-4">{match.team_b.name}</div>
       </>
     );
   };
 
+  const winner = match.winner?.id === match.team_a.id ? 'team_a' : 'team_b';
+  const hasWinner = match.status === 'ended' && match.winner;
+  console.log(winner);
+
   return (
-    <div className="border-border bg-muted/40 relative mb-2 flex cursor-pointer flex-col overflow-hidden rounded border shadow-lg">
-      <div
-        className="relative grid grid-cols-12"
-        onClick={() => setIsExpand(!isExpand)}
-      >
+    <div className="border-border bg-muted/40 relative mb-2 flex flex-col overflow-hidden rounded border shadow-lg">
+      <div className="relative grid grid-cols-12">
         <div className="border-border col-span-1 flex items-center justify-center border-r p-4">
           <Swords className="text-title h-8 w-8" />
         </div>
         <div className="border-border col-span-4 border-r">
           <div className="block items-start">
             <div className="border-border border-b">
-              <div className="text-title p-2 px-4">{match.team_a.name}</div>
+              <div
+                className={cn(
+                  'text-title p-2 px-4',
+                  hasWinner && winner === 'team_a'
+                    ? 'font-bold text-green-500'
+                    : ''
+                )}
+              >
+                {match.team_a.name}{' '}
+                {hasWinner && winner === 'team_a' && '(Winner)'}
+              </div>
             </div>
             <div className="">
-              <div className="text-title p-2 px-4">{match.team_b.name}</div>
+              <div
+                className={cn(
+                  'text-title p-2 px-4',
+                  hasWinner && winner === 'team_b'
+                    ? 'font-bold text-green-500'
+                    : ''
+                )}
+              >
+                {match.team_b.name}{' '}
+                {hasWinner && winner === 'team_b' && '(Winner)'}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="border-border col-span-1 flex flex-col items-center border-r text-center">
-          <div className="text-title border-border flex w-full items-center justify-center border-b p-2 font-medium">
-            {renderTeamAScore()}
-          </div>
-          <div className="text-title flex w-full items-center justify-center p-2 font-medium">
-            {renderTeamBScore()}
-          </div>
-        </div>
-        <div className="border-border col-span-2 flex items-center justify-center text-center">
-          <div className="text-title font-normal">Round {match.round}</div>
         </div>
         <div className="border-border col-span-2 flex items-center justify-center text-center">
           <div className="text-title font-normal">{getStatus(match)}</div>
         </div>
-        <div className="col-span-2 flex items-center justify-center p-4">
+        <div className="col-span-3 flex items-center justify-center p-4">
           {match.riot_match_code}
+        </div>
+        <div
+          title="Copy Address"
+          className="flex cursor-pointer items-center px-4 text-gray-500 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+          onClick={() => handleCopyToClipboard()}
+        >
+          {copyButtonStatus ? (
+            <Check className="h-auto w-3.5 text-green-500" />
+          ) : (
+            <Copy className="h-auto w-3.5" />
+          )}
+        </div>
+
+        <div
+          className="col-span-1 flex cursor-pointer items-center justify-center"
+          onClick={() => setIsExpand(!isExpand)}
+        >
+          <MenuIcon className="hover:text-brand h-6 w-6" />
         </div>
       </div>
 
@@ -217,7 +260,7 @@ const AdminTournamentMatch: FC<AdminTournamentMatchProps> = ({ match }) => {
           >
             <div className="border-border z-40 border-t px-4 py-4 sm:px-8 sm:py-6">
               <div className="mb-4 flex items-center justify-center text-2xl font-medium">
-                0 - 0
+                {renderTeamAScore()} - {renderTeamBScore()}
               </div>
               {renderMatchAction()}
             </div>

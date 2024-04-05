@@ -83,7 +83,7 @@ const AdminTournamentMatches: FC<AdminTournamentMatchesProps> = ({}) => {
       </div>
 
       <div className={cn('hidden', isLastRound(tournament) && 'mb-10 block')}>
-        <Alert className="border-border">
+        <Alert className="border-border bg-muted/40">
           <AlertCircle className="h-5 w-5" />
           <AlertTitle>Last Round!</AlertTitle>
           <AlertDescription className="text-md">

@@ -1,5 +1,4 @@
 import AdminTournamentMatches from '../admin-tournament-matches';
-import Button from '@/components/ui/atoms/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
 import { useAdminTournament } from '@/contexts';
@@ -11,17 +10,12 @@ import {
   Tournament,
 } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
+import { cn } from '@/lib/utils';
 import { UsersIcon } from '@heroicons/react/20/solid';
 import { GearIcon } from '@radix-ui/react-icons';
 import { DollarSignIcon } from 'lucide-react';
 import moment from 'moment';
 import React, { useEffect } from 'react';
-
-const { submit: finalizeTournament } = dataLoader<Tournament>(
-  'org:tournament:finalize'
-);
-const finalizeTournamentHandler = ({ id }: { id: string }) =>
-  finalizeTournament({ id });
 
 const { useData: getTournamentResults } = dataLoader<Standing[]>(
   'org:tournament:results'
@@ -30,7 +24,7 @@ const useGetTournamentResults = ({ id }: { id: string }) =>
   getTournamentResults({ tournamentId: id });
 
 const AdminTournamentGeneralInfo = () => {
-  const { tournament, refreshTournament } = useAdminTournament();
+  const { tournament } = useAdminTournament();
   const { data: tournamentResults } = useGetTournamentResults({
     id: tournament.id,
   });
@@ -47,28 +41,6 @@ const AdminTournamentGeneralInfo = () => {
   if (!tournament) {
     return <p>Failed to load tournament metadata</p>;
   }
-
-  const onFinalizeTournamentHandler = async () => {
-    setLoading(true);
-    const { data, error } = await finalizeTournamentHandler({
-      id: tournament.id,
-    });
-    if (error) {
-      toast({
-        title: 'Error',
-        description: error.message,
-      });
-    }
-    if (data && !error) {
-      refreshTournament(data);
-      toast({
-        title: 'Success',
-        description: 'Tournament finalized successfully',
-        variant: 'success',
-      });
-    }
-    setLoading(false);
-  };
 
   const renderStatusContent = () => {
     switch (tournament.status) {
@@ -95,9 +67,6 @@ const AdminTournamentGeneralInfo = () => {
                   'YYYY-mm-d HH:mm'
                 )}
               </span>
-              {/* <div className="text-body text-xs">
-                YYYY-mm-d HH:mm (24-hour format)
-              </div> */}
             </div>
           </>
         );
@@ -105,22 +74,13 @@ const AdminTournamentGeneralInfo = () => {
         return (
           <>
             <div className="text-body text-sm">in progress</div>
-            {/* <Button
-              onClick={onFinalizeTournamentHandler}
-              shape="rounded"
-              className="mt-4"
-              color="danger"
-              size="mini"
-            >
-              Finalize
-            </Button> */}
           </>
         );
       case 'ended':
         return (
           <div className="block">
-            <div className="text-body py-2 text-sm font-normal italic">
-              Ended at: {moment(tournament.ended_at).format('DD MM, YYYY')}
+            <div className="text-body text-sm font-normal italic">
+              Ended at: {moment(tournament.ended_at).format('YYYY-MM-DD HH:mm')}
             </div>
           </div>
         );
@@ -181,7 +141,9 @@ const AdminTournamentGeneralInfo = () => {
           </CardContent>
         </Card>
       </div>
-      <div className="col-span-3">
+      <div
+        className={cn('col-span-3', tournament.status === 'ended' && 'hidden')}
+      >
         <Card className="bg-dark p-6">
           <div className="text-2xl font-bold">Matches</div>
           {tournament.status != 'running' && (

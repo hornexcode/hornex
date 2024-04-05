@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import structlog
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
 
 from apps.tournaments.models import LeagueOfLegendsTournament as Tournament
 from apps.tournaments.models import Match
@@ -44,32 +44,35 @@ class StartMatchUseCase:
         participants = []
         players_emails = []
 
-        for member in [*match.team_a.members.all(), *match.team_b.members.all()]:
-            puuid = member.get_puuid()
+        for gameid in [*match.team_a.members.all(), *match.team_b.members.all()]:
+            puuid = gameid.get_puuid()
             if puuid == "":
                 raise ValidationError(
                     {
-                        "detail": f"Player {member.nickname} disconnected his Riot account. Please, contact him to reconnect it."
+                        "detail": f"Player {gameid.nickname} does not have a game id connected to the league of legends."
                     }
                 )
             participants.append(puuid)
-            players_emails.append(member.user.email)
+            players_emails.append(gameid.user.email)
 
         try:
             codes = RiotTournamentResourceAPI.create_tournament_codes(
                 tournament_id=tournament.riot_tournament_id,
                 count=1,
-                allowedParticipants=participants,
-                enoughPlayers=True,
-                mapType=tournament.map,
+                allowed_participants=participants,
+                enough_players=True,
+                map_type=tournament.map,
                 metadata=tournament.name,
-                pickType=tournament.pick,
-                spectatorType=tournament.spectator,
-                teamSize=tournament.team_size,
+                pick_type=tournament.pick,
+                spectator_type=tournament.spectator,
+                team_size=tournament.team_size,
             )
-        except Exception:
-            raise Exception(
-                "Temporary error, could not create the league of legends match code"
+        except Exception as e:
+            logger.info("error requesting tournament codes", error=e)
+            raise APIException(
+                {
+                    "detail": "Failed to create a tournament code at Riot. Please try again later."
+                }
             )
 
         try:

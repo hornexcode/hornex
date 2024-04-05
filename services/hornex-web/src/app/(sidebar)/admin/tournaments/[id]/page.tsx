@@ -1,4 +1,5 @@
 import AdminTournamentDashboardTemplate from '@/components/v2/admin-tournament-dashboard/admin-tournament-dashboard';
+import { AdminTournamentContextProvider } from '@/contexts';
 import { Tournament, tournamentSchema } from '@/lib/models/Tournament';
 import { routes } from '@/lib/request';
 import { Route } from '@/lib/routes';
@@ -90,7 +91,11 @@ async function AdminTournamentDashboardPage(
     return <div>Error fetching tournament</div>;
   }
 
-  return <AdminTournamentDashboardTemplate tournament={tournament} />;
+  return (
+    <AdminTournamentContextProvider tournament={tournament}>
+      <AdminTournamentDashboardTemplate />{' '}
+    </AdminTournamentContextProvider>
+  );
 }
 
 export default AdminTournamentDashboardPage;

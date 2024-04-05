@@ -25,7 +25,7 @@ const HeaderRightArea: FC<HeaderRightAreaProps> = ({ user }) => {
 
 const Header = () => {
   const { data: session, status } = useSession();
-
+  console.log('status => ', status);
   const renderHeaderRightArea = () => {
     if (status === 'loading') {
       return <Skeleton className="h-6 w-[200px] rounded" />;
