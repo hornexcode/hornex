@@ -1,3 +1,4 @@
+'use client';
 import { Tournament } from '@/lib/models/Tournament';
 import { dataLoader } from '@/lib/request';
 import React, { createContext, ReactNode, useEffect, useState } from 'react';

@@ -1,8 +1,8 @@
 import re
 from typing import NotRequired, Self, TypedDict, Unpack, cast
 
+import requests
 import structlog
-from requests import request
 
 import lib.riot as riot
 
@@ -83,21 +83,21 @@ class Tournament(dict[type, any]):
 
     @classmethod
     def create(cls, **params: Unpack["Tournament.CreateParams"]) -> int:
-        resp = request(
-            method="post",
+        logger.info("params", params=params)
+        resp = requests.post(
             url=f"https://americas.api.riotgames.com/lol/tournament/v5/tournaments?api_key={riot.api_key}",
-            params={
+            json={
                 "name": params["name"],
                 "providerId": params["provider_id"],
             },
         )
         if not resp.ok:
             logger.error(
-                f"error: {resp.json()}",
+                "lib.riot._tournament.create failed",
                 status=resp.status_code,
                 error=resp.json(),
             )
-            raise Exception("Internal Server Error")
+            raise Exception("Failed to register tournament at Riot")
 
         return cast(int, resp.json())
 
@@ -113,10 +113,16 @@ class Tournament(dict[type, any]):
         reuse a tournament code, the server callback will not return stats for
         each match.
         """
-        resp = request(
-            method="post",
+        resp = requests.post(
             url=f"https://americas.api.riotgames.com/lol/tournament/v5/codes?count={count}&tournamentId={tournament_id}&api_key={riot.api_key}",
-            params=params,
+            json={
+                "metadata": params.get("metadata"),
+                "teamSize": params["team_size"],
+                "pickType": params["pick_type"],
+                "mapType": params["map_type"],
+                "spectatorType": params["spectator_type"],
+                "enoughPlayers": params["enough_players"],
+            },
         )
         if not resp.ok:
             logger.error(
@@ -133,8 +139,7 @@ class Tournament(dict[type, any]):
         """
         :param code: The tournament code
         """
-        resp = request(
-            method="get",
+        resp = requests.get(
             url=f"https://americas.api.riotgames.com/lol/tournament/v5/games/by-code/{code}?api_key={riot.api_key}",
         )
         if not resp.ok:

@@ -101,7 +101,7 @@ const ProfileForm = ({ profile: initialProfile }: { profile?: Profile }) => {
           onSubmit={handleSubmit(onSubmitHandler)}
           className={cn('space-y-4', !profile && 'hidden')}
         >
-          <div className="border-border bg-light-dark space-y-4 rounded border p-6">
+          <div className="border-border bg-muted/40 space-y-4 rounded border p-6">
             <h4 className="font-bold">Twitch Username</h4>
             <div
               className={cn(
@@ -146,7 +146,7 @@ const ProfileForm = ({ profile: initialProfile }: { profile?: Profile }) => {
           </div>
 
           {/* Discord Widget Id */}
-          <div className="border-border bg-light-dark space-y-4 rounded border p-6">
+          <div className="border-border bg-muted/40 space-y-4 rounded border p-6">
             <h4 className="font-bold">Discord Widget ID</h4>
             <div
               className={cn(
@@ -191,7 +191,7 @@ const ProfileForm = ({ profile: initialProfile }: { profile?: Profile }) => {
           </div>
 
           {/* Discord Invite Code */}
-          <div className="border-border bg-light-dark space-y-4 rounded border p-6">
+          <div className="border-border bg-muted/40 space-y-4 rounded border p-6">
             <h4 className="font-bold">Discord Invite Code</h4>
             <div
               className={cn(
@@ -237,7 +237,7 @@ const ProfileForm = ({ profile: initialProfile }: { profile?: Profile }) => {
           </div>
 
           {/* Twitter Username */}
-          <div className="border-border bg-light-dark space-y-4 rounded border p-6">
+          <div className="border-border bg-muted/40 space-y-4 rounded border p-6">
             <h4 className="font-bold">Twitter Username</h4>
             <div
               className={cn(
@@ -283,7 +283,7 @@ const ProfileForm = ({ profile: initialProfile }: { profile?: Profile }) => {
 
           <div
             className={cn(
-              'bg-light-dark flex items-center p-6',
+              'bg-muted/40 flex items-center p-6',
               profile && !isEditing && 'hidden'
             )}
           >

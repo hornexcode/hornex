@@ -18,7 +18,7 @@ const TournamentFeedItem: FC<TournamentFeedItemProps> = ({
   const router = useRouter();
 
   return (
-    <div className={cn('border-border rounded border', className)}>
+    <div className={cn('border-border bg-muted/40 rounded border', className)}>
       <div className="h-[160px] w-full bg-[url('/images/tournaments/tmt-8.png')] bg-cover bg-no-repeat"></div>
 
       <div className="block px-5 pt-4">

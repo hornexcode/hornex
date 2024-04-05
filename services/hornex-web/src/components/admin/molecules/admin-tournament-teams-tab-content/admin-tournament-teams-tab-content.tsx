@@ -26,7 +26,7 @@ const AdminTournamentTeamsTabContent: FC<
 
   if (error || !registrations) {
     return (
-      <div className="bg-medium-dark tex-title rounded p-4">
+      <div className="bg-dark rounded p-4">
         {true && (
           <div className="text-danger flex flex-col items-center">
             <ExclamationCircleIcon className="w-10" />

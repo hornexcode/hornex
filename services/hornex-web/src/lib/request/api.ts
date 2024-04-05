@@ -3,7 +3,7 @@ import { getCookieFromRequest } from './cookie';
 import { routes } from './routes';
 import { Route } from '@/lib/routes';
 import { IncomingMessage } from 'http';
-import { parseCookies } from 'nookies';
+import { destroyCookie, parseCookies } from 'nookies';
 import useSWR, { SWRConfiguration } from 'swr';
 
 // type APIRouteMap = { [key in APIRouteName]: Route };
@@ -60,6 +60,11 @@ export const dataLoader = <T, Data = unknown>(
               code: res.status,
               response: errRes,
             };
+
+            console.log('not ok', error);
+            if (error.code === 401) {
+              destroyCookie(null, 'next-auth.session-token');
+            }
 
             if (res.status === 400) {
               // construct error validations

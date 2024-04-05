@@ -20,7 +20,7 @@ type StandingProps = {
 
 const Standing: FC<StandingProps> = ({ standing, tier }) => {
   return (
-    <div className="border-border mb-1 grid grid-cols-12 border">
+    <div className="border-border bg-muted/40 mb-2 grid grid-cols-12 rounded border">
       <div className="col-span-1">
         <div className="flex h-full items-center justify-center p-4">
           <div className="text-title text-4xl font-bold">{tier}</div>

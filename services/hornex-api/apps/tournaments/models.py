@@ -28,15 +28,33 @@ class Tournament(BaseModel):
         BRL = "BRL"
         EUR = "EUR"
 
+    class RegionOptions(models.TextChoices):
+        BR = "BR"
+        EUNE = "EUNE"
+        EUW = "EUW"
+        JP = "JP"
+        KR = "KR"
+        LAN = "LAN"
+        LAS = "LAS"
+        NA = "NA"
+        OCE = "OCE"
+        TR = "TR"
+        RU = "RU"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, default="")
     organizer = models.ForeignKey("users.User", on_delete=models.RESTRICT)
     published = models.BooleanField(default=False)
+
     status = models.CharField(
         max_length=50,
         choices=StatusOptions.choices,
         default=StatusOptions.ANNOUNCED,
+    )
+
+    region = models.CharField(
+        max_length=10, choices=RegionOptions.choices, default=RegionOptions.BR
     )
 
     registration_start_date = models.DateTimeField()
@@ -394,12 +412,6 @@ class LeagueOfLegendsTournament(Tournament):
         LOBBYONLY = "LOBBYONLY"
         ALL = "ALL"
 
-    provider = models.ForeignKey(
-        LeagueOfLegendsProvider,
-        on_delete=models.DO_NOTHING,
-        null=True,
-        blank=True,
-    )
     pick = models.CharField(
         max_length=50, choices=PickType.choices, default=PickType.BLIND_PICK
     )
@@ -413,6 +425,7 @@ class LeagueOfLegendsTournament(Tournament):
     )
     classifications = models.ManyToManyField(LeagueOfLegendsLeague, blank=True)
     riot_tournament_id = models.IntegerField(null=True, blank=True)
+    riot_provider_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]

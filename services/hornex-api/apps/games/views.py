@@ -1,11 +1,8 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 
-from apps.accounts.serializers import GameIDSerializer
-from apps.games.models import Game, GameID
+from apps.games.models import Game
 from apps.games.serializers import GameSerializer
-from lib.jwt.authentication import JWTAuthentication
 
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -26,14 +23,3 @@ class GameViewSet(viewsets.ModelViewSet):
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
-
-
-class GameIDViewSet(viewsets.ModelViewSet):
-    queryset = GameID.objects.all()
-    serializer_class = GameIDSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.filter(user=request.user)
-        return super().list(request, *args, **kwargs)

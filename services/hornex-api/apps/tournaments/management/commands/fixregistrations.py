@@ -6,13 +6,12 @@ from apps.accounts.models import GameID
 from apps.teams.models import Team
 from apps.tournaments.models import Registration, Tournament
 from apps.users.models import User
-from lib.challonge import Tournament as ChallongeTournament
 
 fake = Faker()
 
 
 class Command(BaseCommand):
-    help = "Fill registrations for a tournament"
+    help = "Fix registrations for a tournament"
 
     def add_arguments(self, parser):
         parser.add_argument("tournament", type=str)
@@ -29,21 +28,12 @@ class Command(BaseCommand):
                 raise CommandError(f"Tournament {trnmnt_id} does not exist")
 
             registrations = Registration.objects.filter(tournament=tournament)
-            remaining = tournament.max_teams - registrations.count()
 
-            for _ in range(remaining):
-                team = create_team()
-                participant = ChallongeTournament.add_team(
-                    tournament=tournament.challonge_tournament_id, team_name=team.name
-                )
-                Registration.objects.create(
-                    tournament=tournament,
-                    team=team,
-                    status=Registration.RegistrationStatusOptions.ACCEPTED,
-                    game_slug=tournament.game,
-                    platform_slug=tournament.platform,
-                    challonge_participant_id=participant["id"],
-                )
+            for registration in registrations:
+                gameids = registration.team.members.all()
+                for gmid in gameids:
+                    gmid.metadata = {"puuid": fake.uuid4()}
+                    gmid.save()
 
             self.stdout.write(
                 self.style.SUCCESS(

@@ -169,7 +169,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   const renderSocialLinks = () => {
     if (!profile) return null;
     return (
-      <div className="flex h-full items-center space-x-4 border-r-2 border-dotted border-gray-700 px-8">
+      <div className="border-border flex h-full items-center space-x-4 border-r-2 border-dotted px-8">
         <Link
           target="_blank"
           href={`https://twitter.com/${profile?.twitter_username}`}
@@ -187,7 +187,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
   };
 
   return (
-    <div className="border-border rounded border">
+    <div className="border-border bg-muted/40 rounded border">
       {/* end debugger */}
       <div className="3xl:h-[448px] md:h-42 relative h-24 w-full sm:h-44">
         <Image
@@ -245,7 +245,7 @@ const TournamentDetailsHeadline: FC<TournamentHeadlineProps> = ({
             </div>
 
             {/* Entry fee */}
-            <div className="flex flex-col border-r-2  border-dotted border-gray-700 px-8">
+            <div className="border-border flex flex-col  border-r-2 border-dotted px-8">
               <div className="text-body text-sm">Entry fee</div>
               <div className="text-title font-bold">
                 {tournament.is_entry_free

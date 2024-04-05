@@ -54,7 +54,7 @@ const LoginForm = () => {
     }
 
     setCookie(null, 'hx', session.access, {
-      maxAge: 30 * 24 * 60 * 60,
+      maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
 
