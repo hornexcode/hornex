@@ -1,0 +1,20 @@
+name: deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: services/hornex-api
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "running deploy script..."

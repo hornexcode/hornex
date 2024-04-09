@@ -80,6 +80,7 @@
   },
   "yaml.format.enable": true,
   "yaml.schemas": {
-    "https://json.schemastore.org/circleciconfig.json": ".circleci/workflows.yml"
+    "https://json.schemastore.org/circleciconfig.json": ".circleci/workflows.yml",
+    "https://json.schemastore.org/github-workflow.json": "file:///Users/psantos/src/hornexcode/hornex/.github/workflows/deploy.yaml"
   }
 }
