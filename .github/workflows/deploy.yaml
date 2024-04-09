@@ -17,4 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: echo "running deploy script..."
+      - run: ./scripts/deploy.sh
+        env:
+          AWS_PEM_FILE: ${{ secrets.AWS_PEM_FILE }}
+          AWS_EC2_HOSTNAME: ${{ secrets.AWS_EC2_HOSTNAME }}
