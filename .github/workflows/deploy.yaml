@@ -8,9 +8,9 @@ on:
       - closed
 
 jobs:
-  deploy:
+  deployment:
     runs-on: ubuntu-latest
-
+    environment: production
     defaults:
       run:
         working-directory: services/hornex-api
@@ -20,4 +20,4 @@ jobs:
       - run: ./scripts/deploy.sh
         env:
           AWS_PEM_FILE: ${{ secrets.AWS_PEM_FILE }}
-          AWS_EC2_HOSTNAME: ${{ secrets.AWS_EC2_HOSTNAME }}
+          AWS_EC2_HOSTNAME: ${{ vars.AWS_EC2_HOSTNAME }}
