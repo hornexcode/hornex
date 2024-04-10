@@ -10,7 +10,7 @@ echo "${AWS_PEM_FILE}" > "${REPO_ROOT}/hornex-api.pem"
 chmod 400 "${REPO_ROOT}/hornex-api.pem"
 
 # Connect to the ec2 instance
-ssh -i "${REPO_ROOT}/hornex-api.pem" $AWS_EC2_HOSTNAME '
+ssh -o StrictHostKeyChecking=no -i "${REPO_ROOT}/hornex-api.pem" $AWS_EC2_HOSTNAME '
   cd hornex-api
   git pull
   cd services/hornex-api
