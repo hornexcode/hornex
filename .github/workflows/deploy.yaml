@@ -22,13 +22,13 @@ jobs:
       - run: |
           echo "${{ secrets.AWS_PEM_FILE }}" > /tmp/aws.pem
           chmod 400 /tmp/aws.pem
-          ssh -o StrictHostKeyChecking=no -i /tmp/aws.pem $AWS_EC2_HOSTNAME << EOF
+          ssh -o StrictHostKeyChecking=no -i /tmp/aws.pem $AWS_EC2_HOSTNAME '
             cd hornex-api
             git pull
             cd services/hornex-api
             ./.venv/bin/python3 manage.py migrate
             sudo systemctl restart gunicorn
-            EOF
+          '
         env:
           AWS_PEM_FILE: ${{ secrets.AWS_PEM_FILE }}
           AWS_EC2_HOSTNAME: ${{ secrets.AWS_EC2_HOSTNAME }}
