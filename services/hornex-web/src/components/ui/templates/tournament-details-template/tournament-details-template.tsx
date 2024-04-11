@@ -10,25 +10,14 @@ import {
 } from '@/components/ui/breadcrumb';
 import TournamentDetailsHeadline from '@/components/ui/molecules/tournament-details-headline';
 import { useTournament } from '@/contexts';
-import { Profile } from '@/lib/models/Profile';
-import { dataLoader } from '@/lib/request';
 import { FC } from 'react';
 
 type TournamentDetailsTemplateProps = {
   participantCheckedInStatus?: boolean;
 };
 
-const { useData: usePublicOrganizerProfile } = dataLoader<Profile>(
-  'getPublicOrganizerProfile'
-);
-
 const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
   const { tournament, isRegistered } = useTournament();
-
-  const { data: profile, isLoading: isLoadingProfile } =
-    usePublicOrganizerProfile({
-      id: tournament.organizer,
-    });
 
   return (
     <div className="mx-auto px-8 pt-8">
@@ -54,10 +43,8 @@ const TournamentDetailsTemplate: FC<TournamentDetailsTemplateProps> = ({}) => {
         <TournamentDetailsWidgets
           tournament={tournament}
           registered={isRegistered}
-          loading={isLoadingProfile}
-          profile={profile}
         />
-        <TournamentDetailsBody tournament={tournament} />
+        <TournamentDetailsBody />
       </div>
     </div>
   );

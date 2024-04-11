@@ -1,8 +1,9 @@
 import TournamentTabPanels from '../../organisms/tournament-tab-panels/tournament-tab-panels';
-import { TournamentDetailsBodyProps } from './tournament-details-body.types';
+import { useTournament } from '@/contexts';
 import { FC } from 'react';
 
-const TournamentDetailsBody: FC<TournamentDetailsBodyProps> = ({ tournament }) => {
+const TournamentDetailsBody: FC = ({}) => {
+  const { tournament } = useTournament();
   return (
     <div className="grid w-full">
       <TournamentTabPanels tournament={tournament} />
