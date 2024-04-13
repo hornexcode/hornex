@@ -98,7 +98,10 @@ const TeamRegisterForm: FC<TeamRegisterFormProps> = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pb-10">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-8 rounded-lg pb-10"
+      >
         <FormField
           control={control}
           name="team_name"

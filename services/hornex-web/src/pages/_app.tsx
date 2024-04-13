@@ -9,7 +9,6 @@ import { NextPage } from 'next';
 import App, { AppContext, AppProps } from 'next/app';
 import { Roboto_Condensed } from 'next/font/google';
 import localFont from 'next/font/local';
-import Script from 'next/script';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactElement, ReactNode } from 'react';
