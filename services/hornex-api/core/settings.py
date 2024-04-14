@@ -274,7 +274,10 @@ def get_root_domain():
     return "hornexcode.com"
 
 
-SESSION_COOKIE_DOMAIN = get_root_domain()
+# if not DEBUG it will set the SESSION_COOKIE_DOMAIN to the root domain
+# causing a cookie to be set for the root domain
+# this affects admin
+SESSION_COOKIE_DOMAIN = get_root_domain() if not DEBUG else None
 
 # RABBITMQ
 RABBITMQ_USER = os.getenv("RABBITMQ_USER", "guest")

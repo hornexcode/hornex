@@ -24,24 +24,6 @@ class TournamentCreateSerializer(serializers.Serializer):
     terms = serializers.BooleanField()
 
 
-class RegisterSerializer(serializers.Serializer):
-    class PlayerSerializer(serializers.Serializer):
-        nickname = serializers.CharField()
-        email = serializers.EmailField()
-
-    team_name = serializers.CharField()
-
-    player1 = PlayerSerializer()
-    player2 = PlayerSerializer()
-    player3 = PlayerSerializer()
-    player4 = PlayerSerializer()
-    player5 = PlayerSerializer()
-    users = serializers.ListField(
-        child=serializers.ListField(child=serializers.CharField())
-    )
-    team = serializers.CharField()
-
-
 class CreateAndRegisterTeamIntoTournamentParams(serializers.Serializer):
     tournament_id = serializers.UUIDField()
     name = serializers.CharField(max_length=255)

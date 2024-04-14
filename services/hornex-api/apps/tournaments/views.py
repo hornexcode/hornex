@@ -37,12 +37,11 @@ from apps.tournaments.requests import (
     CreateAndRegisterTeamIntoTournamentParams,
     EndTournamentParams,
     FinishMatchParams,
-    RegisterSerializer,
-    RegisterTeamIntoTournamentParams,
     StartMatchParams,
     TournamentCreateSerializer,
 )
 from apps.tournaments.serializers import (
+    CreateRegistrationSerializer,
     LeagueOfLegendsTournamentSerializer,
     MatchSerializer,
     ParticipantSerializer,
@@ -56,10 +55,6 @@ from apps.tournaments.usecases import (
     CreateAndRegisterTeamIntoTournamentUseCase,
     ListRegisteredTeamsParams,
     ListRegisteredTeamsUseCase,
-    RegisterParams,
-    RegisterTeamIntoTournamentInput,
-    RegisterTeamIntoTournamentUseCase,
-    RegisterUseCase,
     StartTournamentUseCase,
     StartTournamentUseCaseParams,
 )
@@ -399,15 +394,24 @@ class TournamentRegistrationViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     @transaction.atomic
-    def register(self, request, **kwargs):
-        params = RegisterSerializer(data=request.data)
-        params.is_valid(raise_exception=True)
-        uc = RegisterUseCase()
-        uc.execute(
-            RegisterParams(**{**params.validated_data, "tournament_id": kwargs["id"]}),
-        )
+    def create(self, request, **kwargs):
+        create_registration_request = CreateRegistrationSerializer(data=request.data)
+        create_registration_request.is_valid(raise_exception=True)
 
-        return Response({"message": "success"}, status=status.HTTP_201_CREATED)
+        input = CreateAndRegisterTeamIntoTournamentInput(
+            user_id=request.user.id,
+            tournament_id=kwargs["id"],
+            team_name=create_registration_request.validated_data["team_name"],
+            member_1_email=create_registration_request.validated_data["member_1_email"],
+            member_2_email=create_registration_request.validated_data["member_2_email"],
+            member_3_email=create_registration_request.validated_data["member_3_email"],
+            member_4_email=create_registration_request.validated_data["member_4_email"],
+            member_5_email=create_registration_request.validated_data["member_5_email"],
+        )
+        output = CreateAndRegisterTeamIntoTournamentUseCase().execute(input)
+
+        serializer = TeamSerializer(instance=output.team)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -596,26 +600,6 @@ def tournaments_controller(request):
             TournamentSerializer(tournaments, many=True).data,
             status=status.HTTP_200_OK,
         )
-
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication])
-@swagger_auto_schema(
-    operation_description="POST /api/v1/tournaments/[tournamentId]/register-team",
-    operation_summary="Register a team into tournament",
-)
-def register_team(request, id):
-    params = RegisterTeamIntoTournamentParams(
-        data={**request.data, "tournament_id": id}
-    )
-    params.is_valid(raise_exception=True)
-
-    uc = RegisterTeamIntoTournamentUseCase()
-
-    output = uc.execute(RegisterTeamIntoTournamentInput(**params.validated_data))
-
-    return Response(TeamSerializer(output.team).data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["POST"])

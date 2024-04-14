@@ -10,7 +10,6 @@ from apps.tournaments.views import (
     check_in_tournament,
     create_and_register_team,
     participant_checked_in,
-    register_team,
     team_check_in_status,
 )
 
@@ -94,7 +93,7 @@ urlpatterns = [
     # Public Tournament Resources
     path(
         "/tournaments/<str:id>/registrations",
-        TournamentRegistrationViewSet.as_view({"post": "register", "get": "list"}),
+        TournamentRegistrationViewSet.as_view({"post": "create", "get": "list"}),
         name="register",
     ),
     path(
@@ -158,11 +157,6 @@ urlpatterns = [
         "/tournaments/<str:id>/registered-teams",
         PublicTournamentViewSet.as_view({"get": "list_registered_teams"}),
         name="list-registered-teams",
-    ),
-    path(
-        "/tournaments/<str:id>/register-team",
-        register_team,
-        name="register_team",
     ),
     path(
         "/tournaments/<str:id>/create-and-register-team",

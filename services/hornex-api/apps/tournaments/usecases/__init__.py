@@ -11,24 +11,13 @@ from apps.tournaments.usecases.organizer import (
     StartTournamentUseCase,
     StartTournamentUseCaseParams,
 )
-from apps.tournaments.usecases.register import RegisterParams, RegisterUseCase
-from apps.tournaments.usecases.register_team_into_tournament import (
-    RegisterTeamIntoTournamentInput,
-    RegisterTeamIntoTournamentOutput,
-    RegisterTeamIntoTournamentUseCase,
-)
 
 __all__ = [
-    "RegisterParams",
-    "RegisterUseCase",
     "ListRegisteredTeamsParams",
     "ListRegisteredTeamsUseCase",
     "CreateAndRegisterTeamIntoTournamentUseCase",
     "CreateAndRegisterTeamIntoTournamentInput",
     "CreateAndRegisterTeamIntoTournamentOutput",
-    "RegisterTeamIntoTournamentInput",
-    "RegisterTeamIntoTournamentOutput",
-    "RegisterTeamIntoTournamentUseCase",
     "StartTournamentUseCase",
     "StartTournamentUseCaseParams",
 ]

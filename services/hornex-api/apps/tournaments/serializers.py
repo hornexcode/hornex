@@ -35,9 +35,14 @@ class TournamentSerializer(serializers.ModelSerializer):
         return obj.registered_teams.count()
 
 
-class RegistrationCreateSerializer(serializers.Serializer):
-    team = serializers.UUIDField()
-    tournament = serializers.UUIDField()
+class CreateRegistrationSerializer(serializers.Serializer):
+    team_name = serializers.CharField()
+    member_1_email = serializers.EmailField()
+    member_2_email = serializers.EmailField()
+    member_3_email = serializers.EmailField()
+    member_4_email = serializers.EmailField()
+    member_5_email = serializers.EmailField()
+    tournament_id = serializers.UUIDField()
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
