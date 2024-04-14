@@ -75,7 +75,9 @@ const TeamRegisterForm: FC<TeamRegisterFormProps> = ({
     setValue('player1.email', email);
   }, []);
 
-  const onSubmitHandler = async (values: z.infer<typeof registerFormSchema>) => {
+  const onSubmitHandler = async (
+    values: z.infer<typeof registerFormSchema>
+  ) => {
     setIsFetching(true);
 
     const { error } = await registerTeamHandler(
